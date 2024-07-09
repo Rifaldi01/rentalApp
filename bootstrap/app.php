@@ -14,15 +14,12 @@ return Application::configure(basePath: dirname(__DIR__))
         then: function (){
 
             Route::middleware('web')
-                ->namespace($this->namespace)
                 ->group(base_path('routes/admin.php'));
 
             Route::middleware('web')
-                ->namespace($this->namespace)
                 ->group(base_path('routes/superadmin.php'));
 
             Route::middleware('web')
-                ->namespace($this->namespace)
                 ->group(base_path('routes/manager.php'));
         }
     )
