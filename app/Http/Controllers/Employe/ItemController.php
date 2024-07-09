@@ -16,6 +16,6 @@ class ItemController extends Controller
     public function sale()
     {
         $sale = Item::where('status', '3')->get();
-        return view('superadmin.item.sale', compact('sale'));
+        return view('employe.item.sale', compact('sale'));
     }
 }
