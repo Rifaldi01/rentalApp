@@ -18,7 +18,7 @@
     <div class="card table-timbang">
         <div class="card-head">
             <div class="row">
-                <form action="{{route('manager.service.filter')}}" method="GET">
+                <form action="{{route('admin.service.filter')}}" method="GET">
                     <div class="row">
                         <div class="col-5 ms-2 mt-2">
                             <label class="form-label">
