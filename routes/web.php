@@ -3,7 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Employe\DashboardController;
 use App\Http\Controllers\EditController;
-use App\Http\Controllers\employe\ItemController;
+use App\Http\Controllers\Employe\ItemController;
 use App\Http\Controllers\Employe\AccessoriesController;
 use App\Http\Controllers\Employe\MaintenanceController;
 

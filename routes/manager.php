@@ -9,7 +9,7 @@ use App\Http\Controllers\Manager\ReportController;
 use App\Http\Controllers\Manager\ReportServiceController;
 use App\Http\Controllers\Manager\ReportProblemController;
 use App\Http\Controllers\Manager\ReportMaintenaceController;
-use App\Http\Controllers\manager\ServiceController;
+use App\Http\Controllers\Manager\ServiceController;
 
 
 Route::group(['middleware' => ['auth:web', 'role:manager'], 'prefix' => 'manager'], function () {
