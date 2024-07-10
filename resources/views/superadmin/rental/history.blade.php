@@ -142,7 +142,7 @@
                                                         </tr>
                                                         <tr>
                                                             <th><div class="float-start">Adderess Company</div></th>
-                                                            <td><div class="float-start">{{$data->adders_company}}</div></td>
+                                                            <td><div class="float-start">{{$data->addres_company}}</div></td>
                                                         </tr>
                                                         <tr>
                                                             <th><div class="float-start">Phone Company</div></th>
