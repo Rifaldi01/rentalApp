@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::create('accessories_categories', function (Blueprint $table) {
             $table->foreignId('rental_id');
             $table->foreignId('accessories_id');
+            $table->bigInteger('accessories_quantity');
         });
     }
 
