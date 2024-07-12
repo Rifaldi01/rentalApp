@@ -80,7 +80,7 @@ class RentalController extends Controller
                 'rental' => $rental,
                 'cust' => Customer::pluck('name', 'id')->toArray(),
                 'item' => Item::where('status', '!=', 3)->pluck('name', 'id')->toArray(),
-                'acces' => Accessories::where()
+                'acces' => Accessories::all()
             ];
         }
 
