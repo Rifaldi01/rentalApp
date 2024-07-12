@@ -67,25 +67,47 @@ class RentalController extends Controller
      */
     public function create($id = null)
     {
+        // Mengambil data customer
+        $cust = Customer::pluck('name', 'id')->toArray();
+
+        // Mengambil data item dengan status 0 dan memformat name dan no_seri
+        $item = Item::where('status', 0)->get()->mapWithKeys(function ($item) {
+            return [$item->id => $item->name . ' (' . $item->no_seri . ')'];
+        })->toArray();
+
+        // Mengambil semua accessories
+        $acces = Accessories::all();
+
+        // Mengisi array inject dengan data yang diperlukan
         $inject = [
             'url' => route('superadmin.rental.store'),
-            'cust' => Customer::pluck('name', 'id')->toArray(),
-            'item' => Item::where('status', 0)->pluck('no_seri', 'id')->toArray(),
-            'acces' => Accessories::all()
+            'cust' => $cust,
+            'item' => $item,
+            'acces' => $acces
         ];
+
+        // Jika $id diberikan, mengisi data rental untuk edit
         if ($id) {
             $rental = Rental::findOrFail($id);
+
+            // Mengambil data item dengan status tidak sama dengan 3 dan memformat name dan no_seri
+            $item = Item::where('status', '!=', 3)->get()->mapWithKeys(function ($item) {
+                return [$item->id => $item->name . ' (' . $item->no_seri . ')'];
+            })->toArray();
+
+            // Mengisi ulang array inject dengan data yang diperbarui
             $inject = [
                 'url' => route('superadmin.rental.update', $id),
                 'rental' => $rental,
-                'cust' => Customer::pluck('name', 'id')->toArray(),
-                'item' => Item::where('status', '!=', 3)->pluck('no_seri', 'id')->toArray(),
-                'acces' => Accessories::all()
+                'cust' => $cust,
+                'item' => $item,
+                'acces' => $acces
             ];
         }
 
         return view('superadmin.rental.create', $inject);
     }
+
 
     /**
      * Store a newly created resource in storage.

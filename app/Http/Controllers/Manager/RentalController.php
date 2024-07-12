@@ -67,20 +67,29 @@ class RentalController extends Controller
      */
     public function create($id = null)
     {
+        $cust = Customer::pluck('name', 'id')->toArray();
+        $item = Item::where('status', 0)->get()->mapWithKeys(function ($item) {
+            return [$item->id => $item->name . ' (' . $item->no_seri . ')'];
+        })->toArray();
+        $acces = Accessories::all();
         $inject = [
             'url' => route('manager.rental.store'),
-            'cust' => Customer::pluck('name', 'id')->toArray(),
-            'item' => Item::where('status', 0)->pluck('no_seri', 'id')->toArray(),
-            'acces' => Accessories::all()
+            'cust' => $cust,
+            'item' => $item,
+            'acces' => $acces
         ];
+
         if ($id) {
             $rental = Rental::findOrFail($id);
+            $item = Item::where('status', '!=', 3)->get()->mapWithKeys(function ($item) {
+                return [$item->id => $item->name . ' (' . $item->no_seri . ')'];
+            })->toArray();
             $inject = [
                 'url' => route('manager.rental.update', $id),
                 'rental' => $rental,
-                'cust' => Customer::pluck('name', 'id')->toArray(),
-                'item' => Item::where('status', '!=', 3)->pluck('no_seri', 'id')->toArray(),
-                'acces' => Accessories::all()
+                'cust' => $cust,
+                'item' => $item,
+                'acces' => $acces
             ];
         }
 
