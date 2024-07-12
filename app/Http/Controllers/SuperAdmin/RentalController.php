@@ -245,7 +245,7 @@ class RentalController extends Controller
         $item->save();
 
         Alert::success('Success', 'Rental has been saved!');
-        return redirect()->route('admin.rental.index');
+        return redirect()->route('superadmin.rental.index');
     }
 
     public function finis($id)
