@@ -70,7 +70,7 @@ class RentalController extends Controller
         $inject = [
             'url' => route('superadmin.rental.store'),
             'cust' => Customer::pluck('name', 'id')->toArray(),
-            'item' => Item::where('status', 0)->pluck('name', 'id')->toArray(),
+            'item' => Item::where('status', 0)->pluck('no_seri', 'id')->toArray(),
             'acces' => Accessories::all()
         ];
         if ($id) {
@@ -79,7 +79,7 @@ class RentalController extends Controller
                 'url' => route('superadmin.rental.update', $id),
                 'rental' => $rental,
                 'cust' => Customer::pluck('name', 'id')->toArray(),
-                'item' => Item::where('status', '!=', 3)->pluck('name', 'id')->toArray(),
+                'item' => Item::where('status', '!=', 3)->pluck('no_seri', 'id')->toArray(),
                 'acces' => Accessories::all()
             ];
         }
