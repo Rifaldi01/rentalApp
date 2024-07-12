@@ -71,7 +71,7 @@ class RentalController extends Controller
         $inject = [
             'url' => route('admin.rental.store'),
             'cust' => Customer::pluck('name', 'id')->toArray(),
-            'item' => Item::where('status', 0)->pluck('name', 'id')->toArray(),
+            'item' => Item::where('status', 0)->pluck('no_seri', 'id')->toArray(),
             'acces' => Accessories::all()
         ];
         if ($id) {
@@ -80,7 +80,7 @@ class RentalController extends Controller
                 'url' => route('admin.rental.update', $id),
                 'rental' => $rental,
                 'cust' => Customer::pluck('name', 'id')->toArray(),
-                'item' => Item::where('status', '!=', 3)->pluck('name', 'id')->toArray(),
+                'item' => Item::where('status', '!=', 3)->pluck('no_seri', 'id')->toArray(),
                 'acces' => Accessories::all()
             ];
         }
