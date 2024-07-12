@@ -71,7 +71,7 @@
                         <th>Nominal <br>outside</th>
                         <th>Fee /<br>Discount</th>
                         <th>Ongkir</th>
-                        <th>Total</th>
+{{--                        <th>Total</th>--}}
                         <th class="text-center">Status</th>
                     </tr>
                     </thead>
@@ -93,7 +93,7 @@
                             <td>{{formatRupiah($data->nominal_out)}}</td>
                             <td>{{formatRupiah($data->diskon)}}</td>
                             <td>{{formatRupiah($data->ongkir)}}</td>
-                            <td>{{formatRupiah($data->total)}}</td>
+{{--                            <td>{{formatRupiah($data->total)}}</td>--}}
                             <td class="text-center">
                                 @if($data->status == 1)
                                     <span class="badge bg-success">Rental</span>
