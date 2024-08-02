@@ -117,7 +117,7 @@
                 </div>
                 <div class="col-md-12">
                     <label for="input5" class="form-label">No_PO</label>
-                    <input type="number" value="{{isset($rental) ? $rental->no_po : null}}" name="no_po" class="form-control" id="input5" placeholder="Enter No PO Company">
+                    <input type="text" value="{{isset($rental) ? $rental->no_po : null}}" name="no_po" class="form-control" id="input5" placeholder="Enter No PO Company">
                 </div>
                 <div class="col-md-12">
                     <label for="input5" class="form-label">Address Company</label>
