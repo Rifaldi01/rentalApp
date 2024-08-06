@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Accessories;
+use App\Models\AccessoriesCategory;
 use Illuminate\Http\Request;
 use RealRashid\SweetAlert\Facades\Alert;
 
@@ -19,7 +20,34 @@ class AccessoriesController extends Controller
         $text = "Are you sure you want to delete?";
         confirmDelete($title, $text);
         $acces = Accessories::all();
-        return view('admin.accessories.index', compact('acces'));
+
+    // Buat array untuk menyimpan data stok dan quantity per accessories
+    $accessoriesData = [];
+
+    // Loop melalui setiap accessories
+    foreach ($acces as $accessory) {
+        // Stok awal
+        $stok = $accessory->stok;
+
+        // Total quantity yang sedang dirental untuk accessories ini
+        $rentedQty = AccessoriesCategory::where('accessories_id', $accessory->id)
+            ->sum('accessories_quantity');
+
+        // Total stok + quantity yang sedang dirental
+        $stokAll = $stok + $rentedQty;
+
+        // Simpan data ke dalam array
+        $accessoriesData[] = [
+            'id' => $accessory->id,
+            'name' => $accessory->name,
+            'stok' => $stok,
+            'rentedQty' => $rentedQty,
+            'stokAll' => $stokAll
+        ];
+    }
+
+    // Kirim data ke view
+    return view('admin.accessories.index', compact('accessoriesData'));
     }
 
     /**
