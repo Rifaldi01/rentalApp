@@ -14,6 +14,7 @@ use Illuminate\Http\Request;
 use Intervention\Image\ImageManagerStatic;
 use Intervention\Image\ImageManagerStatic as Image;
 use RealRashid\SweetAlert\Facades\Alert;
+use ZipArchive;
 
 class RentalController extends Controller
 {
@@ -44,13 +45,13 @@ class RentalController extends Controller
             ->select(
                 'rentals.id', 'rentals.customer_id', 'rentals.item_id', 'rentals.name_company',
                 'rentals.addres_company', 'rentals.phone_company', 'rentals.no_po', 'rentals.date_start',
-                'rentals.date_end', 'rentals.status', 'a.rental_id',
+                'rentals.date_end', 'rentals.status', 'a.rental_id', 'rentals.image',
                 \DB::raw('GROUP_CONCAT(b.name) as access')
             )
             ->groupBy(
                 'rentals.id', 'rentals.customer_id', 'rentals.item_id', 'rentals.name_company',
                 'rentals.addres_company', 'rentals.phone_company', 'rentals.no_po', 'rentals.date_start',
-                'rentals.date_end', 'rentals.status', 'a.rental_id'
+                'rentals.date_end', 'rentals.status', 'a.rental_id', 'rentals.image'
             )
             ->where('status', 1)
             ->get();
@@ -152,7 +153,8 @@ class RentalController extends Controller
             'customer_id' => 'required|exists:customers,id',
             'date_start' => 'required|date',
             'date_end' => 'required|date',
-            'image' => $id ? 'nullable|image' : 'required|image',
+            'image' => $id ? 'nullable|array' : 'required|array',
+            'image.*' => 'image',
             'nominal_in' => 'required|numeric',
             'diskon' => 'numeric'
         ]);
@@ -193,20 +195,27 @@ class RentalController extends Controller
 
         // Proses gambar jika ada
         if ($request->hasFile('image')) {
-            if ($rental->image && file_exists(public_path('images/rental/' . $rental->image))) {
-                unlink(public_path('images/rental/' . $rental->image));
+            $newImages = [];
+            
+            // Handle new images
+            foreach ($request->file('image') as $file) {
+                $file_name = md5(now()->timestamp . $file->getClientOriginalName()) . '.jpg';
+                
+                try {
+                    $img = ImageManagerStatic::make($file);
+                    $img->resize(null, 600, function ($constraint) {
+                        $constraint->aspectRatio();
+                    });
+                    $img->save(public_path("images/rental/{$file_name}"), 80, 'jpg');
+                    $newImages[] = $file_name;
+                } catch (\Exception $e) {
+                    return back()->withErrors(['image' => 'Error processing the image: ' . $e->getMessage()])->withInput();
+                }
             }
-
-            $file = $request->file('image');
-            $file_name = md5(now()).'.jpg';
-
-            $img = ImageManagerStatic::make($file);
-            $img = $img->resize(null, 600, function ($constraint) {
-                $constraint->aspectRatio();
-            });
-            $img->save(public_path("images/rental/{$file_name}"), 50, 'jpg');
-
-            $rental->image = $file_name;
+    
+            // Combine old images with new ones
+            $existingImages = json_decode($rental->image, true) ?? [];
+            $rental->image = json_encode(array_merge($existingImages, $newImages));
         }
 
         $rental->save();
@@ -299,15 +308,69 @@ class RentalController extends Controller
             ->select(
                 'rentals.id', 'rentals.customer_id', 'rentals.item_id', 'rentals.name_company',
                 'rentals.addres_company', 'rentals.phone_company', 'rentals.no_po','rentals.date_start',
-                'rentals.date_end', 'rentals.status', 'a.rental_id', 'nominal_in', 'nominal_out', 'diskon', 'ongkir',
+                'rentals.date_end', 'rentals.status', 'a.rental_id', 'nominal_in', 'nominal_out', 'diskon', 'ongkir', 'rentals.image',
                 \DB::raw('GROUP_CONCAT(b.name) as access')
             )
             ->groupBy(
                 'rentals.id', 'rentals.customer_id', 'rentals.item_id', 'rentals.name_company',
                 'rentals.addres_company', 'rentals.phone_company', 'rentals.no_po', 'rentals.date_start',
-                'rentals.date_end', 'rentals.status', 'a.rental_id', 'nominal_in', 'nominal_out', 'diskon', 'ongkir',
+                'rentals.date_end', 'rentals.status', 'a.rental_id', 'nominal_in', 'nominal_out', 'diskon', 'ongkir', 'rentals.image',
             )
             ->get();
         return view('admin.rental.history', compact('rental'));
+    }
+    public function deleteImage(Request $request)
+    {
+        $image = $request->input('image');
+        $customer = Rental::whereJsonContains('image', $image)->first();
+
+        if ($customer) {
+            $images = json_decode($customer->image);
+            if (($key = array_search($image, $images)) !== false) {
+                unset($images[$key]);
+            }
+            $customer->image = json_encode(array_values($images));
+
+            // Delete the actual file
+            if (file_exists(public_path('images/identity/' . $image))) {
+                unlink(public_path('images/identity/' . $image));
+            }
+
+            $customer->save();
+            return response()->json(['success' => true]);
+        }
+
+        return response()->json(['success' => false]);
+    }
+    public function downloadImages($id)
+    {
+        $customer = Rental::findOrFail($id);
+        $images = json_decode($customer->image);
+
+        if ($images && count($images) > 0) {
+            $zip = new ZipArchive;
+            $fileName = 'rental_images_' . $id . '.zip';
+            $zipPath = public_path($fileName);
+
+            // Membuka file zip
+            if ($zip->open($zipPath, ZipArchive::CREATE) === TRUE) {
+                foreach ($images as $image) {
+                    $filePath = public_path('images/rental/' . $image);
+
+                    // Periksa apakah file ada sebelum menambahkannya
+                    if (file_exists($filePath)) {
+                        $zip->addFile($filePath, $image);
+                    } else {
+                        // Tambahkan log error atau penanganan jika file tidak ditemukan
+                        $zip->addFromString($image, "File not found: $filePath");
+                    }
+                }
+                $zip->close();
+            }
+
+            return response()->download($zipPath)->deleteFileAfterSend(true);
+        } else {
+            return redirect()->back()->with('error', 'No images found.');
+        }
     }
 }

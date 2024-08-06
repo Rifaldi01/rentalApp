@@ -14,7 +14,24 @@
 <script src="{{URL::to('assets/plugins/datatable/js/dataTables.bootstrap5.min.js')}}"></script>
 <script src="{{URL::to('assets/plugins/select2/js/select2.min.js')}}"></script>
 <script src="{{URL::to('assets/plugins/select2/js/select2-custom.js')}}"></script>
+<script src="{{URL::to('assets/plugins/fancy-file-uploader/jquery.ui.widget.js')}}"></script>
+    <script src="{{URL::to('assets/plugins/fancy-file-uploader/jquery.fileupload.js')}}"></script>
+	<script src="{{URL::to('assets/plugins/fancy-file-uploader/jquery.iframe-transport.js')}}"></script>
+	<script src="{{URL::to('assets/plugins/fancy-file-uploader/jquery.fancy-fileupload.js')}}"></script>
+    <script src="{{URL::to('assets/plugins/Drag-And-Drop/dist/imageuploadify.min.js')}}"></script>
 <!--app JS-->
+    <script>
+		$('#fancy-file-upload').FancyFileUpload({
+			params: {
+				action: 'fileuploader'
+			},
+		});
+	</script>
+	<script>
+		$(document).ready(function () {
+			$('#image-uploadify').imageuploadify();
+		})
+	</script>
 <script src="{{URL::to('assets/js/app.js')}}"></script>
 <script>
 	new PerfectScrollbar(".app-container")

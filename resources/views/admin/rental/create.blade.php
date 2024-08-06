@@ -133,14 +133,21 @@
                 </div>
                 <div class="col-md-12">
                     <label for="input6" class="form-label"><i class="text-danger">*</i> Image</label>
-                    @if(isset($rental) && $rental->image)
-                        <!-- Display current image -->
-                        <div class="mb-3">
-                            <img src="{{ asset('images/rental/'.$rental->image) }}" alt="Current Image" class="img-thumbnail" width="150">
+                    @if (isset($rental) && $rental->image)
+                        <div class="mt-3">
+                            <h6>Existing Images:</h6>
+                            <div class="row">
+                                @foreach (json_decode($rental->image) as $image)
+                                    <div class="col-md-2">
+                                        <img src="{{ asset('images/rental/' . $image) }}" alt="Image" class="img-thumbnail mb-2">
+                                        <button type="button" class="btn btn-danger btn-sm delete-image" data-image="{{ $image }}">Remove</button>
+                                    </div>
+                                @endforeach
+                            </div>
                         </div>
                     @endif
                     <!-- File input for new image upload -->
-                    <input type="file" name="image" class="form-control" id="input6" placeholder="End Date">
+                    <input type="file" name="image[]" class="form-control" id="input6" multiple>
                 </div>
                 <div class="col-md-12">
                     <div class="d-md-flex d-grid align-rentals-center gap-3">
@@ -232,11 +239,47 @@
     <script>
         $(document).ready(function() {
             $('#submitBtn').click(function() {
-                // Disable button dan ubah teksnya
                 $(this).prop('disabled', true).text('Loading...');
-
-                // Kirim form secara manual
                 $('#myForm').submit();
+            });
+
+            // Handle image removal with SweetAlert2 confirmation
+            $(document).on('click', '.delete-image', function() {
+                let image = $(this).data('image');
+                let row = $(this).closest('.col-md-2');
+
+                Swal.fire({
+                    title: 'Are you sure?',
+                    text: "You won't be able to revert this!",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Yes, delete it!',
+                    cancelButtonText: 'Cancel'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        $.ajax({
+                            url: '{{ route('admin.rental.deleteImage') }}',
+                            method: 'POST',
+                            data: {
+                                _token: '{{ csrf_token() }}',
+                                image: image
+                            },
+                            success: function(response) {
+                                if (response.success) {
+                                    row.remove();
+                                    Swal.fire('Deleted!', 'Your image has been deleted.', 'success');
+                                } else {
+                                    Swal.fire('Failed!', 'Failed to remove image.', 'error');
+                                }
+                            },
+                            error: function() {
+                                Swal.fire('Error!', 'An error occurred while processing your request.', 'error');
+                            }
+                        });
+                    }
+                });
             });
         });
     </script>

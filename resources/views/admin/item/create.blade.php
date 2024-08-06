@@ -53,9 +53,12 @@
                 <div class="mt-3 mb-2">
                     <label class="col-form-label">No Seri</label>
                     <input type="text" name="no_seri" class="form-control" placeholder="Enter No Seri" value="{{isset($item) ? $item->no_seri : null}}">
-                </div><div class="mt-3 mb-2">
+                </div>
+                <div class="mt-3 mb-2">
                     <label class="col-form-label">Image</label>
-                    <input type="file" name="image" class="form-control" accept="image/*">
+                    <form>
+						<input class="form-control" name="image[]" type="file" accept="image/*" multiple>
+					</form>
                 </div>
                 <div class="mt-3">
                     <button type="submit" class="btn btn-dnd float-end" id="submitBtn">Save<i class="bx bx-save"></i> </button>
@@ -71,9 +74,10 @@
 @endsection
 
 @push('head')
-
+    
 @endpush
 @push('js')
+    
     <script>
         $(document).ready(function() {
             $('#submitBtn').click(function() {

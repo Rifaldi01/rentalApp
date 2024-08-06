@@ -19,14 +19,14 @@ return new class extends Migration
             $table->string('name_company')->nullable();
             $table->string('addres_company')->nullable();
             $table->bigInteger('phone_company')->nullable();
-            $table->bigInteger('no_po')->nullable();
+            $table->string('no_po')->nullable();
             $table->bigInteger('nominal_in');
             $table->bigInteger('nominal_out')->nullable();
             $table->bigInteger('diskon')->nullable();
             $table->bigInteger('ongkir')->nullable();
             $table->date('date_start');
             $table->date('date_end');
-            $table->string('image');
+            $table->longText('image');
             $table->integer('status')->default(0);
             $table->timestamps();
         });

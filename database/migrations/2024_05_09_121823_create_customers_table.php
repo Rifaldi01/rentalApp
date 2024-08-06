@@ -18,7 +18,7 @@ return new class extends Migration
             $table->string('phone')->unique();
             $table->string('phn')->unique()->nullable();
             $table->string('addres');
-            $table->string('image');
+            $table->longText('image');
             $table->timestamps();
         });
     }

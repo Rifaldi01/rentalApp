@@ -157,12 +157,29 @@
                                                             <td><div class="float-start">{{$data->no_po}}</div></td>
                                                         </tr>
                                                     </table>
+                                                    @php
+                                                        $images = json_decode($data->image);
+                                                    @endphp
+                                                        <div class="d-flex flex-wrap">
+                                                            <div class="row">
+                                                            @foreach($images as $image)
+                                                                <div class="col-sm-4">
+                                                                <div class="p-2">
+                                                                    <img src="{{ asset('images/rental/'. $image) }}" alt="" class="img-fluid img-thumbnail">
+                                                                </div>
+                                                                </div>
+                                                            @endforeach
+                                                            </div>
+                                                        </div>
                                                 </div>
                                             </div>
                                             <div class="modal-footer">
                                                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
                                                     Close
                                                 </button>
+                                                    <a href="{{ route('admin.rental.downloadImages', $data->id) }}" class="btn btn-info px-5">
+                                                        <i class="bx bx-cloud-download"></i> Image All
+                                                    </a>
                                             </div>
                                         </div>
                                     </div>

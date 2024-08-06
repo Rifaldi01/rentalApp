@@ -77,8 +77,8 @@ class CategoryController extends Controller
         ]);
         $post = Category::find($id);
         $post->update($request->all());
-        Alert::success('Success', 'Edit cat Success');
-        return back();
+        
+        return back()->withSuccess('Upload Data Success');
     }
 
     /**

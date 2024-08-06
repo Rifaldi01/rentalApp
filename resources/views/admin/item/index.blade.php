@@ -43,29 +43,36 @@
                                             class="btn btn-dnd btn-sm lni lni-eye" title="view">
                                     </button>
                                     <div class="modal fade" id="exampleModal{{$data->id}}" tabindex="-1"
-                                         aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                        aria-labelledby="exampleModalLabel" aria-hidden="true">
                                         <div class="modal-dialog">
                                             <div class="modal-content">
                                                 <div class="modal-header">
-                                                    <h5 class="modal-title" id="exampleModalLabel">Image</h5>
+                                                    <h5 class="modal-title" id="exampleModalLabel">Images</h5>
                                                     <button type="button" class="btn-close" data-bs-dismiss="modal"
                                                             aria-label="Close"></button>
                                                 </div>
                                                 <div class="modal-body">
-                                                    <img src="{{asset('images/item/'.$data->image)}}" alt="">
-                                                </div>
-                                                <div class="modal-footer">
-                                                    <a href="{{asset('images/iten/'.$data->image)}}"
-                                                       class="btn btn-info px-5" download>
-                                                        <i class="bx bx-cloud-download"></i>Download</a>
+                                                    @php
+                                                        $images = json_decode($data->image);
+                                                    @endphp
+                                                    @if($images && count($images) > 0)
+                                                        <div class="d-flex flex-wrap">
+                                                            @foreach($images as $image)
+                                                                <div class="p-2">
+                                                                    <img src="{{ asset('images/item/'. $image) }}" alt="" class="img-fluid img-thumbnail">
+                                                                </div>
+                                                            @endforeach
+                                                        </div>
+                                                    @else
+                                                        <span class="text-danger">Images Not Found!</span>
+                                                    @endif
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
                                 @else
-                                    <span class="text-danger">Image Not Found!</span>
+                                    <span class="text-danger">Images Not Found!</span>
                                 @endif
-
                             </td>
                             <td class="text-center">
                                 @if($data->status == 2)

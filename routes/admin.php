@@ -25,6 +25,8 @@ Route::group(['middleware' => ['auth:web', 'role:admin'], 'prefix' => 'admin'], 
     Route::get('/hsty/rental', [RentalController::class, 'hsty'])->name('admin.rental.history');
     Route::post('/finis/{id}', [RentalController::class, 'finis'])->name('admin.rental.finis');
     Route::post('/problem/{id}/rental', [RentalController::class, 'problem'])->name('admin.rental.problem');
+    Route::post('/rental/deleteimage', [RentalController::class, 'deleteImage'])->name('admin.rental.deleteImage');
+    Route::get('/rental/download/{id}', [RentalController::class, 'downloadImages'])->name('admin.rental.downloadImages');
     //problem
     Route::get('/problems', [ProblemController::class, 'index'])->name('admin.rental.problems');
     Route::post('/problems/{id}/finis', [ProblemController::class, 'destroy'])->name('admin.problem.finis');
@@ -35,6 +37,9 @@ Route::group(['middleware' => ['auth:web', 'role:admin'], 'prefix' => 'admin'], 
 
     //customer
     Route::resource('/customer', CustomerController::class)->names('admin.customer');
+    Route::get('/customer/download/{id}', [CustomerController::class, 'downloadImages'])->name('admin.customer.downloadImages');
+    Route::post('/customer/deleteimage', [CustomerController::class, 'deleteImage'])->name('admin.customer.deleteImage');
+
     //customer end
 
     //item

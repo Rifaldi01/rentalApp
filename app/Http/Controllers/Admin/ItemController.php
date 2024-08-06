@@ -8,6 +8,8 @@ use App\Models\Item;
 use App\Models\ItemSale;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Intervention\Image\ImageManagerStatic;
 use RealRashid\SweetAlert\Facades\Alert;
 
 class ItemController extends Controller
@@ -73,7 +75,7 @@ class ItemController extends Controller
                 'rentals.id', 'rentals.customer_id', 'rentals.item_id', 'rentals.name_company',
                 'rentals.addres_company', 'rentals.phone_company', 'rentals.no_po','rentals.date_start',
                 'rentals.date_end', 'rentals.status', 'a.rental_id',
-                \DB::raw('GROUP_CONCAT(b.name) as access')
+                DB::raw('GROUP_CONCAT(b.name) as access')
             )
             ->groupBy(
                 'rentals.id', 'rentals.customer_id', 'rentals.item_id', 'rentals.name_company',
@@ -119,26 +121,56 @@ class ItemController extends Controller
 
     private function save(Request $request, $id = null)
     {
+        // Validasi input
         $validate = $request->validate([
-            'name'=> 'required',
-            'cat_id'=> 'required',
-            'no_seri'=> 'required'
+            'name'   => 'required',
+            'cat_id' => 'required',
+            'no_seri' => 'required',
+            'image'  => 'nullable|array',
+            'image.*' => 'image' 
         ]);
-        $item = Item::firstOrNew(['id' => $id]);
-        $item->cat_id  = $request->input('cat_id');
-        $item->name    = $request->input('name');
-        $item->no_seri = $request->input('no_seri');
-        if ($request->file('image')){
-            $file = $request->file('image');
-            $file_name = md5(now()).'.'.$file->getClientOriginalExtension();
-            $file->move('images/item/',$file_name);
-            $item->image = $file_name;
-        }else{
-            $item->save();
+
+        // Temukan atau buat item baru
+        $item = Item::updateOrCreate(['id' => $id], [
+            'cat_id'  => $request->input('cat_id'),
+            'name'    => $request->input('name'),
+            'no_seri' => $request->input('no_seri')
+        ]);
+
+        // Penanganan gambar
+        if ($request->hasFile('image')) {
+            // Hapus gambar lama jika ada
+            if ($item->image) {
+                $oldImages = json_decode($item->image, true);
+                foreach ($oldImages as $oldImage) {
+                    $filePath = public_path("images/item/{$oldImage}");
+                    if (file_exists($filePath)) {
+                        unlink($filePath);
+                    }
+                }
+            }
+
+            // Proses upload gambar baru
+            $files = $request->file('image');
+            $imagePaths = [];
+            foreach ($files as $file) {
+                $file_name = md5(now() . rand()) . '.jpg'; // Pastikan nama file unik
+                $img = ImageManagerStatic::make($file);
+                $img = $img->resize(null, 600, function ($constraint) {
+                    $constraint->aspectRatio();
+                });
+                $img->save(public_path("images/item/{$file_name}"), 50, 'jpg');
+                $imagePaths[] = $file_name; // Simpan nama file ke array
+            }
+
+            $item->image = json_encode($imagePaths); // Simpan nama file gambar ke database
         }
+
+        // Simpan item
         $item->save();
-        Alert::success('Success', 'Upload Data Success');
-        return redirect()->route('admin.item.index');
+
+        // Berikan notifikasi sukses dan redirect
+        return redirect()->route('admin.item.index')->withSuccess('Upload Data Success');
     }
     public function mainten($id)
     {
