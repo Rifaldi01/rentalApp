@@ -48,7 +48,18 @@
                 @endif
                 <div class="col-md-12">
                     <label for="input3" class="form-label"><i class="text-danger">*</i> Item</label>
-                    {{ html()->select('item_id', $item, isset($rental) ? $rental->item_id : null )->class('form-control')->id('single-select-disabled-field')->placeholder("--Select Item--") }}
+                    <select name="item_id[]" id="multiple-select-field" class="form-control" data-placeholder="Select Item" multiple>
+                        <option value=""></option>
+                        @foreach($item as $items)
+                            <option value="{{ $items->id }}" 
+                                    @if(isset($rental) && in_array($items->id, json_decode($rental->item_id, true))) 
+                                        selected 
+                                    @endif>
+                                {{ $items->name }} ({{$items->no_seri}})
+                            </option>
+                        @endforeach
+                    </select>
+
                 </div>
                 <div id="dynamic-fields">
                     <div class="col-md-12">
@@ -147,7 +158,7 @@
                         </div>
                     @endif
                     <!-- File input for new image upload -->
-                    <input type="file" name="image[]" class="form-control" id="input6" multiple>
+                    <input type="file" name="image[]" class="form-control mt-2" id="input6" multiple>
                 </div>
                 <div class="col-md-12">
                     <div class="d-md-flex d-grid align-rentals-center gap-3">

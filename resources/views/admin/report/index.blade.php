@@ -80,8 +80,32 @@
                         @foreach ($report as $key => $data)
                             <td>{{$key +1}}</td>
                             <td>{{$data->cust->name}}</td>
-                            <td>{{$data->item->name}}</td>
-                            <td>{{$data->item->no_seri}}</td>
+                            <td>@php
+                                    $itemIds = json_decode($data->item_id);
+                                @endphp
+                                @if(is_array($itemIds))
+                                    @foreach($itemIds as $itemId)
+                                        @php
+                                            $item = \App\Models\Item::find($itemId);
+                                        @endphp
+                                        {{ $item ? $item->name : 'Item not found' }}<br>
+                                    @endforeach
+                                @else
+                                    {{ $itemIds }}
+                                @endif</td>
+                            <td>@php
+                                    $itemIds = json_decode($data->item_id);
+                                @endphp
+                                @if(is_array($itemIds))
+                                    @foreach($itemIds as $itemId)
+                                        @php
+                                            $item = \App\Models\Item::find($itemId);
+                                        @endphp
+                                        {{ $item ? $item->no_seri : 'Item not found' }}<br>
+                                    @endforeach
+                                @else
+                                    {{ $itemIds }}
+                                @endif</td>
                             <td>{{$data->access}}</td>
                             <td>
                                 {{\Carbon\Carbon::parse($data->date_start)->translatedFormat('d F Y')}}

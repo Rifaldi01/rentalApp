@@ -3,25 +3,6 @@
     <div class="card">
         <div class="card-head">
             <div class="row">
-                <div class="col-12 mb-2">
-                    @if ($errors->any())
-                        @foreach ($errors->all() as $error)
-                            <div class="alert border-0 border-start border-5 border-danger alert-dismissible fade show py-2">
-                                <div class="d-flex align-items-center">
-                                    <div class="font-35 text-danger"><i class='bx bxs-message-square-x'></i>
-                                    </div>
-                                    <div class="ms-3">
-                                        <h6 class="mb-0 text-danger">Error</h6>
-                                        <div>
-                                            <div>{{ $error }}</div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                            </div>
-                        @endforeach
-                    @endif
-                </div>
                 <div class="col-6">
                     <div class="container mt-3">
                         <h4 class="text-uppercase">List Rental</h4>
@@ -30,18 +11,18 @@
                 <div class="col-6">
                     <a data-bs-toggle="tooltip" data-bs-placement="top" title="Add rental"
                        href="{{route('admin.rental.create')}}"
-                       class="btn btn-dnd float-end me-3 mt-3 btn-sm shadow"><i
-                            class="bx bx-plus"></i>
+                       class="btn btn-dnd bx bx-plus float-end me-3 mt-3 shadow">
                     </a>
+                    
                 </div>
             </div>
         </div>
         <div class="card-body">
             <div class="table-responsive">
-                <table id="example" class="table table-striped table-bordered" style="width:100%">
+                <table id="example" class="table table-striped table-bordered fs-7 small-text" style="width:100%">
                     <thead>
                     <tr>
-                        <th width="2%">No</th>
+                        <th width="2%" class="text-center">No</th>
                         <th>Name</th>
                         <th>Item</th>
                         <th>No Seri</th>
@@ -58,10 +39,44 @@
                         @foreach($rental as $key => $data)
                             <td>{{$key +1}}</td>
                             <td>{{$data->cust->name}}</td>
-                            <td>{{$data->item->name}}</td>
-                            <td>{{$data->item->cat->name}}-{{$data->item->no_seri}}</td>
                             <td>
-                                {{$data->access}}
+                                @php
+                                    $itemIds = json_decode($data->item_id);
+                                @endphp
+                                @if(is_array($itemIds))
+                                    @foreach($itemIds as $itemId)
+                                        @php
+                                            $item = \App\Models\Item::find($itemId);
+                                        @endphp
+                                            <li>{{ $item ? $item->name : 'Item not found' }}</li>
+                                    @endforeach
+                                @else
+                                    {{ $itemIds }}
+                                @endif
+                            </td>
+                            <td>
+                                @php
+                                    $itemIds = json_decode($data->item_id);
+                                @endphp
+                                @if(is_array($itemIds))
+                                    @foreach($itemIds as $itemId)
+                                        @php
+                                            $item = \App\Models\Item::find($itemId);
+                                        @endphp
+                                            <li>{{ $item ? $item->cat->name : null }}-{{ $item ? $item->no_seri : 'Item not found' }}</li>
+                                    @endforeach
+                                @else
+                                    {{ $itemIds }}
+                                @endif
+                            </td>
+                            <td>
+                            @if($data->access)
+                                @foreach(explode(',', $data->access) as $accessory)
+                                    <li>{{ $accessory }}</li>
+                                @endforeach
+                            @else
+                                <li>No accessories</li>
+                            @endif
                             </td>
                             <td>
                                 {{formatId($data->date_start)}}
@@ -80,22 +95,9 @@
                                 @endif
                             </td>
                             <td>
-                                @if($data->status == 0)
-                                    <a href="{{route('admin.rental.edit', $data->id)}}"
-                                       class="btn btn-warning lni lni-pencil float-end "
-                                       data-bs-toggle="tooltip" data-bs-placement="top" title="Edit">
-                                    </a>
-                                    <form action="{{ route('rental.finis', $data->id) }}" method="POST">
-                                        @csrf
-                                        <button onclick="return confirm('Rental Finished?');" type="submit"
-                                                class="btn btn-success lni lni-checkmark float-end "
-                                                data-bs-toggle="tooltip" data-bs-placement="top"
-                                                title="Finished"></button>
-                                    </form>
-                                @elseif($data->status == 1)
                                     <button data-bs-toggle="modal"
                                             data-bs-target="#exampleVerticallycenteredModal{{$data->id}}"
-                                            class="btn btn-danger float-end lni lni-warning mt-1"
+                                            class="btn btn-danger btn-sm lni lni-warning mt-1"
                                             data-bs-placement="top" title="Problem">
                                     </button>
                                     <div class="modal fade" id="exampleVerticallycenteredModal{{$data->id}}" tabindex="-1"
@@ -129,39 +131,22 @@
                                         </div>
                                     </div>
                                     <a href="{{route('admin.rental.edit', $data->id)}}"
-                                       class="btn btn-warning lni lni-pencil float-end mt-1 me-1"
+                                       class="btn-sm btn btn-warning lni lni-pencil mt-1 me-1"
                                        data-bs-toggle="tooltip" data-bs-placement="top" title="Edit">
+                                    </a>
+                                    <a href="https://api.whatsapp.com/send?phone=62{{$data->cust->phone}}&text=Halo%20Customer%20yth,%20masa%20tenggang%20peminjaman%20barang%20anda%20tersisa%20 3 %20Hari%20segera%20konfirmasi%20peminjaman%20anda%20Termiaksih%20Atas%20Perhatianya.&source=&data="
+                                       class="btn-sm btn btn-success lni lni-whatsapp me-1 mt-1"
+                                       data-bs-toggle="tooltip" data-bs-placement="top" title="Chat Customer">
                                     </a>
                                     <form action="{{ route('admin.rental.finis', $data->id) }}" method="POST">
                                         @csrf
-                                        <button onclick="return confirm('Rental Finished?');" type="submit"
-                                                class="btn btn-success lni lni-checkmark float-end mt-1"
+                                        <button type="submit"
+                                                class="btn-sm btn btn-success lni lni-checkmark  mt-1"
                                                 data-bs-toggle="tooltip" data-bs-placement="top"
                                                 title="Finished">
 
                                         </button>
                                     </form>
-                                    <a href="https://api.whatsapp.com/send?phone=62{{$data->cust->phone}}&text=Halo%20Customer%20yth,%20masa%20tenggang%20peminjaman%20barang%20anda%20tersisa%20 3 %20Hari%20segera%20konfirmasi%20peminjaman%20anda%20Termiaksih%20Atas%20Perhatianya.&source=&data="
-                                       class="btn btn-success lni lni-whatsapp float-end me-1 mt-1"
-                                       data-bs-toggle="tooltip" data-bs-placement="top" title="Chat Customer">
-                                    </a>
-                                @elseif($data->status == 2)
-                                    <a href="{{route('admin.rental.edit', $data->id)}}"
-                                       class="btn btn-warning lni lni-eye float-end "
-                                       data-bs-toggle="tooltip" data-bs-placement="top" title="Detail">
-                                    </a>
-                                    <form action="{{ route('admin.problem.finis', $data->id) }}" method="POST">
-                                        @csrf
-                                        <button onclick="return confirm('Rental Finished?');" type="submit"
-                                                class="btn btn-success lni lni-checkmark float-end me-1"
-                                                data-bs-toggle="tooltip" data-bs-placement="top"
-                                                title="Finished"></button>
-                                    </form>
-                                    <a href="https://api.whatsapp.com/send?phone=62{{$data->cust->phone}}&text=Halo%20Customer%20yth,%20ada%20masalah%20dalam%20peminjaman%20anda%20segera%20konfirmasi%20kepada%20kami%20untuk%20menyelesaikan%20masalah%20terebut%20Termiaksih%20Atas%20Perhatianya.&source=&data="
-                                       class="btn btn-success lni lni-whatsapp float-end "
-                                       data-bs-toggle="tooltip" data-bs-placement="top" title="Chat Customer">
-                                    </a>
-                                @endif
                             </td>
                     </tr>
                     @endforeach
@@ -172,8 +157,42 @@
     </div>
     </div>
 @endsection
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+<style>
+    .small-text {
+        font-size: 0.9rem; /* Ukuran font lebih kecil */
+    }
+</style>
 @push('head')
 
 @endpush
 @push('js')
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.all.min.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Tambahkan event listener untuk tombol "Finish"
+        document.querySelectorAll('form button[type="submit"]').forEach(function(button) {
+            button.addEventListener('click', function(event) {
+                event.preventDefault(); // Mencegah form dikirimkan langsung
+                
+                const form = this.closest('form'); // Ambil form terdekat
+
+                Swal.fire({
+                    title: 'Konfirmasi',
+                    text: "Apakah Anda yakin ingin menyelesaikan rental ini?",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Ya, selesai!',
+                    cancelButtonText: 'Batal'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        form.submit(); // Kirimkan form jika tombol "Ya" diklik
+                    }
+                });
+            });
+        });
+    });
+</script>
 @endpush

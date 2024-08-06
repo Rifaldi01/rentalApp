@@ -31,9 +31,42 @@
                         @foreach($rental as $key => $data)
                             <td>{{$key +1}}</td>
                             <td>{{$data->cust->name}}</td>
-                            <td>{{$data->item->name}}</td>
-                            <td>{{$data->item->cat->name}}-{{$data->item->no_seri}}</td>
-                            <td>{{$data->access}}</td>
+                            <td>
+                            @php
+                                    $itemIds = json_decode($data->item_id);
+                                @endphp
+                                @if(is_array($itemIds))
+                                    @foreach($itemIds as $itemId)
+                                        @php
+                                            $item = \App\Models\Item::find($itemId);
+                                        @endphp
+                                            <li>{{ $item ? $item->name : 'Item not found' }}</li>
+                                    @endforeach
+                                @else
+                                    {{ $itemIds }}
+                                @endif
+                            </td>
+                            <td> @php
+                                    $itemIds = json_decode($data->item_id);
+                                @endphp
+                                @if(is_array($itemIds))
+                                    @foreach($itemIds as $itemId)
+                                        @php
+                                            $item = \App\Models\Item::find($itemId);
+                                        @endphp
+                                            <li>{{ $item ? $item->cat->name : null }}-{{ $item ? $item->no_seri : 'Item not found' }}</li>
+                                    @endforeach
+                                @else
+                                    {{ $itemIds }}
+                                @endif
+                            </td>
+                            <td>@if($data->access)
+                                @foreach(explode(',', $data->access) as $accessory)
+                                    <li>{{ $accessory }}</li>
+                                @endforeach
+                            @else
+                                <li>No accessories</li>
+                            @endif</td>
                             <td>
                                 {{formatId($data->date_start)}}
                             </td>
@@ -71,11 +104,39 @@
                                                         </tr>
                                                         <tr>
                                                             <th><div class="float-start">Item</div></th>
-                                                            <td><div class="float-start">{{$data->item->name}}</div></td>
+                                                            <td><div class="float-start">
+                                                            @php
+                                                                $itemIds = json_decode($data->item_id);
+                                                            @endphp
+                                                            @if(is_array($itemIds))
+                                                                @foreach($itemIds as $itemId)
+                                                                    @php
+                                                                        $item = \App\Models\Item::find($itemId);
+                                                                    @endphp
+                                                                        <li>{{ $item ? $item->name : 'Item not found' }}</li>
+                                                                @endforeach
+                                                            @else
+                                                                {{ $itemIds }}
+                                                            @endif
+                                                            </div></td>
                                                         </tr>
                                                         <tr>
-                                                            <th><div class="float-start">Accessories</div></th>
-                                                            <td><div class="float-start">{{($data->access)}}</div></td>
+                                                            <th><div class="float-start">No Seri</div></th>
+                                                            <td><div class="float-start">
+                                                            @php
+                                                                $itemIds = json_decode($data->item_id);
+                                                            @endphp
+                                                            @if(is_array($itemIds))
+                                                                @foreach($itemIds as $itemId)
+                                                                    @php
+                                                                        $item = \App\Models\Item::find($itemId);
+                                                                    @endphp
+                                                                        <li>{{ $item ? $item->no_seri : 'Item not found' }}</li>
+                                                                @endforeach
+                                                            @else
+                                                                {{ $itemIds }}
+                                                            @endif
+                                                            </div></td>
                                                         </tr>
                                                         <tr>
                                                             <th><div class="float-start">Start Date</div></th>
