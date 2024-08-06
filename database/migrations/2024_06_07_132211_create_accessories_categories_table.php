@@ -15,6 +15,7 @@ return new class extends Migration
             $table->foreignId('rental_id');
             $table->foreignId('accessories_id');
             $table->bigInteger('accessories_quantity');
+            $table->integer('status_acces')->default(1);
         });
     }
 

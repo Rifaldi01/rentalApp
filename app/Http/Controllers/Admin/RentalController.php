@@ -11,6 +11,7 @@ use App\Models\Problem;
 use App\Models\Rental;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Intervention\Image\ImageManagerStatic;
 use Intervention\Image\ImageManagerStatic as Image;
 use RealRashid\SweetAlert\Facades\Alert;
@@ -278,18 +279,23 @@ class RentalController extends Controller
         $item->status = 0;
         $item->save();
 
-        // Mengembalikan stok aksesori
+
         $accessoriesCategories = AccessoriesCategory::where('rental_id', $rental->id)->get();
-        foreach ($accessoriesCategories as $accesCategory) {
-            $accessory = Accessories::find($accesCategory->accessories_id);
+        foreach ($accessoriesCategories as $accessoriesCategory) {
+            // Update status_acces di tabel pivot
+            AccessoriesCategory::where('rental_id', $rental->id)
+                ->where('accessories_id', $accessoriesCategory->accessories_id)
+                ->update(['status_acces' => 0]);
+    
+            // Kembalikan stok aksesori
+            $accessory = Accessories::find($accessoriesCategory->accessories_id);
             if ($accessory) {
-                $accessory->stok += $accesCategory->accessories_quantity;
+                $accessory->stok += $accessoriesCategory->accessories_quantity;
                 $accessory->save();
             }
         }
-
-        Alert::success('Success', 'Rental has been Finished');
-        return redirect()->back();
+    
+        return redirect()->back()->withSuccess('Rental Finished');
     }
 
     public function problem($id)
@@ -309,7 +315,7 @@ class RentalController extends Controller
                 'rentals.id', 'rentals.customer_id', 'rentals.item_id', 'rentals.name_company',
                 'rentals.addres_company', 'rentals.phone_company', 'rentals.no_po','rentals.date_start',
                 'rentals.date_end', 'rentals.status', 'a.rental_id', 'nominal_in', 'nominal_out', 'diskon', 'ongkir', 'rentals.image',
-                \DB::raw('GROUP_CONCAT(b.name) as access')
+                DB::raw('GROUP_CONCAT(b.name) as access')
             )
             ->groupBy(
                 'rentals.id', 'rentals.customer_id', 'rentals.item_id', 'rentals.name_company',

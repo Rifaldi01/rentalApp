@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class AccessoriesCategory extends Model
 {
     use HasFactory;
+    public $timestamps = false;
     protected $table = 'accessories_categories';
 
     public function rental()

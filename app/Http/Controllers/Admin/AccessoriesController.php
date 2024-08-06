@@ -31,6 +31,7 @@ class AccessoriesController extends Controller
 
         // Total quantity yang sedang dirental untuk accessories ini
         $rentedQty = AccessoriesCategory::where('accessories_id', $accessory->id)
+            ->where('status_acces', 1)
             ->sum('accessories_quantity');
 
         // Total stok + quantity yang sedang dirental
