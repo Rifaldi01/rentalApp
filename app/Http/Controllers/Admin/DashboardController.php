@@ -22,7 +22,7 @@ class DashboardController extends Controller
             ->where('status', '!=', 3)
             ->groupBy('cat_id')
             ->get();
-        $history = Rental::where('status', 0)->count();
+        $history = Rental::count();
         $rental = Rental::where('status', 1)->count();
         $problem = Rental::where('status', 2)->count();
         $maintenance = Item::where('cat_id', 1)->where('status', 1)->count();
