@@ -103,7 +103,7 @@ class ProblemController extends Controller
 
         $rental = Rental::findOrFail($destroy->rental_id);
         if ($rental->status != 0) { // Only mark as returned if not already returned
-            $rental->status = 0;
+            $rental->status = 2;
             $rental->save();
 
             $itemIds = json_decode($rental->item_id, true) ?? []; // Jika item_id disimpan dalam format JSON
