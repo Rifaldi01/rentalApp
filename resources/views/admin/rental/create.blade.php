@@ -42,7 +42,7 @@
                     <div class="col-md-2">
                         <label for="input2" class="form-label">Register Customer</label>
                         <div class="">
-                            <a href="{{route('superadmin.customer.create')}}" class="btn btn-dnd">Add Customer<i class="bx bx-user-plus"></i></a>
+                            <a href="{{route('admin.customer.create')}}" class="btn btn-dnd">Add Customer<i class="bx bx-user-plus"></i></a>
                         </div>
                     </div>
                 @endif
@@ -158,7 +158,7 @@
                         </div>
                     @endif
                     <!-- File input for new image upload -->
-                    <input type="file" name="image[]" class="form-control mt-2" id="input6" multiple>
+                    <input type="file" name="image[]" class="mt-2" accept="image/*" id="image-uploadify" multiple>
                 </div>
                 <div class="col-md-12">
                     <div class="d-md-flex d-grid align-rentals-center gap-3">

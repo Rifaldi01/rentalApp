@@ -160,9 +160,45 @@
                         <tr>
                             @foreach($rentals as $key => $data)
                                 <td>{{$key +1}}</td>
-                                <td>{{$data->cust->name}}</td>
-                                <td>{{$data->item->name}}</td>
-                                <td>{{$data->access}}</td>
+                                <td>
+                                @php
+                                    $itemIds = json_decode($data->item_id);
+                                @endphp
+                                @if(is_array($itemIds))
+                                    @foreach($itemIds as $itemId)
+                                        @php
+                                            $item = \App\Models\Item::find($itemId);
+                                        @endphp
+                                            <li>{{ $item ? $item->name : 'Item not found' }}</li>
+                                    @endforeach
+                                @else
+                                    {{ $itemIds }}
+                                @endif
+                            </td>
+                            <td>
+                                @php
+                                    $itemIds = json_decode($data->item_id);
+                                @endphp
+                                @if(is_array($itemIds))
+                                    @foreach($itemIds as $itemId)
+                                        @php
+                                            $item = \App\Models\Item::find($itemId);
+                                        @endphp
+                                            <li>{{ $item ? $item->cat->name : null }}-{{ $item ? $item->no_seri : 'Item not found' }}</li>
+                                    @endforeach
+                                @else
+                                    {{ $itemIds }}
+                                @endif
+                            </td>
+                            <td>
+                            @if($data->access)
+                                @foreach(explode(',', $data->access) as $accessory)
+                                    <li>{{ $accessory }}</li>
+                                @endforeach
+                            @else
+                                <li>No accessories</li>
+                            @endif
+                            </td>
                                 <td>
                                     {{\Carbon\Carbon::parse($data->date_start)->translatedFormat('d F Y')}}
                                 </td>
@@ -182,11 +218,10 @@
                                 <td>
                                     <button data-bs-toggle="modal"
                                             data-bs-target="#exampleVerticallycenteredModal{{$data->id}}"
-                                            class="btn btn-danger float-end lni lni-warning "
-                                            data-bs-placement="top" title="Edit">
+                                            class="btn btn-danger btn-sm lni lni-warning mt-1"
+                                            data-bs-placement="top" title="Problem">
                                     </button>
-                                    <div class="modal fade" id="exampleVerticallycenteredModal{{$data->id}}"
-                                         tabindex="-1"
+                                    <div class="modal fade" id="exampleVerticallycenteredModal{{$data->id}}" tabindex="-1"
                                          aria-hidden="true">
                                         <div class="modal-dialog modal-dialog-centered">
                                             <div class="modal-content">
@@ -195,16 +230,15 @@
                                                     <button type="button" class="btn-close" data-bs-dismiss="modal"
                                                             aria-label="Close"></button>
                                                 </div>
-                                                <form action="{{route('problem.store')}}"
+                                                <form action="{{route('admin.problem.store')}}"
                                                       method="POST">
                                                     @csrf
                                                     <div class="modal-body">
                                                         <input value="{{$data->id}}" type="hidden" name="rental_id"
-                                                               class="form-control">
+                                                               class="form-control" >
                                                         <label class="col-form-label">Descript</label>
-                                                        <textarea type="text" name="descript"
-                                                                  class="form-control"
-                                                                  placeholder="Enter Descript"></textarea>
+                                                        <textarea  type="text" name="descript"
+                                                                   class="form-control" placeholder="Enter Descript"></textarea>
                                                     </div>
                                                     <div class="modal-footer">
                                                         <button type="button" class="btn btn-secondary"
@@ -218,21 +252,23 @@
                                         </div>
                                     </div>
                                     <a href="{{route('admin.rental.edit', $data->id)}}"
-                                       class="btn btn-warning lni lni-pencil float-end me-1"
+                                       class="btn-sm btn btn-warning lni lni-pencil mt-1 me-1"
                                        data-bs-toggle="tooltip" data-bs-placement="top" title="Edit">
                                     </a>
-                                    <form action="{{ route('rental.finis', $data->id) }}" method="POST">
-                                        @csrf
-                                        <button onclick="return confirm('Rental Finished?');" type="submit"
-                                                class="btn btn-success lni lni-checkmark float-end me-1"
-                                                data-bs-toggle="tooltip" data-bs-placement="top"
-                                                title="Finished"></button>
-                                    </form>
                                     <a href="https://api.whatsapp.com/send?phone=62{{$data->cust->phone}}&text=Halo%20Customer%20yth,%20masa%20tenggang%20peminjaman%20barang%20anda%20tersisa%20 3 %20Hari%20segera%20konfirmasi%20peminjaman%20anda%20Termiaksih%20Atas%20Perhatianya.&source=&data="
-                                       class="btn btn-success lni lni-whatsapp float-end me-1 mt-2"
+                                       class="btn-sm btn btn-success lni lni-whatsapp me-1 mt-1"
                                        data-bs-toggle="tooltip" data-bs-placement="top" title="Chat Customer">
                                     </a>
-                                </td>
+                                    <form action="{{ route('admin.rental.finis', $data->id) }}" method="POST">
+                                        @csrf
+                                        <button type="submit"
+                                                class="btn-sm btn btn-success lni lni-checkmark  mt-1"
+                                                data-bs-toggle="tooltip" data-bs-placement="top"
+                                                title="Finished">
+
+                                        </button>
+                                    </form>
+                            </td>
                         </tr>
                         @endforeach
                         </tbody>

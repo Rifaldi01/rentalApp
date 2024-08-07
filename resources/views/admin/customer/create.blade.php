@@ -86,8 +86,7 @@
             <div class="row mb-3">
                 <label class="col-sm-3 col-form-label">Identity</label>
                 <div class="col-sm-9">
-                    <input name="image[]" class="form-control" type="file" accept="image/*" multiple>
-
+                    <input name="image[]" id="image-uploadify" type="file" accept="image/*" multiple>
                     @if (isset($customer) && $customer->image)
                         <div class="mt-3">
                             <h6>Existing Images:</h6>

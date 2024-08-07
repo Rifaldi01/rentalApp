@@ -57,7 +57,7 @@
                 <div class="mt-3 mb-2">
                     <label class="col-form-label">Image</label>
                     <form>
-						<input class="form-control" name="image[]" type="file" accept="image/*" multiple>
+                    <input name="image[]" id="image-uploadify" type="file" accept="image/*" multiple>
 					</form>
                 </div>
                 <div class="mt-3">

@@ -37,7 +37,13 @@
                                 @else
                                     {{ $itemIds }}
                                 @endif</td>
-                            <td>{{ $data->access }}</td>
+                            <td> @if($data->access)
+                                @foreach(explode(',', $data->access) as $accessory)
+                                    <li>{{ $accessory }}</li>
+                                @endforeach
+                            @else
+                                <li>No accessories</li>
+                            @endif</td>
                             <td>{{ formatId($data->date_start) }}</td>
                             <td>{{ formatId($data->date_end) }}</td>
                             <td class="text-center">
