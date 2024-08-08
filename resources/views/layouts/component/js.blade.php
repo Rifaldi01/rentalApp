@@ -64,6 +64,29 @@
 	} );
 </script>
 <script>
+	$(document).ready(function() {
+		var table = $('#example4').DataTable( {
+			lengthChange: false,
+			buttons: [{
+                extend: 'pdf',
+                exportOptions: {
+                    stripHtml : true,
+                    columns: [0, 1, 2, 3]
+                }
+            }, {
+                extend: 'print',
+                exportOptions: {
+                    stripHtml : true,
+                    columns: [0, 1, 2, 3]
+                }
+            }]
+		} );
+
+		table.buttons().container()
+			.appendTo( '#example4_wrapper .col-md-6:eq(0)' );
+	} );
+</script>
+<script>
 	$(function () {
 		$('[data-bs-toggle="popover"]').popover();
 		$('[data-bs-toggle="tooltip"]').tooltip();

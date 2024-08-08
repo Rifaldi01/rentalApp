@@ -18,14 +18,14 @@
         </div>
         <di class="card-body">
             <div class="table-responsive">
-                <table id="example3" class="table table-striped table-bordered" style="width:100%">
+                <table id="example4" class="table table-striped table-bordered" style="width:100%">
                     <thead>
                     <tr>
                         <th width="2%">No</th>
                         <th>Name</th>
                         <th>No Seri</th>
-                        <th class="text-center">Image</th>
                         <th class="text-center">Status</th>
+                        <th class="text-center">Image</th>
                         <th class="text-center" width="15%">Action</th>
                     </tr>
                     </thead>
@@ -37,6 +37,15 @@
                                 <a href="{{route('admin.item.show', $data->id)}}" class="text-dark">{{$data->name}}</a>
                             </td>
                             <td>{{$data->cat->name}}-{{$data->no_seri}}</td>
+                            <td class="text-center">
+                                @if($data->status == 2)
+                                    <span class="badge bg-secondary">Rental</span>
+                                @elseif($data->status == 0)
+                                    <span class="badge bg-success">Redy</span>
+                                @elseif($data->status == 1)
+                                    <span class="badge bg-danger">Maintenance</span>
+                                @endif
+                            </td>
                             <td class="text-center">
                                 @if($data->image)
                                     <button data-bs-toggle="modal" data-bs-target="#exampleModal{{$data->id}}"
@@ -72,15 +81,6 @@
                                     </div>
                                 @else
                                     <span class="text-danger">Images Not Found!</span>
-                                @endif
-                            </td>
-                            <td class="text-center">
-                                @if($data->status == 2)
-                                    <span class="badge bg-secondary">Rental</span>
-                                @elseif($data->status == 0)
-                                    <span class="badge bg-success">Redy</span>
-                                @elseif($data->status == 1)
-                                    <span class="badge bg-danger">Maintenance</span>
                                 @endif
                             </td>
                             <td>
