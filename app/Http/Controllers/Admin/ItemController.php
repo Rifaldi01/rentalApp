@@ -126,8 +126,7 @@ class ItemController extends Controller
             'name'   => 'required',
             'cat_id' => 'required',
             'no_seri' => 'required',
-            'image'  => 'nullable|array',
-            'image.*' => 'image' 
+           
         ]);
 
         // Temukan atau buat item baru
