@@ -106,7 +106,15 @@
                                 @else
                                     {{ $itemIds }}
                                 @endif</td>
-                            <td>{{$data->access}}</td>
+                            <td>
+                            @if($data->access)
+                                @foreach(explode(',', $data->access) as $accessory)
+                                    <li>{{ $accessory }}</li>
+                                @endforeach
+                            @else
+                                <li>No accessories</li>
+                            @endif
+                            </td>
                             <td>
                                 {{\Carbon\Carbon::parse($data->date_start)->translatedFormat('d F Y')}}
                             </td>

@@ -197,4 +197,27 @@ class ItemController extends Controller
         Alert::success('Success', 'Maintenance has been add');
         return redirect()->back();
     }
+    public function deleteImage(Request $request)
+    {
+        $image = $request->input('image');
+        $item = Item::whereJsonContains('image', $image)->first();
+
+        if ($item) {
+            $images = json_decode($item->image);
+            if (($key = array_search($image, $images)) !== false) {
+                unset($images[$key]);
+            }
+            $item->image = json_encode(array_values($images));
+
+            // Delete the actual file
+            if (file_exists(public_path('images/item/' . $image))) {
+                unlink(public_path('images/item/' . $image));
+            }
+
+            $item->save();
+            return response()->json(['success' => true]);
+        }
+
+        return response()->json(['success' => false]);
+    }
 }

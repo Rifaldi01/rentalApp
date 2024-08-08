@@ -56,6 +56,19 @@
                 </div>
                 <div class="mt-3 mb-2">
                     <label class="col-form-label">Image</label>
+                    @if (isset($item) && $item->image)
+                        <div class="mt-3">
+                            <h6>Existing Images:</h6>
+                            <div class="row">
+                                @foreach (json_decode($item->image) as $image)
+                                    <div class="col-md-2">
+                                        <img src="{{ asset('images/item/' . $image) }}" alt="Image" class="img-thumbnail mb-2">
+                                        <button type="button" class="btn btn-danger btn-sm delete-image" data-image="{{ $image }}">Remove</button>
+                                    </div>
+                                @endforeach
+                            </div>
+                        </div>
+                    @endif
                     <form>
                     <input name="image[]" id="image-uploadify" type="file" accept="image/*" multiple>
 					</form>
@@ -78,14 +91,50 @@
 @endpush
 @push('js')
     
-    <script>
+<script>
         $(document).ready(function() {
             $('#submitBtn').click(function() {
-                // Disable button dan ubah teksnya
                 $(this).prop('disabled', true).text('Loading...');
-
-                // Kirim form secara manual
                 $('#myForm').submit();
+            });
+
+            // Handle image removal with SweetAlert2 confirmation
+            $(document).on('click', '.delete-image', function() {
+                let image = $(this).data('image');
+                let row = $(this).closest('.col-md-2');
+
+                Swal.fire({
+                    title: 'Are you sure?',
+                    text: "You won't be able to revert this!",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Yes, delete it!',
+                    cancelButtonText: 'Cancel'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        $.ajax({
+                            url: '{{ route('admin.item.deleteImage') }}',
+                            method: 'POST',
+                            data: {
+                                _token: '{{ csrf_token() }}',
+                                image: image
+                            },
+                            success: function(response) {
+                                if (response.success) {
+                                    row.remove();
+                                    Swal.fire('Deleted!', 'Your image has been deleted.', 'success');
+                                } else {
+                                    Swal.fire('Failed!', 'Failed to remove image.', 'error');
+                                }
+                            },
+                            error: function() {
+                                Swal.fire('Error!', 'An error occurred while processing your request.', 'error');
+                            }
+                        });
+                    }
+                });
             });
         });
     </script>
