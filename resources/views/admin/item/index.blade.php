@@ -62,7 +62,13 @@
                                     @endif
                                 </td>
                                 <td>
-                                    {{ formatId($rental['date_start']) }} - {{ formatId($rental['date_end']) }}
+                                    @if(isset($rentalMap[$data->id]))
+                                        @foreach($rentalMap[$data->id] as $rental)
+                                            {{ formatId($rental['date_start']) }} - {{ formatId($rental['date_end']) }}
+                                        @endforeach
+                                    @else
+                                        <span class="text-muted">-</span>
+                                    @endif
                                 </td>
                                 <td class="text-center">
                                     @if($data->image)
