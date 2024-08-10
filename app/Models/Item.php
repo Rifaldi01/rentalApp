@@ -17,8 +17,9 @@ class Item extends Model
         return $this->belongsTo(Category::class, 'cat_id', 'id');
     }
 
-    public function rental()
+    public function rentals()
     {
-        return $this->hasMany(Rental::class);
+        return $this->hasMany(Rental::class, 'item_id');
     }
+   
 }

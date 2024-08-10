@@ -147,8 +147,8 @@ class RentalController extends Controller
         'customer_id' => 'required|exists:customers,id',
         'date_start' => 'required|date',
         'date_end' => 'required|date',
-        'image' => $id ? 'nullable|array' : 'required|array',
-        'image.*' => 'image',
+        'image' => $id ? 'nullable' : 'required|array',
+        'image.*' => $id ? 'nullable' : 'image',
         'nominal_in' => 'required|numeric',
         'diskon' => 'numeric'
     ]);
@@ -269,8 +269,6 @@ class RentalController extends Controller
     Alert::success('Success', 'Rental has been saved!');
     return redirect()->route('admin.rental.index');
 }
-
-
 
 
 public function finis($id)

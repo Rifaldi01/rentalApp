@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Category;
 use App\Models\Item;
 use App\Models\ItemSale;
+use App\Models\Rental;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -18,14 +19,36 @@ class ItemController extends Controller
      * Display a listing of the resource.
      */
     public function index()
-    {
-        $cust = Item::latest()->paginate();
-        $title = 'Delete Item!';
-        $text = "Are you sure you want to delete?";
-        confirmDelete($title, $text);
-        $item = Item::with('cat')->where('status', '!=', 3)->orderBy('name')->get();
-        return view('admin.item.index', compact('item'));
+{
+    // Ambil item yang statusnya tidak 3
+    $items = Item::with(['cat', 'rentals.cust'])->where('status', '!=', 3)->orderBy('name')->latest()->paginate();
+
+    // Ambil data rental yang statusnya 2
+    $rentalData = Rental::with('cust')->where('status', 1)->get();
+
+    // Struktur data rental dalam format array dengan item_id sebagai key
+    $rentalMap = [];
+    foreach ($rentalData as $rental) {
+        foreach (json_decode($rental->item_id, true) as $itemId) {
+            if (!isset($rentalMap[$itemId])) {
+                $rentalMap[$itemId] = [];
+            }
+            $rentalMap[$itemId][] = [
+                'customer_name' => $rental->cust->name,
+                'date_start' => $rental->date_start,
+                'date_end' => $rental->date_end,
+            ];
+        }
     }
+
+    $title = 'Delete Item!';
+    $text = "Are you sure you want to delete?";
+    confirmDelete($title, $text);
+
+    return view('admin.item.index', compact('items', 'rentalMap'));
+}
+
+
 
     /**
      * Show the form for creating a new resource.
@@ -68,28 +91,34 @@ class ItemController extends Controller
     public function show(string $id)
     {
         $item = Item::findOrFail($id);
-        $rental = $item->rental()
-            ->leftjoin('accessories_categories as a', 'a.rental_id', '=', 'rentals.id')
-            ->leftjoin('accessories as b', 'a.accessories_id', '=', 'b.id')
+    
+        // Mengambil data rental dan menggabungkan dengan accessories
+        $rental = Rental::leftJoin('accessories_categories as a', 'a.rental_id', '=', 'rentals.id')
+            ->leftJoin('accessories as b', 'a.accessories_id', '=', 'b.id')
             ->select(
                 'rentals.id', 'rentals.customer_id', 'rentals.item_id', 'rentals.name_company',
-                'rentals.addres_company', 'rentals.phone_company', 'rentals.no_po','rentals.date_start',
-                'rentals.date_end', 'rentals.status', 'a.rental_id',
-                DB::raw('GROUP_CONCAT(b.name) as access')
+                'rentals.addres_company', 'rentals.phone_company', 'rentals.no_po', 'rentals.date_start',
+                'rentals.date_end', 'rentals.status', DB::raw('GROUP_CONCAT(b.name) as access')
             )
+            ->whereJsonContains('rentals.item_id', $id) // Menyaring berdasarkan item_id JSON
             ->groupBy(
                 'rentals.id', 'rentals.customer_id', 'rentals.item_id', 'rentals.name_company',
                 'rentals.addres_company', 'rentals.phone_company', 'rentals.no_po', 'rentals.date_start',
-                'rentals.date_end', 'rentals.status', 'a.rental_id'
+                'rentals.date_end', 'rentals.status'
             )
             ->get();
-
+    
+        // Format item_id sebagai JSON array dan hitung selisih hari
         foreach ($rental as $data) {
             $dateStart = Carbon::parse($data->date_start);
             $dateEnd = Carbon::parse($data->date_end);
             $daysDifference = $dateStart->diffInDays($dateEnd);
             $data->days_difference = $daysDifference;
+    
+            // Format item_id sebagai array JSON
+            $data->item_id = json_encode(explode(',', $data->item_id));
         }
+    
         return view('admin.item.show', compact('item', 'rental'));
     }
 
@@ -138,31 +167,27 @@ class ItemController extends Controller
 
         // Penanganan gambar
         if ($request->hasFile('image')) {
-            // Hapus gambar lama jika ada
-            if ($item->image) {
-                $oldImages = json_decode($item->image, true);
-                foreach ($oldImages as $oldImage) {
-                    $filePath = public_path("images/item/{$oldImage}");
-                    if (file_exists($filePath)) {
-                        unlink($filePath);
-                    }
+            $newImages = [];
+            
+            // Handle new images
+            foreach ($request->file('image') as $file) {
+                $file_name = md5(now()->timestamp . $file->getClientOriginalName()) . '.jpg';
+                
+                try {
+                    $img = ImageManagerStatic::make($file);
+                    $img->resize(null, 600, function ($constraint) {
+                        $constraint->aspectRatio();
+                    });
+                    $img->save(public_path("images/item/{$file_name}"), 80, 'jpg');
+                    $newImages[] = $file_name;
+                } catch (\Exception $e) {
+                    return back()->withErrors(['image' => 'Error processing the image: ' . $e->getMessage()])->withInput();
                 }
             }
-
-            // Proses upload gambar baru
-            $files = $request->file('image');
-            $imagePaths = [];
-            foreach ($files as $file) {
-                $file_name = md5(now() . rand()) . '.jpg'; // Pastikan nama file unik
-                $img = ImageManagerStatic::make($file);
-                $img = $img->resize(null, 600, function ($constraint) {
-                    $constraint->aspectRatio();
-                });
-                $img->save(public_path("images/item/{$file_name}"), 50, 'jpg');
-                $imagePaths[] = $file_name; // Simpan nama file ke array
-            }
-
-            $item->image = json_encode($imagePaths); // Simpan nama file gambar ke database
+    
+            // Combine old images with new ones
+            $existingImages = json_decode($item->image, true) ?? [];
+            $item->image = json_encode(array_merge($existingImages, $newImages));
         }
 
         // Simpan item
