@@ -26,8 +26,8 @@
                             <th>Name</th>
                             <th>No Seri</th>
                             <th class="text-center">Status</th>
-                            <th>Customer</th>
-                            <th>Periode</th>
+                            <th class="text-center">Customer</th>
+                            <th class="text-center">Periode</th>
                             <th class="text-center">Image</th>
                             <th class="text-center" width="15%">Action</th>
                         </tr>
@@ -49,7 +49,7 @@
                                         <span class="badge bg-danger">Maintenance</span>
                                     @endif
                                 </td>
-                                <td>
+                                <td class="text-center">
                                     @if(isset($rentalMap[$data->id]))
                                         @foreach($rentalMap[$data->id] as $rental)
                                             <div>
@@ -61,10 +61,14 @@
                                         <span class="text-muted">-</span>
                                     @endif
                                 </td>
-                                <td>
+                                <td class="text-center">
                                     @if(isset($rentalMap[$data->id]))
                                         @foreach($rentalMap[$data->id] as $rental)
-                                            {{ formatId($rental['date_start']) }} <br> {{ formatId($rental['date_end']) }}
+                                            {{ formatId($rental['date_start']) }} 
+                                            
+                                            <div class="text-center">s.d</div>
+                                            
+                                            {{ formatId($rental['date_end']) }}
                                         @endforeach
                                     @else
                                         <span class="text-muted">-</span>
