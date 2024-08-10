@@ -21,7 +21,7 @@ class ItemController extends Controller
     public function index()
 {
     // Ambil item yang statusnya tidak 3
-    $items = Item::with(['cat', 'rentals.cust'])->where('status', '!=', 3)->orderBy('name')->latest()->paginate(1000);
+    $items = Item::with(['cat', 'rentals.cust'])->where('status', '!=', 3)->orderBy('name')->latest()->get();
 
     // Ambil data rental yang statusnya 2
     $rentalData = Rental::with('cust')->where('status', '!=', 0)->get();
