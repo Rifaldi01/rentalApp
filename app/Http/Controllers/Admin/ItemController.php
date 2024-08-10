@@ -19,36 +19,14 @@ class ItemController extends Controller
      * Display a listing of the resource.
      */
     public function index()
-{
-    // Ambil item yang statusnya tidak 3
-    $items = Item::with(['cat', 'rentals.cust'])->where('status', '!=', 3)->orderBy('name')->latest()->paginate();
-
-    // Ambil data rental yang statusnya 2
-    $rentalData = Rental::with('cust')->where('status', 1)->get();
-
-    // Struktur data rental dalam format array dengan item_id sebagai key
-    $rentalMap = [];
-    foreach ($rentalData as $rental) {
-        foreach (json_decode($rental->item_id, true) as $itemId) {
-            if (!isset($rentalMap[$itemId])) {
-                $rentalMap[$itemId] = [];
-            }
-            $rentalMap[$itemId][] = [
-                'customer_name' => $rental->cust->name,
-                'date_start' => $rental->date_start,
-                'date_end' => $rental->date_end,
-            ];
-        }
+    {
+        $item = Item::latest()->paginate();
+        $title = 'Delete Item!';
+        $text = "Are you sure you want to delete?";
+        confirmDelete($title, $text);
+        $item = Item::with('cat')->where('status', '!=', 3)->orderBy('name')->get();
+        return view('admin.item.index', compact('item'));
     }
-
-    $title = 'Delete Item!';
-    $text = "Are you sure you want to delete?";
-    confirmDelete($title, $text);
-
-    return view('admin.item.index', compact('items', 'rentalMap'));
-}
-
-
 
     /**
      * Show the form for creating a new resource.
