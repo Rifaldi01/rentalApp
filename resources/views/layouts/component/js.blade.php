@@ -64,27 +64,31 @@
 	} );
 </script>
 <script>
-	$(document).ready(function() {
-		var table = $('#example4').DataTable( {
-			lengthChange: false,
-			buttons: [{
+    $(document).ready(function() {
+        var table = $('#example4').DataTable({
+            lengthChange: false,
+            buttons: [{
                 extend: 'pdf',
                 exportOptions: {
-                    stripHtml : true,
                     columns: [0, 1, 2, 3, 4, 5]
+                },
+                customize: function(doc) {
+                    doc.content[1].alignment = 'center';
                 }
             }, {
                 extend: 'print',
                 exportOptions: {
-                    stripHtml : true,
                     columns: [0, 1, 2, 3, 4, 5]
+                },
+                customize: function(win) {
+                    $(win.document.body).find('table').addClass('table-center');
                 }
             }]
-		} );
+        });
 
-		table.buttons().container()
-			.appendTo( '#example4_wrapper .col-md-6:eq(0)' );
-	} );
+        table.buttons().container()
+            .appendTo('#example4_wrapper .col-md-6:eq(0)');
+    });
 </script>
 <script>
 	$(function () {
