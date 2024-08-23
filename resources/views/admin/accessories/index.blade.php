@@ -17,7 +17,7 @@
         </div>
         <di class="card-body">
             <div class="table-responsive">
-            <table id="example" class="table table-striped table-bordered" style="width:100%">
+            <table id="accessories" class="table table-striped table-bordered" style="width:100%">
                 <thead>
                     <tr>
                         <th width="2%">No</th>
@@ -114,5 +114,32 @@
                 $('#myForm').submit();
             });
         });
+    </script>
+    <script>
+    $(document).ready(function() {
+        var table = $('#accessories').DataTable({
+            lengthChange: false,
+            buttons: [{
+                extend: 'pdf',
+                exportOptions: {
+                    columns: [0, 1, 2, 3, 4]
+                },
+                customize: function(doc) {
+                    doc.content[1].alignment = 'center';
+                }
+            }, {
+                extend: 'print',
+                exportOptions: {
+                    columns: [0, 1, 2, 3, 4]
+                },
+                customize: function(win) {
+                    $(win.document.body).find('table').addClass('table-center');
+                }
+            }]
+        });
+
+        table.buttons().container()
+            .appendTo('#accessories_wrapper .col-md-6:eq(0)');
+    });
     </script>
 @endpush
