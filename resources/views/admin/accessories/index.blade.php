@@ -31,7 +31,7 @@
                 <tbody>
                     @foreach($accessoriesData as $key => $data)
                     <tr>
-                        <td>{{ $key + 1 }}</td>
+                        <td data-index="{{ $key + 1 }}">{{ $key + 1 }}</td>
                         <td>{{ $data['name'] }}</td>
                         <td>{{ $data['stokAll'] }}</td>
                         <td>{{ $data['stok'] }}</td>
@@ -140,6 +140,17 @@
 
         table.buttons().container()
             .appendTo('#accessories_wrapper .col-md-6:eq(0)');
+    });
+    $(document).ready(function() {
+        var table = $('#accessories').DataTable();
+
+        // Mengurutkan ulang nomor saat tabel diurutkan atau difilter
+        table.on('order.dt search.dt', function() {
+            let i = 1;
+            table.cells(null, 0, { search: 'applied', order: 'applied' }).every(function(cell) {
+                this.data(i++);
+            });
+        }).draw();
     });
     </script>
 @endpush
