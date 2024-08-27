@@ -76,7 +76,6 @@
                             <td>
                                 {{formatId($data->date_end)}}
                             </td>
-                            <td class="text-center">{{$data->days_difference}} Day</td>
                             <td class="text-center">
                                 @if($data->status == 1)
                                     <span class="badge bg-success">Rental</span>
