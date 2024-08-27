@@ -29,17 +29,54 @@
                     <tbody>
                     <tr>
                         @foreach($rental as $key => $data)
-                            <td>{{$key +1}}</td>
+                        <td>{{$key +1}}</td>
                             <td>{{$data->cust->name}}</td>
-                            <td>{{$data->item->name}}</td>
-                            <td>{{$data->item->cat->name}}-{{$data->item->no_seri}}</td>
-                            <td>{{$data->access}}</td>
+                            <td>
+                                @php
+                                    $itemIds = json_decode($data->item_id);
+                                @endphp
+                                @if(is_array($itemIds))
+                                    @foreach($itemIds as $itemId)
+                                        @php
+                                            $item = \App\Models\Item::find($itemId);
+                                        @endphp
+                                            <li>{{ $item ? $item->name : 'Item not found' }}</li>
+                                    @endforeach
+                                @else
+                                    {{ $itemIds }}
+                                @endif
+                            </td>
+                            <td>
+                                @php
+                                    $itemIds = json_decode($data->item_id);
+                                @endphp
+                                @if(is_array($itemIds))
+                                    @foreach($itemIds as $itemId)
+                                        @php
+                                            $item = \App\Models\Item::find($itemId);
+                                        @endphp
+                                            <li>{{ $item ? $item->cat->name : null }}-{{ $item ? $item->no_seri : 'Item not found' }}</li>
+                                    @endforeach
+                                @else
+                                    {{ $itemIds }}
+                                @endif
+                            </td>
+                            <td>
+                            @if($data->access)
+                                @foreach(explode(',', $data->access) as $accessory)
+                                    <li>{{ $accessory }}</li>
+                                @endforeach
+                            @else
+                                <li>No accessories</li>
+                            @endif
+                            </td>
                             <td>
                                 {{formatId($data->date_start)}}
                             </td>
                             <td>
                                 {{formatId($data->date_end)}}
                             </td>
+                            <td class="text-center">{{$data->days_difference}} Day</td>
                             <td class="text-center">
                                 @if($data->status == 1)
                                     <span class="badge bg-success">Rental</span>
@@ -75,11 +112,39 @@
                                                         </tr>
                                                         <tr>
                                                             <th><div class="float-start">Item</div></th>
-                                                            <td><div class="float-start">{{$data->item->name}}</div></td>
+                                                            <td><div class="float-start">
+                                                            @php
+                                                                $itemIds = json_decode($data->item_id);
+                                                            @endphp
+                                                            @if(is_array($itemIds))
+                                                                @foreach($itemIds as $itemId)
+                                                                    @php
+                                                                        $item = \App\Models\Item::find($itemId);
+                                                                    @endphp
+                                                                        <li>{{ $item ? $item->name : 'Item not found' }}</li>
+                                                                @endforeach
+                                                            @else
+                                                                {{ $itemIds }}
+                                                            @endif
+                                                            </div></td>
                                                         </tr>
                                                         <tr>
-                                                            <th><div class="float-start">Accessories</div></th>
-                                                            <td><div class="float-start">{{($data->access)}}</div></td>
+                                                            <th><div class="float-start">No Seri</div></th>
+                                                            <td><div class="float-start">
+                                                            @php
+                                                                $itemIds = json_decode($data->item_id);
+                                                            @endphp
+                                                            @if(is_array($itemIds))
+                                                                @foreach($itemIds as $itemId)
+                                                                    @php
+                                                                        $item = \App\Models\Item::find($itemId);
+                                                                    @endphp
+                                                                        <li>{{ $item ? $item->no_seri : 'Item not found' }}</li>
+                                                                @endforeach
+                                                            @else
+                                                                {{ $itemIds }}
+                                                            @endif
+                                                            </div></td>
                                                         </tr>
                                                         <tr>
                                                             <th><div class="float-start">Start Date</div></th>
@@ -121,11 +186,31 @@
                                                                 @endif
                                                             </td>
                                                         </tr>
+                                                    </table>
+                                                </div>
+                                                <div class="table-responsive">
+                                                    <table id="" class="table table-bordered">
                                                         <tr>
-                                                            <th colspan="2">Data Company</th>
+                                                            <th colspan="2" class="bg-warning">Accessories</th>
                                                         </tr>
                                                         <tr>
-                                                            <th><div class="float-start">Name Company</div></th>
+                                                            <th>Name</th>
+                                                            <th>Qty</th>
+                                                        </tr>
+                                                        @foreach($data->accessoriescategory as $asdf)
+                                                        <tr>
+                                                            <td>{{ $asdf->accessory->name }}</td>
+                                                            <td>{{$asdf->accessories_quantity}}</td>
+                                                        </tr>
+                                                        @endforeach
+                                                    </table>
+                                                <div class="table-responsive">
+                                                    <table id="" class="table table-bordered">
+                                                        <tr>
+                                                            <th colspan="2" class="bg-primary">Data Company</th>
+                                                        </tr>
+                                                        <tr>
+                                                            <th width="10%"><div class="float-start">Name Company</div></th>
                                                             <td><div class="float-start">{{$data->name_company}}</div></td>
                                                         </tr>
                                                         <tr>
@@ -141,12 +226,29 @@
                                                             <td><div class="float-start">{{$data->no_po}}</div></td>
                                                         </tr>
                                                     </table>
+                                                    @php
+                                                        $images = json_decode($data->image);
+                                                    @endphp
+                                                        <div class="d-flex flex-wrap">
+                                                            <div class="row">
+                                                            @foreach($images as $image)
+                                                                <div class="col-sm-4">
+                                                                <div class="p-2">
+                                                                    <img src="{{ asset('images/rental/'. $image) }}" alt="" class="img-fluid img-thumbnail">
+                                                                </div>
+                                                                </div>
+                                                            @endforeach
+                                                            </div>
+                                                        </div>
                                                 </div>
                                             </div>
                                             <div class="modal-footer">
                                                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
                                                     Close
                                                 </button>
+                                                    <a href="{{ route('admin.rental.downloadImages', $data->id) }}" class="btn btn-info px-5">
+                                                        <i class="bx bx-cloud-download"></i> Image All
+                                                    </a>
                                             </div>
                                         </div>
                                     </div>

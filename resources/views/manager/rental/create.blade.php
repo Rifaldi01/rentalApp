@@ -19,7 +19,7 @@
                     </div>
                 @endforeach
             @endif
-            <form class="row g-3" action="{{$url}}" method="POST" enctype="multipart/form-data">
+            <form class="row g-3" action="{{$url}}" method="POST" enctype="multipart/form-data" id="myForm">
                 @csrf
                 @isset($rental)
                     @method('PUT')
@@ -42,13 +42,24 @@
                     <div class="col-md-2">
                         <label for="input2" class="form-label">Register Customer</label>
                         <div class="">
-                            <a href="{{route('superadmin.customer.create')}}" class="btn btn-dnd">Add Customer<i class="bx bx-user-plus"></i></a>
+                            <a href="{{route('admin.customer.create')}}" class="btn btn-dnd">Add Customer<i class="bx bx-user-plus"></i></a>
                         </div>
                     </div>
                 @endif
                 <div class="col-md-12">
                     <label for="input3" class="form-label"><i class="text-danger">*</i> Item</label>
-                    {{ html()->select('item_id', $item, isset($rental) ? $rental->item_id : null )->class('form-control')->id('single-select-disabled-field')->placeholder("--Select Item--") }}
+                    <select name="item_id[]" id="multiple-select-field" class="form-control" data-placeholder="Select Item" multiple>
+                        <option value=""></option>
+                        @foreach($item as $items)
+                            <option value="{{ $items->id }}" 
+                                    @if(isset($rental) && in_array($items->id, json_decode($rental->item_id, true))) 
+                                        selected 
+                                    @endif>
+                                {{ $items->name }} ({{$items->no_seri}})
+                            </option>
+                        @endforeach
+                    </select>
+
                 </div>
                 <div id="dynamic-fields">
                     <div class="col-md-12">
@@ -69,7 +80,7 @@
                                     <label for="input3" class="form-label">Qty</label>
                                     <input type="number" class="form-control" name="accessories_quantity[]" value="{{ $data->accessories_quantity }}" required>
                                 </div>
-                                <button class="btn btn-danger me-1 float-end remove-field me-3" type="button" data-bs-toggle="tooltip" data-bs-placement="top"  title="Delete Accessories"><i class="bx bx-trash"></i></button>
+                                    <button class="btn btn-danger me-1 float-end remove-field me-3" type="button" data-bs-toggle="tooltip" data-bs-placement="top"  title="Delete Accessories"><i class="bx bx-trash"></i></button>
                             </div>
                         @endforeach
                     @else
@@ -133,19 +144,26 @@
                 </div>
                 <div class="col-md-12">
                     <label for="input6" class="form-label"><i class="text-danger">*</i> Image</label>
-                    @if(isset($rental) && $rental->image)
-                        <!-- Display current image -->
-                        <div class="mb-3">
-                            <img src="{{ asset('images/rental/'.$rental->image) }}" alt="Current Image" class="img-thumbnail" width="150">
+                    @if (isset($rental) && $rental->image)
+                        <div class="mt-3">
+                            <h6>Existing Images:</h6>
+                            <div class="row">
+                                @foreach (json_decode($rental->image) as $image)
+                                    <div class="col-md-2">
+                                        <img src="{{ asset('images/rental/' . $image) }}" alt="Image" class="img-thumbnail mb-2">
+                                        <button type="button" class="btn btn-danger btn-sm delete-image" data-image="{{ $image }}">Remove</button>
+                                    </div>
+                                @endforeach
+                            </div>
                         </div>
                     @endif
                     <!-- File input for new image upload -->
-                    <input type="file" name="image" class="form-control" id="input6" placeholder="End Date">
+                    <input type="file" name="image[]" class="mt-2" accept="image/*" id="image-uploadify" multiple>
                 </div>
                 <div class="col-md-12">
                     <div class="d-md-flex d-grid align-rentals-center gap-3">
-                        <button type="submit" class="btn btn-primary px-4">Submit</button>
-                        <a href="{{route('manager.rental.index')}}" class="btn btn-warning">Back</a>
+                        <button type="submit" class="btn btn-primary px-4" id="submitBtn">Submit</button>
+                        <a href="{{route('admin.rental.index')}}" class="btn btn-warning">Back</a>
                     </div>
                 </div>
             </form>
