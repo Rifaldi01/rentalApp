@@ -24,7 +24,7 @@ return new class extends Migration
             $table->bigInteger('nominal_out')->nullable();
             $table->bigInteger('diskon')->nullable();
             $table->bigInteger('ongkir')->nullable();
-            $table->date('date_pay')->nullable();
+            $table->string('date_pay')->nullable();
             $table->date('date_start');
             $table->date('date_end');
             $table->longText('image');

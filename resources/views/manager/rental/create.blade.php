@@ -119,8 +119,8 @@
                     <input type="number" value="{{isset($rental) ? $rental->ongkir : 0}}" class="form-control" name="ongkir">
                 </div>
                 <div class="col-md-12">
-                    <label for="input4" class="form-label">Tanggal Bayar</label>
-                    <input type="text" value="{{isset($rental) ? $rental->date_pay : null}}" name="date_pay" class="form-control" id="input4" placeholder="Enter Name Company">
+                    <label for="input4" class="form-label">Keterangan Bayar</label>
+                    <textarea type="text" value="{{isset($rental) ? $rental->date_pay : null}}" name="date_pay" class="form-control" id="input4" placeholder=""></textarea>
                 </div>
                 <div class="col-md-12">
                     <label for="input4" class="form-label">Name Company</label>

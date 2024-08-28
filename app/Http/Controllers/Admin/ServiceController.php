@@ -127,7 +127,6 @@ class ServiceController extends Controller
         $service->date_service = $request->input('date_service');
         $service->jenis_service = $request->input('jenis_service');
         $service->accessories = $request->input('accessories');
-        $service->price = $request->input('price');
         $service->save();
         Alert::success('Success', 'Upload Data Success');
         return redirect()->route('admin.service.index');

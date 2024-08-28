@@ -77,11 +77,6 @@
                     <input type="text" value="{{isset($service) ? $service->date_service : null}}"
                            class="form-control datepicker" name="date_service" placeholder="Enter Date">
                 </div>
-                <div class="col-md-2">
-                    <label for="input" class="form-label"><i class="text-danger">*</i> Price</label>
-                    <input type="number" value="{{isset($service) ? $service->price : 0}}"
-                           class="form-control" name="price" placeholder="Enter Price (Rp)">
-                </div>
                  <div class="col-md-2">
                     <label for="input" class="form-label"><i class="text-danger">*</i> Nominal In</label>
                     <input type="number" value="{{isset($service) ? $service->nominal_in : 0}}"

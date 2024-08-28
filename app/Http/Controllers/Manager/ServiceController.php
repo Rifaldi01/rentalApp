@@ -103,7 +103,6 @@ class ServiceController extends Controller
             'no_seri' => 'required',
             'date_service' => 'required',
             'jenis_service' => 'required',
-            'price' => 'required|numeric',
             'nominal_in' => 'required|numeric',
             'nominal_out' => 'numeric',
             'diskon' => 'numeric',
@@ -128,7 +127,6 @@ class ServiceController extends Controller
         $service->date_service = $request->input('date_service');
         $service->jenis_service = $request->input('jenis_service');
         $service->accessories = $request->input('accessories');
-        $service->price = $request->input('price');
         $service->save();
         Alert::success('Success', 'Upload Data Success');
         return redirect()->route('manager.service.index');
