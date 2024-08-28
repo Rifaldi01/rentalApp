@@ -104,7 +104,6 @@ class ServiceController extends Controller
             'no_seri' => 'required',
             'date_service' => 'required',
             'jenis_service' => 'required',
-            'price' => 'required|numeric',
             'nominal_in' => 'required|numeric',
             'nominal_out' => 'numeric',
             'diskon' => 'numeric',
