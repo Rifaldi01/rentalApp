@@ -67,35 +67,19 @@ class RentalController extends Controller
      */
     public function create($id = null)
     {
-        // Mengambil data customer
         $cust = Customer::pluck('name', 'id')->toArray();
-
-        // Mengambil data item dengan status 0 dan memformat name dan no_seri
-        $item = Item::where('status', 0)->get()->mapWithKeys(function ($item) {
-            return [$item->id => $item->name . ' (' . $item->no_seri . ')'];
-        })->toArray();
-
-        // Mengambil semua accessories
+        $item = Item::where('status', 0)->get();
         $acces = Accessories::all();
-
-        // Mengisi array inject dengan data yang diperlukan
         $inject = [
             'url' => route('superadmin.rental.store'),
             'cust' => $cust,
             'item' => $item,
             'acces' => $acces
         ];
-
-        // Jika $id diberikan, mengisi data rental untuk edit
+    
         if ($id) {
             $rental = Rental::findOrFail($id);
-
-            // Mengambil data item dengan status tidak sama dengan 3 dan memformat name dan no_seri
-            $item = Item::where('status', '!=', 3)->get()->mapWithKeys(function ($item) {
-                return [$item->id => $item->name . ' (' . $item->no_seri . ')'];
-            })->toArray();
-
-            // Mengisi ulang array inject dengan data yang diperbarui
+            $item = Item::where('status', '!=', 3)->get();
             $inject = [
                 'url' => route('superadmin.rental.update', $id),
                 'rental' => $rental,
@@ -104,10 +88,8 @@ class RentalController extends Controller
                 'acces' => $acces
             ];
         }
-
         return view('superadmin.rental.create', $inject);
-    }
-
+    }    
 
     /**
      * Store a newly created resource in storage.
@@ -160,25 +142,26 @@ class RentalController extends Controller
     {
         // Validasi input
         $validate = $request->validate([
-            'item_id' => 'required|exists:items,id',
+            'item_id' => 'required|array',
             'customer_id' => 'required|exists:customers,id',
             'date_start' => 'required|date',
             'date_end' => 'required|date',
-            'image' => $id ? 'nullable|image' : 'required|image',
+            'image' => $id ? 'nullable' : 'required|array',
+            'image.*' => $id ? 'nullable' : 'image',
             'nominal_in' => 'required|numeric',
             'diskon' => 'numeric'
         ]);
 
-        // Proses accessories
+        // Proses aksesori
         $accessories = $request->input('access', []);
         $quantities = $request->input('accessories_quantity', []);
 
         // Temukan atau buat baru objek Rental
         $rental = Rental::firstOrNew(['id' => $id]);
-        $isEdit = $rental->exists; // Tambahkan: Cek apakah ini proses edit
+        $isEdit = $rental->exists; // Cek apakah ini proses edit
 
-        // Jika sedang mengedit, ambil data jumlah accessories sebelumnya
-        $previousAccessoriesData = []; // Tambahkan: Array untuk menyimpan data accessories sebelumnya
+        // Jika sedang mengedit, ambil data jumlah aksesori sebelumnya
+        $previousAccessoriesData = []; // Array untuk menyimpan data aksesori sebelumnya
         if ($isEdit) {
             $previousAccessories = AccessoriesCategory::where('rental_id', $rental->id)->get();
             foreach ($previousAccessories as $previousAccessory) {
@@ -187,10 +170,10 @@ class RentalController extends Controller
         }
 
         // Simpan item_id sebelumnya untuk update status item
-        $previousItemId = $rental->item_id;
+        $previousItemIds = json_decode($rental->item_id, true) ?? [];
 
         $rental->customer_id = $request->input('customer_id');
-        $rental->item_id = $request->input('item_id');
+        $rental->item_id = json_encode($request->item_id);
         $rental->name_company = $request->input('name_company');
         $rental->phone_company = $request->input('phone_company');
         $rental->addres_company = $request->input('addres_company');
@@ -201,24 +184,32 @@ class RentalController extends Controller
         $rental->nominal_out = $request->input('nominal_out');
         $rental->ongkir = $request->input('ongkir');
         $rental->diskon = $request->input('diskon');
+        $rental->date_pay = $request->input('date_pay');
         $rental->status = 1;
 
         // Proses gambar jika ada
         if ($request->hasFile('image')) {
-            if ($rental->image && file_exists(public_path('images/rental/' . $rental->image))) {
-                unlink(public_path('images/rental/' . $rental->image));
+            $newImages = [];
+
+            // Handle gambar baru
+            foreach ($request->file('image') as $file) {
+                $file_name = md5(now()->timestamp . $file->getClientOriginalName()) . '.jpg';
+                
+                try {
+                    $img = ImageManagerStatic::make($file);
+                    $img->resize(null, 600, function ($constraint) {
+                        $constraint->aspectRatio();
+                    });
+                    $img->save(public_path("images/rental/{$file_name}"), 80, 'jpg');
+                    $newImages[] = $file_name;
+                } catch (\Exception $e) {
+                    return back()->withErrors(['image' => 'Error processing the image: ' . $e->getMessage()])->withInput();
+                }
             }
 
-            $file = $request->file('image');
-            $file_name = md5(now()).'.jpg';
-
-            $img = ImageManagerStatic::make($file);
-            $img = $img->resize(null, 600, function ($constraint) {
-                $constraint->aspectRatio();
-            });
-            $img->save(public_path("images/rental/{$file_name}"), 50, 'jpg');
-
-            $rental->image = $file_name;
+            // Gabungkan gambar lama dengan yang baru
+            $existingImages = json_decode($rental->image, true) ?? [];
+            $rental->image = json_encode(array_merge($existingImages, $newImages));
         }
 
         $rental->save();
@@ -229,12 +220,12 @@ class RentalController extends Controller
             $accessory = Accessories::find($accessoryId);
 
             if ($accessory) {
-                $previousQuantity = $previousAccessoriesData[$accessoryId] ?? 0; // Tambahkan: Ambil jumlah accessories sebelumnya
-                $stockChange = $previousQuantity - $quantity; // Tambahkan: Hitung perubahan stok
+                $previousQuantity = $previousAccessoriesData[$accessoryId] ?? 0; // Ambil jumlah aksesori sebelumnya
+                $stockChange = $previousQuantity - $quantity; // Hitung perubahan stok
 
                 // Jika stok tidak mencukupi, tampilkan pesan error
                 if ($accessory->stok + $stockChange < 0) {
-                    return redirect()->back()->withErrors(['message' => 'Stok tidak mencukupi untuk aksesoris ' . $accessory->name]);
+                    return redirect()->back()->withErrors(['message' => 'Stok tidak mencukupi untuk aksesori ' . $accessory->name]);
                 }
 
                 $accessoriesData[] = [
@@ -243,32 +234,42 @@ class RentalController extends Controller
                     'accessories_quantity' => $quantity
                 ];
 
-                $accessory->stok += $stockChange; // Tambahkan: Update stok accessories
+                $accessory->stok += $stockChange; // Update stok aksesori
                 $accessory->save();
             }
         }
 
-        // Update accessories categories
+        // Update kategori aksesori
         AccessoriesCategory::where('rental_id', $rental->id)->delete();
         AccessoriesCategory::insert($accessoriesData);
 
-        // Update item status
-        if ($isEdit && $previousItemId != $request->input('item_id')) {
-            // Jika item sebelumnya berbeda dengan item baru, update status item sebelumnya
-            $previousItem = Item::find($previousItemId);
-            if ($previousItem) {
-                $previousItem->status = 0; // Ubah status item sebelumnya menjadi 0
-                $previousItem->save();
+        // Update status item
+        $newItemIds = $request->input('item_id');
+        $itemsToDeactivate = array_diff($previousItemIds, $newItemIds); // Item yang sebelumnya ada tapi tidak dipilih lagi
+        $itemsToActivate = array_diff($newItemIds, $previousItemIds); // Item yang baru dipilih
+
+        // Nonaktifkan item yang tidak dipilih lagi
+        foreach ($itemsToDeactivate as $itemId) {
+            $item = Item::find($itemId);
+            if ($item) {
+                $item->status = 0; // Ubah status item menjadi 0
+                $item->save();
             }
         }
 
-        $item = Item::find($request->input('item_id'));
-        $item->status = 2;
-        $item->save();
+        // Aktifkan item yang baru dipilih
+        foreach ($itemsToActivate as $itemId) {
+            $item = Item::find($itemId);
+            if ($item) {
+                $item->status = 2; // Ubah status item menjadi 2
+                $item->save();
+            }
+        }
 
         Alert::success('Success', 'Rental has been saved!');
         return redirect()->route('superadmin.rental.index');
     }
+
 
     public function finis($id)
     {

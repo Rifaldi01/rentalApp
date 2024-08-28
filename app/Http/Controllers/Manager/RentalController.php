@@ -72,7 +72,7 @@ class RentalController extends Controller
         $item = Item::where('status', 0)->get();
         $acces = Accessories::all();
         $inject = [
-            'url' => route('admin.rental.store'),
+            'url' => route('manager.rental.store'),
             'cust' => $cust,
             'item' => $item,
             'acces' => $acces
@@ -82,7 +82,7 @@ class RentalController extends Controller
             $rental = Rental::findOrFail($id);
             $item = Item::where('status', '!=', 3)->get();
             $inject = [
-                'url' => route('admin.rental.update', $id),
+                'url' => route('manager.rental.update', $id),
                 'rental' => $rental,
                 'cust' => $cust,
                 'item' => $item,

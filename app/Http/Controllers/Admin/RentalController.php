@@ -140,136 +140,136 @@ class RentalController extends Controller
     }
 
     public function save(Request $request, $id = null)
-{
-    // Validasi input
-    $validate = $request->validate([
-        'item_id' => 'required|array',
-        'customer_id' => 'required|exists:customers,id',
-        'date_start' => 'required|date',
-        'date_end' => 'required|date',
-        'image' => $id ? 'nullable' : 'required|array',
-        'image.*' => $id ? 'nullable' : 'image',
-        'nominal_in' => 'required|numeric',
-        'diskon' => 'numeric'
-    ]);
+    {
+        // Validasi input
+        $validate = $request->validate([
+            'item_id' => 'required|array',
+            'customer_id' => 'required|exists:customers,id',
+            'date_start' => 'required|date',
+            'date_end' => 'required|date',
+            'image' => $id ? 'nullable' : 'required|array',
+            'image.*' => $id ? 'nullable' : 'image',
+            'nominal_in' => 'required|numeric',
+            'diskon' => 'numeric'
+        ]);
 
-    // Proses aksesori
-    $accessories = $request->input('access', []);
-    $quantities = $request->input('accessories_quantity', []);
+        // Proses aksesori
+        $accessories = $request->input('access', []);
+        $quantities = $request->input('accessories_quantity', []);
 
-    // Temukan atau buat baru objek Rental
-    $rental = Rental::firstOrNew(['id' => $id]);
-    $isEdit = $rental->exists; // Cek apakah ini proses edit
+        // Temukan atau buat baru objek Rental
+        $rental = Rental::firstOrNew(['id' => $id]);
+        $isEdit = $rental->exists; // Cek apakah ini proses edit
 
-    // Jika sedang mengedit, ambil data jumlah aksesori sebelumnya
-    $previousAccessoriesData = []; // Array untuk menyimpan data aksesori sebelumnya
-    if ($isEdit) {
-        $previousAccessories = AccessoriesCategory::where('rental_id', $rental->id)->get();
-        foreach ($previousAccessories as $previousAccessory) {
-            $previousAccessoriesData[$previousAccessory->accessories_id] = $previousAccessory->accessories_quantity;
-        }
-    }
-
-    // Simpan item_id sebelumnya untuk update status item
-    $previousItemIds = json_decode($rental->item_id, true) ?? [];
-
-    $rental->customer_id = $request->input('customer_id');
-    $rental->item_id = json_encode($request->item_id);
-    $rental->name_company = $request->input('name_company');
-    $rental->phone_company = $request->input('phone_company');
-    $rental->addres_company = $request->input('addres_company');
-    $rental->no_po = $request->input('no_po');
-    $rental->date_start = $request->input('date_start');
-    $rental->date_end = $request->input('date_end');
-    $rental->nominal_in = $request->input('nominal_in');
-    $rental->nominal_out = $request->input('nominal_out');
-    $rental->ongkir = $request->input('ongkir');
-    $rental->diskon = $request->input('diskon');
-    $rental->date_pay = $request->input('date_pay');
-    $rental->status = 1;
-
-    // Proses gambar jika ada
-    if ($request->hasFile('image')) {
-        $newImages = [];
-
-        // Handle gambar baru
-        foreach ($request->file('image') as $file) {
-            $file_name = md5(now()->timestamp . $file->getClientOriginalName()) . '.jpg';
-            
-            try {
-                $img = ImageManagerStatic::make($file);
-                $img->resize(null, 600, function ($constraint) {
-                    $constraint->aspectRatio();
-                });
-                $img->save(public_path("images/rental/{$file_name}"), 80, 'jpg');
-                $newImages[] = $file_name;
-            } catch (\Exception $e) {
-                return back()->withErrors(['image' => 'Error processing the image: ' . $e->getMessage()])->withInput();
+        // Jika sedang mengedit, ambil data jumlah aksesori sebelumnya
+        $previousAccessoriesData = []; // Array untuk menyimpan data aksesori sebelumnya
+        if ($isEdit) {
+            $previousAccessories = AccessoriesCategory::where('rental_id', $rental->id)->get();
+            foreach ($previousAccessories as $previousAccessory) {
+                $previousAccessoriesData[$previousAccessory->accessories_id] = $previousAccessory->accessories_quantity;
             }
         }
 
-        // Gabungkan gambar lama dengan yang baru
-        $existingImages = json_decode($rental->image, true) ?? [];
-        $rental->image = json_encode(array_merge($existingImages, $newImages));
-    }
+        // Simpan item_id sebelumnya untuk update status item
+        $previousItemIds = json_decode($rental->item_id, true) ?? [];
 
-    $rental->save();
+        $rental->customer_id = $request->input('customer_id');
+        $rental->item_id = json_encode($request->item_id);
+        $rental->name_company = $request->input('name_company');
+        $rental->phone_company = $request->input('phone_company');
+        $rental->addres_company = $request->input('addres_company');
+        $rental->no_po = $request->input('no_po');
+        $rental->date_start = $request->input('date_start');
+        $rental->date_end = $request->input('date_end');
+        $rental->nominal_in = $request->input('nominal_in');
+        $rental->nominal_out = $request->input('nominal_out');
+        $rental->ongkir = $request->input('ongkir');
+        $rental->diskon = $request->input('diskon');
+        $rental->date_pay = $request->input('date_pay');
+        $rental->status = 1;
 
-    $accessoriesData = [];
-    foreach ($accessories as $index => $accessoryId) {
-        $quantity = isset($quantities[$index]) ? $quantities[$index] : 0;
-        $accessory = Accessories::find($accessoryId);
+        // Proses gambar jika ada
+        if ($request->hasFile('image')) {
+            $newImages = [];
 
-        if ($accessory) {
-            $previousQuantity = $previousAccessoriesData[$accessoryId] ?? 0; // Ambil jumlah aksesori sebelumnya
-            $stockChange = $previousQuantity - $quantity; // Hitung perubahan stok
-
-            // Jika stok tidak mencukupi, tampilkan pesan error
-            if ($accessory->stok + $stockChange < 0) {
-                return redirect()->back()->withErrors(['message' => 'Stok tidak mencukupi untuk aksesori ' . $accessory->name]);
+            // Handle gambar baru
+            foreach ($request->file('image') as $file) {
+                $file_name = md5(now()->timestamp . $file->getClientOriginalName()) . '.jpg';
+                
+                try {
+                    $img = ImageManagerStatic::make($file);
+                    $img->resize(null, 600, function ($constraint) {
+                        $constraint->aspectRatio();
+                    });
+                    $img->save(public_path("images/rental/{$file_name}"), 80, 'jpg');
+                    $newImages[] = $file_name;
+                } catch (\Exception $e) {
+                    return back()->withErrors(['image' => 'Error processing the image: ' . $e->getMessage()])->withInput();
+                }
             }
 
-            $accessoriesData[] = [
-                'rental_id' => $rental->id,
-                'accessories_id' => $accessoryId,
-                'accessories_quantity' => $quantity
-            ];
-
-            $accessory->stok += $stockChange; // Update stok aksesori
-            $accessory->save();
+            // Gabungkan gambar lama dengan yang baru
+            $existingImages = json_decode($rental->image, true) ?? [];
+            $rental->image = json_encode(array_merge($existingImages, $newImages));
         }
-    }
 
-    // Update kategori aksesori
-    AccessoriesCategory::where('rental_id', $rental->id)->delete();
-    AccessoriesCategory::insert($accessoriesData);
+        $rental->save();
 
-    // Update status item
-    $newItemIds = $request->input('item_id');
-    $itemsToDeactivate = array_diff($previousItemIds, $newItemIds); // Item yang sebelumnya ada tapi tidak dipilih lagi
-    $itemsToActivate = array_diff($newItemIds, $previousItemIds); // Item yang baru dipilih
+        $accessoriesData = [];
+        foreach ($accessories as $index => $accessoryId) {
+            $quantity = isset($quantities[$index]) ? $quantities[$index] : 0;
+            $accessory = Accessories::find($accessoryId);
 
-    // Nonaktifkan item yang tidak dipilih lagi
-    foreach ($itemsToDeactivate as $itemId) {
-        $item = Item::find($itemId);
-        if ($item) {
-            $item->status = 0; // Ubah status item menjadi 0
-            $item->save();
+            if ($accessory) {
+                $previousQuantity = $previousAccessoriesData[$accessoryId] ?? 0; // Ambil jumlah aksesori sebelumnya
+                $stockChange = $previousQuantity - $quantity; // Hitung perubahan stok
+
+                // Jika stok tidak mencukupi, tampilkan pesan error
+                if ($accessory->stok + $stockChange < 0) {
+                    return redirect()->back()->withErrors(['message' => 'Stok tidak mencukupi untuk aksesori ' . $accessory->name]);
+                }
+
+                $accessoriesData[] = [
+                    'rental_id' => $rental->id,
+                    'accessories_id' => $accessoryId,
+                    'accessories_quantity' => $quantity
+                ];
+
+                $accessory->stok += $stockChange; // Update stok aksesori
+                $accessory->save();
+            }
         }
-    }
 
-    // Aktifkan item yang baru dipilih
-    foreach ($itemsToActivate as $itemId) {
-        $item = Item::find($itemId);
-        if ($item) {
-            $item->status = 2; // Ubah status item menjadi 2
-            $item->save();
+        // Update kategori aksesori
+        AccessoriesCategory::where('rental_id', $rental->id)->delete();
+        AccessoriesCategory::insert($accessoriesData);
+
+        // Update status item
+        $newItemIds = $request->input('item_id');
+        $itemsToDeactivate = array_diff($previousItemIds, $newItemIds); // Item yang sebelumnya ada tapi tidak dipilih lagi
+        $itemsToActivate = array_diff($newItemIds, $previousItemIds); // Item yang baru dipilih
+
+        // Nonaktifkan item yang tidak dipilih lagi
+        foreach ($itemsToDeactivate as $itemId) {
+            $item = Item::find($itemId);
+            if ($item) {
+                $item->status = 0; // Ubah status item menjadi 0
+                $item->save();
+            }
         }
-    }
 
-    Alert::success('Success', 'Rental has been saved!');
-    return redirect()->route('admin.rental.index');
-}
+        // Aktifkan item yang baru dipilih
+        foreach ($itemsToActivate as $itemId) {
+            $item = Item::find($itemId);
+            if ($item) {
+                $item->status = 2; // Ubah status item menjadi 2
+                $item->save();
+            }
+        }
+
+        Alert::success('Success', 'Rental has been saved!');
+        return redirect()->route('admin.rental.index');
+    }
 
 
 public function finis($id)

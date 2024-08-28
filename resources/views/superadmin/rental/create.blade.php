@@ -48,7 +48,18 @@
                 @endif
                 <div class="col-md-12">
                     <label for="input3" class="form-label"><i class="text-danger">*</i> Item</label>
-                    {{ html()->select('item_id', $item, isset($rental) ? $rental->item_id : null )->class('form-control')->id('single-select-disabled-field')->placeholder("--Select Item--") }}
+                    <select name="item_id[]" id="multiple-select-field" class="form-control" data-placeholder="Select Item" multiple>
+                        <option value=""></option>
+                        @foreach($item as $items)
+                            <option value="{{ $items->id }}" 
+                                    @if(isset($rental) && in_array($items->id, json_decode($rental->item_id, true))) 
+                                        selected 
+                                    @endif>
+                                {{ $items->name }} ({{$items->no_seri}})
+                            </option>
+                        @endforeach
+                    </select>
+
                 </div>
                 <div id="dynamic-fields">
                     <div class="col-md-12">
@@ -108,6 +119,10 @@
                     <input type="number" value="{{isset($rental) ? $rental->ongkir : 0}}" class="form-control" name="ongkir">
                 </div>
                 <div class="col-md-12">
+                    <label for="input4" class="form-label">Tanggal Bayar</label>
+                    <input type="text" value="{{isset($rental) ? $rental->date_pay : null}}" name="date_pay" class="form-control datepicker" id="input4" placeholder="Enter Name Company">
+                </div>
+                <div class="col-md-12">
                     <label for="input4" class="form-label">Name Company</label>
                     <input type="text" value="{{isset($rental) ? $rental->name_company : null}}" name="name_company" class="form-control" id="input4" placeholder="Enter Name Company">
                 </div>
@@ -133,14 +148,21 @@
                 </div>
                 <div class="col-md-12">
                     <label for="input6" class="form-label"><i class="text-danger">*</i> Image</label>
-                    @if(isset($rental) && $rental->image)
-                        <!-- Display current image -->
-                        <div class="mb-3">
-                            <img src="{{ asset('images/rental/'.$rental->image) }}" alt="Current Image" class="img-thumbnail" width="150">
+                    @if (isset($rental) && $rental->image)
+                        <div class="mt-3">
+                            <h6>Existing Images:</h6>
+                            <div class="row">
+                                @foreach (json_decode($rental->image) as $image)
+                                    <div class="col-md-2">
+                                        <img src="{{ asset('images/rental/' . $image) }}" alt="Image" class="img-thumbnail mb-2">
+                                        <button type="button" class="btn btn-danger btn-sm delete-image" data-image="{{ $image }}">Remove</button>
+                                    </div>
+                                @endforeach
+                            </div>
                         </div>
                     @endif
                     <!-- File input for new image upload -->
-                    <input type="file" name="image" class="form-control" id="input6" placeholder="End Date">
+                    <input type="file" name="image[]" class="mt-2" accept="image/*" id="image-uploadify" multiple>
                 </div>
                 <div class="col-md-12">
                     <div class="d-md-flex d-grid align-rentals-center gap-3">
