@@ -185,6 +185,7 @@ class RentalController extends Controller
         $rental->nominal_out = $request->input('nominal_out');
         $rental->ongkir = $request->input('ongkir');
         $rental->diskon = $request->input('diskon');
+        $rental->date_pay = $request->input('date_pay');
         $rental->status = 1;
 
         // Proses gambar jika ada
