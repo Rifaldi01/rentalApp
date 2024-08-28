@@ -15,8 +15,6 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->bigInteger('phone');
-            $table->string('name_sales')->nullable();
-            $table->bigInteger('phone_sales')->nullable();
             $table->string('item');
             $table->string('no_seri');
             $table->string('descript');

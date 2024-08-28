@@ -98,26 +98,10 @@
                                                                         <div class="float-start">{{$data->name}}</div>
                                                                     </td>
                                                                     <th width="5%">
-                                                                        <div class="float-start">Name Sales</div>
-                                                                    </th>
-                                                                    <td>
-                                                                        <div
-                                                                            class="float-start">{{$data->name_sales}}</div>
-                                                                    </td>
-                                                                </tr>
-                                                                <tr>
-                                                                    <th>
                                                                         <div class="float-start">Phone Customer</div>
                                                                     </th>
                                                                     <td>
                                                                         <div class="float-start">{{$data->phone}}</div>
-                                                                    </td>
-                                                                    <th>
-                                                                        <div class="float-start">Phone Sales</div>
-                                                                    </th>
-                                                                    <td>
-                                                                        <div
-                                                                            class="float-start">{{$data->phone_sales}}</div>
                                                                     </td>
                                                                 </tr>
                                                                 <tr>
@@ -273,7 +257,15 @@
                                                         <div class="modal-body">
                                                             <input value="{{$data->id}}" type="hidden" name="rental_id"
                                                                    class="form-control">
-                                                            <label class="col-form-label">Date Finshed</label>
+                                                            <label class="col-form-label">Nominal In</label>
+                                                            <input type="text"
+                                                                   class="form-control " name="nominal_in"
+                                                                   placeholder="Enter Date" value="{{$data->nominal_in}}">
+                                                            <label class="col-form-label">Nominal Outsid</label>
+                                                            <input type="text"
+                                                                   class="form-control " name="nominal_out"
+                                                                   placeholder="Enter Date" value="{{$data->nominal_in}}">
+                                                            <label class="col-form-label">Date Finish</label>
                                                             <input type="text"
                                                                    class="form-control datepicker" name="date_finis"
                                                                    placeholder="Enter Date">

@@ -76,6 +76,8 @@ class ServiceController extends Controller
         ]);
 
         $service = Service::find($id);
+        $service->nominal_in =  $request->input('nominal_in');
+        $service->nominal_out =  $request->input('nominal_out');
         $service->date_finis =  $request->input('date_finis');
         $service->status = 1;
         $service->save();
@@ -98,7 +100,6 @@ class ServiceController extends Controller
     {
         $validate = $request->validate([
             'name' => 'required',
-            'phone' => 'required|numeric|min:11',
             'item' => 'required',
             'no_seri' => 'required',
             'date_service' => 'required',
@@ -114,8 +115,6 @@ class ServiceController extends Controller
         $service = Service::firstOrNew(['id' => $id]);
         $service->name = $request->input('name');
         $service->phone = $request->input('phone');
-        $service->name_sales = $request->input('name_sales');
-        $service->phone_sales = $request->input('phone_sales');
         $service->item = $request->input('item');
         $service->no_seri = $request->input('no_seri');
         $service->descript = $request->input('descript');

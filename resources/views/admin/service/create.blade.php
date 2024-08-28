@@ -31,20 +31,9 @@
                            name="name" placeholder="Enter Name Customer">
                 </div>
                 <div class="col-md-6">
-                    <label for="input1" class="form-label">Name sales</label>
-                    <input type="text" value="{{isset($service) ? ($service->name_sales) : null}}" class="form-control"
-                           name="name_sales" placeholder="Enter Name Sales">
-                </div>
-                <div class="col-md-6">
-                    <label for="input1" class="form-label"><i class="text-danger">*</i> Phone Customer</label>
+                    <label for="input1" class="form-label">Phone Customer</label>
                     <input type="number" value="{{isset($service) ? ($service->phone) : null}}" class="form-control"
                            name="phone" placeholder="Enter Phone Customer">
-                </div>
-                <div class="col-md-6">
-                    <label for="input1" class="form-label">Phone sales</label>
-                    <input type="number" value="{{isset($service) ? ($service->phone_sales) : null}}"
-                           class="form-control"
-                           name="phone_sales" placeholder="Enter Phone Sales">
                 </div>
                 <div class="col-md-6">
                     <label for="input" class="form-label"><i class="text-danger">*</i> Item</label>
