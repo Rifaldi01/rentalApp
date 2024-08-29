@@ -72,16 +72,49 @@
                         <th>Fee /<br>Discount</th>
                         <th>Ongkir</th>
                         <th>Total</th>
+                        <th>status</th>
                     </tr>
                     </thead>
                     <tbody>
-                    <tr>
-                        @foreach ($report as $key => $data)
+                    @foreach ($report as $key => $data)
+                        <tr>
                             <td>{{$key +1}}</td>
                             <td>{{$data->cust->name}}</td>
-                            <td>{{$data->item->name}}</td>
-                            <td>{{$data->item->no_seri}}</td>
-                            <td>{{$data->access}}</td>
+                            <td>@php
+                                    $itemIds = json_decode($data->item_id);
+                                @endphp
+                                @if(is_array($itemIds))
+                                    @foreach($itemIds as $itemId)
+                                        @php
+                                            $item = \App\Models\Item::find($itemId);
+                                        @endphp
+                                        {{ $item ? $item->name : 'Item not found' }}<br>
+                                    @endforeach
+                                @else
+                                    {{ $itemIds }}
+                                @endif</td>
+                            <td>@php
+                                    $itemIds = json_decode($data->item_id);
+                                @endphp
+                                @if(is_array($itemIds))
+                                    @foreach($itemIds as $itemId)
+                                        @php
+                                            $item = \App\Models\Item::find($itemId);
+                                        @endphp
+                                        {{ $item ? $item->no_seri : 'Item not found' }}<br>
+                                    @endforeach
+                                @else
+                                    {{ $itemIds }}
+                                @endif</td>
+                            <td>
+                            @if($data->access)
+                                @foreach(explode(',', $data->access) as $accessory)
+                                    <li>{{ $accessory }}</li>
+                                @endforeach
+                            @else
+                                <li>No accessories</li>
+                            @endif
+                            </td>
                             <td>
                                 {{\Carbon\Carbon::parse($data->date_start)->translatedFormat('d F Y')}}
                             </td>
@@ -93,7 +126,16 @@
                             <td>{{formatRupiah($data->diskon)}}</td>
                             <td>{{formatRupiah($data->ongkir)}}</td>
                             <td>{{formatRupiah($data->total)}}</td>
-                    </tr>
+                            <td class="text-center">
+                                @if($data->status == 1)
+                                    <span class="badge bg-success">Rental</span>
+                                @elseif($data->status == 0)
+                                    <span class="badge bg-secondary">Finished</span>
+                                @elseif($data->status == 2)
+                                    <span class="badge bg-danger">Problem</span>
+                                @endif
+                            </td>
+                        </tr>
                     @endforeach
                     </tbody>
                 </table>
@@ -104,11 +146,11 @@
         <div class="card-body">
             <div class="col">
                 <div class="table-responsive">
-                    <table>
+                <table>
                         <tr>
-                            <th> <h5 class="mb-0 text-uppercase">Total Income</h5></th>
+                            <th> <h5 class="mb-0 text-uppercase">Total Nominal In</h5></th>
                             <td><h5>:</h5></td>
-                            <td><h5 class="ms-2">{{formatRupiah($totalincome)}},-</h5></td>
+                            <td><h5 class="ms-2">{{formatRupiah($totalin)}},-</h5></td>
                         </tr>
                         <tr>
                             <th> <h5 class="mb-0 text-uppercase">Total Nominal Outside</h5></th>
@@ -124,6 +166,11 @@
                             <th> <h5 class="mb-0 text-uppercase">Total Ongkir</h5></th>
                             <td><h5>:</h5></td>
                             <td><h5 class="ms-2">{{formatRupiah($totalongkir)}},-</h5></td>
+                        </tr>
+                        <tr>
+                            <th> <h5 class="mb-0 text-uppercase">Grand Total</h5></th>
+                            <td><h5>:</h5></td>
+                            <td><h5 class="ms-2">{{formatRupiah($totalincome)}},-</h5></td>
                         </tr>
                     </table>
                 </div>

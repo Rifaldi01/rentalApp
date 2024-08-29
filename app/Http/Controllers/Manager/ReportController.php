@@ -26,12 +26,13 @@ class ReportController extends Controller
             )
             ->get();
         $totaldiskon = $report->sum('diskon');
+        $totalin = $report->sum('nominal_in');
         $totalongkir = $report->sum('ongkir');
         $totalincome = $report->sum(function($item) {
             return $item->nominal_in - $item->diskon - $item->ongkir;
         });
         $totaloutside = $report->sum('nominal_out');
-        return view('manager.report.index', compact('report', 'totaldiskon', 'totalongkir', 'totalincome', 'totaloutside'));
+        return view('manager.report.index', compact('totalin', 'report', 'totaldiskon', 'totalongkir', 'totalincome', 'totaloutside'));
     }
     public function filter(Request $request){
         $request->validate([
@@ -62,11 +63,12 @@ class ReportController extends Controller
             ->whereBetween('rentals.created_at', [$start_date, $end_date])
             ->get();
         $totaldiskon = $report->sum('diskon');
+        $totalin = $report->sum('nominal_in');
         $totalongkir = $report->sum('ongkir');
         $totalincome = $report->sum(function($item) {
             return $item->nominal_in - $item->diskon - $item->ongkir;
         });
         $totaloutside = $report->sum('nominal_out');
-        return view('manager.report.index', compact('report', 'totaldiskon', 'totalongkir', 'totalincome', 'totaloutside'));
+        return view('manager.report.index', compact('totalin', 'report', 'totaldiskon', 'totalongkir', 'totalincome', 'totaloutside'));
     }
 }

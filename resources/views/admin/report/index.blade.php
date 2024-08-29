@@ -76,8 +76,8 @@
                     </tr>
                     </thead>
                     <tbody>
-                    <tr>
                         @foreach ($report as $key => $data)
+                        <tr>
                             <td>{{$key +1}}</td>
                             <td>{{$data->cust->name}}</td>
                             <td>@php
@@ -135,8 +135,8 @@
                                     <span class="badge bg-danger">Problem</span>
                                 @endif
                             </td>
-                    </tr>
-                    @endforeach
+                            </tr>
+                        @endforeach
                     </tbody>
                 </table>
             </div>
@@ -148,9 +148,9 @@
                 <div class="table-responsive">
                     <table>
                         <tr>
-                            <th> <h5 class="mb-0 text-uppercase">Total Income</h5></th>
+                            <th> <h5 class="mb-0 text-uppercase">Total Nominal In</h5></th>
                             <td><h5>:</h5></td>
-                            <td><h5 class="ms-2">{{formatRupiah($totalincome)}},-</h5></td>
+                            <td><h5 class="ms-2">{{formatRupiah($totalin)}},-</h5></td>
                         </tr>
                         <tr>
                             <th> <h5 class="mb-0 text-uppercase">Total Nominal Outside</h5></th>
@@ -166,6 +166,11 @@
                             <th> <h5 class="mb-0 text-uppercase">Total Ongkir</h5></th>
                             <td><h5>:</h5></td>
                             <td><h5 class="ms-2">{{formatRupiah($totalongkir)}},-</h5></td>
+                        </tr>
+                        <tr>
+                            <th> <h5 class="mb-0 text-uppercase">Grand Total</h5></th>
+                            <td><h5>:</h5></td>
+                            <td><h5 class="ms-2">{{formatRupiah($totalincome)}},-</h5></td>
                         </tr>
                     </table>
                 </div>
