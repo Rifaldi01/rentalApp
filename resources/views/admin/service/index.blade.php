@@ -49,7 +49,6 @@
                             <th>No Seri</th>
                             <th>Accessories</th>
                             <th>Date Service</th>
-                            <th>Price</th>
                             <th>Status</th>
                             <th>Action</th>
                         </tr>
@@ -64,7 +63,6 @@
                                 <td>{{$data->no_seri}}</td>
                                 <td>{{$data->accessories}}</td>
                                 <td>{{dateId($data->date_service)}}</td>
-                                <td>{{formatRupiah($data->price)}},-</td>
                                 <td>
                                     @if($data->status == 0)
                                         <span class="badge bg-success">Service</span>
@@ -264,7 +262,7 @@
                                                             <label class="col-form-label">Nominal Outsid</label>
                                                             <input type="text"
                                                                    class="form-control " name="nominal_out"
-                                                                   placeholder="Enter Date" value="{{$data->nominal_in}}">
+                                                                   placeholder="Enter Date" value="{{$data->nominal_out}}">
                                                             <label class="col-form-label">Date Finish</label>
                                                             <input type="text"
                                                                    class="form-control datepicker" name="date_finis"
@@ -300,34 +298,15 @@
                                                             <div class="table-responsive">
                                                                 <table id="" class="table table-bordered">
                                                                     <tr>
-                                                                        <th width="5%">
-                                                                            <div class="float-start">Name Customer</div>
-                                                                        </th>
-                                                                        <td>
-                                                                            <div class="float-start">{{$data->name}}</div>
-                                                                        </td>
-                                                                        <th width="5%">
-                                                                            <div class="float-start">Name Sales</div>
-                                                                        </th>
-                                                                        <td>
-                                                                            <div
-                                                                                class="float-start">{{$data->name_sales}}</div>
-                                                                        </td>
+                                                                        <th class="bg-primary" colspan="4">CUSTOMER</th>
                                                                     </tr>
                                                                     <tr>
-                                                                        <th>
-                                                                            <div class="float-start">Phone Customer</div>
-                                                                        </th>
-                                                                        <td>
-                                                                            <div class="float-start">{{$data->phone}}</div>
-                                                                        </td>
-                                                                        <th>
-                                                                            <div class="float-start">Phone Sales</div>
-                                                                        </th>
-                                                                        <td>
-                                                                            <div
-                                                                                class="float-start">{{$data->phone_sales}}</div>
-                                                                        </td>
+                                                                        <th colspan="2">Name</th>
+                                                                        <th colspan="2">Phone</th>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td colspan="2">{{$data->name}}</td>
+                                                                        <td colspan="2">{{$data->phone}}</td>
                                                                     </tr>
                                                                     <tr>
                                                                         <th class="text-center bg-primary" colspan="4">ITEM</th>
@@ -355,15 +334,6 @@
                                                                         <td>
                                                                             <div
                                                                                 class="text-center">{{$data->type}}</div>
-                                                                        </td>
-                                                                    </tr>
-                                                                    <tr>
-                                                                        <th>
-                                                                            <div class="float-start">Accessories</div>
-                                                                        </th>
-                                                                        <td colspan="3">
-                                                                            <div
-                                                                                class="float-start">{{($data->accessories)}}</div>
                                                                         </td>
                                                                     </tr>
                                                                     <tr>
@@ -419,14 +389,6 @@
                                                                             @endif
                                                                         </td>
                                                                     </tr>
-                                                                    <tr>
-                                                                        <th>
-                                                                            <div class="float-start">Price</div>
-                                                                        </th>
-                                                                        <td colspan="3">
-                                                                            <div class="float-start">{{formatRupiah($data->price)}},-</div>
-                                                                        </td>
-                                                                    </tr>
                                                                 </table>
                                                             </div>
                                                             <div class="table-responsive">
@@ -435,7 +397,6 @@
                                                                         <th colspan="6" class="bg-success">PRICE </th>
                                                                     </tr>
                                                                     <tr>
-                                                                        <th>Price</th>
                                                                         <th>Nomninal In</th>
                                                                         <th>Nominal Outsid</th>
                                                                         <th>Biaya Ganti</th>
@@ -443,7 +404,6 @@
                                                                         <th> Diskon</th>
                                                                     </tr>
                                                                     <tr>
-                                                                        <td>{{formatRupiah($data->price)}},-</td>
                                                                         <td>{{formatRupiah($data->nominal_in)}},-</td>
                                                                         <td>{{formatRupiah($data->nominal_out)}},-</td>
                                                                         <td>{{formatRupiah($data->biaya_ganti)}},-</td>

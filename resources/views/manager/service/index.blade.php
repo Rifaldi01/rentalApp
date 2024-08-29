@@ -49,7 +49,6 @@
                             <th>No Seri</th>
                             <th>Accessories</th>
                             <th>Date Service</th>
-                            <th>Price</th>
                             <th>Status</th>
                             <th>Action</th>
                         </tr>
@@ -64,7 +63,6 @@
                                 <td>{{$data->no_seri}}</td>
                                 <td>{{$data->accessories}}</td>
                                 <td>{{dateId($data->date_service)}}</td>
-                                <td>{{formatRupiah($data->price)}},-</td>
                                 <td>
                                     @if($data->status == 0)
                                         <span class="badge bg-success">Service</span>
@@ -266,10 +264,9 @@
                                                         <button type="button" class="btn-close" data-bs-dismiss="modal"
                                                                 aria-label="Close"></button>
                                                     </div>
-                                                    <form action="{{route('manager.service.update', $data->id)}}"
+                                                    <form action="{{route('manager.service.finis', $data->id)}}"
                                                           method="POST">
-                                                        @csrf
-                                                        @method('PUT')
+                                                          @csrf
                                                         <div class="modal-body">
                                                             <input value="{{$data->id}}" type="hidden" name="rental_id"
                                                                    class="form-control">
@@ -315,26 +312,10 @@
                                                                             <div class="float-start">{{$data->name}}</div>
                                                                         </td>
                                                                         <th width="5%">
-                                                                            <div class="float-start">Name Sales</div>
-                                                                        </th>
-                                                                        <td>
-                                                                            <div
-                                                                                class="float-start">{{$data->name_sales}}</div>
-                                                                        </td>
-                                                                    </tr>
-                                                                    <tr>
-                                                                        <th>
                                                                             <div class="float-start">Phone Customer</div>
                                                                         </th>
                                                                         <td>
                                                                             <div class="float-start">{{$data->phone}}</div>
-                                                                        </td>
-                                                                        <th>
-                                                                            <div class="float-start">Phone Sales</div>
-                                                                        </th>
-                                                                        <td>
-                                                                            <div
-                                                                                class="float-start">{{$data->phone_sales}}</div>
                                                                         </td>
                                                                     </tr>
                                                                     <tr>
@@ -363,15 +344,6 @@
                                                                         <td>
                                                                             <div
                                                                                 class="text-center">{{$data->type}}</div>
-                                                                        </td>
-                                                                    </tr>
-                                                                    <tr>
-                                                                        <th>
-                                                                            <div class="float-start">Accessories</div>
-                                                                        </th>
-                                                                        <td colspan="3">
-                                                                            <div
-                                                                                class="float-start">{{($data->accessories)}}</div>
                                                                         </td>
                                                                     </tr>
                                                                     <tr>
@@ -427,14 +399,7 @@
                                                                             @endif
                                                                         </td>
                                                                     </tr>
-                                                                    <tr>
-                                                                        <th>
-                                                                            <div class="float-start">Price</div>
-                                                                        </th>
-                                                                        <td colspan="3">
-                                                                            <div class="float-start">{{formatRupiah($data->price)}},-</div>
-                                                                        </td>
-                                                                    </tr>
+                                                                    
                                                                 </table>
                                                             </div>
                                                             <div class="table-responsive">
@@ -443,7 +408,6 @@
                                                                         <th colspan="6" class="bg-success">PRICE </th>
                                                                     </tr>
                                                                     <tr>
-                                                                        <th>Price</th>
                                                                         <th>Nomninal In</th>
                                                                         <th>Nominal Outsid</th>
                                                                         <th>Biaya Ganti</th>
@@ -451,7 +415,6 @@
                                                                         <th> Diskon</th>
                                                                     </tr>
                                                                     <tr>
-                                                                        <td>{{formatRupiah($data->price)}},-</td>
                                                                         <td>{{formatRupiah($data->nominal_in)}},-</td>
                                                                         <td>{{formatRupiah($data->nominal_out)}},-</td>
                                                                         <td>{{formatRupiah($data->biaya_ganti)}},-</td>
@@ -471,6 +434,11 @@
                                                 </div>
                                             </div>
                                         </div>
+                                        <a href="{{route('manager.service.destroy', $data->id)}}" data-confirm-delete="true"
+                                            type="submit" class=" bx bx-trash btn btn-sm btn-danger"
+                                            data-bs-toggle="tooltip"
+                                            data-bs-placement="top" title="Hapus">
+                                        </a>
                                         <a href="{{route('manager.service.edit', $data->id)}}"
                                            class="btn btn-dnd lni lni-pencil me-1"
                                            data-bs-toggle="tooltip" data-bs-placement="top" title="Edit">

@@ -150,6 +150,10 @@
                                                             <td><div class="float-start">{{formatRupiah($data->ongkir)}}</div></td>
                                                         </tr>
                                                         <tr>
+                                                            <th><div class="float-start">Ket. Pembayar</div></th>
+                                                            <td><div class="float-start">{{formatRupiah($data->date_pay)}}</div></td>
+                                                        </tr>
+                                                        <tr>
                                                             <th><div class="float-start">Status</div></th>
                                                             <td>
                                                                 @if($data->status == 0)

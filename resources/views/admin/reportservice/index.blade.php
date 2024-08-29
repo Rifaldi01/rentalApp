@@ -65,9 +65,7 @@
                         <th>Name</th>
                         <th>Item</th>
                         <th>No Seri</th>
-                        <th>Accessories</th>
                         <th>Date Service</th>
-                        <th>Price</th>
                         <th>Nominal <br>In</th>
                         <th>Nominal <br>Outsid</th>
                         <th>Fee/ <br>Diskon</th>
@@ -77,13 +75,11 @@
                     <tbody>
                     @foreach($report as $key => $data)
                         <tr>
-                            <td>{{$key +1}}</td>
+                            <td data-index="{{ $key +1 }}">{{$key +1}}</td>
                             <td>{{$data->name}}</td>
                             <td>{{$data->item}}</td>
                             <td>{{$data->no_seri}}</td>
-                            <td>{{$data->accessories}}</td>
                             <td>{{formatId($data->date_service)}}</td>
-                            <td>{{formatRupiah($data->price)}},-</td>
                             <td>{{formatRupiah($data->nominal_in)}}</td>
                             <td>{{formatRupiah($data->nominal_out)}}</td>
                             <td>{{formatRupiah($data->diskon)}}</td>
@@ -131,5 +127,17 @@
 @endpush
 
 @push('js')
+<script>
+    $(document).ready(function() {
+        var table = $('#example3').DataTable();
 
+        // Mengurutkan ulang nomor saat tabel diurutkan atau difilter
+        table.on('order.dt search.dt', function() {
+            let i = 1;
+            table.cells(null, 0, { search: 'applied', order: 'applied' }).every(function(cell) {
+                this.data(i++);
+            });
+        }).draw();
+    });
+</script>
 @endpush

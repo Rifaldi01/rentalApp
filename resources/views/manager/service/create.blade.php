@@ -31,20 +31,9 @@
                            name="name" placeholder="Enter Name Customer">
                 </div>
                 <div class="col-md-6">
-                    <label for="input1" class="form-label">Name sales</label>
-                    <input type="text" value="{{isset($service) ? ($service->name_sales) : null}}" class="form-control"
-                           name="name_sales" placeholder="Enter Name Sales">
-                </div>
-                <div class="col-md-6">
-                    <label for="input1" class="form-label"><i class="text-danger">*</i> Phone Customer</label>
+                    <label for="input1" class="form-label">Phone Customer</label>
                     <input type="number" value="{{isset($service) ? ($service->phone) : null}}" class="form-control"
                            name="phone" placeholder="Enter Phone Customer">
-                </div>
-                <div class="col-md-6">
-                    <label for="input1" class="form-label">Phone sales</label>
-                    <input type="number" value="{{isset($service) ? ($service->phone_sales) : null}}"
-                           class="form-control"
-                           name="phone_sales" placeholder="Enter Phone Sales">
                 </div>
                 <div class="col-md-6">
                     <label for="input" class="form-label"><i class="text-danger">*</i> Item</label>
@@ -68,11 +57,6 @@
                               placeholder="Enter Jenis Service">{{isset($service) ? $service->jenis_service : null}}</textarea>
                 </div>
                 <div class="col-md-12">
-                    <label for="input" class="form-label">Accessories</label>
-                    <input type="text" value="{{isset($service) ? $service->accessories : null}}"
-                           class="form-control" name="accessories" placeholder="Enter Accessories">
-                </div>
-                <div class="col-md-12">
                     <label for="input" class="form-label"><i class="text-danger">*</i> Date Service</label>
                     <input type="text" value="{{isset($service) ? $service->date_service : null}}"
                            class="form-control datepicker" name="date_service" placeholder="Enter Date">
@@ -83,22 +67,22 @@
                            class="form-control" name="nominal_in" placeholder="Nominal In (Rp)">
                 </div>
                  <div class="col-md-2">
-                    <label for="input" class="form-label"><i class="text-danger">*</i> Nominal Out</label>
+                    <label for="input" class="form-label">Nominal Out</label>
                     <input type="number" value="{{isset($service) ? $service->nominal_out : 0}}"
                            class="form-control" name="nominal_out" placeholder="Nominal Out (Rp)">
                 </div>
                  <div class="col-md-2">
-                    <label for="input" class="form-label"><i class="text-danger">*</i> Biaya Ganti</label>
+                    <label for="input" class="form-label">Biaya Ganti</label>
                     <input type="number" value="{{isset($service) ? $service->biaya_ganti : 0}}"
                            class="form-control" name="biaya_ganti" placeholder="Biaya Ganti (Rp)">
                 </div>
                  <div class="col-md-2">
-                    <label for="input" class="form-label"><i class="text-danger">*</i> Ongkir</label>
+                    <label for="input" class="form-label">Ongkir</label>
                     <input type="number" value="{{isset($service) ? $service->ongkir : 0}}"
                            class="form-control" name="ongkir" placeholder="Ongkir (Rp)">
                 </div>
                 <div class="col-md-2">
-                    <label for="input" class="form-label"><i class="text-danger">*</i> Fee/Diskon</label>
+                    <label for="input" class="form-label">Fee/Diskon</label>
                     <input type="number" value="{{isset($service) ? $service->diskon : 0}}"
                            class="form-control" name="diskon" placeholder="Fee/Diskon (Rp)">
                 </div>

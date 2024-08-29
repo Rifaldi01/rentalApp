@@ -14,11 +14,10 @@ class ServiceController extends Controller
      */
     public function index()
     {
-        $cust = Service::latest()->paginate();
+        $service = Service::where('status', 0)->get();
         $title = 'Delete Item!';
         $text = "Are you sure you want to delete?";
         confirmDelete($title, $text);
-        $service = Service::where('status', 0)->get();
 
         return view('manager.service.index', compact('service'));
     }
@@ -71,16 +70,8 @@ class ServiceController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        $request->validate([
-            'date_finis' => 'required|date'
-        ]);
-
-        $service = Service::find($id);
-        $service->date_finis =  $request->input('date_finis');
-        $service->status = 1;
-        $service->save();
-        Alert::success('Finish', 'Service Has been Finshed');
-        return back();
+       return $this->save($request, $id);
+       return redirect()->route('manager.service.history')->withSuccess('Berhasil diperbaharui');
     }
 
 
@@ -98,7 +89,6 @@ class ServiceController extends Controller
     {
         $validate = $request->validate([
             'name' => 'required',
-            'phone' => 'required|numeric|min:11',
             'item' => 'required',
             'no_seri' => 'required',
             'date_service' => 'required',
@@ -110,6 +100,11 @@ class ServiceController extends Controller
             'ongkir' => 'numeric',
             'descript' => 'required',
         ]);
+    
+        // Cek apakah sedang membuat data baru atau mengedit data yang sudah ada
+        $isCreating = $id === null;
+    
+        // Temukan data berdasarkan id atau buat data baru jika id tidak ada
         $service = Service::firstOrNew(['id' => $id]);
         $service->name = $request->input('name');
         $service->phone = $request->input('phone');
@@ -126,14 +121,37 @@ class ServiceController extends Controller
         $service->ongkir = $request->input('ongkir');
         $service->date_service = $request->input('date_service');
         $service->jenis_service = $request->input('jenis_service');
-        $service->accessories = $request->input('accessories');
         $service->save();
-        Alert::success('Success', 'Upload Data Success');
-        return redirect()->route('manager.service.index');
+    
+        Alert::success('Success', $isCreating ? 'Upload Data Success' : 'Update Data Success');
+    
+        // Arahkan ke route yang sesuai berdasarkan operasi create atau update
+        if ($isCreating) {
+            return redirect()->route('manager.service.index');
+        } else {
+            return redirect()->route('manager.service.history')->withSuccess('Berhasil diperbaharui');
+        }
     }
+    
     public function history()
     {
         $service = Service::all();
+        $title = 'Delete Item!';
+        $text = "Are you sure you want to delete?";
+        confirmDelete($title, $text);
         return view('manager.service.index', compact('service'));
+    }
+
+    public function finis(Request $request, $id){
+        $request->validate([
+            'date_finis' =>'required|date',
+        ]);
+
+        $service = Service::find($id);
+        $service->date_finis =  $request->input('date_finis');
+        $service->status = 1;
+        $service->save();
+        Alert::success('Finish', 'Service Has been Finshed');
+        return back();
     }
 }

@@ -57,11 +57,6 @@
                               placeholder="Enter Jenis Service">{{isset($service) ? $service->jenis_service : null}}</textarea>
                 </div>
                 <div class="col-md-12">
-                    <label for="input" class="form-label">Accessories</label>
-                    <input type="text" value="{{isset($service) ? $service->accessories : null}}"
-                           class="form-control" name="accessories" placeholder="Enter Accessories">
-                </div>
-                <div class="col-md-12">
                     <label for="input" class="form-label"><i class="text-danger">*</i> Date Service</label>
                     <input type="text" value="{{isset($service) ? $service->date_service : null}}"
                            class="form-control datepicker" name="date_service" placeholder="Enter Date">

@@ -37,5 +37,6 @@ Route::group(['middleware' => ['auth:web', 'role:manager'], 'prefix' => 'manager
     Route::get('/report/service/filter', [ReportServiceController::class, 'filter'])->name('manager.service.filter');
     Route::resource('/service', ServiceController::class)->names('manager.service');
     Route::get('/history/service', [ServiceController::class, 'history'])->name('manager.service.history');
+    Route::post('/service/finis/{id}', [ServiceController::class, 'finis'])->name('manager.service.finis');
     //end report
 });
