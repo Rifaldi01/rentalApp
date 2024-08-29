@@ -20,6 +20,9 @@ Route::group(['middleware' => ['auth:web', 'role:manager'], 'prefix' => 'manager
     Route::resource('/rental',RentalController::class)->names('manager.rental');
     Route::get('/hsty/rental',[RentalController::class, 'hsty'])->name('manager.rental.hsty');
     Route::get('/problems', [ProblemController::class, 'index'])->name('manager.rental.problems');
+    Route::post('/finis/{id}', [RentalController::class, 'finis'])->name('manager.rental.finis');
+    Route::post('/problem/{id}/rental', [RentalController::class, 'problem'])->name('manager.rental.problem');
+
     //rental end
 
     //customer

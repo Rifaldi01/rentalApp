@@ -136,7 +136,7 @@ class RentalController extends Controller
     public function destroy(string $id)
     {
         Rental::whereId($id)->delete();
-        return back();
+        return back()->withSuccess('Rental Dihapus');
     }
 
     public function save(Request $request, $id = null)
@@ -273,17 +273,42 @@ class RentalController extends Controller
 
 
     public function finis($id)
-    {
-        $rental = Rental::findOrFail($id);
-        $rental->status = 0;
-        $rental->save();
+{
+    // Temukan objek rental berdasarkan ID
+    $rental = Rental::findOrFail($id);
+    $rental->status = 0;
+    $rental->save();
 
-        $item = Item::findOrFail($rental->item_id);
-        $item->status = 0;
-        $item->save();
-        Alert::success('Success', 'Rental has been Finished');
-        return redirect()->back();
+    // Ambil ID item dari rental
+    $itemIds = json_decode($rental->item_id, true) ?? []; // Jika item_id disimpan dalam format JSON
+
+    // Update status item menjadi 0
+    foreach ($itemIds as $itemId) {
+        $item = Item::find($itemId);
+        if ($item) {
+            $item->status = 0;
+            $item->save();
+        }
     }
+
+    // Update status aksesori dan kembalikan stok
+    $accessoriesCategories = AccessoriesCategory::where('rental_id', $rental->id)->get();
+    foreach ($accessoriesCategories as $accessoriesCategory) {
+        // Update status_acces di tabel pivot
+        AccessoriesCategory::where('rental_id', $rental->id)
+            ->where('accessories_id', $accessoriesCategory->accessories_id)
+            ->update(['status_acces' => 0]);
+
+        // Kembalikan stok aksesori
+        $accessory = Accessories::find($accessoriesCategory->accessories_id);
+        if ($accessory) {
+            $accessory->stok += $accessoriesCategory->accessories_quantity;
+            $accessory->save();
+        }
+    }
+
+    return redirect()->back()->with('success', 'Rental Finished');
+}
 
     public function problem($id)
     {
@@ -295,6 +320,10 @@ class RentalController extends Controller
     }
     public function hsty()
     {
+        $rent = Rental::latest()->paginate();
+        $title = 'Delet Rental?';
+        $text = "Are you sure you want to delete?";
+        confirmDelete($title, $text);
 
         $rental = Rental::leftjoin('accessories_categories as a', 'a.rental_id', '=', 'rentals.id')
             ->leftjoin('accessories as b', 'a.accessories_id', '=', 'b.id')

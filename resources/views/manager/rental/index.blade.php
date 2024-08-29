@@ -114,10 +114,23 @@
                                 @endif
                             </td>
                             <td class="text-center">
-                                <a href="{{route('manager.rental.edit', $data->id)}}"
-                                   class="btn btn-warning lni lni-pencil me-1"
-                                   data-bs-toggle="tooltip" data-bs-placement="top" title="Edit">
-                                </a>
+                                    <a href="{{route('manager.rental.edit', $data->id)}}"
+                                       class="btn-sm btn btn-warning lni lni-pencil mt-1 me-1"
+                                       data-bs-toggle="tooltip" data-bs-placement="top" title="Edit">
+                                    </a>
+                                    <a href="https://api.whatsapp.com/send?phone=62{{$data->cust->phone}}&text=Halo%20Customer%20yth,%20masa%20tenggang%20peminjaman%20barang%20anda%20tersisa%20 3 %20Hari%20segera%20konfirmasi%20peminjaman%20anda%20Termiaksih%20Atas%20Perhatianya.&source=&data="
+                                       class="btn-sm btn btn-success lni lni-whatsapp me-1 mt-1"
+                                       data-bs-toggle="tooltip" data-bs-placement="top" title="Chat Customer">
+                                    </a>
+                                    <form action="{{ route('manager.rental.finis', $data->id) }}" method="POST">
+                                        @csrf
+                                        <button type="submit"
+                                                class="btn-sm btn btn-success lni lni-checkmark  mt-1"
+                                                data-bs-toggle="tooltip" data-bs-placement="top"
+                                                title="Finished">
+
+                                        </button>   
+                                    </form>
                             </td>
 
                     </tr>
