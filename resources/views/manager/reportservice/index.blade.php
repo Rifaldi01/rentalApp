@@ -95,10 +95,10 @@
             <div class="col">
                 <div class="table-responsive">
                     <table>
-                        <tr>
-                            <th> <h5 class="mb-0 text-uppercase">Total Income</h5></th>
+                    <tr>
+                            <th> <h5 class="mb-0 text-uppercase">Total Nominal In</h5></th>
                             <td><h5>:</h5></td>
-                            <td><h5 class="ms-2">{{formatRupiah($totalincome)}},-</h5></td>
+                            <td><h5 class="ms-2">{{formatRupiah($totalin)}},-</h5></td>
                         </tr>
                         <tr>
                             <th> <h5 class="mb-0 text-uppercase">Total Nominal Outside</h5></th>
@@ -114,6 +114,11 @@
                             <th> <h5 class="mb-0 text-uppercase">Total Ongkir</h5></th>
                             <td><h5>:</h5></td>
                             <td><h5 class="ms-2">{{formatRupiah($totalongkir)}},-</h5></td>
+                        </tr>
+                        <tr>
+                            <th> <h5 class="mb-0 text-uppercase">Grand Total</h5></th>
+                            <td><h5>:</h5></td>
+                            <td><h5 class="ms-2">{{formatRupiah($totalincome)}},-</h5></td>
                         </tr>
                     </table>
                 </div>

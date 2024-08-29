@@ -108,8 +108,6 @@ class ServiceController extends Controller
         $service = Service::firstOrNew(['id' => $id]);
         $service->name = $request->input('name');
         $service->phone = $request->input('phone');
-        $service->name_sales = $request->input('name_sales');
-        $service->phone_sales = $request->input('phone_sales');
         $service->item = $request->input('item');
         $service->no_seri = $request->input('no_seri');
         $service->descript = $request->input('descript');

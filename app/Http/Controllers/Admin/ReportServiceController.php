@@ -16,9 +16,10 @@ class ReportServiceController extends Controller
             return $item->nominal_in - $item->diskon - $item->ongkir;
         });
         $totaldiskon = $report->sum('diskon');
+        $totalin = $report->sum('nominal_in');
         $totalongkir = $report->sum('ongkir');
         $totaloutside = $report->sum('nominal_out');
-        return view('admin.reportservice.index', compact('report', 'totalincome', 'totaloutside', 'totaldiskon', 'totalongkir'));
+        return view('admin.reportservice.index', compact('totalin', 'report', 'totalincome', 'totaloutside', 'totaldiskon', 'totalongkir'));
     }
     public function filter(Request $request){
         $request->validate([
@@ -36,8 +37,9 @@ class ReportServiceController extends Controller
             return $item->nominal_in - $item->diskon - $item->ongkir;
         });
         $totaldiskon = $report->sum('diskon');
+        $totalin = $report->sum('nominal_in');
         $totalongkir = $report->sum('ongkir');
         $totaloutside = $report->sum('nominal_out');
-        return view('admin.reportservice.index', compact('report', 'totalincome', 'totaloutside', 'totaldiskon', 'totalongkir'));
+        return view('admin.reportservice.index', compact('report', 'totalin', 'totalincome', 'totaloutside', 'totaldiskon', 'totalongkir'));
     }
 }
