@@ -26,12 +26,13 @@ class ReportController extends Controller
             )
             ->get();
         $totaldiskon = $report->sum('diskon');
+        $totalin = $report->sum('nominal_in');
         $totalongkir = $report->sum('ongkir');
         $totalincome = $report->sum(function($item) {
             return $item->nominal_in - $item->diskon - $item->ongkir;
         });
         $totaloutside = $report->sum('nominal_out');
-        return view('admin.report.index', compact('report', 'totaldiskon', 'totalongkir', 'totalincome', 'totaloutside'));
+        return view('admin.report.index', compact('totalin', 'report', 'totaldiskon', 'totalongkir', 'totalincome', 'totaloutside'));
     }
     public function filter(Request $request){
         $request->validate([
@@ -67,6 +68,7 @@ class ReportController extends Controller
 
         // Calculate totals
         $totaldiskon = $report->sum('diskon');
+        $totalin = $report->sum('nominal_in');
         $totalongkir = $report->sum('ongkir');
         $totalincome = $report->sum(function($item) {
             return $item->nominal_in - $item->diskon - $item->ongkir;
@@ -74,6 +76,6 @@ class ReportController extends Controller
         $totaloutside = $report->sum('nominal_out');
 
         // Return the view with data
-        return view('admin.report.index', compact('report', 'totaldiskon', 'totalongkir', 'totalincome', 'totaloutside'));
+        return view('admin.report.index', compact('totalin', 'report', 'totaldiskon', 'totalongkir', 'totalincome', 'totaloutside'));
     }
 }
