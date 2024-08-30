@@ -65,7 +65,7 @@
                                                 <button type="button" class="btn-close" data-bs-dismiss="modal"
                                                         aria-label="Close"></button>
                                             </div>
-                                            <form action="{{ route('admin.problem.finis', $data->id) }}" method="POST">
+                                            <form action="{{ route('manager.problem.finis', $data->id) }}" method="POST">
                                                 @csrf
                                                 <div class="modal-body">
                                                     <label class="col-form-label">Nominal In</label>
@@ -142,7 +142,7 @@
                                 </a>
 
                                 @if ($data->rental->status != 0)
-                                    <form action="{{ route('admin.problem.returned', $data->id) }}" method="POST">
+                                    <form action="{{ route('manager.problem.returned', $data->id) }}" method="POST">
                                         @csrf
                                         <button type="submit" class="btn btn-warning lni lni-package float-end me-1"
                                                 onclick="return confirm('Item Returned?')" title="Item Returned">
