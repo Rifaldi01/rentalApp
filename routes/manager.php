@@ -25,6 +25,12 @@ Route::group(['middleware' => ['auth:web', 'role:manager'], 'prefix' => 'manager
 
     //rental end
 
+    //problem
+    Route::post('/problems/{id}/finis', [ProblemController::class, 'destroy'])->name('admin.problem.finis');
+    Route::post('/problems/{id}/returned', [ProblemController::class, 'returned'])->name('admin.problem.returned');
+    Route::post('/problem/', [ProblemController::class, 'store'])->name('admin.problem.store');
+    //problem end
+
     //customer
     Route::resource('/customer',CustomerController::class)->names('manager.customer');
     //customer end

@@ -3,8 +3,13 @@
 namespace App\Http\Controllers\Manager;
 
 use App\Http\Controllers\Controller;
+use App\Models\Accessories;
+use App\Models\AccessoriesCategory;
+use App\Models\Item;
 use App\Models\Problem;
+use App\Models\Rental;
 use Illuminate\Http\Request;
+use RealRashid\SweetAlert\Facades\Alert;
 
 class ProblemController extends Controller
 {
@@ -22,17 +27,116 @@ class ProblemController extends Controller
                 'rentals.addres_company', 'rentals.phone_company', 'rentals.no_po','rentals.date_start',
                 'rentals.date_end', 'rentals.status', 'a.rental_id',
                 \DB::raw('GROUP_CONCAT(b.name) as access'),
-                'problems.id', 'problems.descript'
+                'problems.id', 'problems.descript', 'problems.rental_id'
             )
             ->groupBy(
                 'rentals.id', 'rentals.customer_id', 'rentals.item_id', 'rentals.name_company',
                 'rentals.addres_company', 'rentals.phone_company', 'rentals.no_po', 'rentals.date_start',
-                'rentals.date_end', 'rentals.status', 'a.rental_id', 'problems.id', 'problems.descript'
+                'rentals.date_end', 'rentals.status', 'a.rental_id', 'problems.id', 'problems.descript', 'problems.rental_id'
             )
             ->where('problems.status', 0)
             ->get();
-//        return $rental;
-        return view('superadmin.problem.index', compact('rental'));
+//       return $rental;
+        return view('manager.problem.index', compact('rental'));
     }
+
+    public function store(Request $request)
+    {
+        $request->validate([
+            'descript' => 'required',
+        ]);
+        Problem::create($request->all());
+        $rental = Rental::find($request->input('rental_id'));
+        $rental->status = 2;
+        $rental->save();
+        Alert::warning('Warning', 'Problem has been add');
+        return redirect()->back();
+    }
+
+    public function destroy(Request $request, string $id)
+    {
+        $destroy = Problem::find($id);
+        $destroy->status = 1;
+        $destroy->save();
+
+        $rental = Rental::findOrFail($destroy->rental_id);
+        $rental->nominal_in = $request->input('nominal_in');
+        $rental->nominal_out = $request->input('nominal_out');
+        $rental->status = 0;
+        $rental->save();
+
+        $itemIds = json_decode($rental->item_id, true) ?? []; // Jika item_id disimpan dalam format JSON
+
+        // Update status item menjadi 0
+        foreach ($itemIds as $itemId) {
+            $item = Item::find($itemId);
+            if ($item) {
+                $item->status = 0;
+                $item->save();
+            }
+        }
+    
+        // Update status aksesori dan kembalikan stok
+        $accessoriesCategories = AccessoriesCategory::where('rental_id', $rental->id)->get();
+        foreach ($accessoriesCategories as $accessoriesCategory) {
+            // Update status_acces di tabel pivot
+            AccessoriesCategory::where('rental_id', $rental->id)
+                ->where('accessories_id', $accessoriesCategory->accessories_id)
+                ->update(['status_acces' => 0]);
+    
+            // Kembalikan stok aksesori
+            $accessory = Accessories::find($accessoriesCategory->accessories_id);
+            if ($accessory) {
+                $accessory->stok += $accessoriesCategory->accessories_quantity;
+                $accessory->save();
+            }
+        }
+        Alert::success('Success', 'Problem has been finished');
+        return back();
+    }
+
+    public function returned($id)
+    {
+        $destroy = Problem::find($id);
+        $destroy->status = 0;
+        $destroy->save();
+
+        $rental = Rental::findOrFail($destroy->rental_id);
+        if ($rental->status != 0) { // Only mark as returned if not already returned
+            $rental->status = 2;
+            $rental->save();
+
+            $itemIds = json_decode($rental->item_id, true) ?? []; // Jika item_id disimpan dalam format JSON
+
+            // Update status item menjadi 0
+            foreach ($itemIds as $itemId) {
+                $item = Item::find($itemId);
+                if ($item) {
+                    $item->status = 0;
+                    $item->save();
+                }
+            }
+        
+            // Update status aksesori dan kembalikan stok
+            $accessoriesCategories = AccessoriesCategory::where('rental_id', $rental->id)->get();
+            foreach ($accessoriesCategories as $accessoriesCategory) {
+                // Update status_acces di tabel pivot
+                AccessoriesCategory::where('rental_id', $rental->id)
+                    ->where('accessories_id', $accessoriesCategory->accessories_id)
+                    ->update(['status_acces' => 0]);
+        
+                // Kembalikan stok aksesori
+                $accessory = Accessories::find($accessoriesCategory->accessories_id);
+                if ($accessory) {
+                    $accessory->stok += $accessoriesCategory->accessories_quantity;
+                    $accessory->save();
+                }
+            }
+        }
+
+        Alert::success('Success', 'Item Returned');
+        return back();
+    }
+
 
 }

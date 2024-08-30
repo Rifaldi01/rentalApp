@@ -75,9 +75,45 @@
                         @foreach ($report as $key => $data)
                             <td>{{$key +1}}</td>
                             <td>{{$data->rental->cust->name}}</td>
-                            <td>{{$data->rental->item->name}}</td>
-                            <td>{{$data->rental->item->cat->name}}-{{$data->rental->item->no_seri}}</td>
-                            <td>{{$data->access}}</td>
+                            <td>
+                                @php
+                                    $itemIds = json_decode($data->item_id);
+                                @endphp
+                                @if(is_array($itemIds))
+                                    @foreach($itemIds as $itemId)
+                                        @php
+                                            $item = \App\Models\Item::find($itemId);
+                                        @endphp
+                                            <li>{{ $item ? $item->name : 'Item not found' }}</li>
+                                    @endforeach
+                                @else
+                                    {{ $itemIds }}
+                                @endif
+                            </td>
+                            <td>
+                                @php
+                                    $itemIds = json_decode($data->item_id);
+                                @endphp
+                                @if(is_array($itemIds))
+                                    @foreach($itemIds as $itemId)
+                                        @php
+                                            $item = \App\Models\Item::find($itemId);
+                                        @endphp
+                                            <li>{{ $item ? $item->cat->name : null }}-{{ $item ? $item->no_seri : 'Item not found' }}</li>
+                                    @endforeach
+                                @else
+                                    {{ $itemIds }}
+                                @endif
+                            </td>
+                            <td>
+                            @if($data->access)
+                                @foreach(explode(',', $data->access) as $accessory)
+                                    <li>{{ $accessory }}</li>
+                                @endforeach
+                            @else
+                                <li>No accessories</li>
+                            @endif
+                            </td>
                             <td>
                                 {{\Carbon\Carbon::parse($data->created_at)->translatedFormat('d F Y')}}
                             </td>
