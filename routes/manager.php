@@ -4,6 +4,8 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Manager\DashboardController;
 use App\Http\Controllers\Manager\RentalController;
 use App\Http\Controllers\Manager\CustomerController;
+use App\Http\Controllers\Manager\ItemController;
+use App\Http\Controllers\Manager\MaintenanceController;
 use App\Http\Controllers\Manager\ProblemController;
 use App\Http\Controllers\Manager\ReportController;
 use App\Http\Controllers\Manager\ReportServiceController;
@@ -34,6 +36,17 @@ Route::group(['middleware' => ['auth:web', 'role:manager'], 'prefix' => 'manager
     //customer
     Route::resource('/customer',CustomerController::class)->names('manager.customer');
     //customer end
+
+    //item
+    Route::resource('/item', ItemController::class)->names('manager.item');
+    Route::post('/items/{id}/mainten', [ItemController::class, 'mainten'])->name('items.mainten');
+    Route::get('/maintenance', [MaintenanceController::class, 'index'])->name('manager.mainten.index');
+    Route::post('/maintenance/{id}/item', [MaintenanceController::class, 'destroy'])->name('manager.mainten.item');
+    Route::post('/maintenance/', [MaintenanceController::class, 'store'])->name('manager.mainten.store');
+    Route::get('/items/sale', [ItemController::class, 'sale'])->name('manager.sale');
+    Route::post('/sale/', [ItemController::class, 'storesale'])->name('manager.item.sale');
+    Route::post('/item/deleteimage', [ItemController::class, 'deleteImage'])->name('manager.item.deleteImage');
+    //item end
 
     //report
     Route::get('/report', [ReportController::class, 'index'])->name('manager.rental.report');

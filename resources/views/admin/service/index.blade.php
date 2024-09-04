@@ -132,20 +132,11 @@
                                                                 </tr>
                                                                 <tr>
                                                                     <th>
-                                                                        <div class="float-start">Accessories</div>
-                                                                    </th>
-                                                                    <td colspan="3">
-                                                                        <div
-                                                                            class="float-start">{{($data->accessories)}}</div>
-                                                                    </td>
-                                                                </tr>
-                                                                <tr>
-                                                                    <th>
                                                                         <div class="float-start">Jenis Service</div>
                                                                     </th>
                                                                     <td colspan="3">
                                                                         <div
-                                                                            class="float-start">{{($data->accessories)}}</div>
+                                                                            class="float-start">{{($data->jenis_service)}}</div>
                                                                     </td>
                                                                 </tr>
                                                                 <tr>
@@ -192,14 +183,6 @@
                                                                         @endif
                                                                     </td>
                                                                 </tr>
-                                                                <tr>
-                                                                    <th>
-                                                                        <div class="float-start">Price</div>
-                                                                    </th>
-                                                                    <td colspan="3">
-                                                                        <div class="float-start">{{formatRupiah($data->price)}},-</div>
-                                                                    </td>
-                                                                </tr>
                                                             </table>
                                                         </div>
                                                         <div class="table-responsive">
@@ -208,7 +191,6 @@
                                                                     <th colspan="6" class="bg-success">PRICE </th>
                                                                 </tr>
                                                                 <tr>
-                                                                    <th>Price</th>
                                                                     <th>Nomninal In</th>
                                                                     <th>Nominal Outsid</th>
                                                                     <th>Biaya Ganti</th>
@@ -216,7 +198,6 @@
                                                                     <th> Diskon</th>
                                                                 </tr>
                                                                 <tr>
-                                                                    <td>{{formatRupiah($data->price)}},-</td>
                                                                     <td>{{formatRupiah($data->nominal_in)}},-</td>
                                                                     <td>{{formatRupiah($data->nominal_out)}},-</td>
                                                                     <td>{{formatRupiah($data->biaya_ganti)}},-</td>
@@ -342,7 +323,7 @@
                                                                         </th>
                                                                         <td colspan="3">
                                                                             <div
-                                                                                class="float-start">{{($data->accessories)}}</div>
+                                                                                class="float-start">{{$data->jenis_service}}</div>
                                                                         </td>
                                                                     </tr>
                                                                     <tr>
