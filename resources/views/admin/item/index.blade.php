@@ -42,7 +42,7 @@
                                 <td>{{ $data->cat->name }}-{{ $data->no_seri }}</td>
                                 <td class="text-center">
                                     @if($data->status == 2)
-                                        <span class="badge bg-secondary">Rental</span>
+                                        <span class="badge bg-secondary">Rent</span>
                                     @elseif($data->status == 0)
                                         <span class="badge bg-success">Ready</span>
                                     @elseif($data->status == 1)

@@ -57,7 +57,7 @@
         </div>
         <div class="card-body">
             <div class="table-responsive">
-                <table id="example3" class="table table-striped table-bordered" style="width:100%">
+                <table id="table-report" class="table table-striped table-bordered" style="width:100%">
                     <thead>
                     <tr>
                         <th width="2%">No</th>
@@ -128,7 +128,7 @@
                             <td>{{formatRupiah($data->total)}}</td>
                             <td class="text-center">
                                 @if($data->status == 1)
-                                    <span class="badge bg-success">Rental</span>
+                                    <span class="badge bg-success">Rent</span>
                                 @elseif($data->status == 0)
                                     <span class="badge bg-secondary">Finished</span>
                                 @elseif($data->status == 2)
@@ -138,6 +138,28 @@
                             </tr>
                         @endforeach
                     </tbody>
+                    <tfoot>
+                        <tr>
+                            <th class="border" colspan="2"> Total Nominal In</th>
+                            <td class="border">{{formatRupiah($totalin)}},-</td>
+                        </tr>
+                        <tr>
+                            <th class="border" colspan="2"> Total Nominal Outside</th>
+                            <td class="border">{{formatRupiah($totaloutside)}},-</td>
+                        </tr>
+                        <tr> 
+                            <th class="border" colspan="2"> Total Fee/Diskon</th>
+                            <td class="border">{{formatRupiah($totaldiskon)}},-</td>
+                        </tr>
+                        <tr> 
+                            <th class="border" colspan="2"> Total Ongkir</th>
+                            <td class="border">{{formatRupiah($totalongkir)}},-</td>
+                        </tr>
+                        <tr> 
+                            <th class="border" colspan="2">Grand Total</th>
+                            <td class="border">{{formatRupiah($totalincome)}},-</td>
+                        </tr>
+                    </tfoot>
                 </table>
             </div>
         </div>
@@ -184,5 +206,105 @@
 @endpush
 
 @push('js')
+<script>
+	var table = $('#table-report').DataTable({
+                lengthChange: false,
+                buttons: [
+                    {
+                        extend: 'pdf',
+                        exportOptions: {
+                            stripHtml: false,
+                        },
+                        customize: function(doc) {
+                            doc.content = [];
 
+                            doc.pageSize = {
+                                width: 842,
+                                height: 595
+                            };
+                            doc.pageOrientation = 'landscape';
+
+                            doc.pageMargins = [20, 20, 20, 20];
+
+                            var thead = $('#table-report thead').clone();
+                            var headers = [];
+                            thead.find('th').each(function() {
+                                headers.push({ text: $(this).text(), style: 'tableHeader' });
+                            });
+
+                            var tableBody = [];
+                            tableBody.push(headers);
+
+                            $('#table-report tbody tr').each(function() {
+                                var row = [];
+                                $(this).find('td').each(function() {
+                                    var cellText = $(this).text();
+                                    if ($(this).find('ul').length > 0) {
+                                        cellText = $(this).find('ul').html().replace(/<\/?li>/g, '');
+                                        cellText = cellText.split('</li>').filter(item => item).map(item => ({ text: item.trim() }));
+                                    }
+                                    row.push({ text: cellText, style: 'tableCell' });
+                                });
+                                while (row.length < headers.length) {
+                                    row.push({ text: '' });
+                                }
+                                tableBody.push(row);
+                            });
+
+                            var tfoot = $('#table-report tfoot').clone();
+                            if (tfoot.length) {
+                                var footerRow = [];
+                                tfoot.find('th').each(function() {
+                                    footerRow.push({ text: $(this).text(), style: 'tableCell' });
+                                });
+                                while (footerRow.length < headers.length) {
+                                    footerRow.push({ text: '' });
+                                }
+                                tableBody.push(footerRow);
+                            }
+
+                            doc.content.push({
+                                table: {
+                                    headerRows: 1,
+                                    body: tableBody,
+                                    widths: Array(headers.length).fill('*'),
+                                    style: 'table'
+                                },
+                                layout: 'lightHorizontalLines'
+                            });
+
+                            doc.styles = {
+                                table: {
+                                    margin: [0, 5, 0, 15]
+                                },
+                                tableHeader: {
+                                    bold: true,
+                                    fontSize: 12,
+                                    fillColor: '#f2f2f2'
+                                },
+                                tableCell: {
+                                    fontSize: 10
+                                }
+                            };
+                        }
+                    },
+                    {
+                        extend: 'print',
+                        exportOptions: {
+                            stripHtml: false,
+                        },
+                        customize: function(win) {
+                            $(win.document.body).find('table').addClass('compact').css('font-size', '10px');
+                            var bodyContent = $('#table-report tbody').clone();
+                            $(win.document.body).find('table').append(bodyContent);
+                            var footerContent = $('#table-report tfoot').clone();
+                            $(win.document.body).find('table').append(footerContent);
+                        }
+                    }
+                ]
+            });
+
+            table.buttons().container()
+                .appendTo('#table-report_wrapper .col-md-6:eq(0)');
+</script>
 @endpush

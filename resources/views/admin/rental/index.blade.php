@@ -87,7 +87,7 @@
                             <td class="text-center">{{$data->days_difference}} Day</td>
                             <td class="text-center">
                                 @if($data->status == 1)
-                                    <span class="badge bg-success">Rental</span>
+                                    <span class="badge bg-success">Rent</span>
                                 @elseif($data->status == 0)
                                     <span class="badge bg-secondary">Finished</span>
                                 @elseif($data->status == 2)
