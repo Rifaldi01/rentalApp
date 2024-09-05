@@ -66,6 +66,7 @@
                         <th>Item</th>
                         <th>No Seri</th>
                         <th>Date Service</th>
+                        <th>Biaya Ganti</th>
                         <th>Nominal <br>In</th>
                         <th>Nominal <br>Outsid</th>
                         <th>Fee/ <br>Diskon</th>
@@ -80,6 +81,7 @@
                             <td>{{$data->item}}</td>
                             <td>{{$data->no_seri}}</td>
                             <td>{{formatId($data->date_service)}}</td>
+                            <td>{{formatRupiah($data->biaya_ganti)}}</td>
                             <td>{{formatRupiah($data->nominal_in)}}</td>
                             <td>{{formatRupiah($data->nominal_out)}}</td>
                             <td>{{formatRupiah($data->diskon)}}</td>
@@ -95,6 +97,11 @@
             <div class="col">
                 <div class="table-responsive">
                     <table>
+                        <tr>
+                            <th> <h5 class="mb-0 text-uppercase">Total Biaya Ganti</h5></th>
+                            <td><h5>:</h5></td>
+                            <td><h5 class="ms-2">{{formatRupiah($totalbiaya)}},-</h5></td>
+                        </tr>
                         <tr>
                             <th> <h5 class="mb-0 text-uppercase">Total Nominal In</h5></th>
                             <td><h5>:</h5></td>
