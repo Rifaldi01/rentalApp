@@ -135,9 +135,15 @@ class RentalController extends Controller
      */
     public function destroy(string $id)
     {
-        Rental::whereId($id)->delete();
-        return back()->withSuccess('Rental Dihapus');
-    }
+        // Menghapus rental berdasarkan id
+        $rental = Rental::findOrFail($id);
+        $rental->delete();
+    
+        // Menghapus problem yang memiliki rental_id sesuai id yang dihapus
+        Problem::where('rental_id', $id)->delete();
+    
+        return back()->withSuccess('Rental Berhadil Dihapus');
+    }    
 
     public function save(Request $request, $id = null)
     {
