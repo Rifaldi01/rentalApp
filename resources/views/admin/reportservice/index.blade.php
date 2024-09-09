@@ -66,11 +66,13 @@
                             <th>Item</th>
                             <th>No Seri</th>
                             <th>Date Service</th>
+                            <th>Date Finis</th>
                             <th>Biaya Ganti</th>
                             <th>Nominal <br>In</th>
                             <th>Nominal <br>Outsid</th>
                             <th>Fee/ <br>Diskon</th>
                             <th>Ongkir</th>
+                            <th>Status</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -81,11 +83,25 @@
                                 <td>{{$data->item}}</td>
                                 <td>{{$data->no_seri}}</td>
                                 <td>{{formatId($data->date_service)}}</td>
+                                <td>
+                                    @if($data->date_finis)
+                                    {{formatId($data->date_finis)}}
+                                    @else
+                                    <div class="text-center">-</div>
+                                    @endif
+                                </td>
                                 <td>{{formatRupiah($data->biaya_ganti)}}</td>
                                 <td>{{formatRupiah($data->nominal_in)}}</td>
                                 <td>{{formatRupiah($data->nominal_out)}}</td>
                                 <td>{{formatRupiah($data->diskon)}}</td>
                                 <td>{{formatRupiah($data->ongkir)}}</td>
+                                <td>
+                                    @if($data->status == 0)
+                                        <span class="badge bg-success">Service</span>
+                                    @else($data->status == 1)
+                                        <span class="badge bg-secondary">Finished</span>
+                                    @endif
+                                </td>
                             </tr>
                         @endforeach
                     </tbody>
@@ -103,7 +119,7 @@
                             <th class="border">{{formatRupiah($totaloutside)}},-</th>
                         </tr>
                         <tr>
-                            <th class="border" colspan="2">Total Fee/Diskon<</th>
+                            <th class="border" colspan="2">Total Fee/Diskon</th>
                             <th class="border">{{formatRupiah($totaldiskon)}},-</th>
                         </tr>
                         <tr>
@@ -116,46 +132,6 @@
                         </tr>
                     </tfoot>
                 </table>
-            </div>
-        </div>
-    </div>
-    <div class="card">
-        <div class="card-body">
-            <div class="col">
-                <div class="table-responsive">
-                    <table>
-                        <tr>
-                            <th> <h5 class="mb-0 text-uppercase">Total Biaya Ganti</h5></th>
-                            <td><h5>:</h5></td>
-                            <td><h5 class="ms-2">{{formatRupiah($totalbiaya)}},-</h5></td>
-                        </tr>
-                        <tr>
-                            <th> <h5 class="mb-0 text-uppercase">Total Nominal In</h5></th>
-                            <td><h5>:</h5></td>
-                            <td><h5 class="ms-2">{{formatRupiah($totalin)}},-</h5></td>
-                        </tr>
-                        <tr>
-                            <th> <h5 class="mb-0 text-uppercase">Total Nominal Outside</h5></th>
-                            <td><h5>:</h5></td>
-                            <td><h5 class="ms-2">{{formatRupiah($totaloutside)}},-</h5></td>
-                        </tr>
-                        <tr>
-                            <th> <h5 class="mb-0 text-uppercase">Total Fee/Diskon</h5></th>
-                            <td><h5>:</h5></td>
-                            <td><h5 class="ms-2">{{formatRupiah($totaldiskon)}},-</h5></td>
-                        </tr>
-                        <tr>
-                            <th> <h5 class="mb-0 text-uppercase">Total Ongkir</h5></th>
-                            <td><h5>:</h5></td>
-                            <td><h5 class="ms-2">{{formatRupiah($totalongkir)}},-</h5></td>
-                        </tr>
-                        <tr>
-                            <th> <h5 class="mb-0 text-uppercase">Grand Total</h5></th>
-                            <td><h5>:</h5></td>
-                            <td><h5 class="ms-2">{{formatRupiah($totalincome)}},-</h5></td>
-                        </tr>
-                    </table>
-                </div>
             </div>
         </div>
     </div>
@@ -193,7 +169,7 @@
                                 width: 842,
                                 height: 595
                             };
-                            doc.pageOrientation = 'landscape';
+                            doc.pageOrientation = 'auto';
 
                             doc.pageMargins = [20, 20, 20, 20];
 
@@ -226,7 +202,7 @@
                             if (tfoot.length) {
                                 var footerRow = [];
                                 tfoot.find('th').each(function() {
-                                    footerRow.push({ text: $(this).text(), style: 'tableCell' });
+                                    footerRow.push({ text: $(this).text(), style: 'tableFooter' });
                                 });
                                 while (footerRow.length < headers.length) {
                                     footerRow.push({ text: '' });
@@ -250,11 +226,16 @@
                                 },
                                 tableHeader: {
                                     bold: true,
-                                    fontSize: 12,
+                                    fontSize: 8,
+                                    fillColor: '#f2f2f2'
+                                },
+                                tableFooter: {
+                                    bold: true,
+                                    fontSize: 8,
                                     fillColor: '#f2f2f2'
                                 },
                                 tableCell: {
-                                    fontSize: 10
+                                    fontSize: 8
                                 }
                             };
                         }
