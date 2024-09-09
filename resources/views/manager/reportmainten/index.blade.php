@@ -18,21 +18,21 @@
     <div class="card table-timbang">
         <div class="card-head">
             @if ($errors->any())
-                @foreach ($errors->all() as $error)
-                    <div class="alert border-0 border-start border-5 border-danger alert-dismissible fade show py-2">
-                        <div class="d-flex align-items-center">
-                            <div class="font-35 text-danger"><i class='bx bxs-message-square-x'></i>
-                            </div>
-                            <div class="ms-3">
-                                <h6 class="mb-0 text-danger">Error</h6>
-                                <div>
-                                    <div>{{ $error }}</div>
-                                </div>
+            @foreach ($errors->all() as $error)
+                <div class="alert border-0 border-start border-5 border-danger alert-dismissible fade show py-2">
+                    <div class="d-flex align-items-center">
+                        <div class="font-35 text-danger"><i class='bx bxs-message-square-x'></i>
+                        </div>
+                        <div class="ms-3">
+                            <h6 class="mb-0 text-danger">Error</h6>
+                            <div>
+                                <div>{{ $error }}</div>
                             </div>
                         </div>
-                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                     </div>
-                @endforeach
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            @endforeach
             @endif
             <div class="row">
                 <form action="{{route('manager.mainten.filter')}}" method="GET">
@@ -102,5 +102,17 @@
 @endpush
 
 @push('js')
+<script>
+    $(document).ready(function() {
+        var table = $('#example3').DataTable();
 
+        // Mengurutkan ulang nomor saat tabel diurutkan atau difilter
+        table.on('order.dt search.dt', function() {
+            let i = 1;
+            table.cells(null, 0, { search: 'applied', order: 'applied' }).every(function(cell) {
+                this.data(i++);
+            });
+        }).draw();
+    });
+</script>
 @endpush

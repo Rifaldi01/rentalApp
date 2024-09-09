@@ -68,6 +68,7 @@
                         <th>Accessories</th>
                         <th>Problem Date</th>
                         <th>Descript</th>
+                        <th class="text-center">Status</th>
                     </tr>
                     </thead>
                     <tbody>
@@ -111,7 +112,7 @@
                                     <li>{{ $accessory }}</li>
                                 @endforeach
                             @else
-                                <li>No accessories</li>
+                               
                             @endif
                             </td>
                             <td>
@@ -119,6 +120,13 @@
                             </td>
                             <td>
                                 {{$data->descript}}
+                            </td>
+                            <td class="text-center">
+                                @if($data->status == 1)
+                                    <span class="badge bg-success">Finished</span>
+                                @elseif($data->status == 0)
+                                    <span class="badge bg-danger">Problem</span>
+                                @endif
                             </td>
                     </tr>
                     @endforeach
@@ -134,5 +142,17 @@
 @endpush
 
 @push('js')
+<script>
+    $(document).ready(function() {
+        var table = $('#example3').DataTable();
 
+        // Mengurutkan ulang nomor saat tabel diurutkan atau difilter
+        table.on('order.dt search.dt', function() {
+            let i = 1;
+            table.cells(null, 0, { search: 'applied', order: 'applied' }).every(function(cell) {
+                this.data(i++);
+            });
+        }).draw();
+    });
+</script>
 @endpush
