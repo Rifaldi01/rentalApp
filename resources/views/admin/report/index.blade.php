@@ -141,23 +141,23 @@
                     <tfoot>
                         <tr>
                             <th class="border" colspan="2"> Total Nominal In</th>
-                            <td class="border">{{formatRupiah($totalin)}},-</td>
+                            <th class="border">{{formatRupiah($totalin)}},-</th>
                         </tr>
                         <tr>
                             <th class="border" colspan="2"> Total Nominal Outside</th>
-                            <td class="border">{{formatRupiah($totaloutside)}},-</td>
+                            <th class="border">{{formatRupiah($totaloutside)}},-</th>
                         </tr>
                         <tr> 
                             <th class="border" colspan="2"> Total Fee/Diskon</th>
-                            <td class="border">{{formatRupiah($totaldiskon)}},-</td>
+                            <th class="border">{{formatRupiah($totaldiskon)}},-</th>
                         </tr>
                         <tr> 
                             <th class="border" colspan="2"> Total Ongkir</th>
-                            <td class="border">{{formatRupiah($totalongkir)}},-</td>
+                            <th class="border">{{formatRupiah($totalongkir)}},-</th>
                         </tr>
                         <tr> 
                             <th class="border" colspan="2">Grand Total</th>
-                            <td class="border">{{formatRupiah($totalincome)}},-</td>
+                            <th class="border">{{formatRupiah($totalincome)}},-</th>
                         </tr>
                     </tfoot>
                 </table>
@@ -207,6 +207,17 @@
 
 @push('js')
 <script>
+     $(document).ready(function() {
+        var table = $('#table-report').DataTable();
+
+        // Mengurutkan ulang nomor saat tabel diurutkan atau difilter
+        table.on('order.dt search.dt', function() {
+            let i = 1;
+            table.cells(null, 0, { search: 'applied', order: 'applied' }).every(function(cell) {
+                this.data(i++);
+            });
+        }).draw();
+    });
 	var table = $('#table-report').DataTable({
                 lengthChange: false,
                 buttons: [

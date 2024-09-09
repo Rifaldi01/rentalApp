@@ -38,7 +38,7 @@ class ReportServiceController extends Controller
             return $item->nominal_in - $item->diskon - $item->ongkir;
         });
         $totaldiskon = $report->sum('diskon');
-        $totalbiaya= $report->sum('biaya_gati');
+        $totalbiaya= $report->sum('biaya_ganti');
         $totalin = $report->sum('nominal_in');
         $totalongkir = $report->sum('ongkir');
         $totaloutside = $report->sum('nominal_out');

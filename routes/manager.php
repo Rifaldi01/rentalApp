@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Manager\AccessoriesController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Manager\DashboardController;
 use App\Http\Controllers\Manager\RentalController;
@@ -47,6 +48,10 @@ Route::group(['middleware' => ['auth:web', 'role:manager'], 'prefix' => 'manager
     Route::post('/sale/', [ItemController::class, 'storesale'])->name('manager.item.sale');
     Route::post('/item/deleteimage', [ItemController::class, 'deleteImage'])->name('manager.item.deleteImage');
     //item end
+
+    //accessories
+    Route::resource('/accessories', AccessoriesController::class)->names('manager.acces');
+    //accessories end
 
     //report
     Route::get('/report', [ReportController::class, 'index'])->name('manager.rental.report');

@@ -80,6 +80,14 @@
             </a>
         </li>
         <li>
+            <a href="{{route('manager.acces.index')}}">
+                <div class="parent-icon">
+                    <i class='bx bx-collection'></i>
+                </div>
+                <div class="menu-title">Accessories</div>
+            </a>
+        </li>
+        <li>
             <a href="{{route('manager.sale')}}">
                 <div class="parent-icon"><i class='bx bx-dollar'></i>
                 </div>
