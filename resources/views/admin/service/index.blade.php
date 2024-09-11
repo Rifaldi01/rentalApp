@@ -248,6 +248,10 @@
                                                             <input type="text"
                                                                    class="form-control datepicker" name="date_finis"
                                                                    placeholder="Enter Date">
+                                                            <label class="col-form-label">Deskripsi</label>
+                                                            <textarea type="text"
+                                                                   class="form-control" name="descript"
+                                                                   placeholder="Enter Date">{{$data->descript}}</textarea>
                                                         </div>
                                                         <div class="modal-footer">
                                                             <button type="button" class="btn btn-secondary"

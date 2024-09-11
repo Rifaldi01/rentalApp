@@ -79,6 +79,7 @@ class ServiceController extends Controller
         $service->nominal_in =  $request->input('nominal_in');
         $service->nominal_out =  $request->input('nominal_out');
         $service->date_finis =  $request->input('date_finis');
+        $service->descript =  $request->input('descript');
         $service->status = 1;
         $service->save();
         Alert::success('Finish', 'Service Has been Finshed');
