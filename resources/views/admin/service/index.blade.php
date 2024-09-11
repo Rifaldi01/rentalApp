@@ -244,6 +244,10 @@
                                                             <input type="text"
                                                                    class="form-control " name="nominal_out"
                                                                    placeholder="Enter Date" value="{{$data->nominal_out}}">
+                                                            <label class="col-form-label">Nominal Ganti</label>
+                                                            <input type="text"
+                                                                   class="form-control " name="biaya_ganti"
+                                                                   placeholder="Enter Date" value="{{$data->biaya_ganti}}">
                                                             <label class="col-form-label">Date Finish</label>
                                                             <input type="text"
                                                                    class="form-control datepicker" name="date_finis"
