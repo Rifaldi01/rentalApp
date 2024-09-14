@@ -99,6 +99,8 @@ class RentalController extends Controller
     {
         $validate = $request->validate([
             'date_end' => 'after_or_equal:start_date',
+        ],[
+            'date_end.after_or_equal' => 'Tanggal akhir harus berupa tanggal setelah atau sama dengan tanggal mulai.'
         ]);
         return $this->save($request);
     }
@@ -156,7 +158,15 @@ class RentalController extends Controller
             'image' => $id ? 'nullable' : 'required|array',
             'image.*' => $id ? 'nullable' : 'image',
             'nominal_in' => 'required|numeric',
-            'diskon' => 'numeric'
+            'diskon' => 'numeric',
+            'created_at' => 'required'
+        ],[
+            'item_id.required' => 'Item Wajib diisi',
+            'customer_id.required' => 'Customer Wajib diisi', 
+            'image.required' => 'Image Wajib diisi Sebagai Bukti', 
+            'nominal_in.required' => 'Nominal In Wajib diisi', 
+            'customer_id.required' => 'Customer Wajib diisi', 
+            'created_at.required' => 'Tanggal Pembuatan Wajib diisi', 
         ]);
 
         // Proses aksesori
@@ -192,6 +202,7 @@ class RentalController extends Controller
         $rental->ongkir = $request->input('ongkir');
         $rental->diskon = $request->input('diskon');
         $rental->date_pay = $request->input('date_pay');
+        $rental->created_at = $request->input('created_at');
         $rental->status = 1;
 
         // Proses gambar jika ada
@@ -276,8 +287,7 @@ class RentalController extends Controller
         Alert::success('Success', 'Rental has been saved!');
         return redirect()->route('manager.rental.index');
     }
-
-
+    
     public function finis($id)
 {
     // Temukan objek rental berdasarkan ID
@@ -346,6 +356,29 @@ class RentalController extends Controller
             )
             ->get();
         return view('manager.rental.history', compact('rental'));
+    }
+    public function deleteImage(Request $request)
+    {
+        $image = $request->input('image');
+        $customer = Rental::whereJsonContains('image', $image)->first();
+
+        if ($customer) {
+            $images = json_decode($customer->image);
+            if (($key = array_search($image, $images)) !== false) {
+                unset($images[$key]);
+            }
+            $customer->image = json_encode(array_values($images));
+
+            // Delete the actual file
+            if (file_exists(public_path('images/identity/' . $image))) {
+                unlink(public_path('images/identity/' . $image));
+            }
+
+            $customer->save();
+            return response()->json(['success' => true]);
+        }
+
+        return response()->json(['success' => false]);
     }
 
 }

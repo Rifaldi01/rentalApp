@@ -3,27 +3,22 @@
     <div class="card">
         <div class="card-body p-4">
             <h5 class="mb-4">Rental</h5>
-            @if ($errors->any())
-                @foreach ($errors->all() as $error)
-                    <div class="alert border-0 border-start border-5 border-danger alert-dismissible fade show py-2">
-                        <div class="d-flex align-rentals-center">
-                            <div class="font-35 text-danger"><i class='bx bxs-message-square-x'></i></div>
-                            <div class="ms-3">
-                                <h6 class="mb-0 text-danger">Error</h6>
-                                <div>
-                                    <div>{{ $error }}</div>
-                                </div>
-                            </div>
-                        </div>
-                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                    </div>
-                @endforeach
-            @endif
+            <div id="error-container" style="display: none;">
+                @if ($errors->any())
+                    @foreach ($errors->all() as $error)
+                        <div class="error-message">{{ $error }}</div>
+                    @endforeach
+                @endif
+            </div>
             <form class="row g-3" action="{{$url}}" method="POST" enctype="multipart/form-data" id="myForm">
                 @csrf
                 @isset($rental)
                     @method('PUT')
                 @endisset
+                <div class="col-md-12">
+                    <label for="input6" class="form-label"><i class="text-danger">*</i> Tanggal Pembuatan</label>
+                    <input type="text" value="{{isset($rental) ? $rental->created_at : null}}" name="created_at" class="form-control datepicker" id="input6" placeholder="Pembuatan">
+                </div>
                 @if(isset($rental))
                     <div class="col-md-12">
                         <label for="input1" class="form-label"><i class="text-danger">*</i> Name Customer</label>
@@ -248,6 +243,73 @@
             // Hapus kolom
             $(document).on('click', '.remove-field', function () {
                 $(this).closest('.input-group').remove();
+            });
+        });
+    </script>
+    <script>
+        $(document).ready(function() {
+            // Handle form submission and check for validation errors
+            $('#submitBtn').click(function(e) {
+                e.preventDefault(); // Prevent default form submission
+
+                var errors = [];
+                $('#myForm input, #myForm select, #myForm textarea').each(function() {
+                    if ($(this).prop('required') && !$(this).val()) {
+                        errors.push($(this).prev('label').text().replace('*', '') + ' is required.');
+                    }
+                });
+
+                if (errors.length > 0) {
+                    Swal.fire({
+                        title: 'Validation Error!',
+                        html: '<ul>' + errors.map(error => `<li>${error}</li>`).join('') + '</ul>',
+                        icon: 'error',
+                        confirmButtonText: 'OK',
+                        allowOutsideClick: false, // Disable closing by clicking outside the alert
+                        allowEscapeKey: false,
+                    });
+                } else {
+                    $('#myForm').off('submit').submit(); // Allow form submission
+                }
+            });
+
+            // Existing SweetAlert2 code for image removal
+            $(document).on('click', '.delete-image', function() {
+                let image = $(this).data('image');
+                let row = $(this).closest('.col-md-2');
+
+                Swal.fire({
+                    title: 'Are you sure?',
+                    text: "You won't be able to revert this!",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Yes, delete it!',
+                    cancelButtonText: 'Cancel'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        $.ajax({
+                            url: '{{ route('manager.rental.deleteImage') }}',
+                            method: 'POST',
+                            data: {
+                                _token: '{{ csrf_token() }}',
+                                image: image
+                            },
+                            success: function(response) {
+                                if (response.success) {
+                                    row.remove();
+                                    Swal.fire('Deleted!', 'Your image has been deleted.', 'success');
+                                } else {
+                                    Swal.fire('Failed!', 'Failed to remove image.', 'error');
+                                }
+                            },
+                            error: function() {
+                                Swal.fire('Error!', 'An error occurred while processing your request.', 'error');
+                            }
+                        });
+                    }
+                });
             });
         });
     </script>

@@ -25,7 +25,8 @@ Route::group(['middleware' => ['auth:web', 'role:manager'], 'prefix' => 'manager
     Route::get('/problems', [ProblemController::class, 'index'])->name('manager.rental.problems');
     Route::post('/finis/{id}', [RentalController::class, 'finis'])->name('manager.rental.finis');
     Route::post('/problem/{id}/rental', [RentalController::class, 'problem'])->name('manager.rental.problem');
-
+    Route::put('/rental/date/{id}', [RentalController::class, 'tanggalBuat'])->name('manager.rental.tanggalbuat');
+    Route::post('/rental/deleteimage', [RentalController::class, 'deleteImage'])->name('manager.rental.deleteImage');
     //rental end
 
     //problem

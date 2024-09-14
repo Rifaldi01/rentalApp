@@ -150,7 +150,15 @@ class RentalController extends Controller
             'image' => $id ? 'nullable' : 'required|array',
             'image.*' => $id ? 'nullable' : 'image',
             'nominal_in' => 'required|numeric',
-            'diskon' => 'numeric'
+            'diskon' => 'numeric',
+            'created_at' => 'required'
+        ],[
+            'item_id.required' => 'Item Wajib diisi',
+            'customer_id.required' => 'Customer Wajib diisi', 
+            'image.required' => 'Image Wajib diisi Sebagai Bukti', 
+            'nominal_in.required' => 'Nominal In Wajib diisi', 
+            'customer_id.required' => 'Customer Wajib diisi', 
+            'created_at.required' => 'Tanggal Pembuatan Wajib diisi', 
         ]);
 
         // Proses aksesori
@@ -170,9 +178,25 @@ class RentalController extends Controller
             }
         }
 
+        // Periksa stok aksesori sebelum menyimpan
+        foreach ($accessories as $index => $accessoryId) {
+            $quantity = isset($quantities[$index]) ? $quantities[$index] : 0;
+            $accessory = Accessories::find($accessoryId);
+
+            if ($accessory) {
+                $previousQuantity = $previousAccessoriesData[$accessoryId] ?? 0;
+                $stockChange = $previousQuantity - $quantity;
+
+                if ($accessory->stok + $stockChange < 0) {
+                    return redirect()->back()->withErrors(['message' => 'Stok tidak mencukupi untuk aksesori ' . $accessory->name]);
+                }
+            }
+        }
+
         // Simpan item_id sebelumnya untuk update status item
         $previousItemIds = json_decode($rental->item_id, true) ?? [];
 
+        // Proses input rental
         $rental->customer_id = $request->input('customer_id');
         $rental->item_id = json_encode($request->item_id);
         $rental->name_company = $request->input('name_company');
@@ -186,16 +210,16 @@ class RentalController extends Controller
         $rental->ongkir = $request->input('ongkir');
         $rental->diskon = $request->input('diskon');
         $rental->date_pay = $request->input('date_pay');
+        $rental->created_at = $request->input('created_at');
         $rental->status = 1;
 
         // Proses gambar jika ada
         if ($request->hasFile('image')) {
             $newImages = [];
 
-            // Handle gambar baru
             foreach ($request->file('image') as $file) {
                 $file_name = md5(now()->timestamp . $file->getClientOriginalName()) . '.jpg';
-                
+
                 try {
                     $img = ImageManagerStatic::make($file);
                     $img->resize(null, 600, function ($constraint) {
@@ -208,26 +232,21 @@ class RentalController extends Controller
                 }
             }
 
-            // Gabungkan gambar lama dengan yang baru
             $existingImages = json_decode($rental->image, true) ?? [];
             $rental->image = json_encode(array_merge($existingImages, $newImages));
         }
 
         $rental->save();
 
+        // Simpan data aksesori
         $accessoriesData = [];
         foreach ($accessories as $index => $accessoryId) {
             $quantity = isset($quantities[$index]) ? $quantities[$index] : 0;
             $accessory = Accessories::find($accessoryId);
 
             if ($accessory) {
-                $previousQuantity = $previousAccessoriesData[$accessoryId] ?? 0; // Ambil jumlah aksesori sebelumnya
-                $stockChange = $previousQuantity - $quantity; // Hitung perubahan stok
-
-                // Jika stok tidak mencukupi, tampilkan pesan error
-                if ($accessory->stok + $stockChange < 0) {
-                    return redirect()->back()->withErrors(['message' => 'Stok tidak mencukupi untuk aksesori ' . $accessory->name]);
-                }
+                $previousQuantity = $previousAccessoriesData[$accessoryId] ?? 0;
+                $stockChange = $previousQuantity - $quantity;
 
                 $accessoriesData[] = [
                     'rental_id' => $rental->id,
@@ -235,34 +254,31 @@ class RentalController extends Controller
                     'accessories_quantity' => $quantity
                 ];
 
-                $accessory->stok += $stockChange; // Update stok aksesori
+                $accessory->stok += $stockChange;
                 $accessory->save();
             }
         }
 
-        // Update kategori aksesori
         AccessoriesCategory::where('rental_id', $rental->id)->delete();
         AccessoriesCategory::insert($accessoriesData);
 
         // Update status item
         $newItemIds = $request->input('item_id');
-        $itemsToDeactivate = array_diff($previousItemIds, $newItemIds); // Item yang sebelumnya ada tapi tidak dipilih lagi
-        $itemsToActivate = array_diff($newItemIds, $previousItemIds); // Item yang baru dipilih
+        $itemsToDeactivate = array_diff($previousItemIds, $newItemIds);
+        $itemsToActivate = array_diff($newItemIds, $previousItemIds);
 
-        // Nonaktifkan item yang tidak dipilih lagi
         foreach ($itemsToDeactivate as $itemId) {
             $item = Item::find($itemId);
             if ($item) {
-                $item->status = 0; // Ubah status item menjadi 0
+                $item->status = 0;
                 $item->save();
             }
         }
 
-        // Aktifkan item yang baru dipilih
         foreach ($itemsToActivate as $itemId) {
             $item = Item::find($itemId);
             if ($item) {
-                $item->status = 2; // Ubah status item menjadi 2
+                $item->status = 2;
                 $item->save();
             }
         }
@@ -327,17 +343,24 @@ public function finis($id)
             ->select(
                 'rentals.id', 'rentals.customer_id', 'rentals.item_id', 'rentals.name_company',
                 'rentals.addres_company', 'rentals.phone_company', 'rentals.no_po','rentals.date_start', 'date_pay',
-                'rentals.date_end', 'rentals.status', 'a.rental_id', 'nominal_in', 'nominal_out', 'diskon', 'ongkir', 'rentals.image', 
+                'rentals.date_end', 'rentals.status', 'a.rental_id', 'nominal_in', 'nominal_out', 'diskon', 'ongkir', 'rentals.image', 'rentals.created_at',
                 DB::raw('GROUP_CONCAT(b.name) as access')
             )
             ->groupBy(
                 'rentals.id', 'rentals.customer_id', 'rentals.item_id', 'rentals.name_company',
                 'rentals.addres_company', 'rentals.phone_company', 'rentals.no_po', 'rentals.date_start', 'date_pay',
-                'rentals.date_end', 'rentals.status', 'a.rental_id', 'nominal_in', 'nominal_out', 'diskon', 'ongkir', 'rentals.image',
+                'rentals.date_end', 'rentals.status', 'a.rental_id', 'nominal_in', 'nominal_out', 'diskon', 'ongkir', 'rentals.image', 'rentals.created_at',
             )
             ->get();
         return view('admin.rental.history', compact('rental'));
     }
+    public  function tanggalBuat(Request $request, $id){
+        $rental = Rental::findOrFail($id);
+        $rental->created_at = $request->input('created_at');
+        $rental->save();
+        return redirect()->back()->withSuccess('Tanggal Disesuaikan');
+    }
+
     public function deleteImage(Request $request)
     {
         $image = $request->input('image');

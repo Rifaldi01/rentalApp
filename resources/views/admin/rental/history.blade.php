@@ -83,6 +83,38 @@
                                 @endif
                             </td>
                             <td class="text-center">
+                                <button data-bs-toggle="modal"
+                                            data-bs-target="#exampleVerticallycenteredModal{{$data->id}}"
+                                            class="btn btn-warning btn-sm lni lni-calendar"
+                                            data-bs-placement="top" title="Problem"></button>
+                                    <div class="modal fade" id="exampleVerticallycenteredModal{{$data->id}}" tabindex="-1"
+                                         aria-hidden="true">
+                                        <div class="modal-dialog modal-dialog-centered">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h5 class="modal-title">Sesuaikan Tanggal Pembuatan</h5>
+                                                    <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                            aria-label="Close"></button>
+                                                </div>
+                                                <form action="{{route('admin.rental.tanggalbuat', $data->id)}}"
+                                                      method="POST">
+                                                      @method('PUT')
+                                                    @csrf
+                                                    <div class="modal-body">
+                                                        <label class="col-form-label">Tanggal</label>
+                                                        <input type="text" value="{{$data->created_at}}" name="created_at" class="form-control datepicker" id="input6" placeholder="Pembuatan">
+                                                    </div>
+                                                    <div class="modal-footer">
+                                                        <button type="button" class="btn btn-secondary"
+                                                                data-bs-dismiss="modal">Close
+                                                        </button>
+                                                        <button type="submit" class="btn btn-primary">Save<i
+                                                                class="bx bx-save"></i></button>
+                                                    </div>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </div>
                                 <button data-bs-toggle="modal" data-bs-target="#exampleLargeModal{{$data->id}}"
                                         class="btn btn-dnd btn-sm lni lni-eye" title="view">
                                 </button>
@@ -261,8 +293,37 @@
     </div>
 @endsection
 @push('head')
-
+<link href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css" rel="stylesheet"/>
 @endpush
 @push('js')
-
+<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <script>
+        $(".datepicker").flatpickr();
+        $(".time-picker").flatpickr({
+            enableTime: true,
+            noCalendar: true,
+            dateFormat: "Y-m-d H:i",
+        });
+        $(".date-time").flatpickr({
+            enableTime: true,
+            dateFormat: "Y-m-d H:i",
+        });
+        $(".date-format").flatpickr({
+            altInput: true,
+            altFormat: "F j, Y",
+            dateFormat: "Y-m-d",
+        });
+        $(".date-range").flatpickr({
+            mode: "range",
+            altInput: true,
+            altFormat: "F j, Y",
+            dateFormat: "Y-m-d",
+        });
+        $(".date-inline").flatpickr({
+            inline: true,
+            altInput: true,
+            altFormat: "F j, Y",
+            dateFormat: "Y-m-d",
+        });
+    </script>
 @endpush

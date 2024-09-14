@@ -27,6 +27,7 @@ Route::group(['middleware' => ['auth:web', 'role:admin'], 'prefix' => 'admin'], 
     Route::post('/problem/{id}/rental', [RentalController::class, 'problem'])->name('admin.rental.problem');
     Route::post('/rental/deleteimage', [RentalController::class, 'deleteImage'])->name('admin.rental.deleteImage');
     Route::get('/rental/download/{id}', [RentalController::class, 'downloadImages'])->name('admin.rental.downloadImages');
+    Route::put('/rental/date/{id}', [RentalController::class, 'tanggalBuat'])->name('admin.rental.tanggalbuat');
     //problem
     Route::get('/problems', [ProblemController::class, 'index'])->name('admin.rental.problems');
     Route::post('/problems/{id}/finis', [ProblemController::class, 'destroy'])->name('admin.problem.finis');
