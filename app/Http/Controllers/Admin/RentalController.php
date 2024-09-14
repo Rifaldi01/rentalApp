@@ -386,19 +386,25 @@ public function finis($id)
     }
     public function downloadImages($id)
     {
-        $customer = Rental::findOrFail($id);
-        $images = json_decode($customer->image);
-
+        $rental = Rental::findOrFail($id);
+        $images = json_decode($rental->image);
+        
+        // Ambil nama pelanggan dari model Rental
+        $customerName = $rental->cust->name ?? 'unknown_customer'; // Ganti dengan nama kolom yang sesuai
+    
+        // Sanitasi nama pelanggan untuk penggunaan dalam nama file
+        $sanitizedCustomerName = preg_replace('/[^a-zA-Z0-9_-]/', '_', $customerName);
+        
         if ($images && count($images) > 0) {
             $zip = new ZipArchive;
-            $fileName = 'rental_images_' . $id . '.zip';
+            $fileName = $sanitizedCustomerName . '_rental_' . $id . '.zip';
             $zipPath = public_path($fileName);
-
+    
             // Membuka file zip
             if ($zip->open($zipPath, ZipArchive::CREATE) === TRUE) {
                 foreach ($images as $image) {
                     $filePath = public_path('images/rental/' . $image);
-
+    
                     // Periksa apakah file ada sebelum menambahkannya
                     if (file_exists($filePath)) {
                         $zip->addFile($filePath, $image);
@@ -409,10 +415,11 @@ public function finis($id)
                 }
                 $zip->close();
             }
-
+    
             return response()->download($zipPath)->deleteFileAfterSend(true);
         } else {
             return redirect()->back()->with('error', 'No images found.');
         }
     }
+    
 }
