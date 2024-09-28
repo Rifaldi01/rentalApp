@@ -155,7 +155,6 @@ class RentalController extends Controller
         ],[
             'item_id.required' => 'Item Wajib diisi',
             'customer_id.required' => 'Customer Wajib diisi', 
-            'image.required' => 'Image Wajib diisi Sebagai Bukti', 
             'nominal_in.required' => 'Nominal In Wajib diisi', 
             'customer_id.required' => 'Customer Wajib diisi', 
             'created_at.required' => 'Tanggal Pembuatan Wajib diisi', 
