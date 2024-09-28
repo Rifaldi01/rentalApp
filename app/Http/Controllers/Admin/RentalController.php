@@ -147,8 +147,8 @@ class RentalController extends Controller
             'customer_id' => 'required|exists:customers,id',
             'date_start' => 'required|date',
             'date_end' => 'required|date',
-            'image' => $id ? 'nullable' : 'required|array',
-            'image.*' => $id ? 'nullable' : 'image',
+            // 'image' => $id ? 'nullable' : 'required|array',
+            // 'image.*' => $id ? 'nullable' : 'image',
             'nominal_in' => 'required|numeric',
             'diskon' => 'numeric',
             'created_at' => 'required'
