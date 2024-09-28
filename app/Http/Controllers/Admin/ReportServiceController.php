@@ -33,7 +33,7 @@ class ReportServiceController extends Controller
         ]);
         $start_date = Carbon::parse(request()->start_date)->toDateTimeString();
         $end_date = Carbon::parse(request()->end_date)->toDateTimeString();
-        $report = Service::whereBetween('created_at',[$start_date,$end_date])->get();
+        $report = Service::whereBetween('date_service',[$start_date,$end_date])->get();
         $totalincome = $report->sum(function($item) {
             return $item->nominal_in - $item->diskon - $item->ongkir;
         });
