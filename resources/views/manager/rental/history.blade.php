@@ -185,7 +185,7 @@
                                                         </tr>
                                                         <tr>
                                                             <th><div class="float-start">Ket. Pembayar</div></th>
-                                                            <td><div class="float-start">{{formatRupiah($data->date_pay)}}</div></td>
+                                                            <td><div class="float-start">{{$data->date_pay}}</div></td>
                                                         </tr>
                                                         <tr>
                                                             <th><div class="float-start">Status</div></th>
@@ -242,17 +242,23 @@
                                                     @php
                                                         $images = json_decode($data->image);
                                                     @endphp
+
+                                                    @if(!empty($images) && is_array($images))
                                                         <div class="d-flex flex-wrap">
                                                             <div class="row">
-                                                            @foreach($images as $image)
-                                                                <div class="col-sm-4">
-                                                                <div class="p-2">
-                                                                    <img src="{{ asset('images/rental/'. $image) }}" alt="" class="img-fluid img-thumbnail">
-                                                                </div>
-                                                                </div>
-                                                            @endforeach
+                                                                @foreach($images as $image)
+                                                                    <div class="col-sm-4">
+                                                                        <div class="p-2">
+                                                                            <img src="{{ asset('images/rental/'. $image) }}" alt="" class="img-fluid img-thumbnail">
+                                                                        </div>
+                                                                    </div>
+                                                                @endforeach
                                                             </div>
                                                         </div>
+                                                    @else
+                                                        
+                                                    @endif
+
                                                 </div>
                                             </div>
                                             <div class="modal-footer">

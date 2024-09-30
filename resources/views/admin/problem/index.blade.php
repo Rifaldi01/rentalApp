@@ -68,6 +68,15 @@
                                             <form action="{{ route('admin.problem.finis', $data->id) }}" method="POST">
                                                 @csrf
                                                 <div class="modal-body">
+                                                    <label class="col-form-label">Date Pembuatan</label>
+                                                    <input type="text" class="form-control datepicker" name="nominal_in"
+                                                           value="{{ $data->rental->created_at ?? '' }}">
+                                                    <label class="col-form-label">Date Start</label>
+                                                    <input type="text" class="form-control datepicker" name="nominal_in"
+                                                           value="{{ $data->rental->date_start ?? '' }}">
+                                                    <label class="col-form-label">Date End</label>
+                                                    <input type="text" class="form-control datepicker" name="nominal_in"
+                                                           value="{{ $data->rental->date_end ?? '' }}">
                                                     <label class="col-form-label">Nominal In</label>
                                                     <input type="number" class="form-control" name="nominal_in"
                                                            value="{{ $data->rental->nominal_in ?? '' }}">
@@ -158,3 +167,41 @@
         </div>
     </div>
 @endsection
+
+@push('head')
+    <link href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css" rel="stylesheet"/>
+@endpush
+
+@push('js')
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <script>
+        $(".datepicker").flatpickr();
+        $(".time-picker").flatpickr({
+            enableTime: true,
+            noCalendar: true,
+            dateFormat: "Y-m-d H:i",
+        });
+        $(".date-time").flatpickr({
+            enableTime: true,
+            dateFormat: "Y-m-d H:i",
+        });
+        $(".date-format").flatpickr({
+            altInput: true,
+            altFormat: "F j, Y",
+            dateFormat: "Y-m-d",
+        });
+        $(".date-range").flatpickr({
+            mode: "range",
+            altInput: true,
+            altFormat: "F j, Y",
+            dateFormat: "Y-m-d",
+        });
+        $(".date-inline").flatpickr({
+            inline: true,
+            altInput: true,
+            altFormat: "F j, Y",
+            dateFormat: "Y-m-d",
+        });
+    </script>
+@endpush
+
