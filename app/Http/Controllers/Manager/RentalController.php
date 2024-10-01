@@ -126,9 +126,6 @@ class RentalController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        $validate = $request->validate([
-            'date_end' => 'after_or_equal:today',
-        ]);
         return $this->save($request, $id);
     }
 
