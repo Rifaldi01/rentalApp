@@ -298,7 +298,7 @@ class RentalController extends Controller
     // Update status item menjadi 0
     foreach ($itemIds as $itemId) {
         $item = Item::find($itemId);
-        if ($item) {
+        if ($item && $item->status !== 3) { // Tambahkan kondisi untuk memeriksa apakah status item adalah 3
             $item->status = 0;
             $item->save();
         }
