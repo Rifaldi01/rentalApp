@@ -11,7 +11,7 @@ class ReportServiceController extends Controller
 {
     public function index()
     {
-        $report = Service::all()->orderBy('date_service', 'asc');
+        $report = Service::orderBy('date_service', 'asc')->get();
         $totalincome = $report->sum(function($item) {
             return $item->nominal_in - $item->diskon - $item->ongkir;
         });
