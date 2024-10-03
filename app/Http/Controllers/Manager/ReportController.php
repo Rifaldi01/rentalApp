@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Rental;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class ReportController extends Controller
 {
@@ -15,14 +16,14 @@ class ReportController extends Controller
             ->select(
                 'rentals.id', 'rentals.customer_id', 'rentals.item_id', 'rentals.name_company',
                 'rentals.addres_company', 'rentals.phone_company', 'rentals.no_po','rentals.date_start',
-                'rentals.date_end', 'rentals.status', 'nominal_in', 'nominal_out', 'diskon', 'ongkir', 'a.rental_id',
-                \DB::raw('GROUP_CONCAT(DISTINCT b.name) as access'), // Diedit: Menambahkan DISTINCT untuk menghindari duplikasi nama accessories
-                \DB::raw('nominal_in - diskon - ongkir as total')
+                'rentals.date_end', 'rentals.status', 'nominal_in', 'nominal_out', 'diskon', 'ongkir', 'a.rental_id', 'rentals.created_at',
+                DB::raw('GROUP_CONCAT(DISTINCT b.name) as access'), // Diedit: Menambahkan DISTINCT untuk menghindari duplikasi nama accessories
+                DB::raw('nominal_in - diskon - ongkir as total')
             )
             ->groupBy(
                 'rentals.id', 'rentals.customer_id', 'rentals.item_id', 'rentals.name_company',
                 'rentals.addres_company', 'rentals.phone_company', 'rentals.no_po', 'rentals.date_start',
-                'rentals.date_end', 'rentals.status', 'nominal_in', 'nominal_out', 'diskon', 'ongkir', 'a.rental_id'
+                'rentals.date_end', 'rentals.status', 'nominal_in', 'nominal_out', 'diskon', 'ongkir', 'a.rental_id', 'rentals.created_at',
             )
             ->get();
         $totaldiskon = $report->sum('diskon');
@@ -51,14 +52,14 @@ class ReportController extends Controller
             ->select(
                 'rentals.id', 'rentals.customer_id', 'rentals.item_id', 'rentals.name_company',
                 'rentals.addres_company', 'rentals.phone_company', 'rentals.no_po','rentals.date_start',
-                'rentals.date_end', 'rentals.status', 'nominal_in', 'nominal_out', 'diskon', 'a.rental_id','ongkir',
-                \DB::raw('GROUP_CONCAT(DISTINCT b.name) as access'), // Diedit: Menambahkan DISTINCT untuk menghindari duplikasi nama accessories
-                \DB::raw('nominal_in - diskon - ongkir as total')
+                'rentals.date_end', 'rentals.status', 'nominal_in', 'nominal_out', 'diskon', 'a.rental_id','ongkir', 'rentals.created_at',
+                DB::raw('GROUP_CONCAT(DISTINCT b.name) as access'), // Diedit: Menambahkan DISTINCT untuk menghindari duplikasi nama accessories
+                DB::raw('nominal_in - diskon - ongkir as total')
             )
             ->groupBy(
                 'rentals.id', 'rentals.customer_id', 'rentals.item_id', 'rentals.name_company',
                 'rentals.addres_company', 'rentals.phone_company', 'rentals.no_po', 'rentals.date_start',
-                'rentals.date_end', 'rentals.status', 'nominal_in', 'nominal_out', 'diskon', 'a.rental_id', 'ongkir',
+                'rentals.date_end', 'rentals.status', 'nominal_in', 'nominal_out', 'diskon', 'a.rental_id', 'ongkir', 'rentals.created_at',
             )
             ->whereBetween('rentals.created_at', [$start_date, $end_date])
             ->get();

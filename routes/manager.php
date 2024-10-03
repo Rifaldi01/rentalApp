@@ -47,6 +47,7 @@ Route::group(['middleware' => ['auth:web', 'role:manager'], 'prefix' => 'manager
     Route::post('/maintenance/', [MaintenanceController::class, 'store'])->name('manager.mainten.store');
     Route::get('/items/sale', [ItemController::class, 'sale'])->name('manager.sale');
     Route::post('/sale/', [ItemController::class, 'storesale'])->name('manager.item.sale');
+    Route::delete('/sale/{id}/', [ItemController::class, 'deleteSale'])->name('manager.sale.destroy');
     Route::post('/item/deleteimage', [ItemController::class, 'deleteImage'])->name('manager.item.deleteImage');
     //item end
 

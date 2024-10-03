@@ -208,6 +208,9 @@ class ItemController extends Controller
     public function sale()
     {
         $sale = ItemSale::with('item.cat')->get();
+        $title = 'Delete Item!';
+        $text = "Are you sure you want to delete?";
+        confirmDelete($title, $text);
         return view('manager.item.sale', compact('sale'));
     }
     public function storesale(Request $request)
@@ -222,6 +225,13 @@ class ItemController extends Controller
         Alert::success('Success', 'Maintenance has been add');
         return redirect()->back();
     }
+    public function deleteSale($id)
+    {
+        $itemSale = ItemSale::find($id);       
+        $itemSale->delete();
+        return redirect()->back()->withSuccess('Items Sales dihapus');
+    }
+
     public function deleteImage(Request $request)
     {
         $image = $request->input('image');

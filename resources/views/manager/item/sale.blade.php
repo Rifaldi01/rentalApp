@@ -21,6 +21,7 @@
                         <th class="text-center">Image</th>
                         <th class="text-center">Detail</th>
                         <th class="text-center">Status</th>
+                        <th class="text-center">Action</th>
                     </tr>
                     </thead>
                     <tbody>
@@ -129,6 +130,12 @@
                             </td>
                             <td class="text-center">
                                 <span class="badge bg-warning">Sale</span>
+                            </td>
+                            <td class="text-center">
+                                    <a href="{{ route('manager.sale.destroy', $data->id) }}" data-confirm-delete="true"
+                                       class="btn btn-danger btn-sm bx bx-trash" data-bs-toggle="tooltip"
+                                       data-bs-placement="top" title="Delete">
+                                    </a>
                             </td>
                     </tr>
                     @endforeach

@@ -61,11 +61,11 @@
                     <thead>
                     <tr>
                         <th width="2%">No</th>
+                        <th>Date</th>
                         <th>Name</th>
                         <th>Item</th>
                         <th>No Seri</th>
                         <th>Accessories</th>
-                        <th>Date Pembuatan</th>
                         <th>Start Date</th>
                         <th>End Date</th>
                         <th width="">Nominal <br>In</th>
@@ -80,6 +80,9 @@
                         @foreach ($report as $key => $data)
                         <tr>
                             <td>{{$key +1}}</td>
+                            <td>
+                                {{\Carbon\Carbon::parse($data->created_at)->translatedFormat('d F Y')}}
+                            </td>
                             <td>{{$data->cust->name}}</td>
                             <td>@php
                                     $itemIds = json_decode($data->item_id);
@@ -115,9 +118,6 @@
                             @else
                                 <li>No accessories</li>
                             @endif
-                            </td>
-                            <td>
-                                {{\Carbon\Carbon::parse($data->created_at)->translatedFormat('d F Y')}}
                             </td>
                             <td>
                                 {{\Carbon\Carbon::parse($data->date_start)->translatedFormat('d F Y')}}
