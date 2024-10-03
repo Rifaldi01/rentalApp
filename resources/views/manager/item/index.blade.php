@@ -50,11 +50,10 @@
                                     @endif
                                 </td>
                                 <td class="text-center">
-                                    @if(isset($rentalMap[$data->id]))
+                                    @if($data->status == 2 && isset($rentalMap[$data->id]))
                                         @foreach($rentalMap[$data->id] as $rental)
                                             <div>
                                                 <strong>{{ $rental['customer_name'] }}</strong><br>
-                                               
                                             </div>
                                         @endforeach
                                     @else
@@ -62,12 +61,10 @@
                                     @endif
                                 </td>
                                 <td class="text-center">
-                                    @if(isset($rentalMap[$data->id]))
+                                    @if($data->status == 2 && isset($rentalMap[$data->id]))
                                         @foreach($rentalMap[$data->id] as $rental)
                                             {{ formatId($rental['date_start']) }} 
-                                            
                                             <div class="text-center">s.d</div>
-                                            
                                             {{ formatId($rental['date_end']) }}
                                         @endforeach
                                     @else

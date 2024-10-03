@@ -25,6 +25,7 @@ class ReportController extends Controller
                 'rentals.addres_company', 'rentals.phone_company', 'rentals.no_po', 'rentals.date_start',
                 'rentals.date_end', 'rentals.status', 'nominal_in', 'nominal_out', 'diskon', 'ongkir', 'a.rental_id', 'rentals.created_at',
             )
+            ->orderBy('rentals.created_at', 'asc')
             ->get();
         $totaldiskon = $report->sum('diskon');
         $totalin = $report->sum('nominal_in');
@@ -62,6 +63,7 @@ class ReportController extends Controller
                 'rentals.date_end', 'rentals.status', 'nominal_in', 'nominal_out', 'diskon', 'a.rental_id', 'ongkir', 'rentals.created_at',
             )
             ->whereBetween('rentals.created_at', [$start_date, $end_date])
+            ->orderBy('rentals.created_at', 'asc')
             ->get();
         $totaldiskon = $report->sum('diskon');
         $totalin = $report->sum('nominal_in');
