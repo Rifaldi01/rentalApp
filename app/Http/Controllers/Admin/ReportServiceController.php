@@ -11,7 +11,7 @@ class ReportServiceController extends Controller
 {
     public function index()
     {
-        $report = Service::all();
+        $report = Service::all()->orderBy('date_service', 'asc');
         $totalincome = $report->sum(function($item) {
             return $item->nominal_in - $item->diskon - $item->ongkir;
         });
@@ -33,7 +33,7 @@ class ReportServiceController extends Controller
         ]);
         $start_date = Carbon::parse(request()->start_date)->toDateTimeString();
         $end_date = Carbon::parse(request()->end_date)->toDateTimeString();
-        $report = Service::whereBetween('date_service',[$start_date,$end_date])->get();
+        $report = Service::whereBetween('date_service',[$start_date,$end_date])->orderBy('date_service', 'asc')->get();
         $totalincome = $report->sum(function($item) {
             return $item->nominal_in - $item->diskon - $item->ongkir;
         });
