@@ -426,17 +426,22 @@
                                                     @php
                                                         $images = json_decode($data->image);
                                                     @endphp
+
+                                                    @if(!empty($images) && is_array($images))
                                                         <div class="d-flex flex-wrap">
                                                             <div class="row">
-                                                            @foreach($images as $image)
-                                                                <div class="col-sm-4">
-                                                                <div class="p-2">
-                                                                    <img src="{{ asset('images/rental/'. $image) }}" alt="" class="img-fluid img-thumbnail">
-                                                                </div>
-                                                                </div>
-                                                            @endforeach
+                                                                @foreach($images as $image)
+                                                                    <div class="col-sm-4">
+                                                                        <div class="p-2">
+                                                                            <img src="{{ asset('images/rental/'. $image) }}" alt="" class="img-fluid img-thumbnail">
+                                                                        </div>
+                                                                    </div>
+                                                                @endforeach
                                                             </div>
                                                         </div>
+                                                    @else
+                                                        
+                                                    @endif
                                                 </div>
                                             </div>
                                             <div class="modal-footer">
