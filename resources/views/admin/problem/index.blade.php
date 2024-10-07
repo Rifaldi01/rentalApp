@@ -21,10 +21,11 @@
                     </thead>
                     <tbody>
                     @foreach($rental as $key => $data)
-                        <tr>
+                        <tr id="rentalRow{{ $data->id }}">
                             <td>{{ $key + 1 }}</td>
                             <td>{{ $data->rental->cust->name ?? 'N/A' }}</td>
-                            <td>  @php
+                            <td>
+                                @php
                                     $itemIds = json_decode($data->item_id);
                                 @endphp
                                 @if(is_array($itemIds))
@@ -36,59 +37,52 @@
                                     @endforeach
                                 @else
                                     {{ $itemIds }}
-                                @endif</td>
-                            <td> @if($data->access)
-                                @foreach(explode(',', $data->access) as $accessory)
-                                    <li>{{ $accessory }}</li>
-                                @endforeach
-                            @else
-                                <li>No accessories</li>
-                            @endif</td>
+                                @endif
+                            </td>
+                            <td>
+                                @if($data->access)
+                                    @foreach(explode(',', $data->access) as $accessory)
+                                        <li>{{ $accessory }}</li>
+                                    @endforeach
+                                @else
+                                    <li>No accessories</li>
+                                @endif
+                            </td>
                             <td>{{ formatId($data->date_start) }}</td>
                             <td>{{ formatId($data->date_end) }}</td>
                             <td class="text-center">
                                 <span class="badge bg-danger">Problem</span>
                             </td>
                             <td>
+                                <button class="btn btn-success lni lni-checkmark float-end finish-button"
+                                        data-bs-toggle="modal" data-bs-target="#exampleVerticallycenteredModal{{ $data->id }}"
+                                        title="Finished" id="finishButton{{ $data->id }}" style="display: none;">
+                                </button>
 
-
-                                <button class="btn btn-success lni lni-checkmark float-end" data-bs-toggle="modal"
-                                        data-bs-target="#exampleVerticallycenteredModal{{ $data->id }}"
-                                        title="Finished"></button>
-
-                                <div class="modal fade" id="exampleVerticallycenteredModal{{ $data->id }}"
-                                     tabindex="-1" aria-hidden="true">
+                                <div class="modal fade" id="exampleVerticallycenteredModal{{ $data->id }}" tabindex="-1" aria-hidden="true">
                                     <div class="modal-dialog modal-dialog-centered">
                                         <div class="modal-content">
                                             <div class="modal-header">
                                                 <h5 class="modal-title">Pelunasan</h5>
-                                                <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                                        aria-label="Close"></button>
+                                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                             </div>
                                             <form action="{{ route('admin.problem.finis', $data->id) }}" method="POST">
                                                 @csrf
                                                 <div class="modal-body">
                                                     <label class="col-form-label">Date Pembuatan</label>
-                                                    <input type="text" class="form-control datepicker" name="nominal_in"
-                                                           value="{{ $data->rental->created_at ?? '' }}">
+                                                    <input type="text" class="form-control datepicker" name="nominal_in" value="{{ $data->rental->created_at ?? '' }}">
                                                     <label class="col-form-label">Date Start</label>
-                                                    <input type="text" class="form-control datepicker" name="nominal_in"
-                                                           value="{{ $data->rental->date_start ?? '' }}">
+                                                    <input type="text" class="form-control datepicker" name="nominal_in" value="{{ $data->rental->date_start ?? '' }}">
                                                     <label class="col-form-label">Date End</label>
-                                                    <input type="text" class="form-control datepicker" name="nominal_in"
-                                                           value="{{ $data->rental->date_end ?? '' }}">
+                                                    <input type="text" class="form-control datepicker" name="nominal_in" value="{{ $data->rental->date_end ?? '' }}">
                                                     <label class="col-form-label">Nominal In</label>
-                                                    <input type="number" class="form-control" name="nominal_in"
-                                                           value="{{ $data->rental->nominal_in ?? '' }}">
+                                                    <input type="number" class="form-control" name="nominal_in" value="{{ $data->rental->nominal_in ?? '' }}">
                                                     <label class="col-form-label">Nominal Out</label>
-                                                    <input type="number" class="form-control" name="nominal_out"
-                                                           value="{{ $data->rental->nominal_out ?? '' }}">
+                                                    <input type="number" class="form-control" name="nominal_out" value="{{ $data->rental->nominal_out ?? '' }}">
                                                 </div>
                                                 <div class="modal-footer">
-                                                    <button type="button" class="btn btn-secondary"
-                                                            data-bs-dismiss="modal">Close</button>
-                                                    <button type="submit" class="btn btn-primary">Save<i
-                                                            class="bx bx-save"></i></button>
+                                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                                    <button type="submit" class="btn btn-primary">Save<i class="bx bx-save"></i></button>
                                                 </div>
                                             </form>
                                         </div>
@@ -98,14 +92,12 @@
                                 <button class="btn btn-dnd lni lni-eye float-end me-1" data-bs-toggle="modal"
                                         data-bs-target="#exampleLargeModal{{ $data->id }}" title="Detail"></button>
 
-                                <div class="modal fade" id="exampleLargeModal{{ $data->id }}" tabindex="-1"
-                                     aria-hidden="true">
+                                <div class="modal fade" id="exampleLargeModal{{ $data->id }}" tabindex="-1" aria-hidden="true">
                                     <div class="modal-dialog modal-lg">
                                         <div class="modal-content">
                                             <div class="modal-header">
                                                 <h5 class="modal-title">Detail Problem</h5>
-                                                <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                                        aria-label="Close"></button>
+                                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                             </div>
                                             <div class="modal-body">
                                                 <div class="table-responsive">
@@ -138,26 +130,22 @@
                                                 </div>
                                             </div>
                                             <div class="modal-footer">
-                                                <button type="button" class="btn btn-secondary"
-                                                        data-bs-dismiss="modal">Close</button>
+                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
 
                                 <a href="https://api.whatsapp.com/send?phone=62{{ $data->rental->cust->phone ?? '' }}&text=Halo%20Customer%20yth,%20ada%20masalah%20dalam%20peminjaman%20anda%20segera%20konfirmasi%20kepada%20kami%20untuk%20menyelesaikan%20masalah%20tersebut"
-                                   class="btn btn-success lni lni-whatsapp float-end me-1"
-                                   data-bs-toggle="tooltip" data-bs-placement="top" title="Chat Customer">
+                                   class="btn btn-success lni lni-whatsapp float-end me-1" data-bs-toggle="tooltip" data-bs-placement="top" title="Chat Customer">
                                 </a>
 
-                                @if ($data->rental->status != 0)
-                                    <form action="{{ route('admin.problem.returned', $data->id) }}" method="POST">
-                                        @csrf
-                                        <button type="submit" class="btn btn-warning lni lni-package float-end me-1"
-                                                onclick="return confirm('Item Returned?')" title="Item Returned">
-                                        </button>
-                                    </form>
-                                @endif
+                                <form action="{{ route('admin.problem.returned', $data->id) }}" method="POST" class="return-form" id="returnForm{{ $data->id }}">
+                                    @csrf
+                                    <button type="submit" class="btn btn-warning lni lni-package float-end me-1 return-button"
+                                            id="returnButton{{ $data->id }}" title="Item Returned">
+                                    </button>
+                                </form>
                             </td>
                         </tr>
                     @endforeach
@@ -176,32 +164,30 @@
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
     <script>
         $(".datepicker").flatpickr();
-        $(".time-picker").flatpickr({
-            enableTime: true,
-            noCalendar: true,
-            dateFormat: "Y-m-d H:i",
-        });
-        $(".date-time").flatpickr({
-            enableTime: true,
-            dateFormat: "Y-m-d H:i",
-        });
-        $(".date-format").flatpickr({
-            altInput: true,
-            altFormat: "F j, Y",
-            dateFormat: "Y-m-d",
-        });
-        $(".date-range").flatpickr({
-            mode: "range",
-            altInput: true,
-            altFormat: "F j, Y",
-            dateFormat: "Y-m-d",
-        });
-        $(".date-inline").flatpickr({
-            inline: true,
-            altInput: true,
-            altFormat: "F j, Y",
-            dateFormat: "Y-m-d",
+
+        document.addEventListener('DOMContentLoaded', function () {
+            // Memeriksa localStorage untuk status tombol "Returned"
+            document.querySelectorAll('.return-button').forEach(function (button) {
+                const rentalId = button.id.replace('returnButton', '');
+
+                // Cek jika tombol "Returned" sudah diklik sebelumnya
+                if (localStorage.getItem('returned_' + rentalId) === 'true') {
+                    button.style.display = 'none'; // Sembunyikan tombol "Returned"
+                    document.getElementById('finishButton' + rentalId).style.display = 'inline-block'; // Tampilkan tombol "Finished"
+                }
+            });
+
+            // Menangani event submit pada form
+            document.querySelectorAll('.return-form').forEach(function (form) {
+                form.addEventListener('submit', function (event) {
+                    event.preventDefault(); // Mencegah pengiriman form
+                    const rentalId = this.id.replace('returnForm', '');
+                    localStorage.setItem('returned_' + rentalId, 'true'); // Simpan status di localStorage
+                    document.getElementById('returnButton' + rentalId).style.display = 'none'; // Sembunyikan tombol "Returned"
+                    document.getElementById('finishButton' + rentalId).style.display = 'inline-block'; // Tampilkan tombol "Finished"
+                    this.submit(); // Kirim form
+                });
+            });
         });
     </script>
 @endpush
-

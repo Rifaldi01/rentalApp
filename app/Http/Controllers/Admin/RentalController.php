@@ -301,8 +301,10 @@ public function finis($id)
     foreach ($itemIds as $itemId) {
         $item = Item::find($itemId);
         if ($item) {
-            $item->status = 0;
-            $item->save();
+            if ($item->status != 3 && $item->status != 1) { // Cek jika status bukan 3 atau 1
+                $item->status = 0; // Ubah status menjadi 0
+                $item->save();
+            }
         }
     }
 
