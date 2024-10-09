@@ -146,7 +146,8 @@
                         <thead>
                         <tr>
                             <th width="2%">No</th>
-                            <th>Name</th>
+                            <th>Customer</th>
+                            <th>Item</th>
                             <th>No Seri</th>
                             <th>Accessories</th>
                             <th>Start Date</th>
@@ -160,6 +161,7 @@
                         <tr>
                             @foreach($rentals as $key => $data)
                                 <td>{{$key +1}}</td>
+                                <td>{{$data->cust->name}}</td>
                                 <td>
                                 @php
                                     $itemIds = json_decode($data->item_id);
