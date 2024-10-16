@@ -12,24 +12,28 @@
         </div>
         <div class="card-body">
             <div class="table-responsive">
-                <table id="example" class="table table-striped table-bordered" style="width:100%">
-                    <thead>
+            <table id="accessories" class="table table-striped table-bordered" style="width:100%">
+                <thead>
                     <tr>
                         <th width="2%">No</th>
                         <th>Name</th>
-                        <th class="text-center" width="9%">Stok</th>
+                        <th>Stok All</th>
+                        <th>Stok Available</th>
+                        <th>Rental</th>
                     </tr>
-                    </thead>
-                    <tbody>
+                </thead>
+                <tbody>
+                    @foreach($accessoriesData as $key => $data)
                     <tr>
-                        @foreach($acces as $key => $data)
-                            <td>{{$key +1}}</td>
-                            <td>{{$data->name}}</td>
-                            <td></td>
+                        <td data-index="{{ $key + 1 }}">{{ $key + 1 }}</td>
+                        <td>{{ $data['name'] }}</td>
+                        <td>{{ $data['stokAll'] }}</td>
+                        <td>{{ $data['stok'] }}</td>
+                        <td>{{ $data['rentedQty'] }}</td>
                     </tr>
                     @endforeach
-                    </tbody>
-                </table>
+                </tbody>
+            </table>
             </div>
         </div>
     </div>
@@ -39,5 +43,42 @@
 
 @endpush
 @push('js')
+<script>
+    $(document).ready(function() {
+        var table = $('#accessories').DataTable({
+            lengthChange: false,
+            buttons: [{
+                extend: 'pdf',
+                exportOptions: {
+                    columns: [0, 1, 2, 3, 4]
+                },
+                customize: function(doc) {
+                    doc.content[1].alignment = 'center';
+                }
+            }, {
+                extend: 'print',
+                exportOptions: {
+                    columns: [0, 1, 2, 3, 4]
+                },
+                customize: function(win) {
+                    $(win.document.body).find('table').addClass('table-center');
+                }
+            }]
+        });
 
+        table.buttons().container()
+            .appendTo('#accessories_wrapper .col-md-6:eq(0)');
+    });
+    $(document).ready(function() {
+        var table = $('#accessories').DataTable();
+
+        // Mengurutkan ulang nomor saat tabel diurutkan atau difilter
+        table.on('order.dt search.dt', function() {
+            let i = 1;
+            table.cells(null, 0, { search: 'applied', order: 'applied' }).every(function(cell) {
+                this.data(i++);
+            });
+        }).draw();
+    });
+    </script>
 @endpush
