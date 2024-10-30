@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class Rental extends Model
 {
     use HasFactory;
+    public $timestamps = false;
     protected $guarded = ['accessories_id'];
 
     public function accessoriescategory()

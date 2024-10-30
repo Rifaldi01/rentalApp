@@ -247,10 +247,9 @@
                         },
                         customize: function(win) {
                             $(win.document.body).find('table').addClass('compact').css('font-size', '10px');
-                            var bodyContent = $('#table-report tbody').clone();
-                            $(win.document.body).find('table').append(bodyContent);
-                            var footerContent = $('#table-report tfoot').clone();
-                            $(win.document.body).find('table').append(footerContent);
+                            var tfoot = $('#table-report tfoot').clone();
+                            $(win.document.body).find('table').append(tfoot);
+                        
                         }
                     }
                 ]

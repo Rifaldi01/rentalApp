@@ -25,14 +25,14 @@ class ProblemController extends Controller
             ->select(
                 'rentals.id', 'rentals.customer_id', 'rentals.item_id', 'rentals.name_company',
                 'rentals.addres_company', 'rentals.phone_company', 'rentals.no_po','rentals.date_start',
-                'rentals.date_end', 'rentals.status', 'a.rental_id',
+                'rentals.date_end', 'rentals.status', 'a.rental_id', 'rentals.created_at',
                 \DB::raw('GROUP_CONCAT(b.name) as access'),
                 'problems.id', 'problems.descript', 'problems.rental_id'
             )
             ->groupBy(
                 'rentals.id', 'rentals.customer_id', 'rentals.item_id', 'rentals.name_company',
                 'rentals.addres_company', 'rentals.phone_company', 'rentals.no_po', 'rentals.date_start',
-                'rentals.date_end', 'rentals.status', 'a.rental_id', 'problems.id', 'problems.descript', 'problems.rental_id'
+                'rentals.date_end', 'rentals.status', 'a.rental_id', 'problems.id', 'problems.descript', 'problems.rental_id','rentals.created_at',
             )
             ->where('problems.status', 0)
             ->get();
@@ -60,9 +60,9 @@ class ProblemController extends Controller
         $destroy->save();
 
         $rental = Rental::findOrFail($destroy->rental_id);
-        $rental->nominal_in = $request->input('created_at');
-        $rental->nominal_in = $request->input('date_start');
-        $rental->nominal_in = $request->input('date_end');
+        $rental->created_at = $request->input('created_at');
+        $rental->date_start = $request->input('date_start');
+        $rental->date_end = $request->input('date_end');
         $rental->nominal_in = $request->input('nominal_in');
         $rental->nominal_out = $request->input('nominal_out');
         $rental->status = 0;

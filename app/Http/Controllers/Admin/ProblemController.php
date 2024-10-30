@@ -60,9 +60,9 @@ class ProblemController extends Controller
         $destroy->save();
 
         $rental = Rental::findOrFail($destroy->rental_id);
-        $rental->nominal_in = $request->input('created_at');
-        $rental->nominal_in = $request->input('date_start');
-        $rental->nominal_in = $request->input('date_end');
+        $rental->created_at = $request->input('created_at');
+        $rental->date_start = $request->input('date_start');
+        $rental->date_end = $request->input('date_end');
         $rental->nominal_in = $request->input('nominal_in');
         $rental->nominal_out = $request->input('nominal_out');
         $rental->status = 0;
