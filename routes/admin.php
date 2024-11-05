@@ -52,6 +52,7 @@ Route::group(['middleware' => ['auth:web', 'role:admin'], 'prefix' => 'admin'], 
     Route::get('/items/sale', [ItemController::class, 'sale'])->name('admin.sale');
     Route::post('/sale/', [ItemController::class, 'storesale'])->name('admin.item.sale');
     Route::post('/item/deleteimage', [ItemController::class, 'deleteImage'])->name('admin.item.deleteImage');
+    Route::post('/item/rent/{id}', [ItemController::class, 'rentItm'])->name('admin.item.rentItm');
     //item end
 
     //category

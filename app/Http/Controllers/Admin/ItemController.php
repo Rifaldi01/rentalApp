@@ -91,7 +91,7 @@ class ItemController extends Controller
     public function show(string $id)
     {
         $item = Item::findOrFail($id);
-    
+
         // Mengambil data rental dan menggabungkan dengan accessories
         $rental = Rental::leftJoin('accessories_categories as a', 'a.rental_id', '=', 'rentals.id')
             ->leftJoin('accessories as b', 'a.accessories_id', '=', 'b.id')
@@ -107,18 +107,18 @@ class ItemController extends Controller
                 'rentals.date_end', 'rentals.status'
             )
             ->get();
-    
+
         // Format item_id sebagai JSON array dan hitung selisih hari
         foreach ($rental as $data) {
             $dateStart = Carbon::parse($data->date_start);
             $dateEnd = Carbon::parse($data->date_end);
             $daysDifference = $dateStart->diffInDays($dateEnd);
             $data->days_difference = $daysDifference;
-    
+
             // Format item_id sebagai array JSON
             $data->item_id = json_encode(explode(',', $data->item_id));
         }
-    
+
         return view('admin.item.show', compact('item', 'rental'));
     }
 
@@ -155,7 +155,7 @@ class ItemController extends Controller
             'name'   => 'required',
             'cat_id' => 'required',
             'no_seri' => 'required',
-           
+
         ]);
 
         // Temukan atau buat item baru
@@ -168,11 +168,11 @@ class ItemController extends Controller
         // Penanganan gambar
         if ($request->hasFile('image')) {
             $newImages = [];
-            
+
             // Handle new images
             foreach ($request->file('image') as $file) {
                 $file_name = md5(now()->timestamp . $file->getClientOriginalName()) . '.jpg';
-                
+
                 try {
                     $img = ImageManagerStatic::make($file);
                     $img->resize(null, 600, function ($constraint) {
@@ -184,7 +184,7 @@ class ItemController extends Controller
                     return back()->withErrors(['image' => 'Error processing the image: ' . $e->getMessage()])->withInput();
                 }
             }
-    
+
             // Combine old images with new ones
             $existingImages = json_decode($item->image, true) ?? [];
             $item->image = json_encode(array_merge($existingImages, $newImages));
@@ -244,5 +244,12 @@ class ItemController extends Controller
         }
 
         return response()->json(['success' => false]);
+    }
+    public function rentItm($id)
+    {
+        $item = Item::findOrFail($id);
+        $item->status = 2;
+        $item->save();
+        return back()->withSuccess('Item Sedang dirental');
     }
 }
