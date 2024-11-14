@@ -458,7 +458,15 @@
                                 
                                     
                                 @elseif($data->status == 2)
-                                    
+                                <form action="{{ route('manager.rental.finis', $data->id) }}" method="POST">
+                                        @csrf
+                                        <button type="submit"
+                                                class="btn-sm btn btn-success lni lni-checkmark  mt-1"
+                                                data-bs-toggle="tooltip" data-bs-placement="top"
+                                                title="Finished">
+
+                                        </button>   
+                                    </form>
                                 @endif
                                
                             </td>
