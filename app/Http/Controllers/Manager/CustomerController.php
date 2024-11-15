@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Customer;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Intervention\Image\ImageManagerStatic;
 use RealRashid\SweetAlert\Facades\Alert;
 
 class CustomerController extends Controller
@@ -113,31 +114,55 @@ class CustomerController extends Controller
     private function save(Request $request, $id = null)
     {
         $validate = $request->validate([
-            'name'         => 'required',
+            'name'        => 'required',
             'no_identity' => 'required|numeric|min:10',
             'phone'       => 'required|numeric|min:10',
             'addres'      => 'required',
-            'image' => $id ? 'nullable|image' : 'required|image',
+            'image'       => $id ? 'nullable|image' : 'required|image',
         ]);
+
         $customer = Customer::firstOrNew(['id'=> $id]);
         $customer->name        = $request->input('name');
         $customer->no_identity = $request->input('no_identity');
         $customer->phone       = $request->input('phone');
         $customer->addres      = $request->input('addres');
-        if ($request->hasFile('image')) {
-            // If updating and a new image is uploaded, delete the old image
+
+        // Delete image if delete_image checkbox is checked
+        if ($request->has('delete_image')) {
             if ($customer->image && file_exists(public_path('images/identity/' . $customer->image))) {
                 unlink(public_path('images/identity/' . $customer->image));
             }
-
-            // Store the new image
-            $file = $request->file('image');
-            $file_name = md5(now()) . '.' . $file->getClientOriginalExtension();
-            $file->move('images/identity/', $file_name);
-            $customer->image = $file_name;
+            $customer->image = null;
         }
+
+        // Store a new image if uploaded
+        if ($request->hasFile('image')) {
+            $newImages = [];
+            
+            // Handle new images
+            foreach ($request->file('image') as $file) {
+                $file_name = md5(now()->timestamp . $file->getClientOriginalName()) . '.jpg';
+                
+                try {
+                    $img = ImageManagerStatic::make($file);
+                    $img->resize(null, 600, function ($constraint) {
+                        $constraint->aspectRatio();
+                    });
+                    $img->save(public_path("images/identity/{$file_name}"), 80, 'jpg');
+                    $newImages[] = $file_name;
+                } catch (\Exception $e) {
+                    return back()->withErrors(['image' => 'Error processing the image: ' . $e->getMessage()])->withInput();
+                }
+            }
+    
+            // Combine old images with new ones
+            $existingImages = json_decode($customer->image, true) ?? [];
+            $customer->image = json_encode(array_merge($existingImages, $newImages));
+        }
+
         $customer->save();
         Alert::success('Success', 'Upload Data Success');
         return redirect()->route('manager.customer.index')->withSuccess('Berhasil');
     }
+
 }

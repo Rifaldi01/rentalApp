@@ -79,7 +79,33 @@
             <div class="row mb-3">
                 <label class="col-sm-3 col-form-label">Identity</label>
                 <div class="col-sm-9">
-                    <input name="image[]" id="image-uploadify" type="file" accept="image/*" multiple>
+                <div class="form-group">
+                <label class="form-label"><i class="text-danger">*</i> Image</label>
+                <div class="preview-zone hidden">
+                    <div class="box box-solid">
+                        <div class="box-header with-border">
+                            <div class="box-tools pull-right">
+                                <button type="button" class="btn btn-danger btn-sm remove-preview">
+                                    <i class="text-light" data-feather="refresh-ccw"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="box-body mt-3 mb-3">
+                            @if(isset($customer))
+                                <img src="{{ asset('images/identity/' . $customer->image) }}">
+                            @endif
+                        </div>
+                    </div>
+                </div>
+                <div class="dropzone-wrapper">
+                    <div class="dropzone-desc">
+                        <i class="glyphicon glyphicon-download-alt"></i>
+                        <p>Choose image files or drag them here.</p>
+                    </div>
+                    <input type="file" name="image[]" accept="image/*" class="dropzone" multiple>
+                </div>
+            </div>
+
                     @if (isset($customer) && $customer->image)
                         <div class="mt-3">
                             <h6>Existing Images:</h6>
@@ -176,6 +202,62 @@
                     }
                 });
             });
+        });
+    </script>
+     <script>
+        function readFiles(input) {
+            if (input.files && input.files.length > 0) {
+                var wrapperZone = $(input).parent();
+                var previewZone = $(input).parent().parent().find('.preview-zone');
+                var boxZone = $(input).parent().parent().find('.preview-zone').find('.box').find('.box-body');
+
+                wrapperZone.removeClass('dragover');
+                previewZone.removeClass('hidden');
+                boxZone.empty(); // Clear previous previews
+
+                Array.from(input.files).forEach(file => {
+                    var reader = new FileReader();
+                    reader.onload = function (e) {
+                        var htmlPreview = `
+                            <div class="preview-item mb-2">
+                                <img width="200" src="${e.target.result}" class="me-2" />
+                                <p>${file.name}</p>
+                            </div>`;
+                        boxZone.append(htmlPreview);
+                    };
+                    reader.readAsDataURL(file);
+                });
+            }
+        }
+
+        function reset(e) {
+            e.wrap('<form>').closest('form').get(0).reset();
+            e.unwrap();
+        }
+
+        $(".dropzone").change(function () {
+            readFiles(this);
+        });
+
+        $('.dropzone-wrapper').on('dragover', function (e) {
+            e.preventDefault();
+            e.stopPropagation();
+            $(this).addClass('dragover');
+        });
+
+        $('.dropzone-wrapper').on('dragleave', function (e) {
+            e.preventDefault();
+            e.stopPropagation();
+            $(this).removeClass('dragover');
+        });
+
+        $('.remove-preview').on('click', function () {
+            var boxZone = $(this).parents('.preview-zone').find('.box-body');
+            var previewZone = $(this).parents('.preview-zone');
+            var dropzone = $(this).parents('.form-group').find('.dropzone');
+            boxZone.empty();
+            previewZone.addClass('hidden');
+            reset(dropzone);
         });
     </script>
 @endpush

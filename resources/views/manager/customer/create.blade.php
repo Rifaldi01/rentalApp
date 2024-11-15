@@ -4,48 +4,48 @@
         <div class="row">
             <div class="col-sm-6 mt-3 ">
                 @if(isset($customer))
-                    <h5 class="mb-4 ms-3">Edit Customer<i class="bx bx-edit"></i></h5>
+                    <h5 class="mb-4 ms-3">Edit Customer <i class="bx bx-edit"></i></h5>
                 @else
-                    <h5 class="mb-4 ms-3">Register Customer<i class="bx bx-user-plus"></i></h5>
+                    <h5 class="mb-4 ms-3">Register Customer <i class="bx bx-user-plus"></i></h5>
                 @endif
             </div>
             <div class="col-sm-6 mt-3">
-                <a href="{{route('manager.customer.index')}}" class="btn btn-warning float-end me-3">List
-                    Csutomer</a>
+                <a href="{{ route('manager.customer.index') }}" class="btn btn-warning float-end me-3">List Customer</a>
             </div>
         </div>
+
         @if ($errors->any())
             @foreach ($errors->all() as $error)
                 <div class="alert border-0 border-start border-5 border-danger alert-dismissible fade show py-2">
                     <div class="d-flex align-items-center">
-                        <div class="font-35 text-danger"><i class='bx bxs-message-square-x'></i>
-                        </div>
+                        <div class="font-35 text-danger"><i class='bx bxs-message-square-x'></i></div>
                         <div class="ms-3">
                             <h6 class="mb-0 text-danger">Error</h6>
-                            <div>
-                                <div>{{ $error }}</div>
-                            </div>
+                            <div>{{ $error }}</div>
                         </div>
                     </div>
                     <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                 </div>
             @endforeach
         @endif
-        <form class="card-body p-4" action="{{$url}}" method="POST" enctype="multipart/form-data">
+
+        <form class="card-body p-4" action="{{ $url }}" method="POST" enctype="multipart/form-data">
             @csrf
             @isset($customer)
                 @method('PUT')
             @endif
+
             <div class="row mb-3">
                 <label for="input42" class="col-sm-3 col-form-label"><i class="text-danger">*</i> Customer Name</label>
                 <div class="col-sm-9">
                     <div class="position-relative input-icon">
                         <input type="text" name="name" class="form-control" id="input42"
-                               placeholder="Enter Csutomer Name" value="{{isset($customer) ? $customer->name : null}}">
+                               placeholder="Enter Customer Name" value="{{ isset($customer) ? $customer->name : null }}">
                         <span class="position-absolute top-50 translate-middle-y"><i class='bx bx-user'></i></span>
                     </div>
                 </div>
             </div>
+
             <div class="row mb-3">
                 <label for="input43" class="col-sm-3 col-form-label"><i class="text-danger">*</i> Phone Whatsapp</label>
                 <div class="col-sm-9">
@@ -84,6 +84,7 @@
                               value="">{{isset($customer) ? $customer->addres : null}}</textarea>
                 </div>
             </div>
+
             <div class="form-group">
                 <label class="form-label"><i class="text-danger">*</i> Image</label>
                 <div class="preview-zone hidden">
@@ -97,7 +98,7 @@
                         </div>
                         <div class="box-body mt-3 mb-3">
                             @if(isset($customer))
-                                <img src="{{asset('images/identity/'. $customer->image )}}">
+                                <img src="{{ asset('images/identity/' . $customer->image) }}">
                             @endif
                         </div>
                     </div>
@@ -105,49 +106,51 @@
                 <div class="dropzone-wrapper">
                     <div class="dropzone-desc">
                         <i class="glyphicon glyphicon-download-alt"></i>
-                        <p>Choose an image file or drag it here.</p>
+                        <p>Choose image files or drag them here.</p>
                     </div>
-                    <input type="file" name="image" accept="image/*" class="dropzone"
-                           value="{{isset($customer) ? $customer->image : null}}">
+                    <input type="file" name="image[]" accept="image/*" class="dropzone" multiple>
                 </div>
             </div>
+
             <div class="row mb-3">
                 <label class="col-sm-3 col-form-label"></label>
             </div>
+
             <div class="d-md-flex d-grid align-items-center gap-3 float-end">
                 <button type="submit" class="btn btn-dnd px-4">Save <i class="bx bx-save me-0"></i></button>
             </div>
         </form>
     </div>
-    </div>
-    </div>
 @endsection
 
 @push('head')
-    <link rel="stylesheet" type="text/css" href="{{URL::to('assets/css/coba1.css')}}">
+    <link rel="stylesheet" type="text/css" href="{{ URL::to('assets/css/coba1.css') }}">
 @endpush
+
 @push('js')
-
     <script>
-        function readFile(input) {
-            if (input.files && input.files[0]) {
-                var reader = new FileReader();
+        function readFiles(input) {
+            if (input.files && input.files.length > 0) {
+                var wrapperZone = $(input).parent();
+                var previewZone = $(input).parent().parent().find('.preview-zone');
+                var boxZone = $(input).parent().parent().find('.preview-zone').find('.box').find('.box-body');
 
-                reader.onload = function (e) {
-                    var htmlPreview =
-                        '<img width="200" src="' + e.target.result + '" />' +
-                        '<p>' + input.files[0].name + '</p>';
-                    var wrapperZone = $(input).parent();
-                    var previewZone = $(input).parent().parent().find('.preview-zone');
-                    var boxZone = $(input).parent().parent().find('.preview-zone').find('.box').find('.box-body');
+                wrapperZone.removeClass('dragover');
+                previewZone.removeClass('hidden');
+                boxZone.empty(); // Clear previous previews
 
-                    wrapperZone.removeClass('dragover');
-                    previewZone.removeClass('hidden');
-                    boxZone.empty();
-                    boxZone.append(htmlPreview);
-                };
-
-                reader.readAsDataURL(input.files[0]);
+                Array.from(input.files).forEach(file => {
+                    var reader = new FileReader();
+                    reader.onload = function (e) {
+                        var htmlPreview = `
+                            <div class="preview-item mb-2">
+                                <img width="200" src="${e.target.result}" class="me-2" />
+                                <p>${file.name}</p>
+                            </div>`;
+                        boxZone.append(htmlPreview);
+                    };
+                    reader.readAsDataURL(file);
+                });
             }
         }
 
@@ -157,7 +160,7 @@
         }
 
         $(".dropzone").change(function () {
-            readFile(this);
+            readFiles(this);
         });
 
         $('.dropzone-wrapper').on('dragover', function (e) {
