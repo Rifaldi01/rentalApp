@@ -33,7 +33,7 @@
                                         @php
                                             $item = \App\Models\Item::find($itemId);
                                         @endphp
-                                        {{ $item ? $item->name : 'Item not found' }} ({{$item->cat->name}}-{{$item->no_seri}})<br>
+                                        {{ $item ? $item->name : 'Item not found' }} ({{$item->no_seri}})<br>
                                     @endforeach
                                 @else
                                     {{ $itemIds }}
