@@ -25,19 +25,7 @@
                             <td>{{ $key + 1 }}</td>
                             <td>{{ $data->rental->cust->name ?? 'N/A' }}</td>
                             <td>
-                                @php
-                                    $itemIds = json_decode($data->item_id);
-                                @endphp
-                                @if(is_array($itemIds))
-                                    @foreach($itemIds as $itemId)
-                                        @php
-                                            $item = \App\Models\Item::find($itemId);
-                                        @endphp
-                                        {{ $item ? $item->name : 'Item not found' }} ({{$item->no_seri}})<br>
-                                    @endforeach
-                                @else
-                                    {{ $itemIds }}
-                                @endif
+                                
                             </td>
                             <td>
                                 @if($data->access)
