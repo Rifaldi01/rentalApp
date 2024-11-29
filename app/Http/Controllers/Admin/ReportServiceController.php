@@ -13,7 +13,7 @@ class ReportServiceController extends Controller
     {
         $report = Service::orderBy('date_service', 'asc')->get();
         $totalincome = $report->sum(function($item) {
-            return $item->nominal_in - $item->diskon - $item->ongkir;
+            return $item->nominal_in - $item->diskon - $item->ongkir - $item->biaya_ganti;
         });
         $totaldiskon = $report->sum('diskon');
         $totalbiaya= $report->sum('biaya_ganti');
@@ -35,7 +35,7 @@ class ReportServiceController extends Controller
         $end_date = Carbon::parse(request()->end_date)->toDateTimeString();
         $report = Service::whereBetween('date_service',[$start_date,$end_date])->orderBy('date_service', 'asc')->get();
         $totalincome = $report->sum(function($item) {
-            return $item->nominal_in - $item->diskon - $item->ongkir;
+            return $item->nominal_in - $item->diskon - $item->ongkir - $item->biaya_ganti;
         });
         $totaldiskon = $report->sum('diskon');
         $totalbiaya= $report->sum('biaya_ganti');
