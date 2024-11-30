@@ -396,8 +396,8 @@
                                                         </tr>
                                                         @foreach($data->accessoriescategory as $asdf)
                                                         <tr>
-                                                            <td>{{ $asdf->accessory->name }}</td>
-                                                            <td>{{$asdf->accessories_quantity}}</td>
+                                                        <td>{{ $asdf->accessory ? $asdf->accessory->name : 'Not Found' }}</td>
+                                                        <td>{{$asdf->accessories_quantity}}</td>
                                                         </tr>
                                                         @endforeach
                                                     </table>
