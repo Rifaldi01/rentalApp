@@ -67,7 +67,7 @@
                             <th>Item</th>
                             <th>No Seri</th>
                             <th>Tanggal Service</th>
-                            <th>Tanggal Finis</th>
+                            <th>Tanggal Selesai</th>
                             <th>Biaya Ganti</th>
                             <th>Uang <br>Masuk</th>
                             <th>Sisa <br>Bayar</th>
@@ -113,11 +113,11 @@
                             <th class="border">{{formatRupiah($totalbiaya)}},-</th>
                         </tr>
                         <tr>
-                            <th class="border" colspan="2">Total Nominal In</th>
+                            <th class="border" colspan="2">Total Uang Masuk</th>
                             <th class="border">{{formatRupiah($totalin)}},-</th>
                         </tr>
                         <tr>
-                            <th class="border" colspan="2">Total Nominal Outside</th>
+                            <th class="border" colspan="2">Total Belum Bayar</th>
                             <th class="border">{{formatRupiah($totaloutside)}},-</th>
                         </tr>
                         <tr>
@@ -161,6 +161,7 @@
                 buttons: [
                     {
                         extend: 'pdf',
+                        filename: 'Laporan_Service',
                         exportOptions: {
                             stripHtml: false,
                         },

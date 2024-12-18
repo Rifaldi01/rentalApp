@@ -223,6 +223,7 @@
                 buttons: [
                     {
                         extend: 'pdf',
+                        filename: 'Laporan_Rental',
                         exportOptions: {
                             stripHtml: false,
                         },
