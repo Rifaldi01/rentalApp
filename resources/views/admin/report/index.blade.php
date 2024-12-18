@@ -74,7 +74,7 @@
                         <th>Sisa <br>Bayar</th>
                         <th>Fee /<br>Discount</th>
                         <th>Ongkir</th>
-                        <th>Total</th>
+{{--                        <th>Total</th>--}}
                         <th>Ket. Byr</th>
                         <th class="text-center">Status</th>
                     </tr>
@@ -134,7 +134,7 @@
                             <td>{{formatRupiah($data->nominal_out)}}</td>
                             <td>{{formatRupiah($data->diskon)}}</td>
                             <td>{{formatRupiah($data->ongkir)}}</td>
-                            <td>{{formatRupiah($data->total)}}</td>
+{{--                            <td>{{formatRupiah($data->total)}}</td>--}}
                             <td>{{$data->date_pay}}</td>
                             <td class="text-center">
                                 @if($data->status == 1)
