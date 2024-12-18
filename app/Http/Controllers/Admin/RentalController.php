@@ -79,7 +79,7 @@ class RentalController extends Controller
             'item' => $item,
             'acces' => $acces
         ];
-    
+
         if ($id) {
             $rental = Rental::findOrFail($id);
             $item = Item::where('status', '!=', 3)->get();
@@ -92,16 +92,13 @@ class RentalController extends Controller
             ];
         }
         return view('admin.rental.create', $inject);
-    }    
+    }
 
     /**
      * Store a newly created resource in storage.
      */
     public function store(Request $request)
     {
-        $validate = $request->validate([
-            'date_end' => 'after_or_equal:start_date',
-        ]);
         return $this->save($request);
     }
 
@@ -126,7 +123,7 @@ class RentalController extends Controller
      */
     public function update(Request $request, string $id)
     {
-    
+
         return $this->save($request, $id);
     }
 
@@ -146,18 +143,23 @@ class RentalController extends Controller
             'item_id' => 'required|array',
             'customer_id' => 'required|exists:customers,id',
             'date_start' => 'required|date',
-            'date_end' => 'required|date',
             // 'image' => $id ? 'nullable' : 'required|array',
             // 'image.*' => $id ? 'nullable' : 'image',
             'nominal_in' => 'required|numeric',
-            'diskon' => 'numeric',
-            'created_at' => 'required'
+            'date_pay' => 'required',
+            'created_at' => 'required',
+            'no_inv' => 'required',
+            'date_end' => $id ? 'nullable' : 'required|date|after_or_equal:start_date',
         ],[
             'item_id.required' => 'Item Wajib diisi',
-            'customer_id.required' => 'Customer Wajib diisi', 
-            'nominal_in.required' => 'Nominal In Wajib diisi', 
-            'customer_id.required' => 'Customer Wajib diisi', 
-            'created_at.required' => 'Tanggal Pembuatan Wajib diisi', 
+            'customer_id.required' => 'Customer Wajib diisi',
+            'nominal_in.required' => 'Nominal In Wajib diisi',
+            'created_at.required' => 'Tanggal Pembuatan Wajib diisi',
+            'date_start.required' => 'Tanggal Mulai Wajib diisi',
+            'date_end.required' => 'Tanggal Selesai Wajib diisi',
+            'date_pay.required' => 'Keterangan Pembayaran Wajib Diisi',
+            'no_inv.required' => 'No Invoice Wajib Diisi',
+            'date_end.after_or_equal' => 'Tanggal Selesai harus berupa tanggal setelah atau sama dengan tanggal mulai.'
         ]);
 
         // Proses aksesori
@@ -205,11 +207,12 @@ class RentalController extends Controller
         $rental->date_start = $request->input('date_start');
         $rental->date_end = $request->input('date_end');
         $rental->nominal_in = $request->input('nominal_in');
-        $rental->nominal_out = $request->input('nominal_out');
-        $rental->ongkir = $request->input('ongkir');
-        $rental->diskon = $request->input('diskon');
+        $rental->nominal_out = $request->input('nominal_out') ?? 0;
+        $rental->ongkir = $request->input('ongkir') ?? 0;
+        $rental->diskon = $request->input('diskon') ?? 0;
         $rental->date_pay = $request->input('date_pay');
         $rental->created_at = $request->input('created_at');
+        $rental->no_inv = $request->input('no_inv');
         $rental->status = 1;
 
         // Proses gambar jika ada
@@ -389,23 +392,23 @@ public function finis($id)
     {
         $rental = Rental::findOrFail($id);
         $images = json_decode($rental->image);
-        
+
         // Ambil nama pelanggan dari model Rental
         $customerName = $rental->cust->name ?? 'unknown_customer'; // Ganti dengan nama kolom yang sesuai
-    
+
         // Sanitasi nama pelanggan untuk penggunaan dalam nama file
         $sanitizedCustomerName = preg_replace('/[^a-zA-Z0-9_-]/', '_', $customerName);
-        
+
         if ($images && count($images) > 0) {
             $zip = new ZipArchive;
             $fileName = $sanitizedCustomerName . '_rental_' . $id . '.zip';
             $zipPath = public_path($fileName);
-    
+
             // Membuka file zip
             if ($zip->open($zipPath, ZipArchive::CREATE) === TRUE) {
                 foreach ($images as $image) {
                     $filePath = public_path('images/rental/' . $image);
-    
+
                     // Periksa apakah file ada sebelum menambahkannya
                     if (file_exists($filePath)) {
                         $zip->addFile($filePath, $image);
@@ -416,11 +419,11 @@ public function finis($id)
                 }
                 $zip->close();
             }
-    
+
             return response()->download($zipPath)->deleteFileAfterSend(true);
         } else {
             return redirect()->back()->with('error', 'No images found.');
         }
     }
-    
+
 }

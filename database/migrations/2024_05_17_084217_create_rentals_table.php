@@ -16,6 +16,7 @@ return new class extends Migration
             $table->foreignId('customer_id');
             $table->integer('item_id');
             $table->integer('accessories_id')->nullable();
+            $table->string('no_inv')->nullable();
             $table->string('name_company')->nullable();
             $table->string('addres_company')->nullable();
             $table->bigInteger('phone_company')->nullable();
