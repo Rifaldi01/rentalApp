@@ -27,6 +27,7 @@ return new class extends Migration
             $table->date('date_service');
             $table->date('date_finis')->nullable();
             $table->string('jenis_service');
+            $table->string('no_inv');
             $table->integer('status')->default(0);
             $table->timestamps();
         });

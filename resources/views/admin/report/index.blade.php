@@ -61,16 +61,17 @@
                     <thead>
                     <tr>
                         <th width="2%">No</th>
-                        <th>Date</th>
+                        <th>Tanggal</th>
                         <th>No Inv</th>
-                        <th>Name</th>
+                        <th>Pelanggan</th>
                         <th>Item</th>
                         <th>No Seri</th>
                         <th>Accessories</th>
-                        <th>Start Date</th>
-                        <th>End Date</th>
-                        <th width="">Nominal <br>In</th>
-                        <th>Nominal <br>outside</th>
+                        <th>Tgl Mulai</th>
+                        <th>Tgl Selesai</th>
+                        <th>Total bayar</th>
+                        <th width="">Ung <br>Masuk</th>
+                        <th>Sisa <br>Bayar</th>
                         <th>Fee /<br>Discount</th>
                         <th>Ongkir</th>
                         <th>Total</th>
@@ -128,6 +129,7 @@
                             <td>
                                 {{\Carbon\Carbon::parse($data->date_end)->translatedFormat('d F Y')}}
                             </td>
+                            <td>{{formatRupiah($data->total_nominal)}}</td>
                             <td>{{formatRupiah($data->nominal_in)}}</td>
                             <td>{{formatRupiah($data->nominal_out)}}</td>
                             <td>{{formatRupiah($data->diskon)}}</td>
@@ -227,7 +229,7 @@
                         customize: function (doc) {
                             // Set ukuran halaman PDF
                             doc.pageSize = {
-                                width: 842,
+                                width: 880,
                                 height: 595,
                             };
                             doc.pageOrientation = 'landscape';

@@ -39,15 +39,15 @@
                     <div class="row">
                         <div class="col-5 ms-2 mt-2">
                             <label class="form-label">
-                                Start Date
+                                Start Tanggal
                             </label>
-                            <input type="date" class="form-control" name="start_date"  required>
+                            <input type="Tanggal" class="form-control" name="start_Tanggal"  required>
                         </div>
                         <div class="col-6 mt-2">
                             <label class="form-label">
-                                End Date
+                                End Tanggal
                             </label>
-                            <input type="date" class="form-control" name="end_date"  required>
+                            <input type="Tanggal" class="form-control" name="end_Tanggal"  required>
                         </div>
                     </div>
                     <div class="col-md-1 pt-4 float-end me-5">
@@ -62,14 +62,15 @@
                     <thead>
                         <tr>
                             <th width="2%">No</th>
-                            <th>Name</th>
+                            <th>No Invoce</th>
+                            <th>Pelanggan</th>
                             <th>Item</th>
                             <th>No Seri</th>
-                            <th>Date Service</th>
-                            <th>Date Finis</th>
+                            <th>Tanggal Service</th>
+                            <th>Tanggal Finis</th>
                             <th>Biaya Ganti</th>
-                            <th>Nominal <br>In</th>
-                            <th>Nominal <br>Outsid</th>
+                            <th>Uang <br>Masuk</th>
+                            <th>Sisa <br>Bayar</th>
                             <th>Fee/ <br>Diskon</th>
                             <th>Ongkir</th>
                             <th>Status</th>
@@ -79,13 +80,14 @@
                         @foreach($report as $key => $data)
                             <tr>
                                 <td data-index="{{ $key +1 }}">{{$key +1}}</td>
+                                <td>{{$data->no_inv}}</td>
                                 <td>{{$data->name}}</td>
                                 <td>{{$data->item}}</td>
                                 <td>{{$data->no_seri}}</td>
-                                <td>{{formatId($data->date_service)}}</td>
+                                <td>{{formatId($data->Tanggal_service)}}</td>
                                 <td>
-                                    @if($data->date_finis)
-                                    {{formatId($data->date_finis)}}
+                                    @if($data->Tanggal_finis)
+                                    {{formatId($data->Tanggal_finis)}}
                                     @else
                                     <div class="text-center">-</div>
                                     @endif
@@ -249,7 +251,7 @@
                             $(win.document.body).find('table').addClass('compact').css('font-size', '10px');
                             var tfoot = $('#table-report tfoot').clone();
                             $(win.document.body).find('table').append(tfoot);
-                        
+
                         }
                     }
                 ]

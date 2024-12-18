@@ -3,71 +3,98 @@
     <div class="card">
         <div class="card-body p-4">
             <h5 class="mb-4">Service</h5>
-            @if ($errors->any())
-                @foreach ($errors->all() as $error)
-                    <div class="alert border-0 border-start border-5 border-danger alert-dismissible fade show py-2">
-                        <div class="d-flex align-items-center">
-                            <div class="font-35 text-danger"><i class='bx bxs-message-square-x'></i>
-                            </div>
-                            <div class="ms-3">
-                                <h6 class="mb-0 text-danger">Error</h6>
-                                <div>
-                                    <div>{{ $error }}</div>
-                                </div>
-                            </div>
-                        </div>
-                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                    </div>
-                @endforeach
-            @endif
             <form class="row g-3" action="{{$url}}" method="POST" enctype="multipart/form-data" id="myForm">
                 @csrf
                 @isset($service)
                     @method('PUT')
                 @endisset
                 <div class="col-md-6">
-                    <label for="input1" class="form-label"><i class="text-danger">*</i> Name Customer</label>
-                    <input type="text" value="{{isset($service) ? ($service->name) : null}}" class="form-control"
+                    <label for="input1" class="form-label"><i class="text-danger">*</i> Nama Pelanggan</label>
+                    <input type="text" value="{{isset($service) ? ($service->name) : null}}" class="form-control @error('name') is-invalid @enderror"
                            name="name" placeholder="Enter Name Customer">
+                    @error('name')
+                        <span class="invalid-feedback" role="alert">
+                            <strong>{{ $message }}</strong>
+                        </span>
+                    @enderror
                 </div>
-                <div class="col-md-6">
-                    <label for="input1" class="form-label">Phone Customer</label>
+                <div class="col-md-3">
+                    <label for="input1" class="form-label">Tlpn Pelanggan</label>
                     <input type="number" value="{{isset($service) ? ($service->phone) : null}}" class="form-control"
                            name="phone" placeholder="Enter Phone Customer">
                 </div>
+                <div class="col-md-3">
+                    <label for="input1" class="form-label"><i class="text-danger">*</i> No Invoice</label>
+                    <input type="number" value="{{isset($service) ? ($service->no_inv) : null}}" class="form-control @error('no_inv') is-invalid @enderror"
+                           name="phone" placeholder="DND/INV/***/**">
+                    @error('no_inv')
+                    <span class="invalid-feedback" role="alert">
+                            <strong>{{ $message }}</strong>
+                        </span>
+                    @enderror
+                </div>
                 <div class="col-md-6">
                     <label for="input" class="form-label"><i class="text-danger">*</i> Item</label>
-                    <textarea type="text" class="form-control" name="item"
-                              placeholder="Enter Item">{{isset($service) ? $service->item : null}}</textarea>
-
+                    <textarea type="text" class="form-control @error('item') is-invalid @enderror" name="item"
+                              placeholder="Enter Item">{{isset($service) ? $service->item : old('item')}}</textarea>
+                    @error('item')
+                    <span class="invalid-feedback" role="alert">
+                            <strong>{{ $message }}</strong>
+                        </span>
+                    @enderror
                 </div>
                 <div class="col-md-3">
                     <label for="input" class="form-label"><i class="text-danger">*</i> Type</label>
-                    <textarea type="text" class="form-control" name="type"
+                    <textarea type="text" class="form-control @error('type') is-invalid @enderror" name="type"
                               placeholder="Enter Item">{{isset($service) ? $service->type : null}}</textarea>
+                    @error('type')
+                    <span class="invalid-feedback" role="alert">
+                        <strong>{{$message}}</strong>
+                    </span>
+                    @enderror
                 </div>
                 <div class="col-md-3">
                     <label for="input" class="form-label"><i class="text-danger">*</i> No Seri</label>
-                    <textarea type="text" class="form-control" name="no_seri"
+                    <textarea type="text" class="form-control @error('no_seri') is-invalid @enderror" name="no_seri"
                               placeholder="Enter Item">{{isset($service) ? $service->no_seri : null}}</textarea>
+                    @error('no_seri')
+                    <span class="invalid-feedback" role="alert">
+                        <strong>{{$message}}</strong>
+                    </span>
+                    @enderror
                 </div>
                 <div class="col-md-12">
                     <label for="input" class="form-label"><i class="text-danger">*</i> Jenis Service</label>
-                    <textarea type="text" class="form-control" name="jenis_service"
+                    <textarea type="text" class="form-control @error('jenis_service') is-invalid @enderror" name="jenis_service"
                               placeholder="Enter Jenis Service">{{isset($service) ? $service->jenis_service : null}}</textarea>
+                    @error('jenis_service')
+                    <span class="invalid-feedback" role="alert">
+                        <strong>{{$message}}</strong>
+                    </span>
+                    @enderror
                 </div>
                 <div class="col-md-12">
-                    <label for="input" class="form-label"><i class="text-danger">*</i> Date Service</label>
+                    <label for="input" class="form-label"><i class="text-danger">*</i> Tanggal Service</label>
                     <input type="text" value="{{isset($service) ? $service->date_service : null}}"
-                           class="form-control datepicker" name="date_service" placeholder="Enter Date">
+                           class="form-control datepicker @error('date_service') is-invalid @enderror" name="date_service" placeholder="Enter Date">
+                    @error('date_service')
+                    <span class="invalid-feedback" role="alert">
+                        <strong>{{$message}}</strong>
+                    </span>
+                    @enderror
                 </div>
                  <div class="col-md-2">
-                    <label for="input" class="form-label"><i class="text-danger">*</i> Nominal In</label>
+                    <label for="input" class="form-label"><i class="text-danger">*</i> Uang Masuk</label>
                     <input type="number" value="{{isset($service) ? $service->nominal_in : 0}}"
-                           class="form-control" name="nominal_in" placeholder="Nominal In (Rp)">
+                           class="form-control @error('nominal_in') is-invalid @enderror" name="nominal_in" placeholder="Nominal In (Rp)">
+                     @error('nominal_in')
+                        <span class="invalid-feedback" role="alert">
+                            <strong>{{$message}}</strong>
+                        </span>
+                     @enderror
                 </div>
                  <div class="col-md-2">
-                    <label for="input" class="form-label">Nominal Out</label>
+                    <label for="input" class="form-label">Sisa Bayar</label>
                     <input type="number" value="{{isset($service) ? $service->nominal_out : 0}}"
                            class="form-control" name="nominal_out" placeholder="Nominal Out (Rp)">
                 </div>
@@ -87,9 +114,14 @@
                            class="form-control" name="diskon" placeholder="Fee/Diskon (Rp)">
                 </div>
                 <div class="col-md-12">
-                    <label for="input" class="form-label"><i class="text-danger">*</i> Descript</label>
-                    <textarea type="number" class="form-control" name="descript"
+                    <label for="input" class="form-label"><i class="text-danger">*</i> Keterangan</label>
+                    <textarea type="number" class="form-control @error('descript') is-invalid @enderror" name="descript"
                               placeholder="Enter Descript">{{isset($service) ? $service->descript : null}}</textarea>
+                    @error('descript')
+                    <span class="invalid-feedback" role="alert">
+                        <strong>{{$message}}</strong>
+                    </span>
+                    @enderror
                 </div>
                 <div class="col-md-12">
                     <div class="d-md-flex d-grid align-items-center gap-3">

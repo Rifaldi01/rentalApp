@@ -112,6 +112,23 @@ class ServiceController extends Controller
             'biaya_ganti' => 'numeric',
             'ongkir' => 'numeric',
             'descript' => 'required',
+            'type' => 'required',
+            'no_inv' => 'required',
+        ],[
+            'name.required' => 'Nama Pelanggan Wajib Diisi',
+            'item.required' => 'Item Wajib Diisi',
+            'no_seri.required' => 'No Seri Wajib Diisi',
+            'date_service.required' => 'Tanggal Service Wajib Diisi',
+            'jenis_service.required' => 'Jenis Service Wajib Diisi',
+            'nominal_in.required' => 'Uang Masuk Wajib Diisi',
+            'nominal_in.numeric' => 'Uang masuk Harus Berupa Angka',
+            'nominal_out.numeric' => 'Sisa Pembayaran Harus Berupa Angka',
+            'diskon.numeric' => 'Diskon Harus Berupa Angka',
+            'biaya_ganti.numeric' => 'Ongkir Harus Berupa Angka',
+            'ongkir.numeric' => 'Ongkir Harus Berupa Angka',
+            'descript.required' => 'Keterangan Wajib Diisi',
+            'type.required' => 'Type Wajib Diisi',
+            'no_inv.required' => 'No Invoice Wajib Diisi',
         ]);
         $service = Service::firstOrNew(['id' => $id]);
         $service->name = $request->input('name');
@@ -128,6 +145,7 @@ class ServiceController extends Controller
         $service->date_service = $request->input('date_service');
         $service->jenis_service = $request->input('jenis_service');
         $service->accessories = $request->input('accessories');
+        $service->no_inv = $request->input('no_inv');
         $service->save();
         Alert::success('Success', 'Upload Data Success');
         return redirect()->route('admin.service.index');
