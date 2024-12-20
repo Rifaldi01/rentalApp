@@ -128,6 +128,7 @@
                                                         aria-label="Close"></button>
                                             </div>
                                             <div class="modal-body">
+                                                <h5 class="text-uppercase">{{$data->no_inv}}</h5>
                                                 <div class="table-responsive">
                                                     <table id="" class="table table-bordered">
                                                         <tr>
@@ -271,7 +272,7 @@
                                                             </div>
                                                         </div>
                                                     @else
-                                                        
+
                                                     @endif
                                                 </div>
                                             </div>

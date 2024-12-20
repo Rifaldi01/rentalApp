@@ -65,6 +65,10 @@ class ProblemController extends Controller
         $rental->date_end = $request->input('date_end');
         $rental->nominal_in = $request->input('nominal_in');
         $rental->nominal_out = $request->input('nominal_out');
+        $rental->no_inv = $request->input('no_inv');
+        $rental->diskon = $request->input('diskon');
+        $rental->ongkir = $request->input('ongkir');
+        $rental->date_pay = $request->input('date_pay');
         $rental->status = 0;
         $rental->save();
 
@@ -79,7 +83,7 @@ class ProblemController extends Controller
         $destroy->save();
 
         $rental = Rental::findOrFail($destroy->rental_id);
-        
+
         if ($rental->status != 0) { // Only mark as returned if not already returned
             $rental->status = 2;
             $rental->save();
