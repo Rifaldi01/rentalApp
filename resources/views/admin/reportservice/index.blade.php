@@ -41,13 +41,13 @@
                             <label class="form-label">
                                 Start Tanggal
                             </label>
-                            <input type="date" class="form-control" name="start_Tanggal"  required>
+                            <input type="date" class="form-control" name="start_date"  required>
                         </div>
                         <div class="col-6 mt-2">
                             <label class="form-label">
                                 End Tanggal
                             </label>
-                            <input type="date" class="form-control" name="end_Tanggal"  required>
+                            <input type="date" class="form-control" name="end_date"  required>
                         </div>
                     </div>
                     <div class="col-md-1 pt-4 float-end me-5">
