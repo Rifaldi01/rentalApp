@@ -25,8 +25,8 @@
                 </div>
                 <div class="col-md-3">
                     <label for="input1" class="form-label"><i class="text-danger">*</i> No Invoice</label>
-                    <input type="number" value="{{isset($service) ? ($service->no_inv) : null}}" class="form-control @error('no_inv') is-invalid @enderror"
-                           name="phone" placeholder="DND/INV/***/**">
+                    <input type="text" value="{{isset($service) ? ($service->no_inv) : null}}" class="form-control @error('no_inv') is-invalid @enderror"
+                           name="no_inv" placeholder="DND/INV/***/**">
                     @error('no_inv')
                     <span class="invalid-feedback" role="alert">
                             <strong>{{ $message }}</strong>
