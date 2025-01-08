@@ -66,14 +66,12 @@
                         <th>Pelanggan</th>
                         <th>Item</th>
                         <th>No Seri</th>
-                        <th>Accessories</th>
                         <th>Tgl Mulai</th>
                         <th>Tgl Selesai</th>
                         <th>Total bayar</th>
                         <th width="">Ung <br>Masuk</th>
                         <th>Sisa <br>Bayar</th>
                         <th>Fee /<br>Discount</th>
-                        <th>Ongkir</th>
                         <th>Total</th>
                         <th>Ket. Byr</th>
                         <th class="text-center">Status</th>
@@ -115,15 +113,6 @@
                                     {{ $itemIds }}
                                 @endif</td>
                             <td>
-                            @if($data->access)
-                                @foreach(explode(',', $data->access) as $accessory)
-                                    <li>{{ $accessory }}</li>
-                                @endforeach
-                            @else
-                                <li>No accessories</li>
-                            @endif
-                            </td>
-                            <td>
                                 {{\Carbon\Carbon::parse($data->date_start)->translatedFormat('d F Y')}}
                             </td>
                             <td>
@@ -133,7 +122,6 @@
                             <td>{{formatRupiah($data->nominal_in)}}</td>
                             <td>{{formatRupiah($data->nominal_out)}}</td>
                             <td>{{formatRupiah($data->diskon)}}</td>
-                            <td>{{formatRupiah($data->ongkir)}}</td>
                             <td>{{formatRupiah($data->total)}}</td>
                             <td>{{$data->date_pay}}</td>
                             <td class="text-center">
@@ -160,10 +148,6 @@
                         <tr>
                             <th class="border" colspan="2"> Total Fee/Diskon</th>
                             <th class="border">{{formatRupiah($totaldiskon)}},-</th>
-                        </tr>
-                        <tr>
-                            <th class="border" colspan="2"> Total Ongkir</th>
-                            <th class="border">{{formatRupiah($totalongkir)}},-</th>
                         </tr>
                         <tr>
                             <th class="border" colspan="2">Grand Total</th>
@@ -193,11 +177,6 @@
                             <th> <h5 class="mb-0 text-uppercase">Total Fee/Diskon</h5></th>
                             <td><h5>:</h5></td>
                             <td><h5 class="ms-2">{{formatRupiah($totaldiskon)}},-</h5></td>
-                        </tr>
-                        <tr>
-                            <th> <h5 class="mb-0 text-uppercase">Total Ongkir</h5></th>
-                            <td><h5>:</h5></td>
-                            <td><h5 class="ms-2">{{formatRupiah($totalongkir)}},-</h5></td>
                         </tr>
                         <tr>
                             <th> <h5 class="mb-0 text-uppercase">Grand Total</h5></th>
