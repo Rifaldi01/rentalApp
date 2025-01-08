@@ -13,14 +13,13 @@ class ReportServiceController extends Controller
     {
         $report = Service::orderBy('date_service', 'asc')->get();
         $totalincome = $report->sum(function($item) {
-            return $item->nominal_in - $item->diskon - $item->ongkir - $item->biaya_ganti;
+            return $item->nominal_in - $item->diskon - $item->biaya_ganti;
         });
         $totaldiskon = $report->sum('diskon');
         $totalbiaya= $report->sum('biaya_ganti');
         $totalin = $report->sum('nominal_in');
-        $totalongkir = $report->sum('ongkir');
         $totaloutside = $report->sum('nominal_out');
-        return view('admin.reportservice.index', compact('totalin', 'totalbiaya', 'report', 'totalincome', 'totaloutside', 'totaldiskon', 'totalongkir'));
+        return view('admin.reportservice.index', compact('totalin', 'totalbiaya', 'report', 'totalincome', 'totaloutside', 'totaldiskon',));
     }
     public function filter(Request $request){
         $request->validate([
@@ -35,13 +34,12 @@ class ReportServiceController extends Controller
         $end_date = Carbon::parse(request()->end_date)->toDateTimeString();
         $report = Service::whereBetween('date_service',[$start_date,$end_date])->orderBy('date_service', 'asc')->get();
         $totalincome = $report->sum(function($item) {
-            return $item->nominal_in - $item->diskon - $item->ongkir - $item->biaya_ganti;
+            return $item->nominal_in - $item->diskon - $item->biaya_ganti;
         });
         $totaldiskon = $report->sum('diskon');
         $totalbiaya= $report->sum('biaya_ganti');
         $totalin = $report->sum('nominal_in');
-        $totalongkir = $report->sum('ongkir');
         $totaloutside = $report->sum('nominal_out');
-        return view('admin.reportservice.index', compact('report','totalbiaya', 'totalin', 'totalincome', 'totaloutside', 'totaldiskon', 'totalongkir'));
+        return view('admin.reportservice.index', compact('report','totalbiaya', 'totalin', 'totalincome', 'totaloutside', 'totaldiskon'));
     }
 }

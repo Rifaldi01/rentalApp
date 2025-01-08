@@ -72,7 +72,6 @@
                             <th>Uang <br>Masuk</th>
                             <th>Sisa <br>Bayar</th>
                             <th>Fee/ <br>Diskon</th>
-                            <th>Ongkir</th>
                             <th>Status</th>
                         </tr>
                     </thead>
@@ -96,7 +95,6 @@
                                 <td>{{formatRupiah($data->nominal_in)}}</td>
                                 <td>{{formatRupiah($data->nominal_out)}}</td>
                                 <td>{{formatRupiah($data->diskon)}}</td>
-                                <td>{{formatRupiah($data->ongkir)}}</td>
                                 <td>
                                     @if($data->status == 0)
                                         <span class="badge bg-success">Service</span>
@@ -124,10 +122,7 @@
                             <th class="border" colspan="2">Total Fee/Diskon</th>
                             <th class="border">{{formatRupiah($totaldiskon)}},-</th>
                         </tr>
-                        <tr>
-                            <th class="border" colspan="2"> Total Ongkir</th>
-                            <th class="border">{{formatRupiah($totalongkir)}},-</th>
-                        </tr>
+                        
                         <tr>
                             <th class="border" colspan="2">Grand Total</th>
                             <th class="border">{{formatRupiah($totalincome)}},-</th>

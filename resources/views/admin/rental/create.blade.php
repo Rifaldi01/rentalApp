@@ -159,11 +159,6 @@
                     <input type="number" value="{{isset($rental) ? $rental->diskon : old('diskon')}}"
                            class="form-control" name="diskon">
                 </div>
-                <div class="col-md-3">
-                    <label for="input" class="form-label">Ongkir</label>
-                    <input type="number" value="{{isset($rental) ? $rental->ongkir : old('ongkir')}}"
-                           class="form-control" name="ongkir">
-                </div>
                 <div class="col-md-12">
                     <label for="input4" class="form-label"><i class="text-danger">*</i> Keterangan Bayar</label>
                     <textarea type="text" name="date_pay" class="form-control @error('date_pay') is-invalid @enderror"
