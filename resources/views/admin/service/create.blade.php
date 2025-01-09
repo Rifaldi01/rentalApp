@@ -103,11 +103,6 @@
                     <input type="number" value="{{isset($service) ? $service->biaya_ganti : 0}}"
                            class="form-control" name="biaya_ganti" placeholder="Biaya Ganti (Rp)">
                 </div>
-                 <div class="col-md-2">
-                    <label for="input" class="form-label">Ongkir</label>
-                    <input type="number" value="{{isset($service) ? $service->ongkir : 0}}"
-                           class="form-control" name="ongkir" placeholder="Ongkir (Rp)">
-                </div>
                 <div class="col-md-2">
                     <label for="input" class="form-label">Fee/Diskon</label>
                     <input type="number" value="{{isset($service) ? $service->diskon : 0}}"
