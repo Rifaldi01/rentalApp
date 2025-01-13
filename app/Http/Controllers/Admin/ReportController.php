@@ -18,7 +18,7 @@ class ReportController extends Controller
                 'rentals.date_end', 'rentals.status', 'nominal_in', 'nominal_out', 'diskon', 'ongkir', 'a.rental_id', 'rentals.created_at', 'rentals.no_inv', 'rentals.date_pay',
                 \DB::raw('GROUP_CONCAT(DISTINCT b.name) as access'), // Diedit: Menambahkan DISTINCT untuk menghindari duplikasi nama accessories
                 \DB::raw('nominal_in - diskon as total'),
-                \DB::raw('(nominal_in + nominal_out + diskon) as total_nominal')
+                \DB::raw('(nominal_in + nominal_out) as total_nominal')
             )
             ->groupBy(
                 'rentals.id', 'rentals.customer_id', 'rentals.item_id', 'rentals.name_company',
@@ -58,7 +58,7 @@ class ReportController extends Controller
                 'rentals.date_end', 'rentals.status', 'nominal_in', 'nominal_out', 'diskon', 'a.rental_id','ongkir', 'rentals.created_at', 'rentals.no_inv', 'rentals.date_pay',
                 \DB::raw('GROUP_CONCAT(DISTINCT b.name) as access'), // Diedit: Menambahkan DISTINCT untuk menghindari duplikasi nama accessories
                 \DB::raw('nominal_in - diskon  as total'),
-                \DB::raw('(nominal_in + nominal_out + diskon) as total_nominal')
+                \DB::raw('(nominal_in + nominal_out) as total_nominal')
             )
             ->groupBy(
                 'rentals.id', 'rentals.customer_id', 'rentals.item_id', 'rentals.name_company',

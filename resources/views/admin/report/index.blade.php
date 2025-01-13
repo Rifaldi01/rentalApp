@@ -68,7 +68,7 @@
                         <th>No Seri</th>
                         <th>Tgl Mulai</th>
                         <th>Tgl Selesai</th>
-                        <th>Total bayar</th>
+                        <th>Total Seharusnya</th>
                         <th width="">Ung <br>Masuk</th>
                         <th>Sisa <br>Bayar</th>
                         <th>Fee /<br>Discount</th>
