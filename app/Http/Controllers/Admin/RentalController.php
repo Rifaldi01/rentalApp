@@ -147,14 +147,12 @@ class RentalController extends Controller
             // 'image.*' => $id ? 'nullable' : 'image',
             'nominal_in' => 'required|numeric',
             'date_pay' => 'required',
-            'created_at' => 'required',
             'no_inv' => 'required',
             'date_end' => $id ? 'nullable' : 'required|date|after_or_equal:start_date',
         ],[
             'item_id.required' => 'Item Wajib diisi',
             'customer_id.required' => 'Customer Wajib diisi',
             'nominal_in.required' => 'Nominal In Wajib diisi',
-            'created_at.required' => 'Tanggal Pembuatan Wajib diisi',
             'date_start.required' => 'Tanggal Mulai Wajib diisi',
             'date_end.required' => 'Tanggal Selesai Wajib diisi',
             'date_pay.required' => 'Keterangan Pembayaran Wajib Diisi',
@@ -208,11 +206,11 @@ class RentalController extends Controller
         $rental->date_end = $request->input('date_end');
         $rental->nominal_in = $request->input('nominal_in');
         $rental->nominal_out = $request->input('nominal_out') ?? 0;
-        $rental->ongkir = $request->input('ongkir') ?? 0;
         $rental->diskon = $request->input('diskon') ?? 0;
         $rental->date_pay = $request->input('date_pay');
-        $rental->created_at = $request->input('created_at');
         $rental->no_inv = $request->input('no_inv');
+        $rental->tgl_inv = $request->input('tgl_inv');
+        $rental->created_at = Carbon::now();
         $rental->status = 1;
 
         // Proses gambar jika ada

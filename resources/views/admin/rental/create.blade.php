@@ -9,11 +9,11 @@
                     @method('PUT')
                 @endisset
                 <div class="col-md-6">
-                    <label for="input6" class="form-label"><i class="text-danger">*</i> Tanggal Pembuatan</label>
-                    <input type="text" value="{{isset($rental) ? $rental->created_at : null}} {{ old('created_at') }}"
-                           name="created_at" class="form-control datepicker @error('created_at') is-invalid @enderror"
+                    <label for="input6" class="form-label"><i class="text-danger">*</i> Tanggal INV</label>
+                    <input type="text" value="{{isset($rental) ? $rental->tgl_inv : null}} {{ old('tgl_inv') }}"
+                           name="tgl_inv" class="form-control datepicker @error('tgl_inv') is-invalid @enderror"
                            id="input6" placeholder="Pembuatan">
-                    @error('created_at')
+                    @error('tgl_inv')
                     <span class="invalid-feedback" role="alert">
                         <strong>{{ $message }}</strong>
                     </span>

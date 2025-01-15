@@ -10,6 +10,7 @@
                     <thead>
                     <tr>
                         <th width="2%">No</th>
+                        <th>INV</th>
                         <th>Name</th>
                         <th>Item</th>
                         <th>Accessories</th>
@@ -23,6 +24,7 @@
                     @foreach($rental as $key => $data)
                         <tr id="rentalRow{{ $data->id }}">
                             <td>{{ $key + 1 }}</td>
+                            <td>{{ $data->rental->no_inv ?? 'N/A' }}</td>
                             <td>{{ $data->rental->cust->name ?? 'N/A' }}</td>
                             <td>
                                 @php
@@ -63,52 +65,14 @@
                                     <div class="modal-dialog modal-dialog-centered">
                                         <div class="modal-content">
                                             <div class="modal-header">
-                                                <h5 class="modal-title">Pelunasan</h5>
+                                                <h5 class="modal-title text-center">Apakah Masalah Selesai?</h5>
                                                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                             </div>
                                             <form action="{{ route('admin.problem.finis', $data->id) }}" method="POST">
                                                 @csrf
-                                                <div class="modal-body">
-                                                    <div class="row">
-                                                        <div class="col-6"><label class="col-form-label">No. Invoice</label>
-                                                            <input type="text" class="form-control" name="no_inv" value="{{ $data->rental->no_inv  }}"></div>
-                                                        <div class="col-6">
-                                                            <label class="col-form-label">Date Pembuatan</label>
-                                                            <input type="datetime-local" class="form-control datepicker" name="created_at" value="{{ $data->rental->created_at  }}">
-                                                        </div>
-                                                        <div class="col-6">
-                                                            <label class="col-form-label">Date Start</label>
-                                                            <input type="date" class="form-control datepicker" name="date_start" value="{{ $data->rental->date_start  }}">
-                                                        </div>
-                                                        <div class="col-6">
-                                                            <label class="col-form-label">Date End</label>
-                                                            <input type="date" class="form-control datepicker" name="date_end" value="{{ $data->rental->date_end }}">
-                                                        </div>
-                                                        <div class="col-6">
-                                                            <label class="col-form-label">Nominal In</label>
-                                                            <input type="number" class="form-control" name="nominal_in" value="{{ $data->rental->nominal_in ?? '' }}">
-                                                        </div>
-                                                        <div class="col-6">
-                                                            <label class="col-form-label">Nominal Out</label>
-                                                            <input type="number" class="form-control" name="nominal_out" value="{{ $data->rental->nominal_out ?? '' }}">
-                                                        </div>
-                                                        <div class="col-6">
-                                                            <label class="col-form-label">Diskon/Fee</label>
-                                                            <input type="number" class="form-control" name="diskon" value="{{ $data->rental->diskon ?? '' }}">
-                                                        </div>
-                                                        <div class="col-6">
-                                                            <label class="col-form-label">Ongkir</label>
-                                                            <input type="number" class="form-control" name="ongkir" value="{{ $data->rental->ongkir ?? '' }}">
-                                                        </div>
-                                                        <div class="col-12">
-                                                            <label class="col-form-label">Ket. Bayar</label>
-                                                            <textarea class="form-control" name="date_pay">{{$data->rental->date_pay}}</textarea>
-                                                        </div>
-                                                    </div>
-                                                </div>
                                                 <div class="modal-footer">
-                                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                                                    <button type="submit" class="btn btn-primary">Save<i class="bx bx-save"></i></button>
+                                                    <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Batal</button>
+                                                    <button type="submit" class="btn btn-primary">Ya</button>
                                                 </div>
                                             </form>
                                         </div>

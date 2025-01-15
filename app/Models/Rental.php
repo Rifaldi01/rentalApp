@@ -29,6 +29,10 @@ class Rental extends Model
     {
         return $this->belongsToMany(Accessories::class, 'accessories_categories', 'rental_id', 'accessories_id');
     }
+    public function debt()
+    {
+        return $this->hasMany(Debts::class, 'rental_id', 'id');
+    }
 
 
 }

@@ -9,6 +9,7 @@ use App\Http\Controllers\Admin\ItemController;
 use App\Http\Controllers\Admin\MaintenanceController;
 use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\AccessoriesController;
+use App\Http\Controllers\Admin\PembayaranController;
 use App\Http\Controllers\Admin\ServiceController;
 use App\Http\Controllers\Admin\ReportController;
 use App\Http\Controllers\Admin\ReportMaintenController;
@@ -28,13 +29,17 @@ Route::group(['middleware' => ['auth:web', 'role:admin'], 'prefix' => 'admin'], 
     Route::post('/rental/deleteimage', [RentalController::class, 'deleteImage'])->name('admin.rental.deleteImage');
     Route::get('/rental/download/{id}', [RentalController::class, 'downloadImages'])->name('admin.rental.downloadImages');
     Route::put('/rental/date/{id}', [RentalController::class, 'tanggalBuat'])->name('admin.rental.tanggalbuat');
+    Route::get('/pembayaran', [PembayaranController::class, 'index'])->name('admin.pembayaran.index');
+    Route::put('/pembayaran/{id}', [PembayaranController::class, 'bayar'])->name('admin.pembayaran.bayar');
+    Route::get('/pembayaran/filter', [PembayaranController::class, 'filter'])->name('admin.pembayaran.filter');
+    //rental end
+
     //problem
     Route::get('/problems', [ProblemController::class, 'index'])->name('admin.rental.problems');
     Route::post('/problems/{id}/finis', [ProblemController::class, 'destroy'])->name('admin.problem.finis');
     Route::post('/problems/{id}/returned', [ProblemController::class, 'returned'])->name('admin.problem.returned');
     Route::post('/problem/', [ProblemController::class, 'store'])->name('admin.problem.store');
     //problem end
-    //rental end
 
     //customer
     Route::resource('/customer', CustomerController::class)->names('admin.customer');

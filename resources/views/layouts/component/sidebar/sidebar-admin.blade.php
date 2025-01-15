@@ -53,6 +53,13 @@
                 </li>
             </ul>
         </li>
+        <li>
+            <a href="{{route('admin.pembayaran.index')}}">
+                <div class="parent-icon"><i class='bx bx-dollar'></i>
+                </div>
+                <div class="menu-title">Pembayaran</div>
+            </a>
+        </li>
         <li class="menu-label">Items</li>
         <li>
             <a href="javascript:;" class="has-arrow">
