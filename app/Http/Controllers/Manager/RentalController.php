@@ -67,30 +67,32 @@ class RentalController extends Controller
      * Show the form for creating a new resource.
      */
     public function create($id = null)
-    {
-        $cust = Customer::pluck('name', 'id')->toArray();
-        $item = Item::where('status', 0)->get();
-        $acces = Accessories::all();
+{
+    $cust = Customer::pluck('name', 'id')->toArray();
+    $item = Item::where('status', 0)->get();
+    $acces = Accessories::all();
+    $inject = [
+        'url' => route('manager.rental.store'),
+        'cust' => $cust,
+        'item' => $item,
+        'acces' => $acces
+    ];
+
+    if ($id) {
+        // Memuat relasi 'debt' pada model Rental
+        $rental = Rental::with('debt')->findOrFail($id); // Pastikan relasi 'debt' dimuat
+        $item = Item::where('status', '!=', 3)->get();
         $inject = [
-            'url' => route('manager.rental.store'),
+            'url' => route('manager.rental.update', $id),
+            'rental' => $rental,
             'cust' => $cust,
             'item' => $item,
             'acces' => $acces
         ];
-    
-        if ($id) {
-            $rental = Rental::findOrFail($id);
-            $item = Item::where('status', '!=', 3)->get();
-            $inject = [
-                'url' => route('manager.rental.update', $id),
-                'rental' => $rental,
-                'cust' => $cust,
-                'item' => $item,
-                'acces' => $acces
-            ];
-        }
-        return view('manager.rental.create', $inject);
-    }    
+    }
+    return view('manager.rental.create', $inject);
+}
+
 
     /**
      * Store a newly created resource in storage.

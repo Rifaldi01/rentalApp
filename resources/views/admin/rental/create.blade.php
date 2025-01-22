@@ -30,7 +30,7 @@
                 </div>
                 <div class="col-md-3">
                     <label for="input6" class="form-label "> Tanggal Pembayaran</label>
-                    <input type="text" value="{{isset($rental) ? $debts->date_pay : old('date_pay')}}"
+                    <input type="text" value="{{ isset($rental) && $rental->debt->isNotEmpty() ? $rental->debt->first()->date_pay : old('date_pay') }}"
                            class="form-control datepicker" name="date_pay">
                     @error('date_pay')
                     <span class="invalid-feedback" role="alert">
@@ -184,7 +184,7 @@
                 
                 <div class="col-md-12">
                     <label for="input4" class="form-label">Bank</label>
-                    {{ html()->select('bank_id', $bank, isset($rental) ? $debts->bank_id : old('bank_id'))
+                    {{ html()->select('bank_id', $bank, isset($rental) && $rental->debt->isNotEmpty() ? $rental->debt->first()->bank_id : old('date_pay'))
                             ->class(['form-control', 'is-invalid' => $errors->has('bank_id')])
                             ->id('bank-select')
                             ->placeholder("--Select Bank--")
@@ -192,7 +192,7 @@
                 </div>
                 <div class="col-md-12">
                     <label for="input" class="form-label">Penerima</label>
-                    <input type="text" value="{{isset($rental) ? $debts->penerima : old('penerima')}}"
+                    <input type="text" value="{{ isset($rental) && $rental->debt->isNotEmpty() ? $rental->debt->first()->penerima : old('date_pay') }}"
                            class="form-control" name="penerima">
                 </div>
                 <div class="col-md-12">
