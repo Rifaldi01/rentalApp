@@ -217,7 +217,7 @@ class RentalController extends Controller
         $rental->diskon = $request->input('diskon') ?? 0;
         $rental->date_pays = $request->input('date_pays');
         $rental->no_inv = $request->input('no_inv');
-        $rental->total = $request->input('total_invoice');
+        $rental->total_invoice = $request->input('total_invoice');
         $rental->tgl_inv = $request->input('tgl_inv');
         $rental->created_at = Carbon::now();
         $rental->status = 1;
