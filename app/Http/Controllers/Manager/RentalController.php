@@ -45,7 +45,7 @@ class RentalController extends Controller
                 'rentals.id', 'rentals.customer_id', 'rentals.item_id', 'rentals.name_company',
                 'rentals.addres_company', 'rentals.phone_company', 'rentals.no_po', 'rentals.date_start',
                 'rentals.date_end', 'rentals.status', 'a.rental_id',
-                \DB::raw('GROUP_CONCAT(b.name) as access')
+                DB::raw('GROUP_CONCAT(b.name) as access')
             )
             ->groupBy(
                 'rentals.id', 'rentals.customer_id', 'rentals.item_id', 'rentals.name_company',
@@ -195,11 +195,13 @@ class RentalController extends Controller
         $rental->date_start = $request->input('date_start');
         $rental->date_end = $request->input('date_end');
         $rental->nominal_in = $request->input('nominal_in');
-        $rental->nominal_out = $request->input('nominal_out');
-        $rental->ongkir = $request->input('ongkir');
-        $rental->diskon = $request->input('diskon');
-        $rental->date_pay = $request->input('date_pay');
-        $rental->created_at = $request->input('created_at');
+        $rental->nominal_out = $request->input('nominal_out') ?? 0;
+        $rental->diskon = $request->input('diskon') ?? 0;
+        $rental->date_pays = $request->input('date_pays');
+        $rental->no_inv = $request->input('no_inv');
+        $rental->total_invoice = $request->input('total_invoice');
+        $rental->tgl_inv = $request->input('tgl_inv');
+        $rental->created_at = Carbon::now();
         $rental->status = 1;
 
         // Proses gambar jika ada
