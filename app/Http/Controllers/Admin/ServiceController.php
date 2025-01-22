@@ -231,7 +231,9 @@ class ServiceController extends Controller
 
     public function history()
     {
-        $service = Service::all();
-        return view('admin.service.index', compact('service'));
+        $service = Service::all();        
+        $bank = Bank::all();
+        return view('admin.service.index', compact('service', 'bank'));
+
     }
 }
