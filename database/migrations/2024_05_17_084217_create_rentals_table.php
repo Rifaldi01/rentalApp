@@ -17,6 +17,7 @@ return new class extends Migration
             $table->integer('item_id');
             $table->integer('accessories_id')->nullable();
             $table->date('tgl_inv')->nullable();
+            $table->string('total_invoice')->nullable();
             $table->string('no_inv')->nullable();
             $table->string('name_company')->nullable();
             $table->string('addres_company')->nullable();
@@ -26,7 +27,7 @@ return new class extends Migration
             $table->bigInteger('nominal_out')->nullable();
             $table->bigInteger('diskon')->nullable();
             $table->bigInteger('ongkir')->nullable();
-            $table->string('date_pay')->nullable();
+            $table->string('date_pays')->nullable();
             $table->date('date_start');
             $table->date('date_end');
             $table->longText('image');

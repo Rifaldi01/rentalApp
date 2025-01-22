@@ -53,7 +53,7 @@
                                                     <button type="button" class="btn-close" data-bs-dismiss="modal"
                                                             aria-label="Close"></button>
                                                 </div>
-                                                <form action="{{route('admin.pembayaran.bayar', $data->id)}}" method="POST" id="myForm">
+                                                <form action="{{route('manager.pembayaran.bayar', $data->id)}}" method="POST" id="myForm">
                                                     @csrf
                                                     @method('PUT')
                                                     <div class="modal-body">
@@ -182,7 +182,7 @@
         </div>
         <div class="card-body">
         <div class="row">
-                <form action="{{route('admin.pembayaran.filter')}}" method="GET">
+                <form action="{{route('manager.pembayaran.filter')}}" method="GET">
                     <div class="row">
                         <div class="col-5 ms-2 mt-2">
                             <label class="form-label">

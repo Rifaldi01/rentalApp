@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Admin;
+namespace App\Http\Controllers\Manager;
 
 use App\Http\Controllers\Controller;
 use App\Models\Rental;
@@ -28,7 +28,7 @@ class PembayaranController extends Controller
         });
         $currentYear = now()->year;
         $debt = Debts::whereYear('date_pay', $currentYear)->get();
-        return view('admin.pembayaran.index', compact('rental', 'bank', 'totalseharusnya', 'total', 'debt'));
+        return view('manager.pembayaran.index', compact('rental', 'bank', 'totalseharusnya', 'total', 'debt'));
     }
     public function bayar(Request $request, $id)
     {
@@ -102,7 +102,7 @@ class PembayaranController extends Controller
                 return $item->nominal_in + $item->nominal_out - $item->diskon;
             });
         });
-        return view('admin.pembayaran.index', compact( 'rental', 'bank', 'totalseharusnya', 'total', 'debt'));
+        return view('manager.pembayaran.index', compact( 'rental', 'bank', 'totalseharusnya', 'total', 'debt'));
     }
 
 }

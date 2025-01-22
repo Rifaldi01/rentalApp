@@ -43,26 +43,34 @@
                         <thead>
                         <tr>
                             <th width="2%">No</th>
-                            <th>Name</th>
-                            <th>Phone</th>
-                            <th>Item</th>
-                            <th>No Seri</th>
-                            <th>Accessories</th>
-                            <th>Date Service</th>
+                            <th>Invoice</th>
+                            <th>Pelanggan</th>
+                            <th>Total Inv</th>
+                            <th>Biaya Ganti</th>
+                            <th>Uang Masuk</th>
+                            <th>Sisa Bayar</th>
+                            <th>Tgl Servis</th>
                             <th>Status</th>
-                            <th>Action</th>
+                            <th>Aksi</th>
                         </tr>
                         </thead>
                         <tbody>
                         @foreach($service as $key => $data)
                             <tr>
                                 <td>{{$key +1}}</td>
+                                <td>{{$data->no_inv}}</td>
                                 <td>{{$data->name}}</td>
-                                <td>{{$data->phone}}</td>
-                                <td>{{$data->item}}</td>
-                                <td>{{$data->no_seri}}</td>
-                                <td>{{$data->accessories}}</td>
-                                <td>{{dateId($data->date_service)}}</td>
+                                <td>{{formatRupiah($data->total_invoice)}}</td>
+                                <td>{{formatRupiah($data->biaya_ganti)}}</td>
+                                <td>{{formatRupiah($data->nominal_in)}}</td>
+                                <td class="text-center">
+                                    @if($data->nominal_out == 0)
+                                    <span class="badge bg-primary">Lunas</span>
+                                    @else
+                                    {{formatRupiah($data->nominal_out)}}
+                                    @endif
+                                </td>
+                                <td>{{formatId($data->date_service)}}</td>
                                 <td>
                                     @if($data->status == 0)
                                         <span class="badge bg-success">Service</span>
@@ -70,9 +78,9 @@
                                         <span class="badge bg-secondary">Finished</span>
                                     @endif
                                 </td>
-                                <td class="text-center">
+                                <td >
                                     @if($data->status == 0)
-                                        <button class="btn btn-warning lni lni-eye" data-bs-toggle="modal"
+                                        <button class="btn btn-warning lni lni-eye btn-sm" data-bs-toggle="modal"
                                                 data-bs-placement="top"
                                                 title="Detail"
                                                 data-bs-target="#exampleLargeModal{{$data->id}}"></button>
@@ -89,17 +97,11 @@
                                                         <div class="table-responsive">
                                                             <table id="" class="table table-bordered">
                                                                 <tr>
-                                                                    <th width="5%">
+                                                                    <th colspan="2">
                                                                         <div class="float-start">Name Customer</div>
                                                                     </th>
-                                                                    <td>
+                                                                    <td colspan="2">
                                                                         <div class="float-start">{{$data->name}}</div>
-                                                                    </td>
-                                                                    <th width="5%">
-                                                                        <div class="float-start">Phone Customer</div>
-                                                                    </th>
-                                                                    <td>
-                                                                        <div class="float-start">{{$data->phone}}</div>
                                                                     </td>
                                                                 </tr>
                                                                 <tr>
@@ -188,16 +190,18 @@
                                                         <div class="table-responsive">
                                                             <table id="" class="table table-bordered">
                                                                 <tr>
-                                                                    <th colspan="6" class="bg-success">PRICE </th>
+                                                                    <th colspan="6" class="bg-success text-center">PRICE </th>
                                                                 </tr>
                                                                 <tr>
-                                                                    <th>Nomninal In</th>
-                                                                    <th>Nominal Outsid</th>
+                                                                    <th>Total Invoice</th>
+                                                                    <th>Uang Masuk</th>
+                                                                    <th>Sisa Bayar</th>
                                                                     <th>Biaya Ganti</th>
                                                                     <th>Ongkir</th>
                                                                     <th> Diskon</th>
                                                                 </tr>
                                                                 <tr>
+                                                                    <td>{{formatRupiah($data->total_invoice)}},-</td>
                                                                     <td>{{formatRupiah($data->nominal_in)}},-</td>
                                                                     <td>{{formatRupiah($data->nominal_out)}},-</td>
                                                                     <td>{{formatRupiah($data->biaya_ganti)}},-</td>
@@ -216,7 +220,8 @@
                                                 </div>
                                             </div>
                                         </div>
-                                        <button class="btn btn-success lni lni-checkmark" data-bs-toggle="modal"
+                                        @if($data->nominal_out == 0)
+                                        <button class="btn btn-success btn-sm lni lni-checkmark" data-bs-toggle="modal"
                                                 data-bs-placement="top" title="Finished"
                                                 data-bs-target="#exampleVerticallycenteredModal{{$data->id}}"></button>
                                         <div class="modal fade" id="exampleVerticallycenteredModal{{$data->id}}"
@@ -234,17 +239,7 @@
                                                         @csrf
                                                         @method('PUT')
                                                         <div class="modal-body">
-                                                            <input value="{{$data->id}}" type="hidden" name="rental_id"
-                                                                   class="form-control">
-                                                            <label class="col-form-label">Nominal In</label>
-                                                            <input type="text"
-                                                                   class="form-control " name="nominal_in"
-                                                                   placeholder="Enter Date" value="{{$data->nominal_in}}">
-                                                            <label class="col-form-label">Nominal Outsid</label>
-                                                            <input type="text"
-                                                                   class="form-control " name="nominal_out"
-                                                                   placeholder="Enter Date" value="{{$data->nominal_out}}">
-                                                            <label class="col-form-label">Nominal Ganti</label>
+                                                            <label class="col-form-label">Biaya Ganti</label>
                                                             <input type="text"
                                                                    class="form-control " name="biaya_ganti"
                                                                    placeholder="Enter Date" value="{{$data->biaya_ganti}}">
@@ -268,8 +263,146 @@
                                                 </div>
                                             </div>
                                         </div>
+                                        @elseif($data->nominal_out != 0)
+                                        <button class="btn btn-warning lni lni-dollar btn-sm" data-bs-toggle="modal"
+                                            data-bs-target="#examplemodal{{$data->id}}" data-bs-tool="tooltip"
+                                            data-bs-placement="top" title="Bayar">
+                                        </button>
+                                        <div class="modal fade" id="examplemodal{{$data->id}}" tabindex="-1"
+                                            aria-hidden="true">
+                                            <div class="modal-dialog">
+                                                <div class="modal-content">
+                                                    <div class="modal-header">
+                                                        <h5 class="modal-title">Pembayaran</h5>
+                                                        <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                                aria-label="Close"></button>
+                                                    </div>
+                                                    <form action="{{route('admin.service.bayar', $data->id)}}" method="POST" id="myForm">
+                                                        @csrf
+                                                        @method('PUT')
+                                                        <div class="modal-body">
+                                                            <div class="row mb-3">
+                                                                <label for="input42" class="col-sm-3 col-form-label"><i
+                                                                        class="text-danger">*</i> Uang Masuk</label>
+                                                                <div class="col-sm-9">
+                                                                    <div class="position-relative input-icon">
+                                                                        <input type="hidden" id="nominal_in_value_{{$data->id}}"
+                                                                            value="{{ $data->nominal_in }}">
+                                                                        <input type="text" class="form-control"
+                                                                            id="nominal_in_{{$data->id}}" name="nominal_in"
+                                                                            value="{{ formatRupiah($data->nominal_in) }}"
+                                                                            readonly>
+                                                                        <span
+                                                                            class="position-absolute top-50 translate-middle-y"><i
+                                                                                class='bx bx-dollar'></i></span>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <div class="row mb-3">
+                                                                <label for="input42" class="col-sm-3 col-form-label"><i
+                                                                        class="text-danger">*</i> Pay Debts</label>
+                                                                <div class="col-sm-9">
+                                                                    <div class="position-relative input-icon">
+                                                                        <input type="text" class="form-control"
+                                                                            name="pay_debts" id="pay_debts_{{$data->id}}"
+                                                                            onkeyup="formatRupiah2(this)">
+                                                                        <span
+                                                                            class="position-absolute top-50 translate-middle-y"><i
+                                                                                class='bx bx-money'></i></span>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <div class="row mb-3">
+                                                                <label for="input42" class="col-sm-3 col-form-label"><i
+                                                                class="text-danger">*</i> Date</label>
+                                                                <div class="col-sm-9">
+                                                                    <div class="position-relative input-icon">
+                                                                        <input type="text" class="form-control datepicker"
+                                                                        name="date_pay" id="input42">
+                                                                        <span
+                                                                        class="position-absolute top-50 translate-middle-y"><i
+                                                                        class='bx bx-calendar'></i></span>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <div class="row mb-3">
+                                                                <label for="input42" class="col-sm-3 col-form-label">Biaya Ganti</label>
+                                                                <div class="col-sm-9">
+                                                                    <div class="position-relative input-icon">
+                                                                        <input type="text" class="form-control"
+                                                                            name="biaya_ganti" id="biaya_ganti_{{$data->id}}"
+                                                                            onkeyup="formatRupiah2(this)" value="{{$data->biaya_ganti}}">
+                                                                        <span
+                                                                            class="position-absolute top-50 translate-middle-y"><i
+                                                                                class='bx bx-money'></i></span>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <div class="row mb-3" id="bankField_{{$data->id}}">
+                                                                <label for="input42"
+                                                                    class="col-sm-3 col-form-label">Bank</label>
+                                                                <div class="col-sm-9">
+                                                                    <div class="input-group mb-3">
+                                                                        <div class="input-group-text"><i
+                                                                                class="bx bx-credit-card"></i></div>
+                                                                        <select class="form-select" id="single-select-field"
+                                                                                name="bank_id"
+                                                                                data-placeholder="-- Nama Bank --">
+                                                                            <option></option>
+                                                                            @foreach($bank as $banks)
+                                                                                <option
+                                                                                    value="{{$banks->id}}">{{$banks->name}}
+                                                                                    ({{$banks->code}})
+                                                                                </option>
+                                                                            @endforeach
+                                                                        </select>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <div class="row mb-3" id="penerimaField_{{$data->id}}">
+                                                                <label for="input42" class="col-sm-3 col-form-label">Penerima</label>
+                                                                <div class="col-sm-9">
+                                                                    <div class="position-relative input-icon">
+                                                                        <input type="text" class="form-control"
+                                                                            name="penerima" id="penerima_{{$data->id}}">
+                                                                        <span
+                                                                            class="position-absolute top-50 translate-middle-y"><i
+                                                                                class='bx bx-user'></i></span>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <div class="row mb-3">
+                                                                <label for="input42" class="col-sm-3 col-form-label"><i
+                                                                        class="text-danger"></i> </label>
+                                                                <div class="col-sm-9">
+                                                                    <div class="position-relative input-icon">
+                                                                        <input type="checkbox" class="form-check"
+                                                                            id="lainya_{{$data->id}}">
+                                                                        <span class="position-absolute top-50 translate-middle-y ms-1"> Lainya</span>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <div class="row mb-3" id="descriptionField">
+                                                                <label for="input42"
+                                                                    class="col-sm-3 col-form-label"></label>
+                                                                <div class="col-sm-9">
+                                                                    <textarea id="description_{{$data->id}}" type="text"
+                                                                            class="form-control" name="description"
+                                                                            placeholder="Isi Lainya pembayaran melalui apa?"></textarea>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="modal-footer">
+                                                            <button class="btn btn-primary" id="bayarbutton">Save</button>
+                                                        </div>
+                                                    </form>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        @endif
+                                        
                                     @else($data->status == 1)
-                                        <button class="btn btn-warning lni lni-eye" data-bs-toggle="modal"
+                                        <button class="btn btn-warning lni lni-eye btn-sm" data-bs-toggle="modal"
                                                 data-bs-placement="top"
                                                 title="Detail"
                                                 data-bs-target="#exampleLargeModal{{$data->id}}"></button>
@@ -383,16 +516,18 @@
                                                             <div class="table-responsive">
                                                                 <table id="" class="table table-bordered">
                                                                     <tr>
-                                                                        <th colspan="6" class="bg-success">PRICE </th>
+                                                                        <th colspan="6" class="bg-success text-center">PRICE </th>
                                                                     </tr>
                                                                     <tr>
-                                                                        <th>Nomninal In</th>
-                                                                        <th>Nominal Outsid</th>
+                                                                        <th>Total Invoice</th>
+                                                                        <th>Uang Masuk</th>
+                                                                        <th>Sisa Bayar</th>
                                                                         <th>Biaya Ganti</th>
                                                                         <th>Ongkir</th>
                                                                         <th> Diskon</th>
                                                                     </tr>
                                                                     <tr>
+                                                                        <td>{{formatRupiah($data->total_invoice)}},-</td>
                                                                         <td>{{formatRupiah($data->nominal_in)}},-</td>
                                                                         <td>{{formatRupiah($data->nominal_out)}},-</td>
                                                                         <td>{{formatRupiah($data->biaya_ganti)}},-</td>
@@ -412,6 +547,143 @@
                                                 </div>
                                             </div>
                                         </div>
+                                        @if($data->nominal_out != 0)
+                                        <button class="btn btn-warning lni lni-dollar btn-sm" data-bs-toggle="modal"
+                                            data-bs-target="#examplemodal{{$data->id}}" data-bs-tool="tooltip"
+                                            data-bs-placement="top" title="Bayar">
+                                        </button>
+                                        <div class="modal fade" id="examplemodal{{$data->id}}" tabindex="-1"
+                                            aria-hidden="true">
+                                            <div class="modal-dialog">
+                                                <div class="modal-content">
+                                                    <div class="modal-header">
+                                                        <h5 class="modal-title">Pembayaran</h5>
+                                                        <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                                aria-label="Close"></button>
+                                                    </div>
+                                                    <form action="{{route('admin.service.bayar', $data->id)}}" method="POST" id="myForm">
+                                                        @csrf
+                                                        @method('PUT')
+                                                        <div class="modal-body">
+                                                            <div class="row mb-3">
+                                                                <label for="input42" class="col-sm-3 col-form-label"><i
+                                                                        class="text-danger">*</i> Uang Masuk</label>
+                                                                <div class="col-sm-9">
+                                                                    <div class="position-relative input-icon">
+                                                                        <input type="hidden" id="nominal_in_value_{{$data->id}}"
+                                                                            value="{{ $data->nominal_in }}">
+                                                                        <input type="text" class="form-control"
+                                                                            id="nominal_in_{{$data->id}}" name="nominal_in"
+                                                                            value="{{ formatRupiah($data->nominal_in) }}"
+                                                                            readonly>
+                                                                        <span
+                                                                            class="position-absolute top-50 translate-middle-y"><i
+                                                                                class='bx bx-dollar'></i></span>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <div class="row mb-3">
+                                                                <label for="input42" class="col-sm-3 col-form-label"><i
+                                                                        class="text-danger">*</i> Pay Debts</label>
+                                                                <div class="col-sm-9">
+                                                                    <div class="position-relative input-icon">
+                                                                        <input type="text" class="form-control"
+                                                                            name="pay_debts" id="pay_debts_{{$data->id}}"
+                                                                            onkeyup="formatRupiah2(this)">
+                                                                        <span
+                                                                            class="position-absolute top-50 translate-middle-y"><i
+                                                                                class='bx bx-money'></i></span>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <div class="row mb-3">
+                                                                <label for="input42" class="col-sm-3 col-form-label"><i
+                                                                class="text-danger">*</i> Date</label>
+                                                                <div class="col-sm-9">
+                                                                    <div class="position-relative input-icon">
+                                                                        <input type="text" class="form-control datepicker"
+                                                                        name="date_pay" id="input42">
+                                                                        <span
+                                                                        class="position-absolute top-50 translate-middle-y"><i
+                                                                        class='bx bx-calendar'></i></span>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <div class="row mb-3">
+                                                                <label for="input42" class="col-sm-3 col-form-label">Biaya Ganti</label>
+                                                                <div class="col-sm-9">
+                                                                    <div class="position-relative input-icon">
+                                                                        <input type="text" class="form-control"
+                                                                            name="biaya_ganti" id="biaya_ganti_{{$data->id}}"
+                                                                            onkeyup="formatRupiah2(this)" value="{{$data->biaya_ganti}}">
+                                                                        <span
+                                                                            class="position-absolute top-50 translate-middle-y"><i
+                                                                                class='bx bx-money'></i></span>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <div class="row mb-3" id="bankField_{{$data->id}}">
+                                                                <label for="input42"
+                                                                    class="col-sm-3 col-form-label">Bank</label>
+                                                                <div class="col-sm-9">
+                                                                    <div class="input-group mb-3">
+                                                                        <div class="input-group-text"><i
+                                                                                class="bx bx-credit-card"></i></div>
+                                                                        <select class="form-select" id="single-select-field"
+                                                                                name="bank_id"
+                                                                                data-placeholder="-- Nama Bank --">
+                                                                            <option></option>
+                                                                            @foreach($bank as $banks)
+                                                                                <option
+                                                                                    value="{{$banks->id}}">{{$banks->name}}
+                                                                                    ({{$banks->code}})
+                                                                                </option>
+                                                                            @endforeach
+                                                                        </select>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <div class="row mb-3" id="penerimaField_{{$data->id}}">
+                                                                <label for="input42" class="col-sm-3 col-form-label">Penerima</label>
+                                                                <div class="col-sm-9">
+                                                                    <div class="position-relative input-icon">
+                                                                        <input type="text" class="form-control"
+                                                                            name="penerima" id="penerima_{{$data->id}}">
+                                                                        <span
+                                                                            class="position-absolute top-50 translate-middle-y"><i
+                                                                                class='bx bx-user'></i></span>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <div class="row mb-3">
+                                                                <label for="input42" class="col-sm-3 col-form-label"><i
+                                                                        class="text-danger"></i> </label>
+                                                                <div class="col-sm-9">
+                                                                    <div class="position-relative input-icon">
+                                                                        <input type="checkbox" class="form-check"
+                                                                            id="lainya_{{$data->id}}">
+                                                                        <span class="position-absolute top-50 translate-middle-y ms-1"> Lainya</span>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <div class="row mb-3" id="descriptionField">
+                                                                <label for="input42"
+                                                                    class="col-sm-3 col-form-label"></label>
+                                                                <div class="col-sm-9">
+                                                                    <textarea id="description_{{$data->id}}" type="text"
+                                                                            class="form-control" name="description"
+                                                                            placeholder="Isi Lainya pembayaran melalui apa?"></textarea>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="modal-footer">
+                                                            <button class="btn btn-primary" id="bayarbutton">Save</button>
+                                                        </div>
+                                                    </form>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        @endif
                                     @endif
 
                                 </td>
@@ -431,6 +703,18 @@
     <script src="{{URL::to('assets/js/flatpickr.min.js')}}"></script>
 
     <script>
+         $(document).ready(function () {
+            // Inisialisasi Select2 setelah modal dibuka
+            $(document).on('shown.bs.modal', function (e) {
+                let modal = $(e.target); // Modal yang sedang ditampilkan
+                modal.find('#single-select-field').select2({
+                    dropdownParent: modal, // Tetapkan parent dropdown ke modal yang aktif
+                    placeholder: '-- Nama Bank --',
+                    allowClear: true,
+                    theme: 'bootstrap-5'
+                });
+            });
+        });
 
         $(".datepicker").flatpickr();
 
@@ -465,5 +749,80 @@
             dateFormat: "Y-m-d",
         });
 
+        $(document).ready(function () {
+            function calculateTotal(id) {
+                let nominal_in = parseFloat($(`#nominal_in_value_${id}`).val()) || 0;
+                let pay_debts = parseFloat($(`#pay_debts_${id}`).val().replace(/[^0-9]/g, '')) || 0;
+
+                let total = nominal_in + pay_debts;
+                $(`#nominal_in_${id}`).val('Rp. ' + total.toLocaleString('id-ID'));
+            }
+
+            $('[id^=pay_debts_]').on('input', function () {
+                let id = $(this).attr('id').split('_')[2];
+                calculateTotal(id);
+            });
+
+            $('[id^=nominal_in_value_]').each(function () {
+                let id = $(this).attr('id').split('_')[2];
+                calculateTotal(id);
+            });
+        });
+
+        $(document).ready(function () {
+            $('#bayarbutton').click(function (event) {
+                // Nonaktifkan tombol dan ubah teksnya
+                $(this).prop('disabled', true).text('Memuat...');
+                
+                $('#myForm').submit();
+            });
+        });
+
+        function formatRupiah2(element) {
+            let value = element.value.replace(/[^,\d]/g, '');
+            let split = value.split(',');
+            let sisa = split[0].length % 3;
+            let rupiah = split[0].substr(0, sisa);
+            let ribuan = split[0].substr(sisa).match(/\d{3}/gi);
+
+            if (ribuan) {
+                let separator = sisa ? '.' : '';
+                rupiah += separator + ribuan.join('.');
+            }
+
+            rupiah = split[1] != undefined ? rupiah + ',' + split[1] : rupiah;
+            element.value = rupiah;
+
+            function toggleValidation(id) {
+            if ($(`#lainya_${id}`).is(':checked')) {
+                // Jika checkbox lainya dicentang:
+                $(`#description_${id}`).prop('required', true); // Description wajib diisi
+                $(`#bankField_${id}`).hide(); // Sembunyikan bank field
+                $(`#penerimaField_${id}`).hide(); // Sembunyikan bank field
+                $(`#single-select-field_${id}`).prop('required', false); // Bank tidak wajib
+                $(`#penerima_${id}`).prop('required', false); // Bank tidak wajib
+            } else {
+                // Jika checkbox lainya tidak dicentang:
+                $(`#description_${id}`).prop('required', false); // Description tidak wajib
+                $(`#bankField_${id}`).show(); // Tampilkan bank field
+                $(`#penerimaField_${id}`).show(); // Tampilkan bank field
+                $(`#single-select-field_${id}`).prop('required', true); // Bank wajib diisi
+                $(`#penerima${id}`).prop('required', true); // Bank wajib diisi
+            }
+        }
+
+        // Event listener untuk checkbox lainya
+        $("[id^='lainya_']").on('change', function () {
+            var id = $(this).attr('id').split('_')[1]; // Ambil ID dinamis
+            toggleValidation(id);
+        });
+
+        // Inisialisasi validasi saat halaman dimuat
+        $("[id^='lainya_']").each(function () {
+            var id = $(this).attr('id').split('_')[1]; // Ambil ID dinamis
+            toggleValidation(id);
+        });
+        
+        }
     </script>
 @endpush

@@ -37,6 +37,13 @@
             </ul>
         </li>
         <li>
+            <a href="{{route('manager.pembayaran.index')}}">
+                <div class="parent-icon"><i class='bx bx-dollar'></i>
+                </div>
+                <div class="menu-title">Pembayaran Rental</div>
+            </a>
+        </li>
+        <li>
             <a href="javascript:;" class="has-arrow">
                 <div class="parent-icon"><i class="lni lni-users"></i>
                 </div>

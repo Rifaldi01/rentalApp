@@ -61,19 +61,20 @@
                     <thead>
                     <tr>
                         <th width="2%">No</th>
-                        <th>Tanggal</th>
+                        <th>Tanggal Inv</th>
                         <th>No Inv</th>
                         <th>Pelanggan</th>
                         <th>Item</th>
                         <th>No Seri</th>
                         <th>Tgl Mulai</th>
                         <th>Tgl Selesai</th>
-                        <th>Total Seharusnya</th>
+                        <th>Total <br>Inv</th>
                         <th width="">Ung <br>Masuk</th>
                         <th>Sisa <br>Bayar</th>
                         <th>Fee /<br>Discount</th>
                         <th>Total</th>
                         <th>Ket. Byr</th>
+                        <th>Penerima</th>
                         <th class="text-center">Status</th>
                     </tr>
                     </thead>
@@ -82,7 +83,7 @@
                         <tr>
                             <td>{{$key +1}}</td>
                             <td>
-                                {{\Carbon\Carbon::parse($data->created_at)->translatedFormat('d F Y')}}
+                                {{formatId($data->tgl_inv)}}
                             </td>
                             <td>{{$data->no_inv}}</td>
                             <td>{{$data->cust->name}}</td>
@@ -113,17 +114,44 @@
                                     {{ $itemIds }}
                                 @endif</td>
                             <td>
-                                {{\Carbon\Carbon::parse($data->date_start)->translatedFormat('d F Y')}}
+                                {{formatId($data->date_start)}}
                             </td>
                             <td>
-                                {{\Carbon\Carbon::parse($data->date_end)->translatedFormat('d F Y')}}
+                                {{formatId($data->date_end)}}
                             </td>
-                            <td>{{formatRupiah($data->total_nominal)}}</td>
+                            <td>
+                                @if($data->total_invoice)
+                                {{formatRupiah($data->total_invoice)}}
+                                @else
+                                {{formatRupiah($data->total_nominal)}}
+                                @endif
+                            </td>
                             <td>{{formatRupiah($data->nominal_in)}}</td>
                             <td>{{formatRupiah($data->nominal_out)}}</td>
                             <td>{{formatRupiah($data->diskon)}}</td>
                             <td>{{formatRupiah($data->total)}}</td>
-                            <td>{{$data->date_pay}}</td>
+                            <td>
+                                @if($data->debt->isNotEmpty())
+                                    @foreach($data->debt as $debt)
+                                        @if($debt->bank)
+                                            <li>{{$debt->date_pay}}, {{ $debt->bank->name }}</li>
+                                        @else
+                                        
+                                        @endif
+                                    @endforeach
+                                @else
+                                    {{$data->date_pays}}
+                                @endif
+                            </td>
+                            <td>
+                                @if($data->debt->isNotEmpty())
+                                    @foreach($data->debt as $debt)
+                                    <li>{{$debt->penerima}}</li>
+                                    @endforeach
+                                @else
+                                    Tidak ada data
+                                @endif
+                            </td>
                             <td class="text-center">
                                 @if($data->status == 1)
                                     <span class="badge bg-success">Rent</span>
@@ -191,7 +219,15 @@
 @endsection
 
 @push('head')
+    <style>
+        table.dataTable {
+            font-size: 10px /* Atur ukuran font */
+        }
+        table.dataTable td {
+        padding: 3px; /* Atur padding agar lebih rapat jika diperlukan */
+    }
 
+    </style>
 @endpush
 
 @push('js')

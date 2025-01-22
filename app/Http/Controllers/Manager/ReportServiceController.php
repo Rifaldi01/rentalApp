@@ -11,17 +11,26 @@ class ReportServiceController extends Controller
 {
     public function index()
     {
-        $report = Service::orderBy('date_service', 'asc')->get();
-        $totalincome = $report->sum(function($item) {
-            return $item->nominal_in - $item->diskon - $item->ongkir - $item->biaya_ganti;
+        // Ambil tahun saat ini
+        $currentYear = now()->year;
+
+        // Filter data berdasarkan tahun saat ini
+        $report = Service::whereYear('date_service', $currentYear)
+            ->orderBy('date_service', 'asc')
+            ->get();
+
+        // Hitung total berdasarkan data yang difilter
+        $totalincome = $report->sum(function ($item) {
+            return $item->nominal_in - $item->diskon - $item->biaya_ganti;
         });
         $totaldiskon = $report->sum('diskon');
-        $totalbiaya= $report->sum('biaya_ganti');
+        $totalbiaya = $report->sum('biaya_ganti');
         $totalin = $report->sum('nominal_in');
-        $totalongkir = $report->sum('ongkir');
         $totaloutside = $report->sum('nominal_out');
-        return view('manager.reportservice.index', compact('totalbiaya','totalin','report', 'totalincome', 'totaloutside', 'totaldiskon', 'totalongkir'));
+
+        return view('manager.reportservice.index', compact('totalin', 'totalbiaya', 'report', 'totalincome', 'totaloutside', 'totaldiskon'));
     }
+
     public function filter(Request $request){
         $request->validate([
             'start_date' => 'required|date|before_or_equal:today',

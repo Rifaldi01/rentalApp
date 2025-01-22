@@ -11,9 +11,9 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('debts', function (Blueprint $table) {
+        Schema::create('debt_servics', function (Blueprint $table) {
             $table->id();
-            $table->integer('rental_id');
+            $table->integer('service_id');
             $table->integer('bank_id')->nullable();
             $table->string('pay_debts');
             $table->string('penerima')->nullable();
@@ -28,6 +28,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('debts');
+        Schema::dropIfExists('debt_servics');
     }
 };

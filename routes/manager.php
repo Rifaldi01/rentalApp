@@ -13,6 +13,7 @@ use App\Http\Controllers\Manager\ReportServiceController;
 use App\Http\Controllers\Manager\ReportProblemController;
 use App\Http\Controllers\Manager\ReportMaintenaceController;
 use App\Http\Controllers\Manager\ServiceController;
+use App\Http\Controllers\Manager\PembayaranController;
 
 
 Route::group(['middleware' => ['auth:web', 'role:manager'], 'prefix' => 'manager'], function () {
@@ -27,7 +28,10 @@ Route::group(['middleware' => ['auth:web', 'role:manager'], 'prefix' => 'manager
     Route::post('/problem/{id}/rental', [RentalController::class, 'problem'])->name('manager.rental.problem');
     Route::put('/rental/date/{id}', [RentalController::class, 'tanggalBuat'])->name('manager.rental.tanggalbuat');
     Route::post('/rental/deleteimage', [RentalController::class, 'deleteImage'])->name('manager.rental.deleteImage');
-    //rental end
+    Route::get('/pembayaran', [PembayaranController::class, 'index'])->name('manager.pembayaran.index');
+    Route::put('/pembayaran/{id}', [PembayaranController::class, 'bayar'])->name('manager.pembayaran.bayar');
+    Route::get('/pembayaran/filter', [PembayaranController::class, 'filter'])->name('manager.pembayaran.filter');
+    //rental end 
 
     //problem
     Route::post('/problems/{id}/finis', [ProblemController::class, 'destroy'])->name('manager.problem.finis');
@@ -67,5 +71,6 @@ Route::group(['middleware' => ['auth:web', 'role:manager'], 'prefix' => 'manager
     Route::resource('/service', ServiceController::class)->names('manager.service');
     Route::get('/history/service', [ServiceController::class, 'history'])->name('manager.service.history');
     Route::post('/service/finis/{id}', [ServiceController::class, 'finis'])->name('manager.service.finis');
+    Route::put('/pembayaran/service/{id}', [ServiceController::class, 'bayar'])->name('manager.service.bayar');
     //end report
 });

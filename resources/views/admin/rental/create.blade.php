@@ -9,6 +9,15 @@
                     @method('PUT')
                 @endisset
                 <div class="col-md-6">
+                    <label for="input6" class="form-label"><i class="text-danger">*</i> No. INV</label>
+                    <input type="text" class="form-control @error('no_inv') is-invalid @enderror" value="{{isset($rental) ? $rental->no_inv : old('no_inv')}}" name="no_inv" placeholder="INV/DND/***/**">
+                    @error('no_inv')
+                    <span class="invalid-feedback" role="alert">
+                        <strong>{{ $message }}</strong>
+                    </span>
+                    @enderror
+                </div>
+                <div class="col-md-3">
                     <label for="input6" class="form-label"><i class="text-danger">*</i> Tanggal INV</label>
                     <input type="text" value="{{isset($rental) ? $rental->tgl_inv : null}} {{ old('tgl_inv') }}"
                            name="tgl_inv" class="form-control datepicker @error('tgl_inv') is-invalid @enderror"
@@ -19,15 +28,17 @@
                     </span>
                     @enderror
                 </div>
-                <div class="col-md-6">
-                    <label for="input6" class="form-label"><i class="text-danger">*</i> No. INV</label>
-                    <input type="text" class="form-control @error('no_inv') is-invalid @enderror" value="{{isset($rental) ? $rental->no_inv : old('no_inv')}}" name="no_inv" placeholder="INV/DND/***/**">
-                    @error('no_inv')
+                <div class="col-md-3">
+                    <label for="input6" class="form-label "> Tanggal Pembayaran</label>
+                    <input type="text" value="{{isset($rental) ? $debts->date_pay : old('date_pay')}}"
+                           class="form-control datepicker" name="date_pay">
+                    @error('date_pay')
                     <span class="invalid-feedback" role="alert">
                         <strong>{{ $message }}</strong>
                     </span>
                     @enderror
                 </div>
+                
                 @if(isset($rental))
                     <div class="col-md-12">
                         <label for="input1" class="form-label"><i class="text-danger">*</i> Name Customer</label>
@@ -139,6 +150,17 @@
                     @endif
                 </div>
                 <div class="col-md-3">
+                    <label for="input" class="form-label"><i class="text-danger">*</i> Total Invoce</label>
+                    <input type="text" value="{{isset($rental) ? ($rental->total_invoice) : null}} {{ old('total_invoice') }}"
+                           class="form-control @error('total_invoice') is-invalid @enderror" name="total_invoice"
+                           placeholder="0">
+                    @error('total_invoice')
+                    <span class="invalid-feedback" role="alert">
+                        <strong>{{ $message }}</strong>
+                    </span>
+                    @enderror
+                </div>
+                <div class="col-md-3">
                     <label for="input" class="form-label"><i class="text-danger">*</i> Pembayaran</label>
                     <input type="text" value="{{isset($rental) ? ($rental->nominal_in) : null}} {{ old('nominal_in') }}"
                            class="form-control @error('nominal_in') is-invalid @enderror" name="nominal_in"
@@ -159,12 +181,26 @@
                     <input type="number" value="{{isset($rental) ? $rental->diskon : old('diskon')}}"
                            class="form-control" name="diskon">
                 </div>
+                
                 <div class="col-md-12">
-                    <label for="input4" class="form-label"><i class="text-danger">*</i> Keterangan Bayar</label>
-                    <textarea type="text" name="date_pay" class="form-control @error('date_pay') is-invalid @enderror"
-                              id="input4" placeholder="Maukan Pembayran">{{isset($rental) ? $rental->date_pay : null}}{{ old('date_pay') }}
+                    <label for="input4" class="form-label">Bank</label>
+                    {{ html()->select('bank_id', $bank, isset($rental) ? $debts->bank_id : old('bank_id'))
+                            ->class(['form-control', 'is-invalid' => $errors->has('bank_id')])
+                            ->id('bank-select')
+                            ->placeholder("--Select Bank--")
+                        }}
+                </div>
+                <div class="col-md-12">
+                    <label for="input" class="form-label">Penerima</label>
+                    <input type="text" value="{{isset($rental) ? $debts->penerima : old('penerima')}}"
+                           class="form-control" name="penerima">
+                </div>
+                <div class="col-md-12">
+                    <label for="input4" class="form-label">Keterangan Bayar</label>
+                    <textarea type="text" name="date_pays" class="form-control @error('date_pays') is-invalid @enderror"
+                              id="input4" placeholder="Maukan Pembayran">{{isset($rental)?$rental->date_pays : null}}{{ old('date_pays') }}
                     </textarea>
-                    @error('date_pay')
+                    @error('date_pays')
                     <span class="invalid-feedback" role="alert">
                         <strong>{{ $message }}</strong>
                     </span>
@@ -412,5 +448,12 @@
                     }, false)
                 })
         })()
+    </script>
+    <script>
+        $(document).ready(function () {
+            $('#bank-select').select2({
+                theme: 'bootstrap-5'
+            });
+        });
     </script>
 @endpush

@@ -5,7 +5,9 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Accessories;
 use App\Models\AccessoriesCategory;
+use App\Models\Bank;
 use App\Models\Customer;
+use App\Models\Debts;
 use App\Models\Item;
 use App\Models\Problem;
 use App\Models\Rental;
@@ -73,11 +75,15 @@ class RentalController extends Controller
         $cust = Customer::pluck('name', 'id')->toArray();
         $item = Item::where('status', 0)->get();
         $acces = Accessories::all();
+        $bank = Bank::pluck('name', 'id')->toArray();
+        $debt = Debts::all();
         $inject = [
             'url' => route('admin.rental.store'),
             'cust' => $cust,
             'item' => $item,
-            'acces' => $acces
+            'acces' => $acces,
+            'bank' => $bank,
+            'debt' => $debt,
         ];
 
         if ($id) {
@@ -88,7 +94,9 @@ class RentalController extends Controller
                 'rental' => $rental,
                 'cust' => $cust,
                 'item' => $item,
-                'acces' => $acces
+                'acces' => $acces,
+                'bank' => $bank,
+                'debt' => $debt,
             ];
         }
         return view('admin.rental.create', $inject);
@@ -146,8 +154,8 @@ class RentalController extends Controller
             // 'image' => $id ? 'nullable' : 'required|array',
             // 'image.*' => $id ? 'nullable' : 'image',
             'nominal_in' => 'required|numeric',
-            'date_pay' => 'required',
             'no_inv' => 'required',
+            'total_invoice' => 'required',
             'date_end' => $id ? 'nullable' : 'required|date|after_or_equal:start_date',
         ],[
             'item_id.required' => 'Item Wajib diisi',
@@ -155,8 +163,8 @@ class RentalController extends Controller
             'nominal_in.required' => 'Nominal In Wajib diisi',
             'date_start.required' => 'Tanggal Mulai Wajib diisi',
             'date_end.required' => 'Tanggal Selesai Wajib diisi',
-            'date_pay.required' => 'Keterangan Pembayaran Wajib Diisi',
             'no_inv.required' => 'No Invoice Wajib Diisi',
+            'total_invoice.required' => 'Total Invoice Wajib Diisi',
             'date_end.after_or_equal' => 'Tanggal Selesai harus berupa tanggal setelah atau sama dengan tanggal mulai.'
         ]);
 
@@ -207,8 +215,9 @@ class RentalController extends Controller
         $rental->nominal_in = $request->input('nominal_in');
         $rental->nominal_out = $request->input('nominal_out') ?? 0;
         $rental->diskon = $request->input('diskon') ?? 0;
-        $rental->date_pay = $request->input('date_pay');
+        $rental->date_pays = $request->input('date_pays');
         $rental->no_inv = $request->input('no_inv');
+        $rental->total = $request->input('total_invoice');
         $rental->tgl_inv = $request->input('tgl_inv');
         $rental->created_at = Carbon::now();
         $rental->status = 1;
@@ -282,6 +291,14 @@ class RentalController extends Controller
                 $item->save();
             }
         }
+        $debts = Debts::create([
+            'rental_id'  => $rental->id,
+            'bank_id'    => $request->input('bank_id'),
+            'pay_debts'  => $rental->nominal_in,
+            'penerima'   => $request->input('penerima'),
+            'date_pay'   => $request->input('date_pay'),
+            'description'=> $request->input('description'),
+        ]);
 
         Alert::success('Success', 'Rental has been saved!');
         return redirect()->route('admin.rental.index');
@@ -344,14 +361,14 @@ public function finis($id)
             ->leftjoin('accessories as b', 'a.accessories_id', '=', 'b.id')
             ->select(
                 'rentals.id', 'rentals.customer_id', 'rentals.item_id', 'rentals.name_company',
-                'rentals.addres_company', 'rentals.phone_company', 'rentals.no_po','rentals.date_start', 'date_pay',
+                'rentals.addres_company', 'rentals.phone_company', 'rentals.no_po','rentals.date_start', 'date_pays',
                 'rentals.date_end', 'rentals.status', 'a.rental_id', 'nominal_in', 'nominal_out', 'diskon', 'ongkir',
                 'rentals.image', 'rentals.created_at', 'no_inv',
                 DB::raw('GROUP_CONCAT(b.name) as access')
             )
             ->groupBy(
                 'rentals.id', 'rentals.customer_id', 'rentals.item_id', 'rentals.name_company',
-                'rentals.addres_company', 'rentals.phone_company', 'rentals.no_po', 'rentals.date_start', 'date_pay',
+                'rentals.addres_company', 'rentals.phone_company', 'rentals.no_po', 'rentals.date_start', 'date_pays',
                 'rentals.date_end', 'rentals.status', 'a.rental_id', 'nominal_in', 'nominal_out', 'diskon', 'ongkir',
                 'rentals.image', 'rentals.created_at', 'no_inv',
             )

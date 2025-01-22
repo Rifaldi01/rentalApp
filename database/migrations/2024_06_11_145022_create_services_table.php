@@ -19,6 +19,7 @@ return new class extends Migration
             $table->string('no_seri');
             $table->string('descript');
             $table->string('type');
+            $table->bigInteger('total_invoice');
             $table->bigInteger('nominal_in');
             $table->bigInteger('nominal_out')->nullable();
             $table->bigInteger('diskon')->nullable();
@@ -28,6 +29,7 @@ return new class extends Migration
             $table->date('date_finis')->nullable();
             $table->string('jenis_service');
             $table->string('no_inv');
+            $table->string('tgl_inv');
             $table->integer('status')->default(0);
             $table->timestamps();
         });

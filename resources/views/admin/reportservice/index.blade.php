@@ -68,10 +68,13 @@
                             <th>No Seri</th>
                             <th>Tanggal Service</th>
                             <th>Tanggal Selesai</th>
+                            <th>Total Inv</th>
                             <th>Biaya Ganti</th>
+                            <th>Fee/ <br>Diskon</th>
                             <th>Uang <br>Masuk</th>
                             <th>Sisa <br>Bayar</th>
-                            <th>Fee/ <br>Diskon</th>
+                            <th>Ket. Bayar</th>
+                            <th>Penerima</th>
                             <th>Status</th>
                         </tr>
                     </thead>
@@ -91,10 +94,34 @@
                                     <div class="text-center">-</div>
                                     @endif
                                 </td>
+                                <td>{{formatRupiah($data->total_invoice)}}</td>
                                 <td>{{formatRupiah($data->biaya_ganti)}}</td>
+                                <td>{{formatRupiah($data->diskon)}}</td>
                                 <td>{{formatRupiah($data->nominal_in)}}</td>
                                 <td>{{formatRupiah($data->nominal_out)}}</td>
-                                <td>{{formatRupiah($data->diskon)}}</td>
+                                <td>
+                                    @if($data->debtService->isNotEmpty())
+                                        @foreach($data->debtService as $debt)
+                                            @if($debt->bank)
+                                                <li>{{$debt->date_pay}}, {{ $debt->bank->name }}</li>
+                                            @else
+                                            
+                                            @endif
+                                        @endforeach
+                                    @else
+                                        {{$data->date_pays}}
+                                    @endif
+                                </td>
+                                <td>
+                                    @if($data->debtService && $data->debtService->isNotEmpty())
+                                        @foreach($data->debtService as $debt)
+                                            <li>{{$debt->penerima}}</li>
+                                        @endforeach
+                                    @else
+                                        Tidak ada data
+                                    @endif
+
+                                </td>
                                 <td>
                                     @if($data->status == 0)
                                         <span class="badge bg-success">Service</span>
@@ -135,7 +162,15 @@
 @endsection
 
 @push('head')
+    <style>
+        table.dataTable {
+            font-size: 11px /* Atur ukuran font */
+        }
+        table.dataTable td {
+        padding: 3px; /* Atur padding agar lebih rapat jika diperlukan */
+    }
 
+    </style>
 @endpush
 
 @push('js')

@@ -15,7 +15,7 @@ use App\Http\Controllers\Admin\ReportController;
 use App\Http\Controllers\Admin\ReportMaintenController;
 use App\Http\Controllers\Admin\ReportProblemController;
 use App\Http\Controllers\Admin\ReportServiceController;
-
+use App\Models\Service;
 
 Route::group(['middleware' => ['auth:web', 'role:admin'], 'prefix' => 'admin'], function () {
     Route::get('/', [DashboardController::class, 'index']);
@@ -71,6 +71,7 @@ Route::group(['middleware' => ['auth:web', 'role:admin'], 'prefix' => 'admin'], 
     //service
     Route::resource('/service', ServiceController::class)->names('admin.service');
     Route::get('/history/service', [ServiceController::class, 'history'])->name('admin.service.history');
+    Route::put('/pembayaran/service/{id}', [ServiceController::class, 'bayar'])->name('admin.service.bayar');
     //service end
 
     //report

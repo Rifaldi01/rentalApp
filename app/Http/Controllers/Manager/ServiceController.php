@@ -3,8 +3,11 @@
 namespace App\Http\Controllers\Manager;
 
 use App\Http\Controllers\Controller;
+use App\Models\Bank;
+use App\Models\DebtServic;
 use App\Models\Service;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
 use RealRashid\SweetAlert\Facades\Alert;
 
 class ServiceController extends Controller
@@ -14,12 +17,15 @@ class ServiceController extends Controller
      */
     public function index()
     {
-        $service = Service::where('status', 0)->get();
+        $cust = Service::latest()->paginate();
         $title = 'Delete Item!';
         $text = "Are you sure you want to delete?";
         confirmDelete($title, $text);
-
-        return view('manager.service.index', compact('service'));
+        $service = Service::where('status', 0)
+        ->orWhere('nominal_out', '!=', 0)
+        ->get();
+        $bank = Bank::all();
+        return view('manager.service.index', compact('service', 'bank'));
     }
 
     /**
@@ -37,7 +43,8 @@ class ServiceController extends Controller
                 'service' => $service
             ];
         }
-        return view('manager.service.create', $inject);
+        $bank = Bank::pluck('name', 'id')->toArray();
+        return view('manager.service.create', $inject, compact('bank'));
     }
 
     /**
@@ -70,10 +77,35 @@ class ServiceController extends Controller
      */
     public function update(Request $request, string $id)
     {
-       return $this->save($request, $id);
-       return redirect()->route('manager.service.history')->withSuccess('Berhasil diperbaharui');
+        $request->validate([
+            'date_finis' => 'required|date',
+        ]);
+    
+        $service = Service::find($id);
+    
+        // Simpan nilai biaya_ganti sebelumnya
+        $previous_biaya_ganti = $service->biaya_ganti;
+    
+        // Perbarui kolom service
+        $service->date_finis = $request->input('date_finis');
+        $service->descript = $request->input('descript');
+        $service->biaya_ganti = $request->input('biaya_ganti');
+        $service->status = 1;
+    
+        // Cek apakah biaya_ganti berubah
+        if ($previous_biaya_ganti != $service->biaya_ganti) {
+            $difference = $service->biaya_ganti - $previous_biaya_ganti;
+    
+            // Update total_invoice dan nominal_out dengan selisih
+            $service->total_invoice += $difference;
+            $service->nominal_out += $difference;
+        }
+    
+        $service->save();
+    
+        Alert::success('Finish', 'Service Has been Finished');
+        return back();
     }
-
 
     /**
      * Remove the specified resource from storage.
@@ -88,68 +120,118 @@ class ServiceController extends Controller
     private function save(Request $request, $id = null)
     {
         $validate = $request->validate([
-            'name' => 'required',
-            'item' => 'required',
-            'no_seri' => 'required',
-            'date_service' => 'required',
+            'name'          => 'required',
+            'item'          => 'required',
+            'no_seri'       => 'required',
+            'date_service'  => 'required',
             'jenis_service' => 'required',
-            'nominal_in' => 'required|numeric',
-            'nominal_out' => 'numeric',
-            'diskon' => 'numeric',
-            'biaya_ganti' => 'numeric',
-            'ongkir' => 'numeric',
-            'descript' => 'required',
+            'nominal_in'    => 'required|numeric',
+            'nominal_out'   => 'numeric',
+            'diskon'        => 'numeric',
+            'biaya_ganti'   => 'numeric',
+            'ongkir'        => 'numeric',
+            'type'          => 'required',
+            'no_inv'        => 'required',
+            'tgl_inv'       => 'required',
+            'total_invoice' => 'required|numeric',
+        ],[
+            'name.required'          => 'Nama Pelanggan Wajib Diisi',
+            'item.required'          => 'Item Wajib Diisi',
+            'no_seri.required'       => 'No Seri Wajib Diisi',
+            'date_service.required'  => 'Tanggal Service Wajib Diisi',
+            'jenis_service.required' => 'Jenis Service Wajib Diisi',
+            'nominal_in.required'    => 'Uang Masuk Wajib Diisi',
+            'nominal_in.numeric'     => 'Uang masuk Harus Berupa Angka',
+            'nominal_out.numeric'    => 'Sisa Pembayaran Harus Berupa Angka',
+            'diskon.numeric'         => 'Diskon Harus Berupa Angka',
+            'biaya_ganti.numeric'    => 'Ongkir Harus Berupa Angka',
+            'ongkir.numeric'         => 'Ongkir Harus Berupa Angka',
+            'type.required'          => 'Type Wajib Diisi',
+            'no_inv.required'        => 'No Invoice Wajib Diisi',
+            'tgl_inv.required'       => 'Tanggal Invoice Wajib Diisi',
+            'total_invoice.required' => 'Total Invoice Wajib Diisi',
         ]);
-    
-        // Cek apakah sedang membuat data baru atau mengedit data yang sudah ada
-        $isCreating = $id === null;
-    
-        // Temukan data berdasarkan id atau buat data baru jika id tidak ada
         $service = Service::firstOrNew(['id' => $id]);
-        $service->name = $request->input('name');
-        $service->phone = $request->input('phone');
-        $service->item = $request->input('item');
-        $service->no_seri = $request->input('no_seri');
-        $service->descript = $request->input('descript');
-        $service->type = $request->input('type');
-        $service->nominal_in = $request->input('nominal_in');
-        $service->nominal_out = $request->input('nominal_out');
-        $service->diskon = $request->input('diskon');
-        $service->biaya_ganti = $request->input('biaya_ganti');
-        $service->ongkir = $request->input('ongkir');
-        $service->date_service = $request->input('date_service');
+        $service->name          = $request->input('name');
+        $service->phone         = $request->input('phone');
+        $service->item          = $request->input('item');
+        $service->no_seri       = $request->input('no_seri');
+        $service->descript      = $request->input('descript');
+        $service->type          = $request->input('type');
+        $service->nominal_in    = $request->input('nominal_in');
+        $service->nominal_out   = $request->input('nominal_out');
+        $service->diskon        = $request->input('diskon');
+        $service->biaya_ganti   = $request->input('biaya_ganti');
+        $service->ongkir        = $request->input('ongkir');
+        $service->date_service  = $request->input('date_service');
         $service->jenis_service = $request->input('jenis_service');
+        $service->accessories   = $request->input('accessories');
+        $service->no_inv        = $request->input('no_inv');
+        $service->total_invoice = $request->input('total_invoice');
+        $service->tgl_inv       = $request->input('tgl_inv');
         $service->save();
-    
-        Alert::success('Success', $isCreating ? 'Upload Data Success' : 'Update Data Success');
-    
-        // Arahkan ke route yang sesuai berdasarkan operasi create atau update
-        if ($isCreating) {
-            return redirect()->route('manager.service.index');
-        } else {
-            return redirect()->route('manager.service.history')->withSuccess('Berhasil diperbaharui');
-        }
+
+        $debts = DebtServic::create([
+            'service_id' => $service->id,
+            'bank_id'    => $request->input('bank_id'),
+            'pay_debts'  => $service->nominal_in,
+            'penerima'   => $request->input('penerima'),
+            'date_pay'   => $request->input('date_pay'),
+            'description'=> $request->input('description'),
+        ]);
+
+        return redirect()->route('manager.service.index')->withSuccess('Upload Data Success');
     }
-    
+    public function bayar(Request $request, $id)
+{
+    $validator = Validator::make($request->all(), [
+        'nominal_in'   => 'required',
+        'pay_debts'    => 'required',
+        'date_pay'     => 'required',
+    ]);
+
+    if ($validator->fails()) {
+        return back()->withErrors($validator)->withInput();
+    }
+
+    // Format ulang input nominal_in dan pay_debts untuk menghapus simbol dan titik
+    $nominal_in = (int) str_replace(['Rp.', '.', ' '], '', $request->input('nominal_in'));
+    $biaya_ganti = (int) str_replace(['Rp.', '.', ' '], '', $request->input('biaya_ganti'));
+    $pay_debts = (int) str_replace(['Rp.', '.', ' '], '', $request->input('pay_debts'));
+
+    // Update nominal_in dan nominal_out di tabel services
+    $service = Service::findOrFail($id);
+
+    // Cek apakah biaya_ganti berubah
+    if ($biaya_ganti != $service->biaya_ganti) {
+        $service->total_invoice += $biaya_ganti - $service->biaya_ganti; // Update total_invoice hanya jika biaya_ganti berubah
+        $service->nominal_out += $biaya_ganti - $service->biaya_ganti;  // Update nominal_out hanya jika biaya_ganti berubah
+    }
+
+    // Kurangi nominal_out dengan pay_debts
+    $service->nominal_out -= $pay_debts;
+
+    // Set nominal_in yang baru
+    $service->nominal_in = $nominal_in;
+    $service->biaya_ganti = $biaya_ganti;
+    $service->save();
+
+    // Simpan data ke tabel debts
+    DebtServic::create([
+        'service_id'  => $id,
+        'bank_id'    => $request->input('bank_id'),
+        'pay_debts'  => $pay_debts,
+        'date_pay'   => $request->input('date_pay'),
+        'penerima'   => $request->input('penerima'),
+        'description'=> $request->input('description'),
+    ]);
+
+    return back()->withSuccess('Pembayaran Berhasil');
+}
+
     public function history()
     {
         $service = Service::all();
-        $title = 'Delete Item!';
-        $text = "Are you sure you want to delete?";
-        confirmDelete($title, $text);
         return view('manager.service.index', compact('service'));
-    }
-
-    public function finis(Request $request, $id){
-        $request->validate([
-            'date_finis' =>'required|date',
-        ]);
-
-        $service = Service::find($id);
-        $service->date_finis =  $request->input('date_finis');
-        $service->status = 1;
-        $service->save();
-        Alert::success('Finish', 'Service Has been Finshed');
-        return back();
     }
 }
