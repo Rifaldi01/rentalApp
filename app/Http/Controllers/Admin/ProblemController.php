@@ -25,14 +25,14 @@ class ProblemController extends Controller
             ->select(
                 'rentals.id', 'rentals.customer_id', 'rentals.item_id', 'rentals.name_company',
                 'rentals.addres_company', 'rentals.phone_company', 'rentals.no_po','rentals.date_start',
-                'rentals.date_end', 'rentals.status', 'rentals.no_inv', 'rentals.image', 'a.rental_id',
+                'rentals.date_end', 'rentals.status', 'rentals.no_inv', 'rentals.image', 'a.rental_id', 'rentals.nominal_in', 'rentals.nominal_out', 'rentals.diskon', 'rentals.total_invoice',
                 \DB::raw('GROUP_CONCAT(b.name) as access'),
                 'problems.id', 'problems.descript', 'problems.rental_id'
             )
             ->groupBy(
                 'rentals.id', 'rentals.customer_id', 'rentals.item_id', 'rentals.name_company',
                 'rentals.addres_company', 'rentals.phone_company', 'rentals.no_po', 'rentals.date_start',
-                'rentals.date_end', 'rentals.status', 'a.rental_id', 'problems.id', 'rentals.no_inv', 'rentals.image', 'problems.descript', 'problems.rental_id'
+                'rentals.date_end', 'rentals.status', 'a.rental_id', 'problems.id', 'rentals.no_inv', 'rentals.image', 'problems.descript', 'problems.rental_id', 'rentals.nominal_in', 'rentals.nominal_out', 'rentals.diskon', 'rentals.total_invoice',
             )
             ->where('problems.status', 0)
             ->get();

@@ -28,8 +28,8 @@
                     </thead>
                     <tbody>
                     @foreach($rental as $key => $data)
-                        @if($data->nominal_in == $data->pay)
-                        @else
+                        
+                        
                             <tr>
                                 <td data-index="{{ $key + 1 }}">{{$key +1}}</td>
                                 <td>{{$data->no_inv}}</td>
@@ -163,7 +163,7 @@
                                     </div>
                                 </td>
                             </tr>
-                        @endif
+                        
                     @endforeach
                     </tbody>
                 </table>
@@ -280,7 +280,6 @@
             var table = $('#excel').DataTable({
                 lengthChange: false,
                 buttons: ['excel'],
-                paginate: false
             });
 
             table.buttons().container()

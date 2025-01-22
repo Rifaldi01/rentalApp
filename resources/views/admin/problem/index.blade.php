@@ -14,6 +14,10 @@
                         <th>Name</th>
                         <th>Item</th>
                         <th>Accessories</th>
+                        <th>Total <br>Inv</th>
+                        <th width="">Ung <br>Masuk</th>
+                        <th>Sisa <br>Bayar</th>
+                        <th>Fee /<br>Discount</th>
                         <th>Start Date</th>
                         <th>End Date</th>
                         <th class="text-center">Status</th>
@@ -50,6 +54,16 @@
                                     <li>No accessories</li>
                                 @endif
                             </td>
+                            <td>
+                                @if($data->total_invoice)
+                                    {{formatRupiah($data->total_invoice)}}
+                                @else
+                                    Rp. 0
+                                @endif
+                            </td>
+                            <td>{{formatRupiah($data->nominal_in)}}</td>
+                            <td>{{formatRupiah($data->nominal_out)}}</td>
+                            <td>{{formatRupiah($data->diskon)}}</td>
                             <td>{{ formatId($data->date_start) }}</td>
                             <td>{{ formatId($data->date_end) }}</td>
                             <td class="text-center">
