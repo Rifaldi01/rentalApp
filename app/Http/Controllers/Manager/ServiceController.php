@@ -260,6 +260,7 @@ class ServiceController extends Controller
     {
         $request->validate([
             'total_invoice' => 'required',
+            'tgl_inv' => $id ? 'nullable' : 'required',
         ]);
     
         $service = Service::find($id);
