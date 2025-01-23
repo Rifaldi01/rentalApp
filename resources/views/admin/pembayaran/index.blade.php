@@ -18,7 +18,7 @@
                         <th width="4%">No</th>
                         <th class="text-center" width="5%">Invoice</th>
                         <th>Customer</th>
-                        <th class="text-center" width="5%">Total Seharusnya</th>
+                        <th class="text-center" width="5%">Total Invoice</th>
                         <th class="text-center" width="5%">Uang Masuk</th>
                         <th class="text-center" width="5%">Sisa Bayar</th>
                         <th class="text-center" width="5%">Diskon</th>

@@ -683,7 +683,7 @@
                                         </div>
                                         @endif
                                     @endif
-                                    @if($data->total_invoice == 0)
+                                    @if($data->total_invoice == 0 || $data->no_inv == 'proses')
                                     <button class="btn btn-dnd btn-sm lni lni-pencil" data-bs-toggle="modal"
                                                 data-bs-tool="tooltip" data-bs-placement="top" title="Edit Invoice"
                                                 data-bs-target="#editInvoice{{$data->id}}"></button>
@@ -702,12 +702,16 @@
                                                         @csrf
                                                         @method('PUT')
                                                         <div class="modal-body">
+                                                        <label class="col-form-label">No Invoice</label>
+                                                            <input type="text" value="{{$data->no_inv}}"
+                                                                   class="form-control" name="no_inv"
+                                                                   placeholder="DND/INV/***/**">
                                                             <label class="col-form-label">Total Invoice</label>
                                                             <input type="text" onkeyup="formatRupiah2(this)"
                                                                    class="form-control " name="total_invoice"
                                                                    placeholder="Enter Date" value="{{$data->total_invoice}}">
                                                             <label class="col-form-label">Tanggal Invoice</label>
-                                                            <input type="text"
+                                                            <input type="text" value="{{$data->tgl_inv}}"
                                                                    class="form-control datepicker" name="tgl_inv"
                                                                    placeholder="Enter Date">
                                                         </div>

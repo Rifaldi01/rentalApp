@@ -247,9 +247,9 @@ class ServiceController extends Controller
         $total_invoice = (int) str_replace(['Rp.', '.', ' '], '', $request->input('total_invoice'));
         
         $service->tgl_inv = $request->input('tgl_inv');
+        $service->no_inv = $request->input('no_inv');
         $service->total_invoice = $total_invoice;
         $service->nominal_out = $total_invoice;
-        $service->status = 1;
     
         $service->save();
     

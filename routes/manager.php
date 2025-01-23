@@ -32,7 +32,7 @@ Route::group(['middleware' => ['auth:web', 'role:manager'], 'prefix' => 'manager
     Route::put('/pembayaran/{id}', [PembayaranController::class, 'bayar'])->name('manager.pembayaran.bayar');
     Route::get('/pembayaran/filter', [PembayaranController::class, 'filter'])->name('manager.pembayaran.filter');
     Route::get('/pembayaran/filter', [PembayaranController::class, 'filter'])->name('manager.pembayaran.filter');
-
+    Route::put('/pembayaran/edit/{id}', [PembayaranController::class, 'update'])->name('manager.update.totalinv');
     //rental end 
 
     //problem
@@ -74,5 +74,6 @@ Route::group(['middleware' => ['auth:web', 'role:manager'], 'prefix' => 'manager
     Route::get('/history/service', [ServiceController::class, 'history'])->name('manager.service.history');
     Route::post('/service/finis/{id}', [ServiceController::class, 'finis'])->name('manager.service.finis');
     Route::put('/pembayaran/service/{id}', [ServiceController::class, 'bayar'])->name('manager.service.bayar');
+    Route::put('/invoice/edit/{id}', [ServiceController::class, 'invoice'])->name('manager.service.invoice');
     //end report
 });

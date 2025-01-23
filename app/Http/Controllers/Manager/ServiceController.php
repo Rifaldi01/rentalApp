@@ -234,4 +234,25 @@ class ServiceController extends Controller
         $service = Service::all();
         return view('manager.service.index', compact('service'));
     }
+    public function invoice(Request $request, string $id)
+    {
+        $request->validate([
+            'tgl_inv' => 'required|date',
+            'total_invoice' => 'required',
+        ]);
+    
+        $service = Service::find($id);
+    
+        $total_invoice = (int) str_replace(['Rp.', '.', ' '], '', $request->input('total_invoice'));
+        
+        $service->tgl_inv = $request->input('tgl_inv');
+        $service->no_inv = $request->input('no_inv');
+        $service->total_invoice = $total_invoice;
+        $service->nominal_out = $total_invoice;
+    
+        $service->save();
+    
+        
+        return back()->withSuccess('Invoice Berhasil Diubah');
+    }
 }

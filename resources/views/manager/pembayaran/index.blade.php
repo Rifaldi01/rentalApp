@@ -18,7 +18,7 @@
                         <th width="4%">No</th>
                         <th class="text-center" width="5%">Invoice</th>
                         <th>Customer</th>
-                        <th class="text-center" width="5%">Total Seharusnya</th>
+                        <th class="text-center" width="5%">Total Invoice</th>
                         <th class="text-center" width="5%">Uang Masuk</th>
                         <th class="text-center" width="5%">Sisa Bayar</th>
                         <th class="text-center" width="5%">Diskon</th>
@@ -28,6 +28,8 @@
                     </thead>
                     <tbody>
                     @foreach($rental as $key => $data)
+                        
+                        
                             <tr>
                                 <td data-index="{{ $key + 1 }}">{{$key +1}}</td>
                                 <td>{{$data->no_inv}}</td>
@@ -44,7 +46,7 @@
                                 <td>{{formatRupiah($data->diskon)}}</td>
                                 <td>{{formatRupiah($total[$data->id])}}</td>
                                 <td class="text-center">
-                                @if($data->total_invoice == 0 || $data->total_invoice == null)
+                                    @if($data->total_invoice == 0 || $data->total_invoice == null)
                                         <button class="btn btn-dnd lni lni-pencil btn-sm" data-bs-toggle="modal"
                                                 data-bs-target="#edit{{$data->id}}" data-bs-tool="tooltip"
                                                 data-bs-placement="top" title="edit">
@@ -58,7 +60,7 @@
                                                         <button type="button" class="btn-close" data-bs-dismiss="modal"
                                                                 aria-label="Close"></button>
                                                     </div>
-                                                    <form action="{{route('admin.update.totalinv', $data->id)}}" method="POST" id="myForm">
+                                                    <form action="{{route('manager.update.totalinv', $data->id)}}" method="POST" id="myForm">
                                                         @csrf
                                                         @method('PUT')
                                                         <div class="modal-body">
@@ -130,6 +132,19 @@
                                                                     <span
                                                                         class="position-absolute top-50 translate-middle-y"><i
                                                                             class='bx bx-money'></i></span>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="row mb-3">
+                                                            <label for="input42" class="col-sm-3 col-form-label">Diskon</label>
+                                                            <div class="col-sm-9">
+                                                                <div class="position-relative input-icon">
+                                                                    <input type="text" class="form-control" value="0"
+                                                                           name="diskon" id="diskon_{{$data->id}}"
+                                                                           onkeyup="formatRupiah2(this)">
+                                                                    <span
+                                                                        class="position-absolute top-50 translate-middle-y"><i
+                                                                            class='lni lni-tag'></i></span>
                                                                 </div>
                                                             </div>
                                                         </div>
@@ -208,6 +223,7 @@
                                     </div>
                                 </td>
                             </tr>
+                        
                     @endforeach
                     </tbody>
                 </table>
@@ -269,9 +285,9 @@
                                 <td>{{formatRupiah($data->pay_debts)}}</td>
                                 <td>
                                 @if($data->bank_id)
-                                {{$data->bank->name}}
+                                    {{$data->bank->name}}
                                 @else
-                                {{$data->description}}
+                                    {{$data->description}}
                                 @endif
                                 </td>
                             </tr>
@@ -324,7 +340,6 @@
             var table = $('#excel').DataTable({
                 lengthChange: false,
                 buttons: ['excel'],
-                paginate: false
             });
 
             table.buttons().container()
