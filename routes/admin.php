@@ -72,6 +72,7 @@ Route::group(['middleware' => ['auth:web', 'role:admin'], 'prefix' => 'admin'], 
     //service
     Route::resource('/service', ServiceController::class)->names('admin.service');
     Route::put('/invoice/edit/{id}', [ServiceController::class, 'invoice'])->name('admin.service.invoice');
+    Route::put('/invoices/edit/{id}', [ServiceController::class, 'invoices'])->name('admin.service.invoices');
     Route::get('/history/service', [ServiceController::class, 'history'])->name('admin.service.history');
     Route::put('/pembayaran/service/{id}', [ServiceController::class, 'bayar'])->name('admin.service.bayar');
     //service end

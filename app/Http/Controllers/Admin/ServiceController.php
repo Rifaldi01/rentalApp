@@ -256,4 +256,22 @@ class ServiceController extends Controller
         
         return back()->withSuccess('Invoice Berhasil Diubah');
     }
+    public function invoices(Request $request, string $id)
+    {
+        $request->validate([
+            'total_invoice' => 'required',
+        ]);
+    
+        $service = Service::find($id);
+    
+        $total_invoice = (int) str_replace(['Rp.', '.', ' '], '', $request->input('total_invoice'));
+        
+        $service->tgl_inv = $request->input('tgl_inv');
+        $service->no_inv = $request->input('no_inv');
+        $service->total_invoice = $total_invoice;    
+        $service->save();
+    
+        
+        return back()->withSuccess('Invoice Berhasil Diubah');
+    }
 }

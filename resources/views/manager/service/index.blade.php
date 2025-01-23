@@ -399,7 +399,50 @@
                                             </div>
                                         </div>
                                         @endif
-                                        
+                                        @if($data->total_invoice == 0 || $data->no_inv == 'proses')
+                                        <button class="btn btn-dnd btn-sm lni lni-pencil" data-bs-toggle="modal"
+                                                    data-bs-tool="tooltip" data-bs-placement="top" title="Edit Invoice"
+                                                    data-bs-target="#editInvoice{{$data->id}}"></button>
+                                            <div class="modal fade" id="editInvoice{{$data->id}}"
+                                                tabindex="-1"
+                                                aria-hidden="true">
+                                                <div class="modal-dialog modal-dialog-centered">
+                                                    <div class="modal-content">
+                                                        <div class="modal-header">
+                                                            <h5 class="modal-title">Edit Data</h5>
+                                                            <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                                    aria-label="Close"></button>
+                                                        </div>
+                                                        <form action="{{route('manager.service.invoice', $data->id)}}"
+                                                            method="POST">
+                                                            @csrf
+                                                            @method('PUT')
+                                                            <div class="modal-body">
+                                                            <label class="col-form-label">No Invoice</label>
+                                                                <input type="text" value="{{$data->no_inv}}"
+                                                                    class="form-control" name="no_inv"
+                                                                    placeholder="DND/INV/***/**">
+                                                                <label class="col-form-label">Total Invoice</label>
+                                                                <input type="text" onkeyup="formatRupiah2(this)"
+                                                                    class="form-control " name="total_invoice"
+                                                                    placeholder="Enter Date" value="{{$data->total_invoice}}">
+                                                                <label class="col-form-label">Tanggal Invoice</label>
+                                                                <input type="text" value=""
+                                                                    class="form-control datepicker" name="tgl_inv"
+                                                                    placeholder="Enter Date">
+                                                            </div>
+                                                            <div class="modal-footer">
+                                                                <button type="button" class="btn btn-secondary"
+                                                                        data-bs-dismiss="modal">Close
+                                                                </button>
+                                                                <button type="submit" class="btn btn-primary">Save<i
+                                                                        class="bx bx-save"></i></button>
+                                                            </div>
+                                                        </form>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        @endif
                                     @else($data->status == 1)
                                         <button class="btn btn-warning lni lni-eye btn-sm" data-bs-toggle="modal"
                                                 data-bs-tool="tooltip" data-bs-placement="top" title="Detail"
@@ -682,8 +725,7 @@
                                             </div>
                                         </div>
                                         @endif
-                                    @endif
-                                    @if($data->total_invoice == 0 || $data->no_inv == 'proses')
+                                        @if($data->total_invoice == 0 || $data->no_inv == 'proses')
                                     <button class="btn btn-dnd btn-sm lni lni-pencil" data-bs-toggle="modal"
                                                 data-bs-tool="tooltip" data-bs-placement="top" title="Edit Invoice"
                                                 data-bs-target="#editInvoice{{$data->id}}"></button>
@@ -697,7 +739,7 @@
                                                         <button type="button" class="btn-close" data-bs-dismiss="modal"
                                                                 aria-label="Close"></button>
                                                     </div>
-                                                    <form action="{{route('manager.service.invoice', $data->id)}}"
+                                                    <form action="{{route('manager.service.invoices', $data->id)}}"
                                                           method="POST">
                                                         @csrf
                                                         @method('PUT')
@@ -711,7 +753,7 @@
                                                                    class="form-control " name="total_invoice"
                                                                    placeholder="Enter Date" value="{{$data->total_invoice}}">
                                                             <label class="col-form-label">Tanggal Invoice</label>
-                                                            <input type="text" value="{{$data->tgl_inv}}"
+                                                            <input type="text" value=""
                                                                    class="form-control datepicker" name="tgl_inv"
                                                                    placeholder="Enter Date">
                                                         </div>
@@ -727,6 +769,8 @@
                                             </div>
                                         </div>
                                     @endif
+                                    @endif
+                                    
                                 </td>
                             </tr>
                         @endforeach

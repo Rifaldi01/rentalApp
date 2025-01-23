@@ -75,5 +75,6 @@ Route::group(['middleware' => ['auth:web', 'role:manager'], 'prefix' => 'manager
     Route::post('/service/finis/{id}', [ServiceController::class, 'finis'])->name('manager.service.finis');
     Route::put('/pembayaran/service/{id}', [ServiceController::class, 'bayar'])->name('manager.service.bayar');
     Route::put('/invoice/edit/{id}', [ServiceController::class, 'invoice'])->name('manager.service.invoice');
+    Route::put('/invoices/edit/{id}', [ServiceController::class, 'invoices'])->name('manager.service.invoices');
     //end report
 });

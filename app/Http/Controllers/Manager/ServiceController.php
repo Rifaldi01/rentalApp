@@ -232,7 +232,8 @@ class ServiceController extends Controller
     public function history()
     {
         $service = Service::all();
-        return view('manager.service.index', compact('service'));
+        $bank = Bank::all();
+        return view('manager.service.index', compact('service', 'bank'));
     }
     public function invoice(Request $request, string $id)
     {
@@ -250,6 +251,24 @@ class ServiceController extends Controller
         $service->total_invoice = $total_invoice;
         $service->nominal_out = $total_invoice;
     
+        $service->save();
+    
+        
+        return back()->withSuccess('Invoice Berhasil Diubah');
+    }
+    public function invoices(Request $request, string $id)
+    {
+        $request->validate([
+            'total_invoice' => 'required',
+        ]);
+    
+        $service = Service::find($id);
+    
+        $total_invoice = (int) str_replace(['Rp.', '.', ' '], '', $request->input('total_invoice'));
+        
+        $service->tgl_inv = $request->input('tgl_inv');
+        $service->no_inv = $request->input('no_inv');
+        $service->total_invoice = $total_invoice;    
         $service->save();
     
         
