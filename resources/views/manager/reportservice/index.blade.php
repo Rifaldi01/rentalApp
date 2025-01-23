@@ -58,7 +58,7 @@
         </div>
         <div class="card-body">
             <div class="table-responsive">
-                <table id="table-report" class="table table-striped table-bordered" style="width:100%">
+            <table id="table-report" class="table table-striped table-bordered" style="width:100%">
                     <thead>
                         <tr>
                             <th width="2%">No</th>
@@ -75,6 +75,7 @@
                             <th>Sisa <br>Bayar</th>
                             <th>Ket. Bayar</th>
                             <th>Penerima</th>
+                            <th>Ket. Ganti</th>
                             <th>Status</th>
                         </tr>
                     </thead>
@@ -104,13 +105,15 @@
                                         @foreach($data->debtService as $debt)
                                             @if($debt->bank)
                                                 <li>{{$debt->date_pay}}, {{ $debt->bank->name }}</li>
-                                            @else
-                                            
                                             @endif
+                                            <li>{{$debt->date_pay}}, {{ $debt->description }}</li>
                                         @endforeach
                                     @else
-                                        {{$data->date_pays}}
+                                        @foreach($data->debtService as $debt)
+                                        {{$debt->date_pay}}, {{ $debt->description }}
+                                        @endforeach
                                     @endif
+                                    
                                 </td>
                                 <td>
                                     @if($data->debtService && $data->debtService->isNotEmpty())
@@ -122,6 +125,7 @@
                                     @endif
 
                                 </td>
+                                <td>{{$data->date_pays}}</td>
                                 <td>
                                     @if($data->status == 0)
                                         <span class="badge bg-success">Service</span>

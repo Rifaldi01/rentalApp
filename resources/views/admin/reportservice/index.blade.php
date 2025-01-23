@@ -106,11 +106,11 @@
                                             @if($debt->bank)
                                                 <li>{{$debt->date_pay}}, {{ $debt->bank->name }}</li>
                                             @endif
-                                            <li>{{ $debt->description }}</li>
+                                            <li>{{$debt->date_pay}}, {{ $debt->description }}</li>
                                         @endforeach
                                     @else
                                         @foreach($data->debtService as $debt)
-                                            {{ $debt->description }}
+                                        {{$debt->date_pay}}, {{ $debt->description }}
                                         @endforeach
                                     @endif
                                     
