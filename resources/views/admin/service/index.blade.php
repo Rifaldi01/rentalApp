@@ -81,8 +81,7 @@
                                 <td >
                                     @if($data->status == 0)
                                         <button class="btn btn-warning lni lni-eye btn-sm" data-bs-toggle="modal"
-                                                data-bs-placement="top"
-                                                title="Detail"
+                                               data-bs-tool="tooltip" data-bs-placement="top" title="Detail"
                                                 data-bs-target="#exampleLargeModal{{$data->id}}"></button>
                                         <div class="modal fade" id="exampleLargeModal{{$data->id}}" tabindex="-1"
                                              aria-hidden="true">
@@ -222,7 +221,7 @@
                                         </div>
                                         @if($data->nominal_out == 0)
                                         <button class="btn btn-success btn-sm lni lni-checkmark" data-bs-toggle="modal"
-                                                data-bs-placement="top" title="Finished"
+                                                data-bs-tool="tooltip" data-bs-placement="top" title="Finis"
                                                 data-bs-target="#exampleVerticallycenteredModal{{$data->id}}"></button>
                                         <div class="modal fade" id="exampleVerticallycenteredModal{{$data->id}}"
                                              tabindex="-1"
@@ -403,8 +402,7 @@
                                         
                                     @else($data->status == 1)
                                         <button class="btn btn-warning lni lni-eye btn-sm" data-bs-toggle="modal"
-                                                data-bs-placement="top"
-                                                title="Detail"
+                                                data-bs-tool="tooltip" data-bs-placement="top" title="Detail"
                                                 data-bs-target="#exampleLargeModal{{$data->id}}"></button>
                                         <div class="modal fade" id="exampleLargeModal{{$data->id}}" tabindex="-1"
                                              aria-hidden="true">
@@ -685,7 +683,46 @@
                                         </div>
                                         @endif
                                     @endif
-
+                                    @if($data->total_invoice == 0)
+                                    <button class="btn btn-dnd btn-sm lni lni-pencil" data-bs-toggle="modal"
+                                                data-bs-tool="tooltip" data-bs-placement="top" title="Edit Invoice"
+                                                data-bs-target="#editInvoice{{$data->id}}"></button>
+                                        <div class="modal fade" id="editInvoice{{$data->id}}"
+                                             tabindex="-1"
+                                             aria-hidden="true">
+                                            <div class="modal-dialog modal-dialog-centered">
+                                                <div class="modal-content">
+                                                    <div class="modal-header">
+                                                        <h5 class="modal-title">Edit Data</h5>
+                                                        <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                                aria-label="Close"></button>
+                                                    </div>
+                                                    <form action="{{route('admin.service.invoice', $data->id)}}"
+                                                          method="POST">
+                                                        @csrf
+                                                        @method('PUT')
+                                                        <div class="modal-body">
+                                                            <label class="col-form-label">Total Invoice</label>
+                                                            <input type="text" onkeyup="formatRupiah2(this)"
+                                                                   class="form-control " name="total_invoice"
+                                                                   placeholder="Enter Date" value="{{$data->total_invoice}}">
+                                                            <label class="col-form-label">Tanggal Invoice</label>
+                                                            <input type="text"
+                                                                   class="form-control datepicker" name="tgl_inv"
+                                                                   placeholder="Enter Date">
+                                                        </div>
+                                                        <div class="modal-footer">
+                                                            <button type="button" class="btn btn-secondary"
+                                                                    data-bs-dismiss="modal">Close
+                                                            </button>
+                                                            <button type="submit" class="btn btn-primary">Save<i
+                                                                    class="bx bx-save"></i></button>
+                                                        </div>
+                                                    </form>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    @endif
                                 </td>
                             </tr>
                         @endforeach

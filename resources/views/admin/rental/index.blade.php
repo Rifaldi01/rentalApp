@@ -74,13 +74,13 @@
                                 @endif
                             </td>
                             <td>
-                            @if($data->access)
-                                @foreach(explode(',', $data->access) as $accessory)
-                                    <li>{{ $accessory }}</li>
-                                @endforeach
-                            @else
-                                <li>No accessories</li>
-                            @endif
+                                @if($data->access)
+                                    @foreach(explode(',', $data->access) as $accessory)
+                                        <li>{{ $accessory }}</li>
+                                    @endforeach
+                                @else
+                                    <li>No accessories</li>
+                                @endif
                             </td>
                             <td>
                                 @if($data->total_invoice)
