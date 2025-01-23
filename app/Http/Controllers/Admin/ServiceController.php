@@ -195,7 +195,6 @@ class ServiceController extends Controller
     }
 
     // Format ulang input nominal_in dan pay_debts untuk menghapus simbol dan titik
-    $nominal_in = (int) str_replace(['Rp.', '.', ' '], '', $request->input('nominal_in'));
     $biaya_ganti = (int) str_replace(['Rp.', '.', ' '], '', $request->input('biaya_ganti'));
     $pay_debts = (int) str_replace(['Rp.', '.', ' '], '', $request->input('pay_debts'));
 
@@ -212,7 +211,7 @@ class ServiceController extends Controller
     $service->nominal_out -= $pay_debts;
 
     // Set nominal_in yang baru
-    $service->nominal_in = $nominal_in;
+    $service->nominal_in = $pay_debts;
     $service->biaya_ganti = $biaya_ganti;
     $service->save();
 

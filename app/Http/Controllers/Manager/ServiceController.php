@@ -183,51 +183,50 @@ class ServiceController extends Controller
         return redirect()->route('manager.service.index')->withSuccess('Upload Data Success');
     }
     public function bayar(Request $request, $id)
-{
-    $validator = Validator::make($request->all(), [
-        'nominal_in'   => 'required',
-        'pay_debts'    => 'required',
-        'date_pay'     => 'required',
-    ]);
-
-    if ($validator->fails()) {
-        return back()->withErrors($validator)->withInput();
+    {
+        $validator = Validator::make($request->all(), [
+            'nominal_in'   => 'required',
+            'pay_debts'    => 'required',
+            'date_pay'     => 'required',
+        ]);
+    
+        if ($validator->fails()) {
+            return back()->withErrors($validator)->withInput();
+        }
+    
+        // Format ulang input nominal_in dan pay_debts untuk menghapus simbol dan titik
+        $biaya_ganti = (int) str_replace(['Rp.', '.', ' '], '', $request->input('biaya_ganti'));
+        $pay_debts = (int) str_replace(['Rp.', '.', ' '], '', $request->input('pay_debts'));
+    
+        // Update nominal_in dan nominal_out di tabel services
+        $service = Service::findOrFail($id);
+    
+        // Cek apakah biaya_ganti berubah
+        if ($biaya_ganti != $service->biaya_ganti) {
+            $service->total_invoice += $biaya_ganti - $service->biaya_ganti; // Update total_invoice hanya jika biaya_ganti berubah
+            $service->nominal_out += $biaya_ganti - $service->biaya_ganti;  // Update nominal_out hanya jika biaya_ganti berubah
+        }
+    
+        // Kurangi nominal_out dengan pay_debts
+        $service->nominal_out -= $pay_debts;
+    
+        // Set nominal_in yang baru
+        $service->nominal_in = $pay_debts;
+        $service->biaya_ganti = $biaya_ganti;
+        $service->save();
+    
+        // Simpan data ke tabel debts
+        DebtServic::create([
+            'service_id'  => $id,
+            'bank_id'    => $request->input('bank_id'),
+            'pay_debts'  => $pay_debts,
+            'date_pay'   => $request->input('date_pay'),
+            'penerima'   => $request->input('penerima'),
+            'description'=> $request->input('description'),
+        ]);
+    
+        return back()->withSuccess('Pembayaran Berhasil');
     }
-
-    // Format ulang input nominal_in dan pay_debts untuk menghapus simbol dan titik
-    $nominal_in = (int) str_replace(['Rp.', '.', ' '], '', $request->input('nominal_in'));
-    $biaya_ganti = (int) str_replace(['Rp.', '.', ' '], '', $request->input('biaya_ganti'));
-    $pay_debts = (int) str_replace(['Rp.', '.', ' '], '', $request->input('pay_debts'));
-
-    // Update nominal_in dan nominal_out di tabel services
-    $service = Service::findOrFail($id);
-
-    // Cek apakah biaya_ganti berubah
-    if ($biaya_ganti != $service->biaya_ganti) {
-        $service->total_invoice += $biaya_ganti - $service->biaya_ganti; // Update total_invoice hanya jika biaya_ganti berubah
-        $service->nominal_out += $biaya_ganti - $service->biaya_ganti;  // Update nominal_out hanya jika biaya_ganti berubah
-    }
-
-    // Kurangi nominal_out dengan pay_debts
-    $service->nominal_out -= $pay_debts;
-
-    // Set nominal_in yang baru
-    $service->nominal_in = $nominal_in;
-    $service->biaya_ganti = $biaya_ganti;
-    $service->save();
-
-    // Simpan data ke tabel debts
-    DebtServic::create([
-        'service_id'  => $id,
-        'bank_id'    => $request->input('bank_id'),
-        'pay_debts'  => $pay_debts,
-        'date_pay'   => $request->input('date_pay'),
-        'penerima'   => $request->input('penerima'),
-        'description'=> $request->input('description'),
-    ]);
-
-    return back()->withSuccess('Pembayaran Berhasil');
-}
 
     public function history()
     {
