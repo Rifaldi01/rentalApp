@@ -28,18 +28,63 @@
                     </thead>
                     <tbody>
                     @foreach($rental as $key => $data)
-                        @if($data->nominal_in == $data->pay)
-                        @else
                             <tr>
                                 <td data-index="{{ $key + 1 }}">{{$key +1}}</td>
                                 <td>{{$data->no_inv}}</td>
                                 <td>{{$data->cust->name}}</td>
-                                <td class="text-center">{{formatRupiah($totalseharusnya[$data->id])}}</td>
+                                <td class="text-center">
+                                    @if($data->total_invoice)
+                                        {{formatRupiah($data->total_invoice)}}
+                                    @else
+                                       Rp. 0
+                                    @endif
+                                </td>
                                 <td>{{formatRupiah($data->nominal_in)}}</td>
                                 <td>{{formatRupiah($data->nominal_out)}}</td>
                                 <td>{{formatRupiah($data->diskon)}}</td>
                                 <td>{{formatRupiah($total[$data->id])}}</td>
                                 <td class="text-center">
+                                @if($data->total_invoice == 0 || $data->total_invoice == null)
+                                        <button class="btn btn-dnd lni lni-pencil btn-sm" data-bs-toggle="modal"
+                                                data-bs-target="#edit{{$data->id}}" data-bs-tool="tooltip"
+                                                data-bs-placement="top" title="edit">
+                                        </button>
+                                        <div class="modal fade" id="edit{{$data->id}}" tabindex="-1"
+                                            aria-hidden="true">
+                                            <div class="modal-dialog">
+                                                <div class="modal-content">
+                                                    <div class="modal-header">
+                                                        <h5 class="modal-title">Edit Total Invoice</h5>
+                                                        <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                                aria-label="Close"></button>
+                                                    </div>
+                                                    <form action="{{route('admin.update.totalinv', $data->id)}}" method="POST" id="myForm">
+                                                        @csrf
+                                                        @method('PUT')
+                                                        <div class="modal-body">
+                                                            <div class="row mb-3">
+                                                                <label for="input42" class="col-sm-3 col-form-label"><i
+                                                                        class="text-danger">*</i> Total Invoice</label>
+                                                                <div class="col-sm-9">
+                                                                    <div class="position-relative input-icon">
+                                                                        <input type="text" class="form-control" name="total_invoice"
+                                                                            value="{{$data->total_invoice}}"onkeyup="formatRupiah2(this)">
+                                                                        <span
+                                                                            class="position-absolute top-50 translate-middle-y"><i
+                                                                                class='bx bx-dollar'></i></span>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="modal-footer">
+                                                            <button class="btn btn-primary" id="bayarbutton">Save</button>
+                                                        </div>
+                                                    </form>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    @else
+                                    @endif
                                     <button class="btn btn-warning lni lni-dollar btn-sm" data-bs-toggle="modal"
                                             data-bs-target="#examplemodal{{$data->id}}" data-bs-tool="tooltip"
                                             data-bs-placement="top" title="Bayar">
@@ -163,7 +208,6 @@
                                     </div>
                                 </td>
                             </tr>
-                        @endif
                     @endforeach
                     </tbody>
                 </table>

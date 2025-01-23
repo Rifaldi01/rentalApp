@@ -31,6 +31,8 @@ Route::group(['middleware' => ['auth:web', 'role:manager'], 'prefix' => 'manager
     Route::get('/pembayaran', [PembayaranController::class, 'index'])->name('manager.pembayaran.index');
     Route::put('/pembayaran/{id}', [PembayaranController::class, 'bayar'])->name('manager.pembayaran.bayar');
     Route::get('/pembayaran/filter', [PembayaranController::class, 'filter'])->name('manager.pembayaran.filter');
+    Route::get('/pembayaran/filter', [PembayaranController::class, 'filter'])->name('manager.pembayaran.filter');
+
     //rental end 
 
     //problem

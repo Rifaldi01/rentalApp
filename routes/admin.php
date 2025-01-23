@@ -31,6 +31,7 @@ Route::group(['middleware' => ['auth:web', 'role:admin'], 'prefix' => 'admin'], 
     Route::put('/rental/date/{id}', [RentalController::class, 'tanggalBuat'])->name('admin.rental.tanggalbuat');
     Route::get('/pembayaran', [PembayaranController::class, 'index'])->name('admin.pembayaran.index');
     Route::put('/pembayaran/{id}', [PembayaranController::class, 'bayar'])->name('admin.pembayaran.bayar');
+    Route::put('/pembayaran/edit/{id}', [PembayaranController::class, 'update'])->name('admin.update.totalinv');
     Route::get('/pembayaran/filter', [PembayaranController::class, 'filter'])->name('admin.pembayaran.filter');
     //rental end
 

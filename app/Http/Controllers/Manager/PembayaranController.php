@@ -104,5 +104,15 @@ class PembayaranController extends Controller
         });
         return view('manager.pembayaran.index', compact( 'rental', 'bank', 'totalseharusnya', 'total', 'debt'));
     }
+    public function update(Request $request, $id){
+        $total_invoice = str_replace(['Rp.', '.', ' '], '', $request->input('total_invoice'));
+
+        $rental = Rental::findOrFail($id);
+
+        $rental->total_invoice = $total_invoice;
+        $rental->save();
+        return back()->withSuccess('Total Invoice Diperbarui.');
+
+    }
 
 }

@@ -45,15 +45,20 @@ class PembayaranController extends Controller
         // Format ulang input nominal_in dan pay_debts untuk menghapus simbol dan titik
         $nominal_in = str_replace(['Rp.', '.', ' '], '', $request->input('nominal_in'));
         $pay_debts = str_replace(['Rp.', '.', ' '], '', $request->input('pay_debts'));
+        $diskon = str_replace(['Rp.', '.', ' '], '', $request->input('diskon'));
 
         // Update nominal_in dan nominal_out di tabel rentals
         $rental = Rental::findOrFail($id);
 
         // Kurangi nominal_out dengan pay_debts yang baru
         $rental->nominal_out = $rental->nominal_out - $pay_debts;
+        if ($diskon != $rental->diskon){
+            $rental->nominal_out = $rental->nominal_out - $diskon;
+        }
 
         // Set nominal_in yang baru 
         $rental->nominal_in = $nominal_in;
+        $rental->diskon = $diskon;
         $rental->save();
 
         // Simpan data ke tabel debts
@@ -103,6 +108,17 @@ class PembayaranController extends Controller
             });
         });
         return view('admin.pembayaran.index', compact( 'rental', 'bank', 'totalseharusnya', 'total', 'debt'));
+    }
+
+    public function update(Request $request, $id){
+        $total_invoice = str_replace(['Rp.', '.', ' '], '', $request->input('total_invoice'));
+
+        $rental = Rental::findOrFail($id);
+
+        $rental->total_invoice = $total_invoice;
+        $rental->save();
+        return back()->withSuccess('Total Invoice Diperbarui.');
+
     }
 
 }
