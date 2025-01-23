@@ -96,13 +96,12 @@
                                                         <div class="table-responsive">
                                                             <table id="" class="table table-bordered">
                                                                 <tr>
-                                                                    <th colspan="2">
-                                                                        <div class="float-start">Name Customer</div>
-                                                                    </th>
-                                                                    <td colspan="2">
-                                                                        <div class="float-start">{{$data->name}}</div>
-                                                                    </td>
-                                                                </tr>
+                                                                        <th class="bg-primary text-center" colspan="4">CUSTOMER</th>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <th colspan="2" width="10%">Pelanggan</th>
+                                                                        <td colspan="2" class="">{{$data->name}}</td>
+                                                                    </tr>
                                                                 <tr>
                                                                     <th class="text-center bg-primary" colspan="4">ITEM</th>
                                                                 </tr>
@@ -461,15 +460,11 @@
                                                             <div class="table-responsive">
                                                                 <table id="" class="table table-bordered">
                                                                     <tr>
-                                                                        <th class="bg-primary" colspan="4">CUSTOMER</th>
+                                                                        <th class="bg-primary text-center" colspan="4">CUSTOMER</th>
                                                                     </tr>
                                                                     <tr>
-                                                                        <th colspan="2">Name</th>
-                                                                        <th colspan="2">Phone</th>
-                                                                    </tr>
-                                                                    <tr>
-                                                                        <td colspan="2">{{$data->name}}</td>
-                                                                        <td colspan="2">{{$data->phone}}</td>
+                                                                        <th colspan="2" width="10%">Pelanggan</th>
+                                                                        <td colspan="2" class="">{{$data->name}}</td>
                                                                     </tr>
                                                                     <tr>
                                                                         <th class="text-center bg-primary" colspan="4">ITEM</th>

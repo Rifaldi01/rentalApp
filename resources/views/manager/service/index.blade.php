@@ -465,11 +465,9 @@
                                                                     </tr>
                                                                     <tr>
                                                                         <th colspan="2">Name</th>
-                                                                        <th colspan="2">Phone</th>
                                                                     </tr>
                                                                     <tr>
                                                                         <td colspan="2">{{$data->name}}</td>
-                                                                        <td colspan="2">{{$data->phone}}</td>
                                                                     </tr>
                                                                     <tr>
                                                                         <th class="text-center bg-primary" colspan="4">ITEM</th>
