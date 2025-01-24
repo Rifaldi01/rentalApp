@@ -66,8 +66,8 @@
                             <th>Pelanggan</th>
                             <th>Item</th>
                             <th>No Seri</th>
-                            <th>Tanggal Service</th>
-                            <th>Tanggal Selesai</th>
+                            <th>Tgl. Service</th>
+                            <th>Tgl. Selesai</th>
                             <th>Total Inv</th>
                             <th>Biaya Ganti</th>
                             <th>Fee/ <br>Diskon</th>
@@ -168,7 +168,7 @@
 @push('head')
     <style>
         table.dataTable {
-            font-size: 11px /* Atur ukuran font */
+            font-size: 12px /* Atur ukuran font */
         }
         table.dataTable td {
         padding: 3px; /* Atur padding agar lebih rapat jika diperlukan */

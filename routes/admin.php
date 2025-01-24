@@ -80,6 +80,7 @@ Route::group(['middleware' => ['auth:web', 'role:admin'], 'prefix' => 'admin'], 
     //report
     Route::get('/report', [ReportController::class, 'index'])->name('admin.rental.report');
     Route::get('/report/filter', [ReportController::class, 'filter'])->name('admin.report.filter');
+    Route::get('/report/filter/cicilan', [ReportController::class, 'filtercicilan'])->name('admin.report.filtercicilan');
     Route::get('/mainten/report', [ReportMaintenController::class, 'index'])->name('admin.mainten.report');
     Route::get('/mainten/report/filter', [ReportMaintenController::class, 'filter'])->name('admin.mainten.filter');
     Route::get('/problem/report', [ReportProblemController::class, 'index'])->name('admin.problem.report');
