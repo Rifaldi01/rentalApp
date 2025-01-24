@@ -1,5 +1,184 @@
 @extends('layouts.master')
 @section('content')
+<div class="card">
+        <div class="card-body">
+            <div class="col">
+                <div class="row">
+                    <div class="col-sm">
+                        <h4 class="mb-0 text-uppercase">Cicilan Report
+                        </h4>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <hr/>
+    <div class="card table-timbang">
+        <div class="card-header">
+            @if ($errors->any())
+                @foreach ($errors->all() as $error)
+                    <div class="alert border-0 border-start border-5 border-danger alert-dismissible fade show py-2">
+                        <div class="d-flex align-items-center">
+                            <div class="font-35 text-danger"><i class='bx bxs-message-square-x'></i>
+                            </div>
+                            <div class="ms-3">
+                                <h6 class="mb-0 text-danger">Error</h6>
+                                <div>
+                                    <div>{{ $error }}</div>
+                                </div>
+                            </div>
+                        </div>
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                @endforeach
+            @endif
+            <div class="row">
+                <form action="{{route('manager.report.filtercicilan')}}" method="GET">
+                    <div class="row">
+                        <div class="col-5 ms-2 mt-2">
+                            <label class="form-label">
+                                Start Date
+                            </label>
+                            <input type="date" class="form-control" name="tanggal_mulai" required>
+                        </div>
+                        <div class="col-6 mt-2">
+                            <label class="form-label">
+                                End Date
+                            </label>
+                            <input type="date" class="form-control" name="tanggal_akhir" required>
+                        </div>
+                    </div>
+                    <div class="col-md-1 pt-4 float-end me-5">
+                        <button type="submit" class="btn btn-success">Filter</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table id="table-report-cicilan" class="table table-striped table-bordered" style="width:100%">
+                    <thead>
+                    <tr>
+                        <th width="2%">No</th>
+                        <th>Tgl Inv</th>
+                        <th>Tgl Bayar</th>
+                        <th>Pelanggan</th>
+                        <th>Item</th>
+                        <th>No Seri</th>
+                        <th>Tgl Mulai</th>
+                        <th>Tgl Selesai</th>
+                        <th>Total <br>Inv</th>
+                        <th width="">Ung <br>Masuk</th>
+                        <th>Sisa <br>Bayar</th>
+                        <th>Fee /<br>Discount</th>
+                        <th>Total</th>
+                        <th>Ket. (Nama Bank)</th>
+                        <th>Penerima</th>
+                        <th class="text-center">Status</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                        @foreach($cicilan as $key => $datas)
+                            <tr>
+                                <td class="text-center"></td>
+                                <td>{{$datas->rental->no_inv}}</td>
+                                <td>{{formatId($datas->date_pay)}}</td>
+                                <td>{{$datas->rental->cust->name}}</td>
+                                <td>
+                                    @php
+                                        $itemIds = json_decode($datas->rental->item_id);
+                                    @endphp
+                                    @if(is_array($itemIds))
+                                        @foreach($itemIds as $itemId)
+                                            @php
+                                                $item = \App\Models\Item::find($itemId);
+                                            @endphp
+                                            <li>{{ $item ? $item->name : 'Item not found' }}</li>
+                                        @endforeach
+                                    @else
+                                        {{ $itemIds }}
+                                    @endif
+                                </td>
+                                <td>
+                                    @php
+                                        $itemIds = json_decode($datas->rental->item_id);
+                                    @endphp
+                                    @if(is_array($itemIds))
+                                        @foreach($itemIds as $itemId)
+                                            @php
+                                                $item = \App\Models\Item::find($itemId);
+                                            @endphp
+                                            <li>{{ $item ? $item->no_seri : 'Item not found' }}</li>
+                                        @endforeach
+                                    @else
+                                        {{ $itemIds }}
+                                    @endif
+                                </td>
+                                <td>{{formatId($datas->rental->date_start)}}</td>
+                                <td>{{formatId($datas->rental->date_end)}}</td>
+                                <td>
+                                    @if($datas->rental->total_invoice)
+                                        {{formatRupiah($datas->rental->total_invoice)}}
+                                    @else
+                                        0
+                                    @endif
+                                </td>
+                                <td>
+                                    {{formatRupiah($datas->pay_debts)}}
+                                </td>
+                                <td>
+                                    {{formatRupiah($datas->rental->nominal_out)}}
+                                </td>
+                                <td>{{formatRupiah($datas->rental->diskon)}}</td>
+                                <td>{{formatRupiah($total[$datas->id])}}</td>
+                                <td>
+                                @if($datas->bank_id)
+                                    {{$datas->bank->name}}
+                                @else
+                                    {{$datas->description}}
+                                @endif
+                                </td>
+                                <td>
+                                    @if($datas->penerima)
+                                    {{$datas->penerima}}
+                                    @else
+                                        -
+                                    @endif
+                                </td>
+                                <td class="text-center">
+                                    @if($datas->rental->status == 1)
+                                        <span class="badge bg-success">Rent</span>
+                                    @elseif($datas->rental->status == 0)
+                                        <span class="badge bg-secondary">Finished</span>
+                                    @elseif($datas->rental->status == 2)
+                                        <span class="badge bg-danger">Problem</span>
+                                    @endif
+                                </td>
+                            </tr>
+                        @endforeach
+                    </tbody>
+                    <tfoot>
+                        <tr>
+                            <th class="border" colspan="2"> Total Uang Masuk</th>
+                            <th class="border" colspan="2">{{formatRupiah($uangmasuk)}},-</th>
+                        </tr>
+                    </tfoot>
+                </table>
+            </div>
+            <div class="card-footer">
+                    <table>
+                        <tr>
+                            <th> <h5 class="mb-0 text-uppercase">Total Uang Masuk</h5></th>
+                            <td><h5>:</h5></td>
+                            <td><h5 class="ms-3">{{formatRupiah($uangmasuk)}},-</h5></td>
+                        </tr>
+                        
+                    </table>
+            </div>
+        </div>
+        
+    </div>
     <div class="card">
         <div class="card-body">
             <div class="col">
@@ -212,185 +391,7 @@
                 </div>
         </div>
     </div>
-    <div class="card">
-        <div class="card-body">
-            <div class="col">
-                <div class="row">
-                    <div class="col-sm">
-                        <h4 class="mb-0 text-uppercase">Cicilan Report
-                        </h4>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <hr/>
-    <div class="card table-timbang">
-        <div class="card-header">
-            @if ($errors->any())
-                @foreach ($errors->all() as $error)
-                    <div class="alert border-0 border-start border-5 border-danger alert-dismissible fade show py-2">
-                        <div class="d-flex align-items-center">
-                            <div class="font-35 text-danger"><i class='bx bxs-message-square-x'></i>
-                            </div>
-                            <div class="ms-3">
-                                <h6 class="mb-0 text-danger">Error</h6>
-                                <div>
-                                    <div>{{ $error }}</div>
-                                </div>
-                            </div>
-                        </div>
-                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                    </div>
-                @endforeach
-            @endif
-            <div class="row">
-                <form action="{{route('manager.report.filtercicilan')}}" method="GET">
-                    <div class="row">
-                        <div class="col-5 ms-2 mt-2">
-                            <label class="form-label">
-                                Start Date
-                            </label>
-                            <input type="date" class="form-control" name="tanggal_mulai" required>
-                        </div>
-                        <div class="col-6 mt-2">
-                            <label class="form-label">
-                                End Date
-                            </label>
-                            <input type="date" class="form-control" name="tanggal_akhir" required>
-                        </div>
-                    </div>
-                    <div class="col-md-1 pt-4 float-end me-5">
-                        <button type="submit" class="btn btn-success">Filter</button>
-                    </div>
-                </form>
-            </div>
-        </div>
-        <div class="card-body">
-            <div class="table-responsive">
-                <table id="table-report-cicilan" class="table table-striped table-bordered" style="width:100%">
-                    <thead>
-                    <tr>
-                        <th width="2%">No</th>
-                        <th>Tgl Inv</th>
-                        <th>Tgl Bayar</th>
-                        <th>Pelanggan</th>
-                        <th>Item</th>
-                        <th>No Seri</th>
-                        <th>Tgl Mulai</th>
-                        <th>Tgl Selesai</th>
-                        <th>Total <br>Inv</th>
-                        <th width="">Ung <br>Masuk</th>
-                        <th>Sisa <br>Bayar</th>
-                        <th>Fee /<br>Discount</th>
-                        <th>Total</th>
-                        <th>Ket. (Nama Bank)</th>
-                        <th>Penerima</th>
-                        <th class="text-center">Status</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                        @foreach($cicilan as $key => $datas)
-                            <tr>
-                                <td class="text-center"></td>
-                                <td>{{$datas->rental->no_inv}}</td>
-                                <td>{{formatId($datas->date_pay)}}</td>
-                                <td>{{$datas->rental->cust->name}}</td>
-                                <td>
-                                    @php
-                                        $itemIds = json_decode($datas->rental->item_id);
-                                    @endphp
-                                    @if(is_array($itemIds))
-                                        @foreach($itemIds as $itemId)
-                                            @php
-                                                $item = \App\Models\Item::find($itemId);
-                                            @endphp
-                                            <li>{{ $item ? $item->name : 'Item not found' }}</li>
-                                        @endforeach
-                                    @else
-                                        {{ $itemIds }}
-                                    @endif
-                                </td>
-                                <td>
-                                    @php
-                                        $itemIds = json_decode($datas->rental->item_id);
-                                    @endphp
-                                    @if(is_array($itemIds))
-                                        @foreach($itemIds as $itemId)
-                                            @php
-                                                $item = \App\Models\Item::find($itemId);
-                                            @endphp
-                                            <li>{{ $item ? $item->no_seri : 'Item not found' }}</li>
-                                        @endforeach
-                                    @else
-                                        {{ $itemIds }}
-                                    @endif
-                                </td>
-                                <td>{{formatId($datas->rental->date_start)}}</td>
-                                <td>{{formatId($datas->rental->date_end)}}</td>
-                                <td>
-                                    @if($datas->rental->total_invoice)
-                                        {{formatRupiah($datas->rental->total_invoice)}}
-                                    @else
-                                        0
-                                    @endif
-                                </td>
-                                <td>
-                                    {{formatRupiah($datas->pay_debts)}}
-                                </td>
-                                <td>
-                                    {{formatRupiah($datas->rental->nominal_out)}}
-                                </td>
-                                <td>{{formatRupiah($datas->rental->diskon)}}</td>
-                                <td>{{formatRupiah($total[$datas->id])}}</td>
-                                <td>
-                                @if($datas->bank_id)
-                                    {{$datas->bank->name}}
-                                @else
-                                    {{$datas->description}}
-                                @endif
-                                </td>
-                                <td>
-                                    @if($datas->penerima)
-                                    {{$datas->penerima}}
-                                    @else
-                                        -
-                                    @endif
-                                </td>
-                                <td class="text-center">
-                                    @if($datas->rental->status == 1)
-                                        <span class="badge bg-success">Rent</span>
-                                    @elseif($datas->rental->status == 0)
-                                        <span class="badge bg-secondary">Finished</span>
-                                    @elseif($datas->rental->status == 2)
-                                        <span class="badge bg-danger">Problem</span>
-                                    @endif
-                                </td>
-                            </tr>
-                        @endforeach
-                    </tbody>
-                    <tfoot>
-                        <tr>
-                            <th class="border" colspan="2"> Total Uang Masuk</th>
-                            <th class="border" colspan="2">{{formatRupiah($uangmasuk)}},-</th>
-                        </tr>
-                    </tfoot>
-                </table>
-            </div>
-            <div class="card-footer">
-                    <table>
-                        <tr>
-                            <th> <h5 class="mb-0 text-uppercase">Total Uang Masuk</h5></th>
-                            <td><h5>:</h5></td>
-                            <td><h5 class="ms-3">{{formatRupiah($uangmasuk)}},-</h5></td>
-                        </tr>
-                        
-                    </table>
-            </div>
-        </div>
-        
-    </div>
+    
 @endsection
 
 @push('head')
