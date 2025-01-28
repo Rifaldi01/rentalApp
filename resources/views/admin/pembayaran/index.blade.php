@@ -225,8 +225,23 @@
                             </tr>
                         
                     @endforeach
-                    </tbody>
+                    <tfoot>
+                        <tr>
+                            <th class="border" colspan="2"> Total Sisa Bayar</th>
+                            <th class="border" colspan="2">{{formatRupiah($hutang)}},-</th>
+                        </tr>
+                    </tfoot>
                 </table>
+            </div>
+            <div class="card-footer">
+                    <table>
+                        <tr>
+                            <th> <h5 class="mb-0 text-uppercase">Total Sisa Bayar</h5></th>
+                            <td><h5>:</h5></td>
+                            <td><h5 class="ms-3">{{formatRupiah($hutang)}},-</h5></td>
+                        </tr>
+                        
+                    </table>
             </div>
         </div>
     </div>
@@ -292,9 +307,27 @@
                                 </td>
                             </tr>
                     @endforeach
-                    </tbody>
+                    <tfoot>
+                        <tr>
+                            <td>-</td>
+                            <td>-</td>
+                            <td>-</td>
+                            <td>-</td>
+                            <th class="border" > <strong>Total Uang Masuk</strong></th>
+                            <th class="border" >{{formatRupiah($uangmasuk)}},-</th>
+                        </tr>
+                    </tfoot>
                 </table>
-
+            </div>
+            <div class="card-footer">
+                    <table>
+                        <tr>
+                            <th> <h5 class="mb-0 text-uppercase"><strong>Total Uang Masuk</strong></h5></th>
+                            <td><h5>:</h5></td>
+                            <td><h5 class="ms-3">{{formatRupiah($uangmasuk)}},-</h5></td>
+                        </tr>
+                        
+                    </table>
             </div>
         </div>
     </div>
@@ -339,64 +372,260 @@
         $(document).ready(function () {
             var table = $('#excel').DataTable({
                 lengthChange: false,
-                buttons: ['excel'],
+                buttons: [
+                    {
+                        extend: 'pdf',
+                        exportOptions: {
+                            stripHtml: false,
+                        },
+                        title: function () {
+                            var currentDate = new Date();
+                            var day = String(currentDate.getDate()).padStart(2, '0'); // Mendapatkan tanggal dengan dua digit
+                            var month = String(currentDate.getMonth() + 1).padStart(2, '0'); // Mendapatkan bulan dengan dua digit
+                            var year = String(currentDate.getFullYear()).slice(-2); // Mendapatkan dua digit terakhir tahun
+                            var formattedDate = `${day}/${month}/${year}`; // Menggabungkan format tanggal/bulan/tahun
+                            return 'Laporan Pembayaran Tanggal ' + formattedDate; // Nama file sesuai tanggal
+                        },
+
+                        customize: function (doc) {
+                            // Set ukuran halaman PDF
+
+                            // Ambil seluruh data dari DataTables (termasuk yang tidak terlihat)
+                            var allData = table.data().toArray();
+
+                            // Header Tabel
+                            var headers = [];
+                            $('#excel thead th').each(function () {
+                                headers.push({ text: $(this).text(), style: 'tableHeader' });
+                            });
+
+                            // Isi Tabel
+                            var tableBody = [];
+                            tableBody.push(headers); // Tambahkan header ke body
+
+                            allData.forEach(function (rowData) {
+                                var row = [];
+                                rowData.forEach(function (cellData) {
+                                    // Hapus tag HTML seperti <li> dan <br>
+                                    var cleanedText = cellData
+                                        .replace(/<li>/g, '') // Hapus <li>
+                                        .replace(/<\/li>/g, '\n') // Ganti </li> dengan baris baru
+                                        .replace(/<br\s*\/?>/g, '\n') // Hapus <br> dan ganti dengan baris baru
+                                        .replace(/<\/?[^>]+(>|$)/g, ''); // Hapus tag HTML lainnya
+                                    row.push({ text: cleanedText.trim(), style: 'tableCell' });
+                                });
+                                tableBody.push(row);
+                            });
+
+                            // Footer Tabel (Jika Ada)
+                            var tfoot = $('#excel tfoot').clone();
+                            if (tfoot.length) {
+                                var footerRow = [];
+                                tfoot.find('th').each(function () {
+                                    footerRow.push({ text: $(this).text(), style: 'tableCell' });
+                                });
+                                while (footerRow.length < headers.length) {
+                                    footerRow.push({ text: '' });
+                                }
+                                tableBody.push(footerRow);
+                            }
+
+                            // Tambahkan Tabel ke Dokumen
+                            doc.content = [
+                                {
+                                    table: {
+                                        headerRows: 1,
+                                        widths: Array(headers.length).fill('auto'), // Perkecil kolom otomatis
+                                        body: tableBody,
+                                    },
+                                    layout: 'lightHorizontalLines',
+                                },
+                            ];
+
+                            // Styling
+                            doc.styles.tableHeader = {
+                                bold: true,
+                                fontSize: 10, // Ukuran lebih kecil
+                                color: 'black',
+                                fillColor: '#f2f2f2',
+                                alignment: 'center',
+                            };
+                            doc.styles.tableCell = {
+                                fontSize: 8, // Ukuran lebih kecil
+                            };
+                        },
+                    },
+                    {
+                        extend: 'print',
+                        exportOptions: {
+                            stripHtml: false,
+                            tfoot: true,
+                            columns: [0, 1, 2, 3, 4, 5, 6, 7]
+                        },
+                        title: function () {
+                            var currentDate = new Date();
+                            var day = String(currentDate.getDate()).padStart(2, '0'); // Mendapatkan tanggal dengan dua digit
+                            var month = String(currentDate.getMonth() + 1).padStart(2, '0'); // Mendapatkan bulan dengan dua digit
+                            var year = String(currentDate.getFullYear()).slice(-2); // Mendapatkan dua digit terakhir tahun
+                            var formattedDate = `${day}/${month}/${year}`; // Menggabungkan format tanggal/bulan/tahun
+                            return 'Laporan Pembayaran Tanggal ' + formattedDate; // Nama file sesuai tanggal
+                        },
+
+                        customize: function (win) {
+                            $(win.document.body)
+                                .find('table')
+                                .addClass('compact')
+                                .css('font-size', '10px');
+                            var tfoot = $('#transaction tfoot').clone();
+                            $(win.document.body).find('table').append(tfoot);
+
+                            $(win.document.body)
+                            .find('h1') // Selector untuk elemen judul
+                            .css({
+                                fontSize: '14px', // Atur ukuran font menjadi 12px
+                                fontWeight: 'bold',
+                                textAlign: 'center',
+                            });
+                        },
+                    },
+                ],
             });
 
-            table.buttons().container()
+            // Tambahkan tombol ekspor ke container
+            table
+                .buttons()
+                .container()
                 .appendTo('#excel_wrapper .col-md-6:eq(0)');
-            table.on('order.dt search.dt', function () {
-                let i = 1;
-                table.cells(null, 0, {search: 'applied', order: 'applied'}).every(function (cell) {
-                    this.data(i++);
-                });
-            }).draw();
         });
     </script>
     
     <script>
-       $(document).ready(function () {
-        var table = $('#transaction').DataTable({
-            lengthChange: false,
-            buttons: [
-                {
-                    extend: 'excel',
-                    text: 'Excel',
-                    title: function() {
-                        var currentDate = new Date();
-                        var formattedDate = currentDate.toLocaleDateString('id-ID'); // Format tanggal sesuai lokal Indonesia
-                        return 'Laporan_' + formattedDate; // Nama file sesuai tanggal
-                    }
-                },
-                {
-                    extend: 'pdf',
-                    text: 'PDF',
-                    title: function() {
-                        var currentDate = new Date();
-                        var formattedDate = currentDate.toLocaleDateString('id-ID');
-                        return 'Laporan_' + formattedDate;
-                    }
-                },
-                {
-                    extend: 'print',
-                    text: 'Print',
-                    title: function() {
-                        var currentDate = new Date();
-                        var formattedDate = currentDate.toLocaleDateString('id-ID');
-                        return 'Laporan_' + formattedDate;
-                    }
-                }
-            ],
-        });
+        $(document).ready(function () {
+            var table = $('#transaction').DataTable({
+                lengthChange: false,
+                buttons: [
+                    {
+                        extend: 'pdf',
+                        exportOptions: {
+                            stripHtml: false,
+                            tfoot: true,
+                        },
+                        title: function () {
+                            var currentDate = new Date();
+                            var day = String(currentDate.getDate()).padStart(2, '0'); // Mendapatkan tanggal dengan dua digit
+                            var month = String(currentDate.getMonth() + 1).padStart(2, '0'); // Mendapatkan bulan dengan dua digit
+                            var year = String(currentDate.getFullYear()).slice(-2); // Mendapatkan dua digit terakhir tahun
+                            var formattedDate = `${day}/${month}/${year}`; // Menggabungkan format tanggal/bulan/tahun
+                            return 'Laporan Pembayaran Tanggal ' + formattedDate; // Nama file sesuai tanggal
+                        },
 
+                        customize: function (doc) {
+                            // Set ukuran halaman PDF
 
-            table.buttons().container()
+                            // Ambil seluruh data dari DataTables (termasuk yang tidak terlihat)
+                            var allData = table.data().toArray();
+
+                            // Header Tabel
+                            var headers = [];
+                            $('#transaction thead th').each(function () {
+                                headers.push({ text: $(this).text(), style: 'tableHeader' });
+                            });
+
+                            // Isi Tabel
+                            var tableBody = [];
+                            tableBody.push(headers); // Tambahkan header ke body
+
+                            allData.forEach(function (rowData) {
+                                var row = [];
+                                rowData.forEach(function (cellData) {
+                                    // Hapus tag HTML seperti <li> dan <br>
+                                    var cleanedText = cellData
+                                        .replace(/<li>/g, '') // Hapus <li>
+                                        .replace(/<\/li>/g, '\n') // Ganti </li> dengan baris baru
+                                        .replace(/<br\s*\/?>/g, '\n') // Hapus <br> dan ganti dengan baris baru
+                                        .replace(/<\/?[^>]+(>|$)/g, ''); // Hapus tag HTML lainnya
+                                    row.push({ text: cleanedText.trim(), style: 'tableCell' });
+                                });
+                                tableBody.push(row);
+                            });
+
+                            // Footer Tabel (Jika Ada)
+                            var tfoot = $('#transaction tfoot').clone();
+                            if (tfoot.length) {
+                                var footerRow = [];
+                                tfoot.find('th').each(function () {
+                                    footerRow.push({ text: $(this).text(), style: 'tableCell' });
+                                });
+                                while (footerRow.length < headers.length) {
+                                    footerRow.push({ text: '' });
+                                }
+                                tableBody.push(footerRow);
+                            }
+
+                            // Tambahkan Tabel ke Dokumen
+                            doc.content = [
+                                {
+                                    table: {
+                                        headerRows: 1,
+                                        widths: Array(headers.length).fill('auto'), // Perkecil kolom otomatis
+                                        body: tableBody,
+                                    },
+                                    layout: 'lightHorizontalLines',
+                                },
+                            ];
+
+                            // Styling
+                            doc.styles.tableHeader = {
+                                bold: true,
+                                fontSize: 10, // Ukuran lebih kecil
+                                color: 'black',
+                                fillColor: '#f2f2f2',
+                                alignment: 'center',
+                            };
+                            doc.styles.tableCell = {
+                                fontSize: 8, // Ukuran lebih kecil
+                            };
+                        },
+                    },
+                    {
+                        extend: 'print',
+                        exportOptions: {
+                            stripHtml: false,
+                            tfoot: true,
+                        },
+                        title: function () {
+                            var currentDate = new Date();
+                            var day = String(currentDate.getDate()).padStart(2, '0'); // Mendapatkan tanggal dengan dua digit
+                            var month = String(currentDate.getMonth() + 1).padStart(2, '0'); // Mendapatkan bulan dengan dua digit
+                            var year = String(currentDate.getFullYear()).slice(-2); // Mendapatkan dua digit terakhir tahun
+                            var formattedDate = `${day}/${month}/${year}`; // Menggabungkan format tanggal/bulan/tahun
+                            return 'Laporan Pembayaran Tanggal ' + formattedDate; // Nama file sesuai tanggal
+                        },
+                        customize: function (win) {
+                            $(win.document.body)
+                                .find('table')
+                                .addClass('compact')
+                                .css('font-size', '10px');
+                            var tfoot = $('#transaction tfoot').clone();
+                            $(win.document.body).find('table').append(tfoot);
+
+                            $(win.document.body)
+                            .find('h1') // Selector untuk elemen judul
+                            .css({
+                                fontSize: '14px', // Atur ukuran font menjadi 12px
+                                fontWeight: 'bold',
+                                textAlign: 'center',
+                            });
+                        },
+                    },
+                ],
+            });
+
+            // Tambahkan tombol ekspor ke container
+            table
+                .buttons()
+                .container()
                 .appendTo('#transaction_wrapper .col-md-6:eq(0)');
-            table.on('order.dt search.dt', function () {
-                let i = 1;
-                table.cells(null, 0, {search: 'applied', order: 'applied'}).every(function (cell) {
-                    this.data(i++);
-                });
-            }).draw();
         });
     </script>
     <script>

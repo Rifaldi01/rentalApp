@@ -28,7 +28,9 @@ class PembayaranController extends Controller
         });
         $currentYear = now()->year;
         $debt = Debts::whereYear('date_pay', $currentYear)->get();
-        return view('admin.pembayaran.index', compact('rental', 'bank', 'totalseharusnya', 'total', 'debt'));
+        $hutang = $rental->sum('nominal_out');
+        $uangmasuk = $debt->sum('pay_debts');
+        return view('admin.pembayaran.index', compact('rental', 'bank', 'totalseharusnya', 'total', 'debt', 'hutang', 'uangmasuk'));
     }
     public function bayar(Request $request, $id)
     {
@@ -107,7 +109,9 @@ class PembayaranController extends Controller
                 return $item->nominal_in + $item->nominal_out - $item->diskon;
             });
         });
-        return view('admin.pembayaran.index', compact( 'rental', 'bank', 'totalseharusnya', 'total', 'debt'));
+        $hutang = $rental->sum('nominal_out');
+        $uangmasuk = $debt->sum('pay_debts');
+        return view('admin.pembayaran.index', compact('rental', 'bank', 'totalseharusnya', 'total', 'debt', 'hutang', 'uangmasuk'));
     }
 
     public function update(Request $request, $id){

@@ -14,6 +14,9 @@ class PembayaranController extends Controller
 {
     public function index()
     {
+        $title = 'Yakin Menghapus Pembayarn?';
+        $text = "Pembayaran Akan Dihapus Secara Permanen!";
+        confirmDelete($title, $text);
         $rental = Rental::where('nominal_out', '!=', '0')->get();
         $bank = Bank::all();
         $totalseharusnya = $rental->groupBy('id')->map(function ($group) {
@@ -28,7 +31,9 @@ class PembayaranController extends Controller
         });
         $currentYear = now()->year;
         $debt = Debts::whereYear('date_pay', $currentYear)->get();
-        return view('manager.pembayaran.index', compact('rental', 'bank', 'totalseharusnya', 'total', 'debt'));
+        $hutang = $rental->sum('nominal_out');
+        $uangmasuk = $debt->sum('pay_debts');
+        return view('manager.pembayaran.index', compact('rental', 'bank', 'totalseharusnya', 'total', 'debt', 'hutang', 'uangmasuk'));
     }
     public function bayar(Request $request, $id)
     {
@@ -102,7 +107,9 @@ class PembayaranController extends Controller
                 return $item->nominal_in + $item->nominal_out - $item->diskon;
             });
         });
-        return view('manager.pembayaran.index', compact( 'rental', 'bank', 'totalseharusnya', 'total', 'debt'));
+        $hutang = $rental->sum('nominal_out');
+        $uangmasuk = $debt->sum('pay_debts');
+        return view('manager.pembayaran.index', compact('rental', 'bank', 'totalseharusnya', 'total', 'debt', 'hutang', 'uangmasuk'));
     }
     public function update(Request $request, $id){
         $total_invoice = str_replace(['Rp.', '.', ' '], '', $request->input('total_invoice'));
@@ -114,5 +121,13 @@ class PembayaranController extends Controller
         return back()->withSuccess('Total Invoice Diperbarui.');
 
     }
+    public function destroy(string $id)
+    {
+        $pembayaran = Debts::findOrFail($id); 
+        $pembayaran->delete();
+    
+        return back()->with('success', 'Pembayaran Berhasil Dihapus');
+    }
+    
 
 }

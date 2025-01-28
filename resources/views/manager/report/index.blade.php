@@ -411,7 +411,32 @@
         $(document).ready(function () {
             var table = $('#table-report').DataTable({
                 lengthChange: false,
-                buttons: [
+                buttons: [{
+                extend: 'excel',
+                text: 'Excel',
+                title: function () {
+                    var currentDate = new Date();
+                    var formattedDate = currentDate.toLocaleDateString('id-ID'); // Format tanggal sesuai lokal Indonesia
+                    return 'Laporan Rental Tanggal' + formattedDate; // Nama file sesuai tanggal
+                },
+                customize: function (xlsx) {
+                    var sheet = xlsx.xl.worksheets['sheet1.xml'];
+                    var tfoot = $('#table-report tfoot').clone(); // Salin bagian tfoot
+                    var tfootRows = '';
+                    tfoot.find('tr').each(function () {
+                        var trow = '<row>';
+                        $(this).find('th').each(function () {
+                            var cell = '<c t="inlineStr"><is><t>' + $(this).text() + '</t></is></c>';
+                            trow += cell;
+                        });
+                        trow += '</row>';
+                        tfootRows += trow;
+                    });
+
+                    var lastRowIndex = $('row', sheet).length;
+                    $('row', sheet).last().after(tfootRows);
+                }
+            },
                     {
                         extend: 'pdf',
                         filename: 'Laporan_Rental',
@@ -521,6 +546,31 @@
                 lengthChange: false,
                 buttons: [
                     {
+                        extend: 'excel',
+                        text: 'Excel',
+                        title: function () {
+                            var currentDate = new Date();
+                            var formattedDate = currentDate.toLocaleDateString('id-ID'); // Format tanggal sesuai lokal Indonesia
+                            return 'Laporan Pembayaran Tanggal' + formattedDate; // Nama file sesuai tanggal
+                        },
+                        customize: function (xlsx) {
+                            var sheet = xlsx.xl.worksheets['sheet1.xml'];
+                            var tfoot = $('#table-report-cicilan tfoot').clone(); // Salin bagian tfoot
+                            var tfootRows = '';
+                            tfoot.find('tr').each(function () {
+                                var trow = '<row>';
+                                $(this).find('th').each(function () {
+                                    var cell = '<c t="inlineStr"><is><t>' + $(this).text() + '</t></is></c>';
+                                    trow += cell;
+                                });
+                                trow += '</row>';
+                                tfootRows += trow;
+                            });
+
+                            var lastRowIndex = $('row', sheet).length;
+                            $('row', sheet).last().after(tfootRows);
+                        }
+                    },{
                         extend: 'pdf',
                         filename: 'Laporan_Rental_cicilan',
                         exportOptions: {

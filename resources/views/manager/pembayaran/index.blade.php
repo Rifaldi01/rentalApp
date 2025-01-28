@@ -60,7 +60,7 @@
                                                         <button type="button" class="btn-close" data-bs-dismiss="modal"
                                                                 aria-label="Close"></button>
                                                     </div>
-                                                    <form action="{{route('manager.update.totalinv', $data->id)}}" method="POST" id="myForm">
+                                                    <form action="{{route('admin.update.totalinv', $data->id)}}" method="POST" id="myForm">
                                                         @csrf
                                                         @method('PUT')
                                                         <div class="modal-body">
@@ -100,7 +100,7 @@
                                                     <button type="button" class="btn-close" data-bs-dismiss="modal"
                                                             aria-label="Close"></button>
                                                 </div>
-                                                <form action="{{route('manager.pembayaran.bayar', $data->id)}}" method="POST" id="myForm">
+                                                <form action="{{route('admin.pembayaran.bayar', $data->id)}}" method="POST" id="myForm">
                                                     @csrf
                                                     @method('PUT')
                                                     <div class="modal-body">
@@ -225,8 +225,23 @@
                             </tr>
                         
                     @endforeach
-                    </tbody>
+                    <tfoot>
+                        <tr>
+                            <th class="border" colspan="2"> Total Sisa Bayar</th>
+                            <th class="border" colspan="2">{{formatRupiah($hutang)}},-</th>
+                        </tr>
+                    </tfoot>
                 </table>
+            </div>
+            <div class="card-footer">
+                    <table>
+                        <tr>
+                            <th> <h5 class="mb-0 text-uppercase">Total Sisa Bayar</h5></th>
+                            <td><h5>:</h5></td>
+                            <td><h5 class="ms-3">{{formatRupiah($hutang)}},-</h5></td>
+                        </tr>
+                        
+                    </table>
             </div>
         </div>
     </div>
@@ -242,7 +257,7 @@
         </div>
         <div class="card-body">
         <div class="row">
-                <form action="{{route('manager.pembayaran.filter')}}" method="GET">
+                <form action="{{route('admin.pembayaran.filter')}}" method="GET">
                     <div class="row">
                         <div class="col-5 ms-2 mt-2">
                             <label class="form-label">
@@ -272,29 +287,63 @@
                         <th>Customer</th>
                         <th>Uang Masuk</th>
                         <th>Keterangan Bayar</th>
+                        <th>Penerima</th>
+                        <th>Action</th>
                     </tr>
                     </thead>
                     <tbody>
-                    @foreach($debt as $key => $data)
+                    @foreach($debt as $key => $debts)
                         
                             <tr>
                                 <td class="text-center">{{$key+1}}</td>
-                                <td>{{formatId($data->date_pay)}}</td>
-                                <td>{{$data->rental->no_inv}}</td>
-                                <td>{{$data->rental->cust->name}}</td>
-                                <td>{{formatRupiah($data->pay_debts)}}</td>
+                                <td>{{formatId($debts->date_pay)}}</td>
+                                <td>{{$debts->rental->no_inv}}</td>
+                                <td>{{$debts->rental->cust->name}}</td>
+                                <td>{{formatRupiah($debts->pay_debts)}}</td>
                                 <td>
-                                @if($data->bank_id)
-                                    {{$data->bank->name}}
+                                @if($debts->bank_id)
+                                    {{$debts->bank->name}}
                                 @else
-                                    {{$data->description}}
+                                    {{$debts->description}}
                                 @endif
+                                </td>
+                                <td>
+                                    @if($debts->penerima)
+                                        {{$debts->penerima}}
+                                    @else
+                                        -
+                                    @endif
+                                </td>
+                                <td>
+                                    <a href="{{ route('manager.debts.hapus', $debts->id) }}" data-confirm-delete="true"
+                                        type="submit" class=" bx bx-trash btn btn-sm btn-danger"
+                                        data-bs-toggle="tooltip"
+                                        data-bs-placement="top" title="Hapus">
+                                    </a>
                                 </td>
                             </tr>
                     @endforeach
-                    </tbody>
+                    <tfoot>
+                        <tr>
+                            <td>-</td>
+                            <td>-</td>
+                            <td>-</td>
+                            <td>-</td>
+                            <th class="border" > <strong>Total Uang Masuk</strong></th>
+                            <th class="border" >{{formatRupiah($uangmasuk)}},-</th>
+                        </tr>
+                    </tfoot>
                 </table>
-
+            </div>
+            <div class="card-footer">
+                    <table>
+                        <tr>
+                            <th> <h5 class="mb-0 text-uppercase"><strong>Total Uang Masuk</strong></h5></th>
+                            <td><h5>:</h5></td>
+                            <td><h5 class="ms-3">{{formatRupiah($uangmasuk)}},-</h5></td>
+                        </tr>
+                        
+                    </table>
             </div>
         </div>
     </div>
@@ -335,11 +384,41 @@
             dateFormat: "Y-m-d",
         });
     </script>
+
     <script>
         $(document).ready(function () {
             var table = $('#excel').DataTable({
                 lengthChange: false,
-                buttons: ['excel'],
+                buttons: [
+                {
+                    extend: 'excel',
+                    text: 'Excel',
+                    title: function () {
+                                var currentDate = new Date();
+                                var day = String(currentDate.getDate()).padStart(2, '0'); // Mendapatkan tanggal dengan dua digit
+                                var month = String(currentDate.getMonth() + 1).padStart(2, '0'); // Mendapatkan bulan dengan dua digit
+                                var year = String(currentDate.getFullYear()).slice(-2); // Mendapatkan dua digit terakhir tahun
+                                var formattedDate = `${day}/${month}/${year}`; // Menggabungkan format tanggal/bulan/tahun
+                                return 'Laporan Pembayaran Tanggal ' + formattedDate; // Nama file sesuai tanggal
+                            },
+                    customize: function (xlsx) {
+                        var sheet = xlsx.xl.worksheets['sheet1.xml'];
+                        var tfoot = $('#excel tfoot').clone(); // Salin bagian tfoot
+                        var tfootRows = '';
+                        tfoot.find('tr').each(function () {
+                            var trow = '<row>';
+                            $(this).find('th').each(function () {
+                                var cell = '<c t="inlineStr"><is><t>' + $(this).text() + '</t></is></c>';
+                                trow += cell;
+                            });
+                            trow += '</row>';
+                            tfootRows += trow;
+                        });
+
+                        var lastRowIndex = $('row', sheet).length;
+                        $('row', sheet).last().after(tfootRows);
+                    }
+                }],
             });
 
             table.buttons().container()
@@ -355,50 +434,165 @@
     
     <script>
        $(document).ready(function () {
-        var table = $('#transaction').DataTable({
-            lengthChange: false,
-            buttons: [
-                {
-                    extend: 'excel',
-                    text: 'Excel',
-                    title: function() {
-                        var currentDate = new Date();
-                        var formattedDate = currentDate.toLocaleDateString('id-ID'); // Format tanggal sesuai lokal Indonesia
-                        return 'Laporan_' + formattedDate; // Nama file sesuai tanggal
-                    }
+            var table = $('#transaction').DataTable({
+                lengthChange: false,
+                buttons: [
+                    {
+                extend: 'excel',
+                text: 'Excel',
+                title: function () {
+                    var currentDate = new Date();
+                    var day = String(currentDate.getDate()).padStart(2, '0'); // Mendapatkan tanggal dengan dua digit
+                    var month = String(currentDate.getMonth() + 1).padStart(2, '0'); // Mendapatkan bulan dengan dua digit
+                    var year = String(currentDate.getFullYear()).slice(-2); // Mendapatkan dua digit terakhir tahun
+                    var formattedDate = `${day}/${month}/${year}`; // Menggabungkan format tanggal/bulan/tahun
+                    return 'Laporan Pembayaran Tanggal ' + formattedDate; // Nama file sesuai tanggal
                 },
-                {
-                    extend: 'pdf',
-                    text: 'PDF',
-                    title: function() {
-                        var currentDate = new Date();
-                        var formattedDate = currentDate.toLocaleDateString('id-ID');
-                        return 'Laporan_' + formattedDate;
-                    }
-                },
-                {
-                    extend: 'print',
-                    text: 'Print',
-                    title: function() {
-                        var currentDate = new Date();
-                        var formattedDate = currentDate.toLocaleDateString('id-ID');
-                        return 'Laporan_' + formattedDate;
-                    }
+
+                customize: function (xlsx) {
+                    var sheet = xlsx.xl.worksheets['sheet1.xml'];
+                    var tfoot = $('#transaction tfoot').clone(); // Salin bagian tfoot
+                    var tfootRows = '';
+                    tfoot.find('tr').each(function () {
+                        var trow = '<row>';
+                        $(this).find('th').each(function () {
+                            var cell = '<c t="inlineStr"><is><t>' + $(this).text() + '</t></is></c>';
+                            trow += cell;
+                        });
+                        trow += '</row>';
+                        tfootRows += trow;
+                    });
+
+                    var lastRowIndex = $('row', sheet).length;
+                    $('row', sheet).last().after(tfootRows);
                 }
-            ],
-        });
+            },
+                    {
+                        extend: 'pdf',
+                        exportOptions: {
+                            stripHtml: false,
+                        },
+                        title: function () {
+                            var currentDate = new Date();
+                            var day = String(currentDate.getDate()).padStart(2, '0'); // Mendapatkan tanggal dengan dua digit
+                            var month = String(currentDate.getMonth() + 1).padStart(2, '0'); // Mendapatkan bulan dengan dua digit
+                            var year = String(currentDate.getFullYear()).slice(-2); // Mendapatkan dua digit terakhir tahun
+                            var formattedDate = `${day}/${month}/${year}`; // Menggabungkan format tanggal/bulan/tahun
+                            return 'Laporan Pembayaran Tanggal ' + formattedDate; // Nama file sesuai tanggal
+                        },
 
+                        customize: function (doc) {
+                            // Set ukuran halaman PDF
 
-            table.buttons().container()
+                            // Ambil seluruh data dari DataTables (termasuk yang tidak terlihat)
+                            var allData = table.data().toArray();
+
+                            // Header Tabel
+                            var headers = [];
+                            $('#transaction thead th').each(function () {
+                                headers.push({ text: $(this).text(), style: 'tableHeader' });
+                            });
+
+                            // Isi Tabel
+                            var tableBody = [];
+                            tableBody.push(headers); // Tambahkan header ke body
+
+                            allData.forEach(function (rowData) {
+                                var row = [];
+                                rowData.forEach(function (cellData) {
+                                    // Hapus tag HTML seperti <li> dan <br>
+                                    var cleanedText = cellData
+                                        .replace(/<li>/g, '') // Hapus <li>
+                                        .replace(/<\/li>/g, '\n') // Ganti </li> dengan baris baru
+                                        .replace(/<br\s*\/?>/g, '\n') // Hapus <br> dan ganti dengan baris baru
+                                        .replace(/<\/?[^>]+(>|$)/g, ''); // Hapus tag HTML lainnya
+                                    row.push({ text: cleanedText.trim(), style: 'tableCell' });
+                                });
+                                tableBody.push(row);
+                            });
+
+                            // Footer Tabel (Jika Ada)
+                            var tfoot = $('#transaction tfoot').clone();
+                            if (tfoot.length) {
+                                var footerRow = [];
+                                tfoot.find('th').each(function () {
+                                    footerRow.push({ text: $(this).text(), style: 'tableCell' });
+                                });
+                                while (footerRow.length < headers.length) {
+                                    footerRow.push({ text: '' });
+                                }
+                                tableBody.push(footerRow);
+                            }
+
+                            // Tambahkan Tabel ke Dokumen
+                            doc.content = [
+                                {
+                                    table: {
+                                        headerRows: 1,
+                                        widths: Array(headers.length).fill('auto'), // Perkecil kolom otomatis
+                                        body: tableBody,
+                                    },
+                                    layout: 'lightHorizontalLines',
+                                },
+                            ];
+
+                            // Styling
+                            doc.styles.tableHeader = {
+                                bold: true,
+                                fontSize: 10, // Ukuran lebih kecil
+                                color: 'black',
+                                fillColor: '#f2f2f2',
+                                alignment: 'center',
+                            };
+                            doc.styles.tableCell = {
+                                fontSize: 8, // Ukuran lebih kecil
+                            };
+                        },
+                    },
+                    {
+                        extend: 'print',
+                        exportOptions: {
+                            stripHtml: false,
+                            tfoot: true,
+                            columns: [0, 1, 2, 3, 4, 5, 6]
+                        },
+                        title: function () {
+                            var currentDate = new Date();
+                            var day = String(currentDate.getDate()).padStart(2, '0'); // Mendapatkan tanggal dengan dua digit
+                            var month = String(currentDate.getMonth() + 1).padStart(2, '0'); // Mendapatkan bulan dengan dua digit
+                            var year = String(currentDate.getFullYear()).slice(-2); // Mendapatkan dua digit terakhir tahun
+                            var formattedDate = `${day}/${month}/${year}`; // Menggabungkan format tanggal/bulan/tahun
+                            return 'Laporan Pembayaran Tanggal ' + formattedDate; // Nama file sesuai tanggal
+                        },
+
+                        customize: function (win) {
+                            $(win.document.body)
+                                .find('table')
+                                .addClass('compact')
+                                .css('font-size', '10px');
+                            var tfoot = $('#transaction tfoot').clone();
+                            $(win.document.body).find('table').append(tfoot);
+
+                            $(win.document.body)
+                            .find('h1') // Selector untuk elemen judul
+                            .css({
+                                fontSize: '14px', // Atur ukuran font menjadi 12px
+                                fontWeight: 'bold',
+                                textAlign: 'center',
+                            });
+                        },
+                    },
+                ],
+            });
+
+            // Tambahkan tombol ekspor ke container
+            table
+                .buttons()
+                .container()
                 .appendTo('#transaction_wrapper .col-md-6:eq(0)');
-            table.on('order.dt search.dt', function () {
-                let i = 1;
-                table.cells(null, 0, {search: 'applied', order: 'applied'}).every(function (cell) {
-                    this.data(i++);
-                });
-            }).draw();
         });
     </script>
+
     <script>
         $(document).ready(function () {
             // Inisialisasi Select2 setelah modal dibuka
@@ -435,6 +629,7 @@
             });
         });
     </script>
+
     <script>
         $(document).ready(function () {
             $('#bayarbutton').click(function (event) {

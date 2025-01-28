@@ -1,7 +1,7 @@
 <?php
 function formatRupiah($angka){
     $rupiah = number_format($angka, 0, ',', '.');
-    return "$rupiah";
+    return "Rp. $rupiah";
 }
     function formatId($date, $format = 'd M Y')
     {
