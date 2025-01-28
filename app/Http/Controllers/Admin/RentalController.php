@@ -291,7 +291,7 @@ class RentalController extends Controller
                 $item->save();
             }
         }
-        $debts = Debts::create([
+        $debts = Debts::firstOrNew([
             'rental_id'  => $rental->id,
             'bank_id'    => $request->input('bank_id'),
             'pay_debts'  => $rental->nominal_in,
