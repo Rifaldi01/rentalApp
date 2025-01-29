@@ -60,7 +60,7 @@
                                                         <button type="button" class="btn-close" data-bs-dismiss="modal"
                                                                 aria-label="Close"></button>
                                                     </div>
-                                                    <form action="{{route('admin.update.totalinv', $data->id)}}" method="POST" id="myForm">
+                                                    <form action="{{route('manager.update.totalinv', $data->id)}}" method="POST" id="myForm">
                                                         @csrf
                                                         @method('PUT')
                                                         <div class="modal-body">
@@ -100,7 +100,7 @@
                                                     <button type="button" class="btn-close" data-bs-dismiss="modal"
                                                             aria-label="Close"></button>
                                                 </div>
-                                                <form action="{{route('admin.pembayaran.bayar', $data->id)}}" method="POST" id="myForm">
+                                                <form action="{{route('manager.pembayaran.bayar', $data->id)}}" method="POST" id="myForm">
                                                     @csrf
                                                     @method('PUT')
                                                     <div class="modal-body">
@@ -221,7 +221,7 @@
                                             </div>
                                         </div>
                                     </div>
-                                    <a href="{{ route('manager.rent.hapus', $data->id) }}" data-confirm-delete="true"
+                                    <a href="{{ route('manager.debts.hapus', $data->id) }}" data-confirm-delete="true"
                                         type="submit" class=" lni lni-trash btn btn-sm btn-danger"
                                         data-bs-toggle="tooltip"
                                         data-bs-placement="top" title="Hapus">
@@ -262,7 +262,7 @@
         </div>
         <div class="card-body">
         <div class="row">
-                <form action="{{route('admin.pembayaran.filter')}}" method="GET">
+                <form action="{{route('manager.pembayaran.filter')}}" method="GET">
                     <div class="row">
                         <div class="col-5 ms-2 mt-2">
                             <label class="form-label">
