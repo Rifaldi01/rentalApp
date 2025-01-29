@@ -221,6 +221,11 @@
                                             </div>
                                         </div>
                                     </div>
+                                    <a href="{{ route('manager.rent.hapus', $data->id) }}" data-confirm-delete="true"
+                                        type="submit" class=" lni lni-trash btn btn-sm btn-danger"
+                                        data-bs-toggle="tooltip"
+                                        data-bs-placement="top" title="Hapus">
+                                    </a>
                                 </td>
                             </tr>
                         
@@ -389,6 +394,7 @@
         $(document).ready(function () {
             var table = $('#excel').DataTable({
                 lengthChange: false,
+                paginate: false,    
                 buttons: [
                 {
                     extend: 'excel',

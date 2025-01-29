@@ -131,7 +131,7 @@
                                     {{formatRupiah($datas->rental->nominal_out)}}
                                 </td>
                                 <td>{{formatRupiah($datas->rental->diskon)}}</td>
-                                <td>{{formatRupiah($total[$datas->id])}}</td>
+                                <td>{{formatRupiah($total[$datas->rental->id])}}</td>
                                 <td>
                                 @if($datas->bank_id)
                                     {{$datas->bank->name}}

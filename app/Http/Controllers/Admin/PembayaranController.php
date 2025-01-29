@@ -112,7 +112,7 @@ class PembayaranController extends Controller
         $hutang = $rental->sum('nominal_out');
         $uangmasuk = $debt->sum('pay_debts');
         return view('admin.pembayaran.index', compact('rental', 'bank', 'totalseharusnya', 'total', 'debt', 'hutang', 'uangmasuk'));
-    }
+    } 
 
     public function update(Request $request, $id){
         $total_invoice = str_replace(['Rp.', '.', ' '], '', $request->input('total_invoice'));

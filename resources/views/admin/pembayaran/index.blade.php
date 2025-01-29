@@ -372,6 +372,7 @@
         $(document).ready(function () {
             var table = $('#excel').DataTable({
                 lengthChange: false,
+                paginate: false,
                 buttons: [
                     {
                         extend: 'pdf',

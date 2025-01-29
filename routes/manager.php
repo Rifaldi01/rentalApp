@@ -78,5 +78,6 @@ Route::group(['middleware' => ['auth:web', 'role:manager'], 'prefix' => 'manager
     Route::put('/invoices/edit/{id}', [ServiceController::class, 'invoices'])->name('manager.service.invoices');
     Route::get('/report/filter/cicilan', [ReportController::class, 'filtercicilan'])->name('manager.report.filtercicilan');
     Route::delete('/debts/delete/{id}', [PembayaranController::class, 'destroy'])->name('manager.debts.hapus');
+    Route::delete('/rent/delete/{id}', [PembayaranController::class, 'destroyRental'])->name('manager.rent.hapus');
     //end report
 });

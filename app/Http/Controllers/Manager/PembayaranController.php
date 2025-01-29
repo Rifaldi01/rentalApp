@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Manager;
 
 use App\Http\Controllers\Controller;
+use App\Models\AccessoriesCategory;
 use App\Models\Rental;
 use App\Models\Bank;
 use App\Models\Debts;
@@ -128,6 +129,17 @@ class PembayaranController extends Controller
     
         return back()->with('success', 'Pembayaran Berhasil Dihapus');
     }
+    public function destroyRental(string $id)
+    {
+        $pembayaran = Rental::findOrFail($id); 
+        $pembayaran->delete();
+
+        // Hapus semua AccessoriesCategory yang memiliki rental_id yang sama
+        AccessoriesCategory::where('rental_id', $id)->delete();
+
+        return back()->with('success', 'Pembayaran Berhasil Dihapus');
+    }
+
     
 
 }
