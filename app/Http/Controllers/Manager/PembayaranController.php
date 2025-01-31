@@ -136,6 +136,7 @@ class PembayaranController extends Controller
 
         // Hapus semua AccessoriesCategory yang memiliki rental_id yang sama
         AccessoriesCategory::where('rental_id', $id)->delete();
+        Debts::where('rental_id', $id)->delete();
 
         return back()->with('success', 'Pembayaran Berhasil Dihapus');
     }
