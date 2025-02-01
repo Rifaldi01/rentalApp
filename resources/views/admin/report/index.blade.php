@@ -62,6 +62,7 @@
                     <tr>
                         <th width="2%">No</th>
                         <th>Tgl Inv</th>
+                        <th>Invoice</th>
                         <th>Tgl Bayar</th>
                         <th>Pelanggan</th>
                         <th>Item</th>
@@ -81,7 +82,8 @@
                     <tbody>
                         @foreach($cicilan as $key => $datas)
                             <tr>
-                                <td class="text-center"></td>
+                                <td class="text-center">{{$key +1}}</td>
+                                <td>{{$datas->rental->tgl_inv}}</td>
                                 <td>{{$datas->rental->no_inv}}</td>
                                 <td>{{formatId($datas->date_pay)}}</td>
                                 <td>{{$datas->rental->cust->name}}</td>
@@ -623,6 +625,32 @@
                 .buttons()
                 .container()
                 .appendTo('#table-report-cicilan_wrapper .col-md-6:eq(0)');
+        });
+    </script>
+    <script>
+        $(document).ready(function () {
+            var table = $('#table-report').DataTable();
+
+            // Mengurutkan ulang nomor saat tabel diurutkan atau difilter
+            table.on('order.dt search.dt', function () {
+                let i = 1;
+                table.cells(null, 0, {search: 'applied', order: 'applied'}).every(function (cell) {
+                    this.data(i++);
+                });
+            }).draw();
+        });
+    </script>
+    <script>
+        $(document).ready(function () {
+            var table = $('#table-report-cicilan').DataTable();
+
+            // Mengurutkan ulang nomor saat tabel diurutkan atau difilter
+            table.on('order.dt search.dt', function () {
+                let i = 1;
+                table.cells(null, 0, {search: 'applied', order: 'applied'}).every(function (cell) {
+                    this.data(i++);
+                });
+            }).draw();
         });
     </script>
 
