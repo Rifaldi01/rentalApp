@@ -62,6 +62,7 @@
                     <tr>
                         <th width="2%">No</th>
                         <th>Tgl Inv</th>
+                        <th>Invoice</th>
                         <th>Tgl Bayar</th>
                         <th>Pelanggan</th>
                         <th>Item</th>
@@ -81,7 +82,8 @@
                     <tbody>
                         @foreach($cicilan as $key => $datas)
                             <tr>
-                                <td class="text-center"></td>
+                                <td class="text-center">{{$key +1}}</td>
+                                <td>{{$datas->rental->tgl_inv}}</td>
                                 <td>{{$datas->rental->no_inv}}</td>
                                 <td>{{formatId($datas->date_pay)}}</td>
                                 <td>{{$datas->rental->cust->name}}</td>
@@ -177,8 +179,8 @@
                     </table>
             </div>
         </div>
-        
     </div>
+
     <div class="card">
         <div class="card-body">
             <div class="col">
@@ -191,7 +193,6 @@
             </div>
         </div>
     </div>
-
     <hr/>
     <div class="card table-timbang">
         <div class="card-header">
@@ -411,32 +412,7 @@
         $(document).ready(function () {
             var table = $('#table-report').DataTable({
                 lengthChange: false,
-                buttons: [{
-                extend: 'excel',
-                text: 'Excel',
-                title: function () {
-                    var currentDate = new Date();
-                    var formattedDate = currentDate.toLocaleDateString('id-ID'); // Format tanggal sesuai lokal Indonesia
-                    return 'Laporan Rental Tanggal' + formattedDate; // Nama file sesuai tanggal
-                },
-                customize: function (xlsx) {
-                    var sheet = xlsx.xl.worksheets['sheet1.xml'];
-                    var tfoot = $('#table-report tfoot').clone(); // Salin bagian tfoot
-                    var tfootRows = '';
-                    tfoot.find('tr').each(function () {
-                        var trow = '<row>';
-                        $(this).find('th').each(function () {
-                            var cell = '<c t="inlineStr"><is><t>' + $(this).text() + '</t></is></c>';
-                            trow += cell;
-                        });
-                        trow += '</row>';
-                        tfootRows += trow;
-                    });
-
-                    var lastRowIndex = $('row', sheet).length;
-                    $('row', sheet).last().after(tfootRows);
-                }
-            },
+                buttons: [
                     {
                         extend: 'pdf',
                         filename: 'Laporan_Rental',
@@ -546,31 +522,6 @@
                 lengthChange: false,
                 buttons: [
                     {
-                        extend: 'excel',
-                        text: 'Excel',
-                        title: function () {
-                            var currentDate = new Date();
-                            var formattedDate = currentDate.toLocaleDateString('id-ID'); // Format tanggal sesuai lokal Indonesia
-                            return 'Laporan Pembayaran Tanggal' + formattedDate; // Nama file sesuai tanggal
-                        },
-                        customize: function (xlsx) {
-                            var sheet = xlsx.xl.worksheets['sheet1.xml'];
-                            var tfoot = $('#table-report-cicilan tfoot').clone(); // Salin bagian tfoot
-                            var tfootRows = '';
-                            tfoot.find('tr').each(function () {
-                                var trow = '<row>';
-                                $(this).find('th').each(function () {
-                                    var cell = '<c t="inlineStr"><is><t>' + $(this).text() + '</t></is></c>';
-                                    trow += cell;
-                                });
-                                trow += '</row>';
-                                tfootRows += trow;
-                            });
-
-                            var lastRowIndex = $('row', sheet).length;
-                            $('row', sheet).last().after(tfootRows);
-                        }
-                    },{
                         extend: 'pdf',
                         filename: 'Laporan_Rental_cicilan',
                         exportOptions: {
@@ -674,6 +625,32 @@
                 .buttons()
                 .container()
                 .appendTo('#table-report-cicilan_wrapper .col-md-6:eq(0)');
+        });
+    </script>
+    <script>
+        $(document).ready(function () {
+            var table = $('#table-report').DataTable();
+
+            // Mengurutkan ulang nomor saat tabel diurutkan atau difilter
+            table.on('order.dt search.dt', function () {
+                let i = 1;
+                table.cells(null, 0, {search: 'applied', order: 'applied'}).every(function (cell) {
+                    this.data(i++);
+                });
+            }).draw();
+        });
+    </script>
+    <script>
+        $(document).ready(function () {
+            var table = $('#table-report-cicilan').DataTable();
+
+            // Mengurutkan ulang nomor saat tabel diurutkan atau difilter
+            table.on('order.dt search.dt', function () {
+                let i = 1;
+                table.cells(null, 0, {search: 'applied', order: 'applied'}).every(function (cell) {
+                    this.data(i++);
+                });
+            }).draw();
         });
     </script>
 
