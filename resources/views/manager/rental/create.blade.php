@@ -3,22 +3,42 @@
     <div class="card">
         <div class="card-body p-4">
             <h5 class="mb-4">Rental</h5>
-            <div id="error-container" style="display: none;">
-                @if ($errors->any())
-                    @foreach ($errors->all() as $error)
-                        <div class="error-message">{{ $error }}</div>
-                    @endforeach
-                @endif
-            </div>
             <form class="row g-3" action="{{$url}}" method="POST" enctype="multipart/form-data" id="myForm">
                 @csrf
                 @isset($rental)
                     @method('PUT')
                 @endisset
-                <div class="col-md-12">
-                    <label for="input6" class="form-label"><i class="text-danger">*</i> Tanggal Pembuatan</label>
-                    <input type="text" value="{{isset($rental) ? $rental->created_at : null}}" name="created_at" class="form-control datepicker" id="input6" placeholder="Pembuatan">
+                <div class="col-md-6">
+                    <label for="input6" class="form-label"><i class="text-danger">*</i> No. INV</label>
+                    <input type="text" class="form-control @error('no_inv') is-invalid @enderror" value="{{isset($rental) ? $rental->no_inv : old('no_inv')}}" name="no_inv" placeholder="INV/DND/***/**">
+                    @error('no_inv')
+                    <span class="invalid-feedback" role="alert">
+                        <strong>{{ $message }}</strong>
+                    </span>
+                    @enderror
                 </div>
+                <div class="col-md-3">
+                    <label for="input6" class="form-label"><i class="text-danger">*</i> Tanggal INV</label>
+                    <input type="text" value="{{isset($rental) ? $rental->tgl_inv : null}} {{ old('tgl_inv') }}"
+                           name="tgl_inv" class="form-control datepicker @error('tgl_inv') is-invalid @enderror"
+                           id="input6" placeholder="Pembuatan">
+                    @error('tgl_inv')
+                    <span class="invalid-feedback" role="alert">
+                        <strong>{{ $message }}</strong>
+                    </span>
+                    @enderror
+                </div>
+                <div class="col-md-3">
+                    <label for="input6" class="form-label "> Tanggal Pembayaran</label>
+                    <input type="text" value="{{ isset($rental) && $rental->debt->isNotEmpty() ? $rental->debt->first()->date_pay : old('date_pay') }}"
+                           class="form-control datepicker" name="date_pay">
+                    @error('date_pay')
+                    <span class="invalid-feedback" role="alert">
+                        <strong>{{ $message }}</strong>
+                    </span>
+                    @enderror
+                </div>
+                
                 @if(isset($rental))
                     <div class="col-md-12">
                         <label for="input1" class="form-label"><i class="text-danger">*</i> Name Customer</label>
@@ -27,62 +47,92 @@
                 @else
                     <div class="col-md-9">
                         <label for="input1" class="form-label"><i class="text-danger">*</i> Name Customer</label>
-                        {{ html()->select('customer_id', $cust, isset($rental) ? $rental->customer_id : null )->class('form-control')->id('single-select-field')->placeholder("--Select Customer--") }}
+                        {{ html()->select('customer_id', $cust, isset($rental) ? $rental->customer_id : old('customer_id'))
+                            ->class(['form-control', 'is-invalid' => $errors->has('customer_id')])
+                            ->id('single-select-field')
+                            ->placeholder("--Select Customer--")
+                        }}
+                        @error('customer_id')
+                        <div class="invalid-feedback">
+                            {{ $message }}
+                        </div>
+                        @enderror
                     </div>
                     <div class="col-md-1">
                         <div class="text-center mt-4">
-                            <strong><- OR -></strong>
+                            <strong><- Atau -></strong>
                         </div>
                     </div>
                     <div class="col-md-2">
-                        <label for="input2" class="form-label">Register Customer</label>
+                        <label for="input2" class="form-label">Tambahakan Customer</label>
                         <div class="">
-                            <a href="{{route('admin.customer.create')}}" class="btn btn-dnd">Add Customer<i class="bx bx-user-plus"></i></a>
+                            <a href="{{route('manager.customer.create')}}" class="btn btn-dnd">Tambah <i
+                                    class="bx bx-user-plus"></i></a>
                         </div>
                     </div>
                 @endif
                 <div class="col-md-12">
-                    <label for="input3" class="form-label"><i class="text-danger">*</i> Item</label>
-                    <select name="item_id[]" id="multiple-select-field" class="form-control" data-placeholder="Select Item" multiple>
-                        <option value=""></option>
+                    <label for="input3" class="form-label">
+                        <i class="text-danger">*</i> Item
+                    </label>
+                    <select name="item_id[]" id="multiple-select-field"
+                            class="form-control @error('item_id') is-invalid @enderror"
+                            data-placeholder="Select Item" multiple>
                         @foreach($item as $items)
-                            <option value="{{ $items->id }}" 
-                                    @if(isset($rental) && in_array($items->id, json_decode($rental->item_id, true))) 
-                                        selected 
-                                    @endif>
-                                {{ $items->name }} ({{$items->no_seri}})
+                            <option value="{{ $items->id }}"
+                                    @if(
+                                        (isset($rental) && in_array($items->id, json_decode($rental->item_id, true))) ||
+                                        (is_array(old('item_id')) && in_array($items->id, old('item_id')))
+                                    )
+                                        selected
+                                @endif
+                            >
+                                {{ $items->name }} ({{ $items->no_seri }})
                             </option>
                         @endforeach
                     </select>
-
+                    @error('item_id')
+                    <div class="invalid-feedback">
+                        {{ $message }}
+                    </div>
+                    @enderror
                 </div>
+
                 <div id="dynamic-fields">
                     <div class="col-md-12">
-                        <button class="btn btn-dnd float-end add-field me-4 mb-2" type="button" id="add-field" data-bs-toggle="tooltip" data-bs-placement="top" title="Add Accessories">Add Accessories<i class="bx bx-plus"></i></button>
+                        <button class="btn btn-dnd float-end add-field me-4 mb-2" type="button" id="add-field"
+                                data-bs-toggle="tooltip" data-bs-placement="top" title="Add Accessories">Tambah Access <i
+                                class="bx bx-plus"></i></button>
                     </div>
                     @if(isset($rental) && $rental->accessoriescategory->isNotEmpty())
                         @foreach($rental->accessoriescategory as $data)
                             <div class="input-group mt-2">
                                 <div class="col-md-7">
                                     <label for="input3" class="form-label">Accessories</label>
-                                    <select name="access[]" class="form-control" id="single-select-optgroup-field" data-placeholder="Choose one thing">
+                                    <select name="access[]" class="form-control" id="single-select-optgroup-field"
+                                            data-placeholder="Choose one thing">
                                         @foreach($acces as $accessory)
-                                            <option value="{{ $accessory->id }}" {{ $accessory->id == $data->accessories_id ? 'selected' : '' }}>{{ $accessory->name }}</option>
+                                            <option
+                                                value="{{ $accessory->id }}" {{ $accessory->id == $data->accessories_id ? 'selected' : '' }}>{{ $accessory->name }}</option>
                                         @endforeach
                                     </select>
                                 </div>
                                 <div class="col-md-1 ms-2 me-2">
                                     <label for="input3" class="form-label">Qty</label>
-                                    <input type="number" class="form-control" name="accessories_quantity[]" value="{{ $data->accessories_quantity }}" required>
+                                    <input type="number" class="form-control" name="accessories_quantity[]"
+                                           value="{{ $data->accessories_quantity }}" required>
                                 </div>
-                                    <button class="btn btn-danger me-1 float-end remove-field me-3" type="button" data-bs-toggle="tooltip" data-bs-placement="top"  title="Delete Accessories"><i class="bx bx-trash"></i></button>
+                                <button class="btn btn-danger me-1 float-end remove-field me-3" type="button"
+                                        data-bs-toggle="tooltip" data-bs-placement="top" title="Delete Accessories"><i
+                                        class="bx bx-trash"></i></button>
                             </div>
                         @endforeach
                     @else
                         <div class="input-group mt-2">
                             <div class="col-md-7">
                                 <label for="input3" class="form-label">Accessories</label>
-                                <select name="access[]" class="form-control" id="single-select-optgroup-field" data-placeholder="Choose one thing">
+                                <select name="access[]" class="form-control" id="single-select-optgroup-field"
+                                        data-placeholder="Choose one thing">
                                     @foreach($acces as $accessory)
                                         <option value="">--Select Accessories--</option>
                                         <option value="{{ $accessory->id }}">{{ $accessory->name }}</option>
@@ -93,64 +143,126 @@
                                 <label for="input3" class="form-label">Qty</label>
                                 <input type="number" class="form-control" name="accessories_quantity[]" required>
                             </div>
-                            <button class="btn btn-danger me-1 float-end remove-field me-3" type="button" data-bs-toggle="tooltip" data-bs-placement="top"  title="Delete Accessories"><i class="bx bx-trash"></i></button>
+                            <button class="btn btn-danger me-1 float-end remove-field me-3" type="button"
+                                    data-bs-toggle="tooltip" data-bs-placement="top" title="Delete Accessories"><i
+                                    class="bx bx-trash"></i></button>
                         </div>
                     @endif
                 </div>
                 <div class="col-md-3">
-                    <label for="input" class="form-label"><i class="text-danger">*</i> Nominal In</label>
-                    <input type="text" value="{{isset($rental) ? ($rental->nominal_in) : null}}" class="form-control" name="nominal_in" placeholder="0">
+                    <label for="input" class="form-label"><i class="text-danger">*</i> Total Invoce</label>
+                    <input type="text" value="{{isset($rental) ? ($rental->total_invoice) : null}} {{ old('total_invoice') }}"
+                           class="form-control @error('total_invoice') is-invalid @enderror" name="total_invoice"
+                           placeholder="0">
+                    @error('total_invoice')
+                    <span class="invalid-feedback" role="alert">
+                        <strong>{{ $message }}</strong>
+                    </span>
+                    @enderror
                 </div>
                 <div class="col-md-3">
-                    <label for="input" class="form-label">Nominal Outside</label>
-                    <input type="number" value="{{isset($rental) ? $rental->nominal_out : 0}}" class="form-control" name="nominal_out">
+                    <label for="input" class="form-label"><i class="text-danger">*</i> Pembayaran</label>
+                    <input type="text" value="{{isset($rental) ? ($rental->nominal_in) : null}} {{ old('nominal_in') }}"
+                           class="form-control @error('nominal_in') is-invalid @enderror" name="nominal_in"
+                           placeholder="0">
+                    @error('nominal_in')
+                    <span class="invalid-feedback" role="alert">
+                        <strong>{{ $message }}</strong>
+                    </span>
+                    @enderror
                 </div>
                 <div class="col-md-3">
-                    <label for="input" class="form-label">Fee/Discount/Pajak</label>
-                    <input type="number" value="{{isset($rental) ? $rental->diskon : 0}}" class="form-control" name="diskon">
+                    <label for="input" class="form-label">Sisa Pembayaran</label>
+                    <input type="number" value="{{isset($rental) ? $rental->nominal_out : old('nominal_out')}}"
+                           class="form-control" name="nominal_out">
                 </div>
                 <div class="col-md-3">
-                    <label for="input" class="form-label">Ongkir</label>
-                    <input type="number" value="{{isset($rental) ? $rental->ongkir : 0}}" class="form-control" name="ongkir">
+                    <label for="input" class="form-label">Fee/Discount</label>
+                    <input type="number" value="{{isset($rental) ? $rental->diskon : old('diskon')}}"
+                           class="form-control" name="diskon">
+                </div>
+                
+                <div class="col-md-12">
+                    <label for="input4" class="form-label">Bank</label>
+                    {{ html()->select('bank_id', $bank, isset($rental) && $rental->debt->isNotEmpty() ? $rental->debt->first()->bank_id : old('date_pay'))
+                            ->class(['form-control', 'is-invalid' => $errors->has('bank_id')])
+                            ->id('bank-select')
+                            ->placeholder("--Select Bank--")
+                        }}
+                </div>
+                <div class="col-md-12">
+                    <label for="input" class="form-label">Penerima</label>
+                    <input type="text" value="{{ isset($rental) && $rental->debt->isNotEmpty() ? $rental->debt->first()->penerima : old('date_pay') }}"
+                           class="form-control" name="penerima">
                 </div>
                 <div class="col-md-12">
                     <label for="input4" class="form-label">Keterangan Bayar</label>
-                    <textarea type="text" value="{{isset($rental) ? $rental->date_pay : null}}" name="date_pay" class="form-control" id="input4" placeholder="Enter Descripty"></textarea>
+                    <textarea type="text" name="date_pays" class="form-control @error('date_pays') is-invalid @enderror"
+                              id="input4" placeholder="Maukan Pembayran">{{isset($rental)?$rental->date_pays : null}}{{ old('date_pays') }}
+                    </textarea>
+                    @error('date_pays')
+                    <span class="invalid-feedback" role="alert">
+                        <strong>{{ $message }}</strong>
+                    </span>
+                    @enderror
                 </div>
                 <div class="col-md-12">
-                    <label for="input4" class="form-label">Name Company</label>
-                    <input type="text" value="{{isset($rental) ? $rental->name_company : null}}" name="name_company" class="form-control" id="input4" placeholder="Enter Name Company">
+                    <label for="input4" class="form-label">Perusahaan</label>
+                    <input type="text"
+                           value="{{isset($rental) ? $rental->name_company : null}}{{ old('name_company') }}"
+                           name="name_company" class="form-control" id="input4" placeholder="Masukan Nama Perusahaan">
                 </div>
                 <div class="col-md-12">
-                    <label for="input5" class="form-label">Phone Company</label>
-                    <input type="number" value="{{isset($rental) ? $rental->phone_company : null}}" name="phone_company" class="form-control" id="input5" placeholder="Enter Phone Company">
+                    <label for="input5" class="form-label">Nomor Perusahaan</label>
+                    <input type="number"
+                           value="{{isset($rental) ? $rental->phone_company : null}}{{ old('phone_company') }}"
+                           name="phone_company" class="form-control" id="input5" placeholder="Masukan Nomor Perusahaan">
                 </div>
                 <div class="col-md-12">
                     <label for="input5" class="form-label">No_PO</label>
-                    <input type="text" value="{{isset($rental) ? $rental->no_po : null}}" name="no_po" class="form-control" id="input5" placeholder="Enter No PO Company">
+                    <input type="text" value="{{isset($rental) ? $rental->no_po : null}}{{ old('no_po') }}" name="no_po"
+                           class="form-control" id="input5" placeholder="Masukan No PO">
                 </div>
                 <div class="col-md-12">
-                    <label for="input5" class="form-label">Address Company</label>
-                    <textarea class="form-control" name="addres_company" id="input5" placeholder="Enter Address Company">{{isset($rental) ? $rental->addres_company : null}}</textarea>
+                    <label for="input5" class="form-label">Alamat Perusahaan</label>
+                    <textarea class="form-control" name="addres_company" id="input5"
+                              placeholder="Masukan Alamat Perusahaan">{{isset($rental) ? $rental->addres_company : null}}{{ old('addres_company') }}</textarea>
                 </div>
                 <div class="col-md-6">
-                    <label for="input6" class="form-label"><i class="text-danger">*</i> Start Date</label>
-                    <input type="text" value="{{isset($rental) ? $rental->date_start : null}}" name="date_start" class="form-control datepicker" id="input6" placeholder="Start Date">
+                    <label for="input6" class="form-label"><i class="text-danger">*</i> Tanggal Mulai</label>
+                    <input type="text" value="{{isset($rental) ? $rental->date_start : null}}{{ old('date_start') }}"
+                           name="date_start" class="form-control datepicker @error('date_start') is-invalid @enderror"
+                           id="input6" placeholder="Start Date">
+                    @error('date_start')
+                    <span class="invalid-feedback" role="alert">
+                                <strong>{{ $message }}</strong>
+                            </span>
+                    @enderror
                 </div>
                 <div class="col-md-6">
-                    <label for="input6" class="form-label"><i class="text-danger">*</i> End Date</label>
-                    <input type="text" value="{{isset($rental) ? $rental->date_end : null}}" name="date_end" class="form-control datepicker" id="input6" placeholder="End Date">
+                    <label for="input6" class="form-label"><i class="text-danger">*</i> Tanggal Berakhir</label>
+                    <input type="text" value="{{isset($rental) ? $rental->date_end : null}}{{ old('date_end') }}"
+                           name="date_end" class="form-control datepicker @error('date_end') is-invalid @enderror"
+                           id="input6" placeholder="End Date">
+                    @error('date_end')
+                    <span class="invalid-feedback" role="alert">
+                                <strong>{{ $message }}</strong>
+                            </span>
+                    @enderror
                 </div>
                 <div class="col-md-12">
-                    <label for="input6" class="form-label"><i class="text-danger">*</i> Image</label>
+                    <label for="input6" class="form-label"><i class="text-danger">*</i> Gamabar</label>
                     @if (isset($rental) && $rental->image)
                         <div class="mt-3">
                             <h6>Existing Images:</h6>
                             <div class="row">
                                 @foreach (json_decode($rental->image) as $image)
                                     <div class="col-md-2">
-                                        <img src="{{ asset('images/rental/' . $image) }}" alt="Image" class="img-thumbnail mb-2">
-                                        <button type="button" class="btn btn-danger btn-sm delete-image" data-image="{{ $image }}">Remove</button>
+                                        <img src="{{ asset('images/rental/' . $image) }}" alt="Image"
+                                             class="img-thumbnail mb-2">
+                                        <button type="button" class="btn btn-danger btn-sm delete-image"
+                                                data-image="{{ $image }}">Remove
+                                        </button>
                                     </div>
                                 @endforeach
                             </div>
@@ -215,11 +327,11 @@
                 $('#dynamic-fields').append(
                     '<div class="input-group mt-2">' +
                     '<div class="col-md-7">' +
-                    '<label for="input3" class="form-label">Accessories</label>'+
+                    '<label for="input3" class="form-label">Accessories</label>' +
                     '<select name="access[]" class="form-control single-select-clear-field" data-placeholder="Choose one thing">' +
-                    '@foreach($acces as $accessory)'+
+                    '@foreach($acces as $accessory)' +
                     '@if(isset($rental))' +
-                    '<option value="{{ $accessory->id }}" @foreach($rental->accessoriescategory as $data) @if(in_array($accessory->id,old('accessory', [$data->accessories_id])))selected="selected" @endif @endforeach>{{ $accessory->name }}</option>'+
+                    '<option value="{{ $accessory->id }}" @foreach($rental->accessoriescategory as $data) @if(in_array($accessory->id,old('accessory', [$data->accessories_id])))selected="selected" @endif @endforeach>{{ $accessory->name }}</option>' +
                     '@else' +
                     '<option value="{{ $accessory->id }}">{{ $accessory->name }}</option>' +
                     '@endif' +
@@ -227,12 +339,12 @@
                     '</select>' +
                     '</div>' +
                     '<div class="col-md-1 ms-2 me-2">' +
-                    '<label for="input3" class="form-label">Qty</label>'+
+                    '<label for="input3" class="form-label">Qty</label>' +
                     '<input type="number" class="form-control" name="accessories_quantity[]" value="{{isset($rental) ? $rental->accessories_quantity : null}}" required>' +
                     '</div>' +
-                    '<br>'+
+                    '<br>' +
                     '<button class="btn btn-danger float-end remove-field" type="button" id="addButton" data-bs-toggle="tooltip" data-bs-placement="top" title="Delete Accessories"><i class="bx bx-trash"></i></button>' +
-                    '</div>'+
+                    '</div>' +
                     '</div>'
                 );
 
@@ -247,7 +359,7 @@
         });
     </script>
     <script>
-        $(document).ready(function() {
+        $(document).ready(function () {
             // Handle form submission and check for validation errors
             $('#submitBtn').click(function(e) {
                 e.preventDefault(); // Prevent default form submission
@@ -274,7 +386,7 @@
             });
 
             // Existing SweetAlert2 code for image removal
-            $(document).on('click', '.delete-image', function() {
+            $(document).on('click', '.delete-image', function () {
                 let image = $(this).data('image');
                 let row = $(this).closest('.col-md-2');
 
@@ -296,7 +408,7 @@
                                 _token: '{{ csrf_token() }}',
                                 image: image
                             },
-                            success: function(response) {
+                            success: function (response) {
                                 if (response.success) {
                                     row.remove();
                                     Swal.fire('Deleted!', 'Your image has been deleted.', 'success');
@@ -304,12 +416,43 @@
                                     Swal.fire('Failed!', 'Failed to remove image.', 'error');
                                 }
                             },
-                            error: function() {
+                            error: function () {
                                 Swal.fire('Error!', 'An error occurred while processing your request.', 'error');
                             }
                         });
                     }
                 });
+            });
+        });
+    </script>
+    <script src="{{URL::to('assets/plugins/validation/jquery.validate.min.js')}}"></script>
+    <script src="{{URL::to('assets/plugins/validation/validation-script.js')}}"></script>
+    <script>
+        // Example starter JavaScript for disabling form submissions if there are invalid fields
+        (function () {
+            'use strict'
+
+            // Fetch all the forms we want to apply custom Bootstrap validation styles to
+            var forms = document.querySelectorAll('.needs-validation')
+
+            // Loop over them and prevent submission
+            Array.prototype.slice.call(forms)
+                .forEach(function (form) {
+                    form.addEventListener('submit', function (event) {
+                        if (!form.checkValidity()) {
+                            event.preventDefault()
+                            event.stopPropagation()
+                        }
+
+                        form.classList.add('was-validated')
+                    }, false)
+                })
+        })()
+    </script>
+    <script>
+        $(document).ready(function () {
+            $('#bank-select').select2({
+                theme: 'bootstrap-5'
             });
         });
     </script>
