@@ -45,6 +45,9 @@
                             <th width="2%">No</th>
                             <th>Invoice</th>
                             <th>Pelanggan</th>
+                            <th>Nama Alat</th>
+                            <th>No Seri</th>
+                            <th>Type</th>
                             <th>Total Inv</th>
                             <th>Biaya Ganti</th>
                             <th>Uang Masuk</th>
@@ -60,6 +63,9 @@
                                 <td>{{$key +1}}</td>
                                 <td>{{$data->no_inv}}</td>
                                 <td>{{$data->name}}</td>
+                                <td>{{$data->item}}</td>
+                                <td>{{$data->no_seri}}</td>
+                                <td>{{$data->type}}</td>
                                 <td>{{formatRupiah($data->total_invoice)}}</td>
                                 <td>{{formatRupiah($data->biaya_ganti)}}</td>
                                 <td>{{formatRupiah($data->nominal_in)}}</td>
