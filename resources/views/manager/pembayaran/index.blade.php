@@ -304,12 +304,12 @@
                                 <td>{{formatId($debts->date_pay)}}</td>
                                 <td>
                                     @if($debts->rental)
-                                    {{$data->rental->no_inv}}
+                                    {{$debts->rental->no_inv}}
                                     @else
                                     @endif
                                 </td>
                                 <td>
-                                    @if($data->rental)
+                                    @if($debts->rental)
                                     {{$debts->rental->cust->name}}
                                     @else
                                     @endif</td>
