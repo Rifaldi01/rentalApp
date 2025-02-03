@@ -297,15 +297,16 @@
                                 <td>{{formatId($data->date_pay)}}</td>
                                 <td>
                                     @if($data->rental_id)
-                                        {{$data->rental->no_inv}}
                                     @else
+                                    {{$data->rental->no_inv}}
                                     @endif
                                 </td>
                                 <td>
                                     @if($data->rental_id)
-                                        {{$data->rental->cust->name}}
                                     @else
-                                    @endif</td>
+                                    {{$data->rental->cust->name}}
+                                    @endif
+                                </td>
                                 <td>{{formatRupiah($data->pay_debts)}}</td>
                                 <td>
                                 @if($data->bank_id)
