@@ -64,16 +64,16 @@
                                 <td>{{$data->no_inv}}</td>
                                 <td>{{$data->name}}</td>
                                 <td>@foreach(explode(',', $data->item) as $item)
-                                        {{ trim($item) }} <br>
+                                        <li>{{ trim($item) }}</li>
                                     @endforeach
                                 </td>
                                 <td>@foreach(explode(',', $data->no_seri) as $no_seri)
-                                        {{ trim($no_seri) }} <br>
+                                        <li>{{ trim($no_seri) }}</li>
                                     @endforeach
                                 </td>
                                 <td>
                                     @foreach(explode(',', $data->type) as $type)
-                                        {{ trim($type) }} <br>
+                                        <li>{{ trim($type) }} </li>
                                     @endforeach
                                 </td>
                                 <td>{{formatRupiah($data->total_invoice)}}</td>
