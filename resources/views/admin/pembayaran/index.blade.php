@@ -295,8 +295,17 @@
                             <tr>
                                 <td class="text-center">{{$key+1}}</td>
                                 <td>{{formatId($data->date_pay)}}</td>
-                                <td>{{$data->rental->no_inv}}</td>
-                                <td>{{$data->rental->cust->name}}</td>
+                                <td>
+                                    @if($data->rental_id)
+                                        {{$data->rental->no_inv}}
+                                    @else
+                                    @endif
+                                </td>
+                                <td>
+                                    @if($data->rental_id)
+                                        {{$data->rental->cust->name}}
+                                    @else
+                                    @endif</td>
                                 <td>{{formatRupiah($data->pay_debts)}}</td>
                                 <td>
                                 @if($data->bank_id)
