@@ -63,9 +63,19 @@
                                 <td>{{$key +1}}</td>
                                 <td>{{$data->no_inv}}</td>
                                 <td>{{$data->name}}</td>
-                                <td>{{$data->item}}</td>
-                                <td>{{$data->no_seri}}</td>
-                                <td>{{$data->type}}</td>
+                                <td>@foreach(explode(',', $data->item) as $item)
+                                        {{ trim($item) }} <br>
+                                    @endforeach
+                                </td>
+                                <td>@foreach(explode(',', $data->no_seri) as $no_seri)
+                                        {{ trim($no_seri) }} <br>
+                                    @endforeach
+                                </td>
+                                <td>
+                                    @foreach(explode(',', $data->type) as $type)
+                                        {{ trim($type) }} <br>
+                                    @endforeach
+                                </td>
                                 <td>{{formatRupiah($data->total_invoice)}}</td>
                                 <td>{{formatRupiah($data->biaya_ganti)}}</td>
                                 <td>{{formatRupiah($data->nominal_in)}}</td>
