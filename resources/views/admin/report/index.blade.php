@@ -70,10 +70,10 @@
                         <th>Tgl Mulai</th>
                         <th>Tgl Selesai</th>
                         <th>Total <br>Inv</th>
-                        <th width="">Ung <br>Masuk</th>
-                        <th>Sisa <br>Bayar</th>
                         <th>Fee /<br>Discount</th>
                         <th>Total</th>
+                        <th width="">Ung <br>Masuk</th>
+                        <th>Sisa <br>Bayar</th>
                         <th>Ket. (Nama Bank)</th>
                         <th>Penerima</th>
                         <th class="text-center">Status</th>
@@ -126,14 +126,14 @@
                                         0
                                     @endif
                                 </td>
+                                <td>{{formatRupiah($datas->rental->diskon)}}</td>
+                                <td>{{formatRupiah($total[$datas->id])}}</td>
                                 <td>
                                     {{formatRupiah($datas->pay_debts)}}
                                 </td>
                                 <td>
                                     {{formatRupiah($datas->rental->nominal_out)}}
-                                </td>
-                                <td>{{formatRupiah($datas->rental->diskon)}}</td>
-                                <td>{{formatRupiah($total[$datas->id])}}</td>
+                                </td>                               
                                 <td>
                                 @if($datas->bank_id)
                                     {{$datas->bank->name}}
