@@ -586,6 +586,10 @@
                                                 </div>
                                             </div>
                                         </div>
+                                        <a href="{{ route('manager.service.destroy', $data->id) }}" data-confirm-delete="true"
+                                            class=" bx bx-trash btn btn-sm btn-danger" data-bs-toggle="tooltip"
+                                            data-bs-placement="top" title="Hapus">
+                                        </a>
                                         @if($data->nominal_out != 0)
                                         <button class="btn btn-warning lni lni-dollar btn-sm" data-bs-toggle="modal"
                                             data-bs-target="#examplemodal{{$data->id}}" data-bs-tool="tooltip"
@@ -724,7 +728,7 @@
                                         </div>
                                         @endif
                                         @if($data->total_invoice == 0 || $data->no_inv == 'proses')
-                                    <button class="btn btn-dnd btn-sm lni lni-pencil" data-bs-toggle="modal"
+                                        <button class="btn btn-dnd btn-sm lni lni-pencil" data-bs-toggle="modal"
                                                 data-bs-tool="tooltip" data-bs-placement="top" title="Edit Invoice"
                                                 data-bs-target="#editInvoice{{$data->id}}"></button>
                                         <div class="modal fade" id="editInvoice{{$data->id}}"

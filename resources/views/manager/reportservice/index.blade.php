@@ -71,6 +71,7 @@
                             <th>Total Inv</th>
                             <th>Biaya Ganti</th>
                             <th>Fee/ <br>Diskon</th>
+                            <th>Total <br>bersih</th>
                             <th>Uang <br>Masuk</th>
                             <th>Sisa <br>Bayar</th>
                             <th>Ket. Bayar</th>
@@ -98,6 +99,7 @@
                                 <td>{{formatRupiah($data->total_invoice)}}</td>
                                 <td>{{formatRupiah($data->biaya_ganti)}}</td>
                                 <td>{{formatRupiah($data->diskon)}}</td>
+                                <td>{{formatRupiah($data['total_invoice'] - $data['diskon'])}}</td>
                                 <td>{{formatRupiah($data->nominal_in)}}</td>
                                 <td>{{formatRupiah($data->nominal_out)}}</td>
                                 <td>
@@ -159,8 +161,7 @@
                             <th class="border">{{formatRupiah($totalincome)}},-</th>
                         </tr>
                     </tfoot>
-                </table>
-            </div>
+                </table></div>
         </div>
     </div>
 @endsection

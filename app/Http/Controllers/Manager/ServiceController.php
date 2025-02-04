@@ -17,7 +17,6 @@ class ServiceController extends Controller
      */
     public function index()
     {
-        $cust = Service::latest()->paginate();
         $title = 'Delete Item!';
         $text = "Are you sure you want to delete?";
         confirmDelete($title, $text);
@@ -112,9 +111,13 @@ class ServiceController extends Controller
      */
     public function destroy(string $id)
     {
-        Service::whereId($id)->delete();
-        Alert::success('Success','');
-        return back();
+        $service = Service::whereId($id); 
+        $service->delete();
+
+        // Hapus semua AccessoriesCategory yang memiliki rental_id yang sama
+        DebtServic::where('service_id', $id)->delete();
+        
+        return back()->withSuccess('Service Berhasil Dihapus');
     }
 
     private function save(Request $request, $id = null)
@@ -241,6 +244,9 @@ class ServiceController extends Controller
 
     public function history()
     {
+        $title = 'Delete Service!';
+        $text = "Yakin Hapus History Service?";
+        confirmDelete($title, $text);
         $service = Service::all();
         $bank = Bank::all();
         return view('manager.service.index', compact('service', 'bank'));
