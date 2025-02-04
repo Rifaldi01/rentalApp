@@ -50,7 +50,7 @@ class ReportController extends Controller
             ->get();
             $total = $cicilan->groupBy('id')->map(function ($group) {
                 return $group->sum(function ($item){
-                    return $item->rental->nominal_in + $item->rental->nominal_out - $item->rental->diskon;
+                    return $item->rental->total_invoice - $item->rental->diskon;
                 });
             });
             $uangmasuk = $cicilan->sum('pay_debts');
