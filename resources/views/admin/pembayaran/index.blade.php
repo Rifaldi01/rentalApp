@@ -732,13 +732,13 @@
                             // Styling
                             doc.styles.tableHeader = {
                                 bold: true,
-                                fontSize: 10, // Ukuran lebih kecil
+                                fontSize: 9, // Ukuran lebih kecil
                                 color: 'black',
                                 fillColor: '#f2f2f2',
                                 alignment: 'center',
                             };
                             doc.styles.tableCell = {
-                                fontSize: 8, // Ukuran lebih kecil
+                                fontSize: 7, // Ukuran lebih kecil
                             };
                         },
                     },
