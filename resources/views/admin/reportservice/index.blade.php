@@ -99,7 +99,7 @@
                                 <td>{{formatRupiah($data->total_invoice)}}</td>
                                 <td>{{formatRupiah($data->biaya_ganti)}}</td>
                                 <td>{{formatRupiah($data->diskon)}}</td>
-                                <td>{{formatRupiah($data['total_invoice'] - $data['diskon'])}}</td>
+                                <td>{{formatRupiah($data['nominal_in'] - $data['diskon'])}}</td>
                                 <td>{{formatRupiah($data->nominal_in)}}</td>
                                 <td>{{formatRupiah($data->nominal_out)}}</td>
                                 <td>

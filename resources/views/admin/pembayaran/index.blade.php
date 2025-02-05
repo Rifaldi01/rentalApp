@@ -286,7 +286,10 @@
                         <th>Invoice</th>
                         <th>Customer</th>
                         <th>Uang Masuk</th>
+                        <th>Diskon</th>
+                        <th>Sisa Bayar</th>
                         <th>Keterangan Bayar</th>
+                        <th>Penerima</th>
                     </tr>
                     </thead>
                     <tbody>
@@ -307,12 +310,21 @@
                                     @else
                                     @endif</td>
                                 <td>{{formatRupiah($data->pay_debts)}}</td>
+                                <td>{{formatRupiah($data->rental->diskon)}}</td>
+                                <td>{{formatRupiah($data->rental->nominal_out)}}</td>
                                 <td>
-                                @if($data->bank_id)
-                                    {{$data->bank->name}}
-                                @else
-                                    {{$data->description}}
-                                @endif
+                                    @if($data->bank_id)
+                                        {{$data->bank->name}}
+                                    @else
+                                        {{$data->description}}
+                                    @endif
+                                </td>
+                                <td>
+                                    @if($data->penerima)
+                                        {{$data->penerima}}
+                                    @else
+                                        -
+                                    @endif
                                 </td>
                             </tr>
                     @endforeach
@@ -322,8 +334,44 @@
                             <td>-</td>
                             <td>-</td>
                             <td>-</td>
+                            <td>-</td>
+                            <td>-</td>
+                            <td>-</td>
                             <th class="border" > <strong>Total Uang Masuk</strong></th>
                             <th class="border" >{{formatRupiah($uangmasuk)}},-</th>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>-</td>
+                            <td>-</td>
+                            <td>-</td>
+                            <td>-</td>
+                            <td>-</td>
+                            <td>-</td>
+                            <th class="border" > <strong>Total Diskon</strong></th>
+                            <th class="border" >{{formatRupiah($diskon)}},-</th>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>-</td>
+                            <td>-</td>
+                            <td>-</td>
+                            <td>-</td>
+                            <td>-</td>
+                            <td>-</td>
+                            <th class="border" > <strong>Total Bersih</strong></th>
+                            <th class="border" >{{formatRupiah($totalbersih)}},-</th>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>-</td>
+                            <td>-</td>
+                            <td>-</td>
+                            <td>-</td>
+                            <td>-</td>
+                            <td>-</td>
+                            <th class="border" > <strong>Total Sisa Bayar</strong></th>
+                            <th class="border" >{{formatRupiah($sisabayar)}},-</th>
                         </tr>
                     </tfoot>
                 </table>
