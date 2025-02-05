@@ -38,8 +38,25 @@ class PembayaranController extends Controller
         $totalbersih = $debt->sum(function ($item) {
             return $item->pay_debts - $item->rental->diskon;
         });
+        $totals = $debt->groupBy('id')->map(function ($group) {
+            return $group->sum(function ($item){
+                return $item->pay_debts - $item->rental->diskon;
+            });
+        });
         $uangmasuk = $debt->sum('pay_debts');
-        return view('admin.pembayaran.index', compact('totalbersih','sisabayar','diskon','rental', 'bank', 'totalseharusnya', 'total', 'debt', 'hutang', 'uangmasuk'));
+        return view('admin.pembayaran.index', compact([
+            'totalbersih',
+            'sisabayar',
+            'diskon',
+            'rental', 
+            'bank', 
+            'totalseharusnya',
+            'total', 
+            'debt', 
+            'hutang', 
+            'uangmasuk',
+            'totals',
+        ]));
     }
     public function bayar(Request $request, $id)
     {
@@ -128,8 +145,25 @@ class PembayaranController extends Controller
         $totalbersih = $debt->sum(function ($item) {
             return $item->pay_debts - $item->rental->diskon;
         });
+        $totals = $debt->groupBy('id')->map(function ($group) {
+            return $group->sum(function ($item){
+                return $item->pay_debts - $item->rental->diskon;
+            });
+        });
         $uangmasuk = $debt->sum('pay_debts');
-        return view('admin.pembayaran.index', compact('totalbersih','sisabayar','diskon','rental', 'bank', 'totalseharusnya', 'total', 'debt', 'hutang', 'uangmasuk'));
+        return view('admin.pembayaran.index', compact([
+            'totalbersih',
+            'sisabayar',
+            'diskon',
+            'rental', 
+            'bank', 
+            'totalseharusnya', 
+            'total', 
+            'debt', 
+            'hutang', 
+            'uangmasuk',
+            'totals',
+        ]));
     }
 
     public function update(Request $request, $id)

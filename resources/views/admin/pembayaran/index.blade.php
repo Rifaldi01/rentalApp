@@ -281,14 +281,21 @@
                 <table id="transaction" class="table table-striped table-bordered" style="width:100%">
                     <thead>
                     <tr>
-                        <th width="4%">No</th>
-                        <th>Tanggal Bayar</th>
+                    <th width="2%">No</th>
+                        <th>Tgl Inv</th>
                         <th>Invoice</th>
-                        <th>Customer</th>
-                        <th>Uang Masuk</th>
-                        <th>Diskon</th>
-                        <th>Sisa Bayar</th>
-                        <th>Keterangan Bayar</th>
+                        <th>Tgl Bayar</th>
+                        <th>Pelanggan</th>
+                        <th>Item</th>
+                        <th>No Seri</th>
+                        <th>Tgl Mulai</th>
+                        <th>Tgl Selesai</th>
+                        <th>Total <br>Inv</th>
+                        <th>Fee /<br>Discount</th>
+                        <th>Total</th>
+                        <th width="">Ung <br>Masuk</th>
+                        <th>Sisa <br>Bayar</th>
+                        <th>Ket. (Nama Bank)</th>
                         <th>Penerima</th>
                     </tr>
                     </thead>
@@ -300,17 +307,59 @@
                                 <td>{{formatId($data->date_pay)}}</td>
                                 <td>
                                     @if($data->rental)
-                                    {{$data->rental->no_inv}}
+                                        {{$data->rental->no_inv}}
+                                    @else
+                                    @endif
+                                </td>
+                                <td>{{formatId($data->date_pay)}}</td>
+                                <td>
+                                    @if($data->rental)
+                                        {{$data->rental->cust->name}}
                                     @else
                                     @endif
                                 </td>
                                 <td>
-                                    @if($data->rental)
-                                    {{$data->rental->cust->name}}
+                                    @php
+                                        $itemIds = json_decode($data->rental->item_id);
+                                    @endphp
+                                    @if(is_array($itemIds))
+                                        @foreach($itemIds as $itemId)
+                                            @php
+                                                $item = \App\Models\Item::find($itemId);
+                                            @endphp
+                                            <li>{{ $item ? $item->name : 'Item not found' }}</li>
+                                        @endforeach
                                     @else
-                                    @endif</td>
-                                <td>{{formatRupiah($data->pay_debts)}}</td>
+                                        {{ $itemIds }}
+                                    @endif
+                                </td>
+                                <td>
+                                    @php
+                                        $itemIds = json_decode($data->rental->item_id);
+                                    @endphp
+                                    @if(is_array($itemIds))
+                                        @foreach($itemIds as $itemId)
+                                            @php
+                                                $item = \App\Models\Item::find($itemId);
+                                            @endphp
+                                            <li>{{ $item ? $item->no_seri : 'Item not found' }}</li>
+                                        @endforeach
+                                    @else
+                                        {{ $itemIds }}
+                                    @endif
+                                </td>
+                                <td>{{formatId($data->rental->date_start)}}</td>
+                                <td>{{formatId($data->rental->date_end)}}</td>
+                                <td>
+                                    @if($data->rental->total_invoice)
+                                        {{formatRupiah($data->rental->total_invoice)}}
+                                    @else
+                                        0
+                                    @endif
+                                </td>
                                 <td>{{formatRupiah($data->rental->diskon)}}</td>
+                                <td>{{formatRupiah($totals[$data->id])}}</td>
+                                <td>{{formatRupiah($data->pay_debts)}}</td>
                                 <td>{{formatRupiah($data->rental->nominal_out)}}</td>
                                 <td>
                                     @if($data->bank_id)
@@ -337,10 +386,24 @@
                             <td>-</td>
                             <td>-</td>
                             <td>-</td>
+                            <td>-</td>
+                            <td>-</td>
+                            <td>-</td>
+                            <td>-</td>
+                            <td>-</td>
+                            <td>-</td>
+                            <td>-</td>
                             <th class="border" > <strong>Total Uang Masuk</strong></th>
                             <th class="border" >{{formatRupiah($uangmasuk)}},-</th>
                         </tr>
                         <tr>
+                            <td>-</td>
+                            <td>-</td>
+                            <td>-</td>
+                            <td>-</td>
+                            <td>-</td>
+                            <td>-</td>
+                            <td>-</td>
                             <td>-</td>
                             <td>-</td>
                             <td>-</td>
@@ -359,10 +422,24 @@
                             <td>-</td>
                             <td>-</td>
                             <td>-</td>
+                            <td>-</td>
+                            <td>-</td>
+                            <td>-</td>
+                            <td>-</td>
+                            <td>-</td>
+                            <td>-</td>
+                            <td>-</td>
                             <th class="border" > <strong>Total Bersih</strong></th>
                             <th class="border" >{{formatRupiah($totalbersih)}},-</th>
                         </tr>
                         <tr>
+                            <td>-</td>
+                            <td>-</td>
+                            <td>-</td>
+                            <td>-</td>
+                            <td>-</td>
+                            <td>-</td>
+                            <td>-</td>
                             <td>-</td>
                             <td>-</td>
                             <td>-</td>
@@ -382,6 +459,21 @@
                             <th> <h5 class="mb-0 text-uppercase"><strong>Total Uang Masuk</strong></h5></th>
                             <td><h5>:</h5></td>
                             <td><h5 class="ms-3">{{formatRupiah($uangmasuk)}},-</h5></td>
+                        </tr>
+                        <tr>
+                            <th> <h5 class="mb-0 text-uppercase"><strong>Total Diskon</strong></h5></th>
+                            <td><h5>:</h5></td>
+                            <td><h5 class="ms-3">{{formatRupiah($diskon)}},-</h5></td>
+                        </tr>
+                        <tr>
+                            <th> <h5 class="mb-0 text-uppercase"><strong>Total Bersih</strong></h5></th>
+                            <td><h5>:</h5></td>
+                            <td><h5 class="ms-3">{{formatRupiah($totalbersih)}},-</h5></td>
+                        </tr>
+                        <tr>
+                            <th> <h5 class="mb-0 text-uppercase"><strong>Total Sisa Bayar</strong></h5></th>
+                            <td><h5>:</h5></td>
+                            <td><h5 class="ms-3">{{formatRupiah($sisabayar)}},-</h5></td>
                         </tr>
                         
                     </table>
