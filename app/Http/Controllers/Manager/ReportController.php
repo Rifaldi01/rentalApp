@@ -50,7 +50,7 @@ class ReportController extends Controller
             ->get();
             $total = $cicilan->groupBy('id')->map(function ($group) {
                 return $group->sum(function ($item){
-                    return $item->rental->nominal_in + $item->rental->nominal_out - $item->rental->diskon;
+                    return $item->pay_debts - $item->rental->diskon;
                 });
             });
             $uangmasuk = $cicilan->sum('pay_debts');
@@ -107,7 +107,7 @@ class ReportController extends Controller
             ->get();
             $total = $cicilan->groupBy('id')->map(function ($group) {
                 return $group->sum(function ($item){
-                    return $item->rental->nominal_in + $item->rental->nominal_out - $item->rental->diskon;
+                    return $item->pay_debts - $item->rental->diskon;
                 });
             });
             $uangmasuk = $cicilan->sum('pay_debts');
@@ -161,11 +161,11 @@ class ReportController extends Controller
         ->whereBetween('date_pay', [$tanggal_mulai, $tanggal_akhir])
         ->orderBy('date_pay', 'asc')
         ->get();
-            $total = $cicilan->groupBy('id')->map(function ($group) {
-                return $group->sum(function ($item){
-                    return $item->rental->nominal_in + $item->rental->nominal_out - $item->rental->diskon;
-                });
+        $total = $cicilan->groupBy('id')->map(function ($group) {
+            return $group->sum(function ($item){
+                return $item->pay_debts - $item->rental->diskon;
             });
+        });
 
         $uangmasuk = $cicilan->sum('pay_debts');
 
