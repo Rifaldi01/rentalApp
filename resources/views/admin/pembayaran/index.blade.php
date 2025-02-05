@@ -671,7 +671,12 @@
 
                         customize: function (doc) {
                             // Set ukuran halaman PDF
-
+                            doc.pageSize = {
+                                width: 880,
+                                height: 595,
+                            };
+                            doc.pageOrientation = 'landscape';
+                            doc.pageMargins = [20, 20, 20, 20];
                             // Ambil seluruh data dari DataTables (termasuk yang tidak terlihat)
                             var allData = table.data().toArray();
 
