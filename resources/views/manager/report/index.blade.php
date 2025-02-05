@@ -414,6 +414,34 @@
                 lengthChange: false,
                 buttons: [
                     {
+                    extend: 'excel',
+                    text: 'Excel',
+                    title: function () {
+                                var currentDate = new Date();
+                                var day = String(currentDate.getDate()).padStart(2, '0'); // Mendapatkan tanggal dengan dua digit
+                                var month = String(currentDate.getMonth() + 1).padStart(2, '0'); // Mendapatkan bulan dengan dua digit
+                                var year = String(currentDate.getFullYear()).slice(-2); // Mendapatkan dua digit terakhir tahun
+                                var formattedDate = `${day}/${month}/${year}`; // Menggabungkan format tanggal/bulan/tahun
+                                return 'Laporan Pembayaran Tanggal ' + formattedDate; // Nama file sesuai tanggal
+                            },
+                    customize: function (xlsx) {
+                        var sheet = xlsx.xl.worksheets['sheet1.xml'];
+                        var tfoot = $('#excel tfoot').clone(); // Salin bagian tfoot
+                        var tfootRows = '';
+                        tfoot.find('tr').each(function () {
+                            var trow = '<row>';
+                            $(this).find('th').each(function () {
+                                var cell = '<c t="inlineStr"><is><t>' + $(this).text() + '</t></is></c>';
+                                trow += cell;
+                            });
+                            trow += '</row>';
+                            tfootRows += trow;
+                        });
+
+                        var lastRowIndex = $('row', sheet).length;
+                        $('row', sheet).last().after(tfootRows);
+                    }
+                },{
                         extend: 'pdf',
                         filename: 'Laporan_Rental',
                         exportOptions: {
@@ -522,6 +550,34 @@
                 lengthChange: false,
                 buttons: [
                     {
+                    extend: 'excel',
+                    text: 'Excel',
+                    title: function () {
+                                var currentDate = new Date();
+                                var day = String(currentDate.getDate()).padStart(2, '0'); // Mendapatkan tanggal dengan dua digit
+                                var month = String(currentDate.getMonth() + 1).padStart(2, '0'); // Mendapatkan bulan dengan dua digit
+                                var year = String(currentDate.getFullYear()).slice(-2); // Mendapatkan dua digit terakhir tahun
+                                var formattedDate = `${day}/${month}/${year}`; // Menggabungkan format tanggal/bulan/tahun
+                                return 'Laporan Pembayaran Tanggal ' + formattedDate; // Nama file sesuai tanggal
+                            },
+                    customize: function (xlsx) {
+                        var sheet = xlsx.xl.worksheets['sheet1.xml'];
+                        var tfoot = $('#excel tfoot').clone(); // Salin bagian tfoot
+                        var tfootRows = '';
+                        tfoot.find('tr').each(function () {
+                            var trow = '<row>';
+                            $(this).find('th').each(function () {
+                                var cell = '<c t="inlineStr"><is><t>' + $(this).text() + '</t></is></c>';
+                                trow += cell;
+                            });
+                            trow += '</row>';
+                            tfootRows += trow;
+                        });
+
+                        var lastRowIndex = $('row', sheet).length;
+                        $('row', sheet).last().after(tfootRows);
+                    }
+                },{
                         extend: 'pdf',
                         filename: 'Laporan_Rental_cicilan',
                         exportOptions: {

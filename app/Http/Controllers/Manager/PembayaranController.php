@@ -33,8 +33,34 @@ class PembayaranController extends Controller
         $currentYear = now()->year;
         $debt = Debts::whereYear('date_pay', $currentYear)->get();
         $hutang = $rental->sum('nominal_out');
+        $diskon = $debt->sum(function ($item) {
+            return $item->rental->diskon;
+        });
+        $sisabayar = $debt->sum(function ($item) {
+            return $item->rental->nominal_out;
+        });
+        $totalbersih = $debt->sum(function ($item) {
+            return $item->pay_debts - $item->rental->diskon;
+        });
+        $totals = $debt->groupBy('id')->map(function ($group) {
+            return $group->sum(function ($item){
+                return $item->pay_debts - $item->rental->diskon;
+            });
+        });
         $uangmasuk = $debt->sum('pay_debts');
-        return view('manager.pembayaran.index', compact('rental', 'bank', 'totalseharusnya', 'total', 'debt', 'hutang', 'uangmasuk'));
+        return view('manager.pembayaran.index', compact([
+            'totalbersih',
+            'sisabayar',
+            'diskon',
+            'rental', 
+            'bank', 
+            'totalseharusnya',
+            'total', 
+            'debt', 
+            'hutang', 
+            'uangmasuk',
+            'totals',
+        ]));
     }
     public function bayar(Request $request, $id)
     {
@@ -109,8 +135,34 @@ class PembayaranController extends Controller
             });
         });
         $hutang = $rental->sum('nominal_out');
+        $diskon = $debt->sum(function ($item) {
+            return $item->rental->diskon;
+        });
+        $sisabayar = $debt->sum(function ($item) {
+            return $item->rental->nominal_out;
+        });
+        $totalbersih = $debt->sum(function ($item) {
+            return $item->pay_debts - $item->rental->diskon;
+        });
+        $totals = $debt->groupBy('id')->map(function ($group) {
+            return $group->sum(function ($item){
+                return $item->pay_debts - $item->rental->diskon;
+            });
+        });
         $uangmasuk = $debt->sum('pay_debts');
-        return view('manager.pembayaran.index', compact('rental', 'bank', 'totalseharusnya', 'total', 'debt', 'hutang', 'uangmasuk'));
+        return view('manager.pembayaran.index', compact([
+            'totalbersih',
+            'sisabayar',
+            'diskon',
+            'rental', 
+            'bank', 
+            'totalseharusnya',
+            'total', 
+            'debt', 
+            'hutang', 
+            'uangmasuk',
+            'totals',
+        ]));
     }
     public function update(Request $request, $id){
         $total_invoice = str_replace(['Rp.', '.', ' '], '', $request->input('total_invoice'));
