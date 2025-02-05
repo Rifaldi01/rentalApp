@@ -304,7 +304,7 @@
                         
                             <tr>
                                 <td class="text-center">{{$key+1}}</td>
-                                <td>{{formatId($data->date_pay)}}</td>
+                                <td>{{formatId($data->rental->tgl_inv)}}</td>
                                 <td>
                                     @if($data->rental)
                                         {{$data->rental->no_inv}}
