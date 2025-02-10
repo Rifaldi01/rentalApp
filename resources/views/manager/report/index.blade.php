@@ -132,7 +132,7 @@
                                     {{formatRupiah($datas->pay_debts)}}
                                 </td>
                                 <td>
-                                    {{formatRupiah($datas->rental->nominal_out)}}
+                                    {{formatRupiah($sisa[$datas->id])}}
                                 </td>                               
                                 <td>
                                 @if($datas->bank_id)
@@ -162,8 +162,80 @@
                     </tbody>
                     <tfoot>
                         <tr>
-                            <th class="border" colspan="2"> Total Uang Masuk</th>
-                            <th class="border" colspan="2">{{formatRupiah($uangmasuk)}},-</th>
+                            <td>-</td>
+                            <td>-</td>
+                            <td>-</td>
+                            <td>-</td>
+                            <td>-</td>
+                            <td>-</td>
+                            <td>-</td>
+                            <td>-</td>
+                            <td>-</td>
+                            <td>-</td>
+                            <td>-</td>
+                            <td>-</td>
+                            <td>-</td>
+                            <td>-</td>
+                            <td>-</td>
+                            <th class="border" > <strong>Total Uang Masuk</strong></th>
+                            <th class="border" >{{formatRupiah($uangmasuk)}},-</th>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>-</td>
+                            <td>-</td>
+                            <td>-</td>
+                            <td>-</td>
+                            <td>-</td>
+                            <td>-</td>
+                            <td>-</td>
+                            <td>-</td>
+                            <td>-</td>
+                            <td>-</td>
+                            <td>-</td>
+                            <td>-</td>
+                            <td>-</td>
+                            <td>-</td>
+                            <th class="border" > <strong>Total Diskon</strong></th>
+                            <th class="border" >{{formatRupiah($diskon)}},-</th>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>-</td>
+                            <td>-</td>
+                            <td>-</td>
+                            <td>-</td>
+                            <td>-</td>
+                            <td>-</td>
+                            <td>-</td>
+                            <td>-</td>
+                            <td>-</td>
+                            <td>-</td>
+                            <td>-</td>
+                            <td>-</td>
+                            <td>-</td>
+                            <td>-</td>
+                            <th class="border" > <strong>Total Bersih</strong></th>
+                            <th class="border" >{{formatRupiah($totalbersih)}},-</th>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>-</td>
+                            <td>-</td>
+                            <td>-</td>
+                            <td>-</td>
+                            <td>-</td>
+                            <td>-</td>
+                            <td>-</td>
+                            <td>-</td>
+                            <td>-</td>
+                            <td>-</td>
+                            <td>-</td>
+                            <td>-</td>
+                            <td>-</td>
+                            <td>-</td>
+                            <th class="border" > <strong>Total Sisa Bayar</strong></th>
+                            <th class="border" >{{formatRupiah($sisabayar)}},-</th>
                         </tr>
                     </tfoot>
                 </table>
@@ -414,34 +486,55 @@
                 lengthChange: false,
                 buttons: [
                     {
-                    extend: 'excel',
-                    text: 'Excel',
-                    title: function () {
-                                var currentDate = new Date();
-                                var day = String(currentDate.getDate()).padStart(2, '0'); // Mendapatkan tanggal dengan dua digit
-                                var month = String(currentDate.getMonth() + 1).padStart(2, '0'); // Mendapatkan bulan dengan dua digit
-                                var year = String(currentDate.getFullYear()).slice(-2); // Mendapatkan dua digit terakhir tahun
-                                var formattedDate = `${day}/${month}/${year}`; // Menggabungkan format tanggal/bulan/tahun
-                                return 'Laporan Pembayaran Tanggal ' + formattedDate; // Nama file sesuai tanggal
-                            },
-                    customize: function (xlsx) {
-                        var sheet = xlsx.xl.worksheets['sheet1.xml'];
-                        var tfoot = $('#excel tfoot').clone(); // Salin bagian tfoot
-                        var tfootRows = '';
-                        tfoot.find('tr').each(function () {
-                            var trow = '<row>';
-                            $(this).find('th').each(function () {
-                                var cell = '<c t="inlineStr"><is><t>' + $(this).text() + '</t></is></c>';
-                                trow += cell;
-                            });
-                            trow += '</row>';
-                            tfootRows += trow;
-                        });
+                        extend: 'excel',
+                        text: 'Excel',
+                        title: function () {
+                            var currentDate = new Date();
+                            var day = String(currentDate.getDate()).padStart(2, '0');
+                            var month = String(currentDate.getMonth() + 1).padStart(2, '0');
+                            var year = String(currentDate.getFullYear()).slice(-2);
+                            return 'Laporan Pembayaran Tanggal ' + `${day}/${month}/${year}`;
+                        },
+                        exportOptions: {
+                            columns: ':visible',
+                            footer: true, 
+                            format: {
+                                body: function (data) {
+                                    if (data === null || data === undefined) {
+                                        return ''; 
+                                    }
+                                    return String(data)
+                                        .replace(/\./g, '')  
+                                        .replace(/<li>/g, '') 
+                                        .replace(/<\/li>/g, '\n') 
+                                        .replace(/<br\s*\/?>/g, '\n') 
+                                        .replace(/<\/?[^>]+(>|$)/g, ''); 
+                                },
+                            }
+                        },
+                        customize: function (xlsx) {
+                            var sheet = xlsx.xl.worksheets['sheet1.xml'];
+                            var rows = $('row', sheet);
 
-                        var lastRowIndex = $('row', sheet).length;
-                        $('row', sheet).last().after(tfootRows);
-                    }
-                },{
+                            // Salin footer dari tabel
+                            var tfoot = $('#table-report tfoot');
+                            var tfootRows = '';
+
+                            tfoot.find('tr').each(function () {
+                                var trow = '<row>';
+                                $(this).find('th, td').each(function () {
+                                    var cellText = $(this).text().trim();
+                                    var cell = `<c t="inlineStr"><is><t>${cellText}</t></is></c>`;
+                                    trow += cell;
+                                });
+                                trow += '</row>';
+                                tfootRows += trow;
+                            });
+
+                            // Sisipkan footer setelah baris terakhir
+                            rows.last().after(tfootRows);
+                        }
+                    },{
                         extend: 'pdf',
                         filename: 'Laporan_Rental',
                         exportOptions: {
@@ -546,141 +639,89 @@
                 .appendTo('#table-report_wrapper .col-md-6:eq(0)');
         });
         $(document).ready(function () {
-            var table = $('#table-report-cicilan').DataTable({
+                var table = $('#table-report-cicilan').DataTable({
                 lengthChange: false,
                 buttons: [
                     {
-                    extend: 'excel',
-                    text: 'Excel',
-                    title: function () {
-                                var currentDate = new Date();
-                                var day = String(currentDate.getDate()).padStart(2, '0'); // Mendapatkan tanggal dengan dua digit
-                                var month = String(currentDate.getMonth() + 1).padStart(2, '0'); // Mendapatkan bulan dengan dua digit
-                                var year = String(currentDate.getFullYear()).slice(-2); // Mendapatkan dua digit terakhir tahun
-                                var formattedDate = `${day}/${month}/${year}`; // Menggabungkan format tanggal/bulan/tahun
-                                return 'Laporan Pembayaran Tanggal ' + formattedDate; // Nama file sesuai tanggal
-                            },
-                    customize: function (xlsx) {
-                        var sheet = xlsx.xl.worksheets['sheet1.xml'];
-                        var tfoot = $('#excel tfoot').clone(); // Salin bagian tfoot
-                        var tfootRows = '';
-                        tfoot.find('tr').each(function () {
-                            var trow = '<row>';
-                            $(this).find('th').each(function () {
-                                var cell = '<c t="inlineStr"><is><t>' + $(this).text() + '</t></is></c>';
-                                trow += cell;
-                            });
-                            trow += '</row>';
-                            tfootRows += trow;
-                        });
+                        extend: 'excel',
+                        text: 'Excel',
+                        title: function () {
+                            var currentDate = new Date();
+                            var day = String(currentDate.getDate()).padStart(2, '0');
+                            var month = String(currentDate.getMonth() + 1).padStart(2, '0');
+                            var year = String(currentDate.getFullYear()).slice(-2);
+                            return 'Laporan Pembayaran Tanggal ' + `${day}/${month}/${year}`;
+                        },
+                        exportOptions: {
+                            columns: ':visible',
+                            footer: true, 
+                            format: {
+                                body: function (data) {
+                                    if (data === null || data === undefined) {
+                                        return ''; 
+                                    }
+                                    return String(data)
+                                        .replace(/\./g, '')  
+                                        .replace(/<li>/g, '') 
+                                        .replace(/<\/li>/g, '\n') 
+                                        .replace(/<br\s*\/?>/g, '\n') 
+                                        .replace(/<\/?[^>]+(>|$)/g, ''); 
+                                },
+                            }
+                        },
+                        customize: function (xlsx) {
+                            var sheet = xlsx.xl.worksheets['sheet1.xml'];
+                            var rows = $('row', sheet);
 
-                        var lastRowIndex = $('row', sheet).length;
-                        $('row', sheet).last().after(tfootRows);
-                    }
-                },{
+                            // Salin footer dari tabel
+                            var tfoot = $('#table-report-cicilan tfoot');
+                            var tfootRows = '';
+
+                            tfoot.find('tr').each(function () {
+                                var trow = '<row>';
+                                $(this).find('th, td').each(function () {
+                                    var cellText = $(this).text().trim();
+                                    var cell = `<c t="inlineStr"><is><t>${cellText}</t></is></c>`;
+                                    trow += cell;
+                                });
+                                trow += '</row>';
+                                tfootRows += trow;
+                            });
+
+                            // Sisipkan footer setelah baris terakhir
+                            rows.last().after(tfootRows);
+                        }
+                    },
+                    {
                         extend: 'pdf',
-                        filename: 'Laporan_Rental_cicilan',
+                        filename: 'Laporan_Rental_Cicilan',
                         exportOptions: {
                             stripHtml: false,
-                        },
-                        customize: function (doc) {
-                            // Set ukuran halaman PDF
-                            doc.pageSize = {
-                                width: 880,
-                                height: 595,
-                            };
-                            doc.pageOrientation = 'landscape';
-                            doc.pageMargins = [20, 20, 20, 20];
-
-                            // Ambil seluruh data dari DataTables (termasuk yang tidak terlihat)
-                            var allData = table.data().toArray();
-
-                            // Header Tabel
-                            var headers = [];
-                            $('#table-report-cicilan thead th').each(function () {
-                                headers.push({ text: $(this).text(), style: 'tableHeader' });
-                            });
-
-                            // Isi Tabel
-                            var tableBody = [];
-                            tableBody.push(headers); // Tambahkan header ke body
-
-                            allData.forEach(function (rowData) {
-                                var row = [];
-                                rowData.forEach(function (cellData) {
-                                    // Hapus tag HTML seperti <li> dan <br>
-                                    var cleanedText = cellData
-                                        .replace(/<li>/g, '') // Hapus <li>
-                                        .replace(/<\/li>/g, '\n') // Ganti </li> dengan baris baru
-                                        .replace(/<br\s*\/?>/g, '\n') // Hapus <br> dan ganti dengan baris baru
-                                        .replace(/<\/?[^>]+(>|$)/g, ''); // Hapus tag HTML lainnya
-                                    row.push({ text: cleanedText.trim(), style: 'tableCell' });
-                                });
-                                tableBody.push(row);
-                            });
-
-                            // Footer Tabel (Jika Ada)
-                            var tfoot = $('#table-report-cicilan tfoot').clone();
-                            if (tfoot.length) {
-                                var footerRow = [];
-                                tfoot.find('th').each(function () {
-                                    footerRow.push({ text: $(this).text(), style: 'tableCell' });
-                                });
-                                while (footerRow.length < headers.length) {
-                                    footerRow.push({ text: '' });
-                                }
-                                tableBody.push(footerRow);
-                            }
-
-                            // Tambahkan Tabel ke Dokumen
-                            doc.content = [
-                                {
-                                    table: {
-                                        headerRows: 1,
-                                        widths: Array(headers.length).fill('auto'), // Perkecil kolom otomatis
-                                        body: tableBody,
-                                    },
-                                    layout: 'lightHorizontalLines',
-                                },
-                            ];
-
-                            // Styling
-                            doc.styles.tableHeader = {
-                                bold: true,
-                                fontSize: 8, // Ukuran lebih kecil
-                                color: 'black',
-                                fillColor: '#f2f2f2',
-                                alignment: 'center',
-                            };
-                            doc.styles.tableCell = {
-                                fontSize: 7, // Ukuran lebih kecil
-                            };
-                        },
+                            footer: true, 
+                        }
                     },
                     {
                         extend: 'print',
                         title: 'Laporan Cicilan Rental',
                         exportOptions: {
                             stripHtml: false,
-                            tfoot: true,
+                            footer: true, 
                         },
                         customize: function (win) {
                             $(win.document.body)
                                 .find('table')
                                 .addClass('compact')
                                 .css('font-size', '9.8px');
+                            
                             var tfoot = $('#table-report-cicilan tfoot').clone();
                             $(win.document.body).find('table').append(tfoot);
-                        },
-                    },
+                        }
+                    }
                 ],
             });
 
             // Tambahkan tombol ekspor ke container
-            table
-                .buttons()
-                .container()
-                .appendTo('#table-report-cicilan_wrapper .col-md-6:eq(0)');
+            table.buttons().container().appendTo('#table-report-cicilan_wrapper .col-md-6:eq(0)');
         });
     </script>
     <script>

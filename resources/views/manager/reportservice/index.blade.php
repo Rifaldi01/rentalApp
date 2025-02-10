@@ -188,29 +188,50 @@
                         extend: 'excel',
                         text: 'Excel',
                         title: function () {
-                                    var currentDate = new Date();
-                                    var day = String(currentDate.getDate()).padStart(2, '0'); // Mendapatkan tanggal dengan dua digit
-                                    var month = String(currentDate.getMonth() + 1).padStart(2, '0'); // Mendapatkan bulan dengan dua digit
-                                    var year = String(currentDate.getFullYear()).slice(-2); // Mendapatkan dua digit terakhir tahun
-                                    var formattedDate = `${day}/${month}/${year}`; // Menggabungkan format tanggal/bulan/tahun
-                                    return 'Laporan Service Tanggal ' + formattedDate; // Nama file sesuai tanggal
+                            var currentDate = new Date();
+                            var day = String(currentDate.getDate()).padStart(2, '0');
+                            var month = String(currentDate.getMonth() + 1).padStart(2, '0');
+                            var year = String(currentDate.getFullYear()).slice(-2);
+                            return 'Laporan Pembayaran Tanggal ' + `${day}/${month}/${year}`;
+                        },
+                        exportOptions: {
+                            columns: ':visible',
+                            footer: true, 
+                            format: {
+                                body: function (data) {
+                                    if (data === null || data === undefined) {
+                                        return ''; 
+                                    }
+                                    return String(data)
+                                        .replace(/\./g, '')  
+                                        .replace(/<li>/g, '') 
+                                        .replace(/<\/li>/g, '\n') 
+                                        .replace(/<br\s*\/?>/g, '\n') 
+                                        .replace(/<\/?[^>]+(>|$)/g, ''); 
                                 },
+                            }
+                        },
                         customize: function (xlsx) {
                             var sheet = xlsx.xl.worksheets['sheet1.xml'];
-                            var tfoot = $('#table-report tfoot').clone(); // Salin bagian tfoot
+                            var rows = $('row', sheet);
+
+                            // Salin footer dari tabel
+                            var tfoot = $('#table-report tfoot');
                             var tfootRows = '';
+
                             tfoot.find('tr').each(function () {
                                 var trow = '<row>';
-                                $(this).find('th').each(function () {
-                                    var cell = '<c t="inlineStr"><is><t>' + $(this).text() + '</t></is></c>';
+                                $(this).find('th, td').each(function () {
+                                    var cellText = $(this).text().trim();
+                                    var cell = `<c t="inlineStr"><is><t>${cellText}</t></is></c>`;
                                     trow += cell;
                                 });
                                 trow += '</row>';
                                 tfootRows += trow;
                             });
 
-                            var lastRowIndex = $('row', sheet).length;
-                            $('row', sheet).last().after(tfootRows);
+                            // Sisipkan footer setelah baris terakhir
+                            rows.last().after(tfootRows);
                         }
                     },
                     {

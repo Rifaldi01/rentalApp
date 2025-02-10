@@ -54,9 +54,23 @@ class ReportController extends Controller
                 });
             });
             $uangmasuk = $cicilan->sum('pay_debts');
+            $sisa = $cicilan->groupBy('id')->map(function ($group) {
+                return $group->sum(function ($item){
+                    return $item->rental->total_invoice -$item->pay_debts;
+                });
+            });
+            $diskon = $cicilan->sum(function ($item) {
+                return $item->rental->diskon;
+            });
+            $sisabayar = $cicilan->sum(function ($item) {
+                return $item->rental->nominal_out;
+            });
+            $totalbersih = $cicilan->sum(function ($item) {
+                return $item->pay_debts - $item->rental->diskon;
+            });
 
         // return $debt;
-        return view('manager.report.index', compact('totalin', 'report', 'totaldiskon', 'totalincome', 'totaloutside', 'cicilan', 'total', 'uangmasuk'));
+        return view('manager.report.index', compact('sisabayar','totalbersih','diskon','sisa','totalin', 'report', 'totaldiskon', 'totalincome', 'totaloutside', 'cicilan', 'total', 'uangmasuk'));
     }
 
     public function filter(Request $request){
@@ -111,8 +125,23 @@ class ReportController extends Controller
                 });
             });
             $uangmasuk = $cicilan->sum('pay_debts');
-        // Return the view with data
-        return view('manager.report.index', compact('totalin', 'report', 'totaldiskon', 'totalincome', 'totaloutside', 'cicilan', 'total', 'uangmasuk'));
+            $sisa = $cicilan->groupBy('id')->map(function ($group) {
+                return $group->sum(function ($item){
+                    return $item->rental->total_invoice -$item->pay_debts;
+                });
+            });
+            $diskon = $cicilan->sum(function ($item) {
+                return $item->rental->diskon;
+            });
+            $sisabayar = $cicilan->sum(function ($item) {
+                return $item->rental->nominal_out;
+            });
+            $totalbersih = $cicilan->sum(function ($item) {
+                return $item->pay_debts - $item->rental->diskon;
+            });
+
+        // return $debt;
+        return view('manager.report.index', compact('sisabayar','totalbersih','diskon','sisa','totalin', 'report', 'totaldiskon', 'totalincome', 'totaloutside', 'cicilan', 'total', 'uangmasuk'));
     }
     public function filtercicilan(Request $request){
         $request->validate([
@@ -168,9 +197,27 @@ class ReportController extends Controller
         });
 
         $uangmasuk = $cicilan->sum('pay_debts');
+        $sisa = $cicilan->groupBy('id')->map(function ($group) {
+            return $group->sum(function ($item){
+                return $item->rental->total_invoice -$item->pay_debts;
+            });
+        });
+        $diskon = $cicilan->sum(function ($item) {
+            return $item->rental->diskon;
+        });
+        $sisabayar = $cicilan->sum(function ($item) {
+            return $item->rental->nominal_out;
+        });
+        $totalbersih = $cicilan->sum(function ($item) {
+            return $item->pay_debts - $item->rental->diskon;
+        });
 
-        // Return the view with data
+    // return $debt;
         return view('manager.report.index', compact([
+            'sisabayar',
+            'totalbersih',
+            'diskon',
+            'sisa',
             'totalin', 
             'report', 
             'totaldiskon', 

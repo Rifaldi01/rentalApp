@@ -54,9 +54,14 @@ class ReportController extends Controller
                 });
             });
             $uangmasuk = $cicilan->sum('pay_debts');
-
+            $sisa = $cicilan->groupBy('id')->map(function ($group) {
+                return $group->sum(function ($item){
+                    return $item->rental->total_invoice -$item->pay_debts;
+                });
+            });
+    
         // return $debt;
-        return view('admin.report.index', compact('totalin', 'report', 'totaldiskon', 'totalincome', 'totaloutside', 'cicilan', 'total', 'uangmasuk'));
+        return view('admin.report.index', compact('totalin',  'sisa', 'report', 'totaldiskon', 'totalincome', 'totaloutside', 'cicilan', 'total', 'uangmasuk'));
     }
 
     public function filter(Request $request){
@@ -111,8 +116,13 @@ class ReportController extends Controller
                 });
             });
             $uangmasuk = $cicilan->sum('pay_debts');
+            $sisa = $cicilan->groupBy('id')->map(function ($group) {
+                return $group->sum(function ($item){
+                    return $item->rental->total_invoice -$item->pay_debts;
+                });
+            });
         // Return the view with data
-        return view('admin.report.index', compact('totalin', 'report', 'totaldiskon', 'totalincome', 'totaloutside', 'cicilan', 'total', 'uangmasuk'));
+        return view('admin.report.index', compact('totalin', 'sisa', 'report', 'totaldiskon', 'totalincome', 'totaloutside', 'cicilan', 'total', 'uangmasuk'));
     }
     public function filtercicilan(Request $request){
         $request->validate([
@@ -166,12 +176,18 @@ class ReportController extends Controller
                 return $item->pay_debts - $item->rental->diskon;
             });
         });
+        $sisa = $cicilan->groupBy('id')->map(function ($group) {
+            return $group->sum(function ($item){
+                return $item->rental->total_invoice - $item->pay_debts ;
+            });
+        });
 
         $uangmasuk = $cicilan->sum('pay_debts');
 
         // Return the view with data
         return view('admin.report.index', compact([
-            'totalin', 
+            'totalin',
+            'sisa', 
             'report', 
             'totaldiskon', 
             'totalincome', 
