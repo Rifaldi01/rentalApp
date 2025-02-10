@@ -218,25 +218,7 @@
                             <th class="border" > <strong>Total Bersih</strong></th>
                             <th class="border" >{{formatRupiah($totalbersih)}},-</th>
                         </tr>
-                        <tr>
-                            <td>-</td>
-                            <td>-</td>
-                            <td>-</td>
-                            <td>-</td>
-                            <td>-</td>
-                            <td>-</td>
-                            <td>-</td>
-                            <td>-</td>
-                            <td>-</td>
-                            <td>-</td>
-                            <td>-</td>
-                            <td>-</td>
-                            <td>-</td>
-                            <td>-</td>
-                            <td>-</td>
-                            <th class="border" > <strong>Total Sisa Bayar</strong></th>
-                            <th class="border" >{{formatRupiah($sisabayar)}},-</th>
-                        </tr>
+                    
                     </tfoot>
                 </table>
             </div>
