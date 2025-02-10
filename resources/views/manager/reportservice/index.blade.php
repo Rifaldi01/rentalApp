@@ -66,6 +66,7 @@
                             <th>Pelanggan</th>
                             <th>Item</th>
                             <th>No Seri</th>
+                            <th>Type</th>
                             <th>Tgl. Service</th>
                             <th>Tgl. Selesai</th>
                             <th>Total Inv</th>
@@ -86,8 +87,19 @@
                                 <td data-index="{{ $key +1 }}">{{$key +1}}</td>
                                 <td>{{$data->no_inv}}</td>
                                 <td>{{$data->name}}</td>
-                                <td>{{$data->item}}</td>
-                                <td>{{$data->no_seri}}</td>
+                                <td>@foreach(explode(',', $data->item) as $item)
+                                        <li>{{ trim($item) }}</li>
+                                    @endforeach
+                                </td>
+                                <td>@foreach(explode(',', $data->no_seri) as $no_seri)
+                                        <li>{{ trim($no_seri) }}</li>
+                                    @endforeach
+                                </td>
+                                <td>
+                                    @foreach(explode(',', $data->type) as $type)
+                                        <li>{{ trim($type) }} </li>
+                                    @endforeach
+                                </td>
                                 <td>{{formatId($data->date_service)}}</td>
                                 <td>
                                     @if($data->date_finis)
