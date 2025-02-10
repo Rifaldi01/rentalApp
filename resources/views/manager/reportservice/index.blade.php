@@ -106,15 +106,16 @@
                                     @if($data->debtService->isNotEmpty())
                                         @foreach($data->debtService as $debt)
                                             @if($debt->bank)
-                                                <li>{{$debt->date_pay}}, {{ $debt->bank->name }}</li>
+                                                <li>{{ $debt->date_pay }}, {{ $debt->bank->name }}</li>
+                                            @elseif($debt->description)
+                                                <li>{{ $debt->date_pay }}, {{ $debt->description }}</li>
+                                            @else
+                                                <li>{{ $data->descript }}</li>
                                             @endif
-                                            <li>{{$debt->date_pay}}, {{ $debt->description }}</li>
                                         @endforeach
                                     @else
-                                        @foreach($data->debtService as $debt)
-                                        {{$debt->date_pay}}, {{ $debt->description }}
-                                        @endforeach
-                                    @endif
+                                        <li>{{ $data->descript }}</li>
+                                    @endif   
                                     
                                 </td>
                                 <td>
