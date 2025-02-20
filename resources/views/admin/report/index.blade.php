@@ -121,19 +121,20 @@
                                 <td>{{formatId($datas->rental->date_end)}}</td>
                                 <td>
                                     @if($datas->rental->total_invoice)
-                                        {{formatRupiah($datas->rental->total_invoice)}}.00
+                                        {{formatRupiah($datas->rental->total_invoice)}}
                                     @else
                                         0
                                     @endif
                                 </td>
-                                <td>{{formatRupiah($datas->rental->diskon)}}.00</td>
-                                <td>{{formatRupiah($total[$datas->id])}}.00</td>
+                                <td>{{formatRupiah($datas->rental->diskon)}}</td>
+                                <td>{{formatRupiah($total[$datas->id])}}</td>
                                 <td>
-                                    {{formatRupiah($datas->pay_debts)}}.00
+                                    {{formatRupiah($datas->pay_debts)}}
                                 </td>
-                                <td>
-                                    {{formatRupiah($sisa[$datas->id])}}
-                                </td>                               
+<td>
+    {{ formatRupiah($sisa[$datas->id] < 0 ? 0 : $sisa[$datas->id]) }}
+</td>
+                             
                                 <td>
                                 @if($datas->bank_id)
                                     {{$datas->bank->name}}

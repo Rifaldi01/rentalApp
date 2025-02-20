@@ -52,7 +52,7 @@ class CustomerController extends Controller
     {
         $validate = $request->validate([
             'no_identity' => 'unique:customers|min:11',
-            'phone'       => 'unique:customers|min:11',
+            'phone'       => 'unique:customers|min:9',
         ]);
         return $this->save($request);
     }
@@ -119,7 +119,7 @@ class CustomerController extends Controller
         $validator = Validator::make($request->all(), [
             'name'         => 'required',
             'no_identity'  => 'required|numeric|min:10',
-            'phone'        => 'required|numeric|min:10',
+            'phone'        => 'required|numeric',
             'addres'       => 'required',
             'image'        => $id ? 'nullable|array' : 'required|array',
             'image.*'      => 'image',
