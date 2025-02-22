@@ -151,13 +151,11 @@ class RentalController extends Controller
             'item_id' => 'required|array',
             'customer_id' => 'required|exists:customers,id',
             'date_start' => 'required|date',
-            // 'image' => $id ? 'nullable' : 'required|array',
-            // 'image.*' => $id ? 'nullable' : 'image',
             'nominal_in' => 'required|numeric',
             'no_inv' => 'required',
             'total_invoice' => 'required',
             'date_end' => $id ? 'nullable' : 'required|date|after_or_equal:start_date',
-        ],[
+        ], [
             'item_id.required' => 'Item Wajib diisi',
             'customer_id.required' => 'Customer Wajib diisi',
             'nominal_in.required' => 'Nominal In Wajib diisi',
@@ -177,7 +175,7 @@ class RentalController extends Controller
         $isEdit = $rental->exists; // Cek apakah ini proses edit
 
         // Jika sedang mengedit, ambil data jumlah aksesori sebelumnya
-        $previousAccessoriesData = []; // Array untuk menyimpan data aksesori sebelumnya
+        $previousAccessoriesData = [];
         if ($isEdit) {
             $previousAccessories = AccessoriesCategory::where('rental_id', $rental->id)->get();
             foreach ($previousAccessories as $previousAccessory) {
@@ -225,10 +223,8 @@ class RentalController extends Controller
         // Proses gambar jika ada
         if ($request->hasFile('image')) {
             $newImages = [];
-
             foreach ($request->file('image') as $file) {
                 $file_name = md5(now()->timestamp . $file->getClientOriginalName()) . '.jpg';
-
                 try {
                     $img = ImageManagerStatic::make($file);
                     $img->resize(null, 600, function ($constraint) {
@@ -240,7 +236,6 @@ class RentalController extends Controller
                     return back()->withErrors(['image' => 'Error processing the image: ' . $e->getMessage()])->withInput();
                 }
             }
-
             $existingImages = json_decode($rental->image, true) ?? [];
             $rental->image = json_encode(array_merge($existingImages, $newImages));
         }
@@ -252,7 +247,6 @@ class RentalController extends Controller
         foreach ($accessories as $index => $accessoryId) {
             $quantity = isset($quantities[$index]) ? $quantities[$index] : 0;
             $accessory = Accessories::find($accessoryId);
-
             if ($accessory) {
                 $previousQuantity = $previousAccessoriesData[$accessoryId] ?? 0;
                 $stockChange = $previousQuantity - $quantity;
@@ -291,21 +285,36 @@ class RentalController extends Controller
                 $item->save();
             }
         }
-        $debts = Debts::firstOrNew([
-            'rental_id'  => $rental->id,
-            'bank_id'    => $request->input('bank_id'),
-            'pay_debts'  => $rental->nominal_in,
-            'penerima'   => $request->input('penerima'),
-            'date_pay'   => $request->input('date_pay'),
-            'description'=> $request->input('description'),
-        ]);
+
+        // **Perbaikan di bagian Debts**
+        $debt = Debts::where('rental_id', $rental->id)->first();
+        if ($debt) {
+            // Jika sudah ada, update data hutang
+            $debt->update([
+                'bank_id'    => $request->input('bank_id'),
+                'pay_debts'  => $rental->nominal_in,
+                'penerima'   => $request->input('penerima'),
+                'date_pay'   => $request->input('date_pay'),
+                'description'=> $request->input('description'),
+            ]);
+        } else {
+            // Jika belum ada, buat data baru
+            Debts::create([
+                'rental_id'  => $rental->id,
+                'bank_id'    => $request->input('bank_id'),
+                'pay_debts'  => $rental->nominal_in,
+                'penerima'   => $request->input('penerima'),
+                'date_pay'   => $request->input('date_pay'),
+                'description'=> $request->input('description'),
+            ]);
+        }
 
         Alert::success('Success', 'Rental has been saved!');
         return redirect()->route('admin.rental.index');
     }
 
 
-public function finis($id)
+    public function finis($id)
 {
     // Temukan objek rental berdasarkan ID
     $rental = Rental::findOrFail($id);
