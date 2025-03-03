@@ -126,7 +126,7 @@
                                             @endif
                                         @endforeach
                                     @else
-                                        <li>{{ $data->debtService->date_pay }}, {{ $data->descript }}</li>
+                                        <li>{{ $data->debt->date_pay }}, {{ $data->descript }}</li>
                                     @endif                                    
                                 </td>
                                 <td>
