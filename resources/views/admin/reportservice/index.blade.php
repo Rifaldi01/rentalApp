@@ -122,11 +122,11 @@
                                             @elseif($debt->description)
                                                 <li>{{ $debt->date_pay }}, {{ $debt->description }}</li>
                                             @else
-                                                <li>{{ $data->descript }}</li>
+                                                <li>{{ $debt->date_pay }}, {{ $data->descript }}</li>
                                             @endif
                                         @endforeach
                                     @else
-                                        <li>{{ $data->descript }}</li>
+                                        <li>{{ $debt->date_pay }}, {{ $data->descript }}</li>
                                     @endif                                    
                                 </td>
                                 <td>
