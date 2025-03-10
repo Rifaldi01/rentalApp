@@ -80,29 +80,29 @@ class ServiceController extends Controller
         $request->validate([
             'date_finis' => 'required|date',
         ]);
-    
+
         $service = Service::find($id);
-    
+
         // Simpan nilai biaya_ganti sebelumnya
         $previous_biaya_ganti = $service->biaya_ganti;
-    
+
         // Perbarui kolom service
         $service->date_finis = $request->input('date_finis');
         $service->descript = $request->input('descript');
         $service->biaya_ganti = $request->input('biaya_ganti');
         $service->status = 1;
-    
+
         // Cek apakah biaya_ganti berubah
         if ($previous_biaya_ganti != $service->biaya_ganti) {
             $difference = $service->biaya_ganti - $previous_biaya_ganti;
-    
+
             // Update total_invoice dan nominal_out dengan selisih
             $service->total_invoice += $difference;
             $service->nominal_out += $difference;
         }
-    
+
         $service->save();
-    
+
         Alert::success('Finish', 'Service Has been Finished');
         return back();
     }
@@ -165,7 +165,6 @@ class ServiceController extends Controller
         $service->ongkir        = $request->input('ongkir');
         $service->date_service  = $request->input('date_service');
         $service->jenis_service = $request->input('jenis_service');
-        $service->accessories   = $request->input('accessories');
         $service->no_inv        = $request->input('no_inv');
         $service->total_invoice = $request->input('total_invoice');
         $service->tgl_inv       = $request->input('tgl_inv');
@@ -185,27 +184,17 @@ class ServiceController extends Controller
     public function bayar(Request $request, $id)
     {
         $validator = Validator::make($request->all(), [
-            'nominal_in' => 'required',
-            'pay_debts' => 'required',
-            'date_pay' => 'required',
+            'nominal_in'   => 'required',
+            'pay_debts'    => 'required',
+            'date_pay'     => 'required',
         ]);
 
-        // Validasi khusus untuk bank_id dan description
-        if (empty($request->input('bank_id')) && empty($request->input('description'))) {
-            return back()->withErrors([
-                'bank_id' => 'Kolom Bank atau Lainya harus diisi.',
-                'description' => 'Kolom Bank atau Lainya harus diisi.',
-            ])->withInput();
-        }
-
-        if (!empty($request->input('bank_id')) && !empty($request->input('description'))) {
-            return back()->withErrors([
-                'bank_id' => 'Hanya salah satu dari Bank atau Lainya yang boleh diisi.',
-                'description' => 'Hanya salah satu dari Bank atau Lainya yang boleh diisi.',
-            ])->withInput();
+        if ($validator->fails()) {
+            return back()->withErrors($validator)->withInput();
         }
 
         // Format ulang input nominal_in dan pay_debts untuk menghapus simbol dan titik
+        $nominal_in = (int) str_replace(['Rp.', '.', ' '], '', $request->input('nominal_in'));
         $biaya_ganti = (int) str_replace(['Rp.', '.', ' '], '', $request->input('biaya_ganti'));
         $pay_debts = (int) str_replace(['Rp.', '.', ' '], '', $request->input('pay_debts'));
 
@@ -222,18 +211,18 @@ class ServiceController extends Controller
         $service->nominal_out -= $pay_debts;
 
         // Set nominal_in yang baru
-        $service->nominal_in = $pay_debts;
+        $service->nominal_in = $nominal_in;
         $service->biaya_ganti = $biaya_ganti;
         $service->save();
 
         // Simpan data ke tabel debts
         DebtServic::create([
-            'service_id' => $id,
-            'bank_id' => $request->input('bank_id') ?: null,
-            'pay_debts' => $pay_debts,
-            'date_pay' => $request->input('date_pay'),
-            'penerima' => $request->input('penerima'),
-            'description' => $request->input('description') ?: null,
+            'service_id'  => $id,
+            'bank_id'    => $request->input('bank_id'),
+            'pay_debts'  => $pay_debts,
+            'date_pay'   => $request->input('date_pay'),
+            'penerima'   => $request->input('penerima'),
+            'description'=> $request->input('description'),
         ]);
 
         return back()->withSuccess('Pembayaran Berhasil');
@@ -242,7 +231,7 @@ class ServiceController extends Controller
 
     public function history()
     {
-        $service = Service::all();        
+        $service = Service::all();
         $bank = Bank::all();
         return view('admin.service.index', compact('service', 'bank'));
     }
@@ -253,19 +242,19 @@ class ServiceController extends Controller
             'total_invoice' => 'required',
             'tgl_inv' => $id ? 'nullable' : 'required',
         ]);
-    
+
         $service = Service::find($id);
-    
+
         $total_invoice = (int) str_replace(['Rp.', '.', ' '], '', $request->input('total_invoice'));
-        
+
         $service->tgl_inv = $request->input('tgl_inv');
         $service->no_inv = $request->input('no_inv');
         $service->total_invoice = $total_invoice;
         $service->nominal_out = $total_invoice;
-    
+
         $service->save();
-    
-        
+
+
         return back()->withSuccess('Invoice Berhasil Diubah');
     }
     public function invoices(Request $request, string $id)
@@ -274,17 +263,17 @@ class ServiceController extends Controller
             'total_invoice' => 'required',
             'tgl_inv' => $id ? 'nullable' : 'required',
         ]);
-    
+
         $service = Service::find($id);
-    
+
         $total_invoice = (int) str_replace(['Rp.', '.', ' '], '', $request->input('total_invoice'));
-        
+
         $service->tgl_inv = $request->input('tgl_inv');
         $service->no_inv = $request->input('no_inv');
-        $service->total_invoice = $total_invoice;    
+        $service->total_invoice = $total_invoice;
         $service->save();
-    
-        
+
+
         return back()->withSuccess('Invoice Berhasil Diubah');
     }
 }
