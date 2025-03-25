@@ -33,6 +33,8 @@ Route::group(['middleware' => ['auth:web', 'role:admin'], 'prefix' => 'admin'], 
     Route::put('/pembayaran/{id}', [PembayaranController::class, 'bayar'])->name('admin.pembayaran.bayar');
     Route::put('/pembayaran/edit/{id}', [PembayaranController::class, 'update'])->name('admin.update.totalinv');
     Route::get('/pembayaran/filter', [PembayaranController::class, 'filter'])->name('admin.pembayaran.filter');
+    Route::post('/pembayaran/finis/{id}', [PembayaranController::class, 'finis'])->name('admin.pembayaran.finis');
+
     //rental end
 
     //problem

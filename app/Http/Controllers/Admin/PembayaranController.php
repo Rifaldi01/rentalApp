@@ -48,12 +48,12 @@ class PembayaranController extends Controller
             'totalbersih',
             'sisabayar',
             'diskon',
-            'rental', 
-            'bank', 
+            'rental',
+            'bank',
             'totalseharusnya',
-            'total', 
-            'debt', 
-            'hutang', 
+            'total',
+            'debt',
+            'hutang',
             'uangmasuk',
             'totals',
         ]));
@@ -84,7 +84,7 @@ class PembayaranController extends Controller
             $rental->nominal_out = $rental->nominal_out - $diskon;
         }
 
-        // Set nominal_in yang baru 
+        // Set nominal_in yang baru
         $rental->nominal_in = $nominal_in;
         $rental->diskon = $diskon;
         $rental->save();
@@ -155,12 +155,12 @@ class PembayaranController extends Controller
             'totalbersih',
             'sisabayar',
             'diskon',
-            'rental', 
-            'bank', 
-            'totalseharusnya', 
-            'total', 
-            'debt', 
-            'hutang', 
+            'rental',
+            'bank',
+            'totalseharusnya',
+            'total',
+            'debt',
+            'hutang',
             'uangmasuk',
             'totals',
         ]));
@@ -176,6 +176,16 @@ class PembayaranController extends Controller
         $rental->save();
         return back()->withSuccess('Total Invoice Diperbarui.');
 
+    }
+
+    public function finis($id)
+    {
+        // Temukan objek rental berdasarkan ID
+        $rental = Rental::findOrFail($id);
+        $rental->nominal_out = 0;
+        $rental->save();
+
+        return redirect()->back()->with('success', 'Rental Finished');
     }
 
 }
