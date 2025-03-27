@@ -23,7 +23,7 @@ class PembayaranController extends Controller
         });
         $total = $rental->groupBy('id')->map(function ($group) {
             return $group->sum(function ($item){
-                return $item->nominal_in + $item->nominal_out - $item->diskon;
+                return $item->nominal_in - $item->diskon;
             });
         });
         $currentYear = now()->year;
@@ -70,27 +70,32 @@ class PembayaranController extends Controller
             return back()->withErrors($validator)->withInput();
         }
 
-        // Format ulang input nominal_in dan pay_debts untuk menghapus simbol dan titik
+        // Format ulang input nominal_in, pay_debts, dan diskon untuk menghapus simbol dan titik
         $nominal_in = str_replace(['Rp.', '.', ' '], '', $request->input('nominal_in'));
         $pay_debts = str_replace(['Rp.', '.', ' '], '', $request->input('pay_debts'));
         $diskon = str_replace(['Rp.', '.', ' '], '', $request->input('diskon'));
 
-        // Update nominal_in dan nominal_out di tabel rentals
+        // Ambil data rental
         $rental = Rental::findOrFail($id);
 
-        // Kurangi nominal_out dengan pay_debts yang baru
-        $rental->nominal_out = $rental->nominal_out - $pay_debts;
-        if ($diskon != $rental->diskon){
-            $rental->nominal_out = $rental->nominal_out - $diskon;
+        // Kurangi nominal_out dengan pay_debts
+        $new_nominal_out = $rental->nominal_out - $pay_debts;
+
+        // Kurangi nominal_out dengan diskon jika berbeda dari sebelumnya
+        if ($diskon != $rental->diskon) {
+            $new_nominal_out -= $diskon;
         }
 
-        // Set nominal_in yang baru
+        // Pastikan nominal_out tidak menjadi negatif
+        $rental->nominal_out = max(0, $new_nominal_out);
+
+        // Set nominal_in dan diskon yang baru
         $rental->nominal_in = $nominal_in;
         $rental->diskon = $diskon;
         $rental->save();
 
         // Simpan data ke tabel debts
-        $debts = Debts::create([
+        Debts::create([
             'rental_id'  => $id,
             'bank_id'    => $request->input('bank_id'),
             'pay_debts'  => $pay_debts,
@@ -101,6 +106,7 @@ class PembayaranController extends Controller
 
         return back()->withSuccess('Pembayaran Berhasil');
     }
+
 
     public function filter(Request $request){
         $request->validate([
