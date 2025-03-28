@@ -34,7 +34,7 @@
                 @endforeach
             @endif
             <div class="row">
-                <form action="{{route('manager.report.filtercicilan')}}" method="GET">
+                <form action="{{route('admin.report.filtercicilan')}}" method="GET">
                     <div class="row">
                         <div class="col-5 ms-2 mt-2">
                             <label class="form-label">
@@ -286,7 +286,7 @@
                 @endforeach
             @endif
             <div class="row">
-                <form action="{{route('manager.report.filter')}}" method="GET">
+                <form action="{{route('admin.report.filter')}}" method="GET">
                     <div class="row">
                         <div class="col-5 ms-2 mt-2">
                             <label class="form-label">
