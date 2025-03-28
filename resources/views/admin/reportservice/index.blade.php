@@ -111,7 +111,7 @@
                                 <td>{{formatRupiah($data->total_invoice)}}</td>
                                 <td>{{formatRupiah($data->biaya_ganti)}}</td>
                                 <td>{{formatRupiah($data->diskon)}}</td>
-                                <td>{{formatRupiah($data['nominal_in'] - $data['diskon'])}}</td>
+                                <td>{{formatRupiah($data['nominal_in'] - $data['diskon']- $data['biaya_ganti'])}}</td>
                                 <td>{{formatRupiah($data->nominal_in)}}</td>
                                 <td>{{formatRupiah($data->nominal_out)}}</td>
                                 <td>
@@ -127,7 +127,7 @@
                                         @endforeach
                                     @else
                                         <li>{{ $data->descript }}</li>
-                                    @endif                                    
+                                    @endif
                                 </td>
                                 <td>
                                     @if($data->debtService && $data->debtService->isNotEmpty())
@@ -167,7 +167,7 @@
                             <th class="border" colspan="2">Total Fee/Diskon</th>
                             <th class="border">{{formatRupiah($totaldiskon)}},-</th>
                         </tr>
-                        
+
                         <tr>
                             <th class="border" colspan="2">Grand Total</th>
                             <th class="border">{{formatRupiah($totalincome)}},-</th>
