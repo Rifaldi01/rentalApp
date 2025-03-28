@@ -81,9 +81,9 @@
                                 <td>{{formatRupiah($data->nominal_in)}}</td>
                                 <td class="text-center">
                                     @if($data->nominal_out == 0)
-                                    <span class="badge bg-primary">Lunas</span>
+                                        <span class="badge bg-primary">Lunas</span>
                                     @else
-                                    {{formatRupiah($data->nominal_out)}}
+                                        {{formatRupiah($data->nominal_out)}}
                                     @endif
                                 </td>
                                 <td>{{formatId($data->date_service)}}</td>
@@ -94,10 +94,10 @@
                                         <span class="badge bg-secondary">Finished</span>
                                     @endif
                                 </td>
-                                <td >
+                                <td>
                                     @if($data->status == 0)
                                         <button class="btn btn-warning lni lni-eye btn-sm" data-bs-toggle="modal"
-                                               data-bs-tool="tooltip" data-bs-placement="top" title="Detail"
+                                                data-bs-tool="tooltip" data-bs-placement="top" title="Detail"
                                                 data-bs-target="#exampleLargeModal{{$data->id}}"></button>
                                         <div class="modal fade" id="exampleLargeModal{{$data->id}}" tabindex="-1"
                                              aria-hidden="true">
@@ -112,18 +112,22 @@
                                                         <div class="table-responsive">
                                                             <table id="" class="table table-bordered">
                                                                 <tr>
-                                                                        <th class="bg-primary text-center" colspan="4">CUSTOMER</th>
-                                                                    </tr>
-                                                                    <tr>
-                                                                        <th colspan="2" width="10%">Pelanggan</th>
-                                                                        <td colspan="2" class="">{{$data->name}}</td>
-                                                                    </tr>
+                                                                    <th class="bg-primary text-center" colspan="4">
+                                                                        CUSTOMER
+                                                                    </th>
+                                                                </tr>
                                                                 <tr>
-                                                                    <th class="text-center bg-primary" colspan="4">ITEM</th>
+                                                                    <th colspan="2" width="10%">Pelanggan</th>
+                                                                    <td colspan="2" class="">{{$data->name}}</td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <th class="text-center bg-primary" colspan="4">
+                                                                        ITEM
+                                                                    </th>
                                                                 </tr>
                                                                 <tr>
                                                                     <th colspan="2">
-                                                                        <div class="text-center" >Name Item</div>
+                                                                        <div class="text-center">Name Item</div>
                                                                     </th>
                                                                     <th>
                                                                         <div class="text-center">No Seri</div>
@@ -181,8 +185,9 @@
                                                                     <th>
                                                                         <div class="float-start">Descript</div>
                                                                     </th>
-                                                                    <td colspan="3" >
-                                                                      <div class="float-start">{{$data->descript}}</div>
+                                                                    <td colspan="3">
+                                                                        <div
+                                                                            class="float-start">{{$data->descript}}</div>
                                                                     </td>
                                                                 </tr>
                                                                 <tr>
@@ -204,7 +209,9 @@
                                                         <div class="table-responsive">
                                                             <table id="" class="table table-bordered">
                                                                 <tr>
-                                                                    <th colspan="6" class="bg-success text-center">PRICE </th>
+                                                                    <th colspan="6" class="bg-success text-center">
+                                                                        PRICE
+                                                                    </th>
                                                                 </tr>
                                                                 <tr>
                                                                     <th>Total Invoice</th>
@@ -235,216 +242,249 @@
                                             </div>
                                         </div>
                                         @if($data->nominal_out == 0)
-                                        <button class="btn btn-success btn-sm lni lni-checkmark" data-bs-toggle="modal"
-                                                data-bs-tool="tooltip" data-bs-placement="top" title="Finis"
-                                                data-bs-target="#exampleVerticallycenteredModal{{$data->id}}"></button>
-                                        <div class="modal fade" id="exampleVerticallycenteredModal{{$data->id}}"
-                                             tabindex="-1"
-                                             aria-hidden="true">
-                                            <div class="modal-dialog modal-dialog-centered">
-                                                <div class="modal-content">
-                                                    <div class="modal-header">
-                                                        <h5 class="modal-title">Date Finsished</h5>
-                                                        <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                                                aria-label="Close"></button>
+                                            <button class="btn btn-success btn-sm lni lni-checkmark"
+                                                    data-bs-toggle="modal"
+                                                    data-bs-tool="tooltip" data-bs-placement="top" title="Finis"
+                                                    data-bs-target="#exampleVerticallycenteredModal{{$data->id}}"></button>
+                                            <div class="modal fade" id="exampleVerticallycenteredModal{{$data->id}}"
+                                                 tabindex="-1"
+                                                 aria-hidden="true">
+                                                <div class="modal-dialog modal-dialog-centered">
+                                                    <div class="modal-content">
+                                                        <div class="modal-header">
+                                                            <h5 class="modal-title">Date Finsished</h5>
+                                                            <button type="button" class="btn-close"
+                                                                    data-bs-dismiss="modal"
+                                                                    aria-label="Close"></button>
+                                                        </div>
+                                                        <form action="{{route('admin.service.update', $data->id)}}"
+                                                              method="POST">
+                                                            @csrf
+                                                            @method('PUT')
+                                                            <div class="modal-body">
+                                                                <label class="col-form-label">Biaya Ganti</label>
+                                                                <input type="text"
+                                                                       class="form-control " name="biaya_ganti"
+                                                                       placeholder="Enter Date"
+                                                                       value="{{$data->biaya_ganti}}">
+                                                                <label class="col-form-label">Date Finish</label>
+                                                                <input type="text"
+                                                                       class="form-control datepicker" name="date_finis"
+                                                                       placeholder="Enter Date">
+                                                                <label class="col-form-label">Deskripsi</label>
+                                                                <textarea type="text"
+                                                                          class="form-control" name="descript"
+                                                                          placeholder="Enter Date">{{$data->descript}}</textarea>
+                                                            </div>
+                                                            <div class="modal-footer">
+                                                                <button type="button" class="btn btn-secondary"
+                                                                        data-bs-dismiss="modal">Close
+                                                                </button>
+                                                                <button type="submit" class="btn btn-primary">Save<i
+                                                                        class="bx bx-save"></i></button>
+                                                            </div>
+                                                        </form>
                                                     </div>
-                                                    <form action="{{route('admin.service.update', $data->id)}}"
-                                                          method="POST">
-                                                        @csrf
-                                                        @method('PUT')
-                                                        <div class="modal-body">
-                                                            <label class="col-form-label">Biaya Ganti</label>
-                                                            <input type="text"
-                                                                   class="form-control " name="biaya_ganti"
-                                                                   placeholder="Enter Date" value="{{$data->biaya_ganti}}">
-                                                            <label class="col-form-label">Date Finish</label>
-                                                            <input type="text"
-                                                                   class="form-control datepicker" name="date_finis"
-                                                                   placeholder="Enter Date">
-                                                            <label class="col-form-label">Deskripsi</label>
-                                                            <textarea type="text"
-                                                                   class="form-control" name="descript"
-                                                                   placeholder="Enter Date">{{$data->descript}}</textarea>
-                                                        </div>
-                                                        <div class="modal-footer">
-                                                            <button type="button" class="btn btn-secondary"
-                                                                    data-bs-dismiss="modal">Close
-                                                            </button>
-                                                            <button type="submit" class="btn btn-primary">Save<i
-                                                                    class="bx bx-save"></i></button>
-                                                        </div>
-                                                    </form>
                                                 </div>
                                             </div>
-                                        </div>
                                         @elseif($data->nominal_out != 0)
-                                        <button class="btn btn-warning lni lni-dollar btn-sm" data-bs-toggle="modal"
-                                            data-bs-target="#examplemodal{{$data->id}}" data-bs-tool="tooltip"
-                                            data-bs-placement="top" title="Bayar">
-                                        </button>
-                                        <div class="modal fade" id="examplemodal{{$data->id}}" tabindex="-1"
-                                            aria-hidden="true">
-                                            <div class="modal-dialog">
-                                                <div class="modal-content">
-                                                    <div class="modal-header">
-                                                        <h5 class="modal-title">Pembayaran</h5>
-                                                        <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                                                aria-label="Close"></button>
-                                                    </div>
-                                                    <form action="{{route('admin.service.bayar', $data->id)}}" method="POST" id="myForm">
-                                                        @csrf
-                                                        @method('PUT')
-                                                        <div class="modal-body">
-                                                            <div class="row mb-3">
-                                                                <label for="input42" class="col-sm-3 col-form-label"><i
-                                                                        class="text-danger">*</i> Uang Masuk</label>
-                                                                <div class="col-sm-9">
-                                                                    <div class="position-relative input-icon">
-                                                                        <input type="hidden" id="nominal_in_value_{{$data->id}}"
-                                                                            value="{{ $data->nominal_in }}">
-                                                                        <input type="text" class="form-control"
-                                                                            id="nominal_in_{{$data->id}}" name="nominal_in"
-                                                                            value="{{ formatRupiah($data->nominal_in) }}"
-                                                                            readonly>
-                                                                        <span
-                                                                            class="position-absolute top-50 translate-middle-y"><i
-                                                                                class='bx bx-dollar'></i></span>
+                                            <button class="btn btn-warning lni lni-dollar btn-sm" data-bs-toggle="modal"
+                                                    data-bs-target="#examplemodal{{$data->id}}" data-bs-tool="tooltip"
+                                                    data-bs-placement="top" title="Bayar">
+                                            </button>
+                                            <div class="modal fade" id="examplemodal{{$data->id}}" tabindex="-1"
+                                                 aria-hidden="true">
+                                                <div class="modal-dialog">
+                                                    <div class="modal-content">
+                                                        <div class="modal-header">
+                                                            <h5 class="modal-title">Pembayaran</h5>
+                                                            <button type="button" class="btn-close"
+                                                                    data-bs-dismiss="modal"
+                                                                    aria-label="Close"></button>
+                                                        </div>
+                                                        <form action="{{route('admin.service.bayar', $data->id)}}"
+                                                              method="POST" id="myForm">
+                                                            @csrf
+                                                            @method('PUT')
+                                                            <div class="modal-body">
+                                                                <div class="row mb-3">
+                                                                    <label for="input42"
+                                                                           class="col-sm-3 col-form-label"><i
+                                                                            class="text-danger">*</i> Uang Masuk</label>
+                                                                    <div class="col-sm-9">
+                                                                        <div class="position-relative input-icon">
+                                                                            <input type="hidden"
+                                                                                   id="nominal_in_value_{{$data->id}}"
+                                                                                   value="{{ $data->nominal_in }}">
+                                                                            <input type="text" class="form-control"
+                                                                                   id="nominal_in_{{$data->id}}"
+                                                                                   name="nominal_in"
+                                                                                   value="{{ formatRupiah($data->nominal_in) }}"
+                                                                                   readonly>
+                                                                            <span
+                                                                                class="position-absolute top-50 translate-middle-y"><i
+                                                                                    class='bx bx-dollar'></i></span>
+                                                                        </div>
                                                                     </div>
                                                                 </div>
-                                                            </div>
-                                                            <div class="row mb-3">
-                                                                <label for="input42" class="col-sm-3 col-form-label"><i
-                                                                        class="text-danger">*</i> Pay Debts</label>
-                                                                <div class="col-sm-9">
-                                                                    <div class="position-relative input-icon">
-                                                                        <input type="text" class="form-control"
-                                                                            name="pay_debts" id="pay_debts_{{$data->id}}"
-                                                                            onkeyup="formatRupiah2(this)">
-                                                                        <span
-                                                                            class="position-absolute top-50 translate-middle-y"><i
-                                                                                class='bx bx-money'></i></span>
+                                                                <div class="row mb-3">
+                                                                    <label for="input42"
+                                                                           class="col-sm-3 col-form-label"><i
+                                                                            class="text-danger">*</i> Pay Debts</label>
+                                                                    <div class="col-sm-9">
+                                                                        <div class="position-relative input-icon">
+                                                                            <input type="text" class="form-control"
+                                                                                   name="pay_debts"
+                                                                                   id="pay_debts_{{$data->id}}"
+                                                                                   onkeyup="formatRupiah2(this)">
+                                                                            <span
+                                                                                class="position-absolute top-50 translate-middle-y"><i
+                                                                                    class='bx bx-money'></i></span>
+                                                                        </div>
                                                                     </div>
                                                                 </div>
-                                                            </div>
-                                                            <div class="row mb-3">
-                                                                <label for="input42" class="col-sm-3 col-form-label"><i
-                                                                class="text-danger">*</i> Date</label>
-                                                                <div class="col-sm-9">
-                                                                    <div class="position-relative input-icon">
-                                                                        <input type="text" class="form-control datepicker"
-                                                                        name="date_pay" id="input42">
-                                                                        <span
-                                                                        class="position-absolute top-50 translate-middle-y"><i
-                                                                        class='bx bx-calendar'></i></span>
+                                                                <div class="row mb-3">
+                                                                    <label for="input42"
+                                                                           class="col-sm-3 col-form-label"><i
+                                                                            class="text-danger">*</i> Date</label>
+                                                                    <div class="col-sm-9">
+                                                                        <div class="position-relative input-icon">
+                                                                            <input type="text"
+                                                                                   class="form-control datepicker"
+                                                                                   name="date_pay" id="input42">
+                                                                            <span
+                                                                                class="position-absolute top-50 translate-middle-y"><i
+                                                                                    class='bx bx-calendar'></i></span>
+                                                                        </div>
                                                                     </div>
                                                                 </div>
-                                                            </div>
-                                                            <div class="row mb-3">
-                                                                <label for="input42" class="col-sm-3 col-form-label">Biaya Ganti</label>
-                                                                <div class="col-sm-9">
-                                                                    <div class="position-relative input-icon">
-                                                                        <input type="text" class="form-control"
-                                                                            name="biaya_ganti" id="biaya_ganti_{{$data->id}}"
-                                                                            onkeyup="formatRupiah2(this)" value="{{$data->biaya_ganti}}">
-                                                                        <span
-                                                                            class="position-absolute top-50 translate-middle-y"><i
-                                                                                class='bx bx-money'></i></span>
+                                                                <div class="row mb-3">
+                                                                    <label for="input42"
+                                                                           class="col-sm-3 col-form-label">Biaya
+                                                                        Ganti</label>
+                                                                    <div class="col-sm-9">
+                                                                        <div class="position-relative input-icon">
+                                                                            <input type="text" class="form-control"
+                                                                                   name="biaya_ganti"
+                                                                                   id="biaya_ganti_{{$data->id}}"
+                                                                                   onkeyup="formatRupiah2(this)"
+                                                                                   value="{{$data->biaya_ganti}}">
+                                                                            <span
+                                                                                class="position-absolute top-50 translate-middle-y"><i
+                                                                                    class='bx bx-money'></i></span>
+                                                                        </div>
                                                                     </div>
                                                                 </div>
-                                                            </div>
-                                                            <div class="row mb-3" id="bankField_{{$data->id}}">
-                                                                <label for="input42"
-                                                                    class="col-sm-3 col-form-label">Bank</label>
-                                                                <div class="col-sm-9">
-                                                                    <div class="input-group mb-3">
-                                                                        <div class="input-group-text"><i
-                                                                                class="bx bx-credit-card"></i></div>
-                                                                        <select class="form-select" id="single-select-field"
-                                                                                name="bank_id"
-                                                                                data-placeholder="-- Nama Bank --">
-                                                                            <option></option>
-                                                                            @foreach($bank as $banks)
-                                                                                <option
-                                                                                    value="{{$banks->id}}">{{$banks->name}}
-                                                                                    ({{$banks->code}})
-                                                                                </option>
-                                                                            @endforeach
-                                                                        </select>
+                                                                <div class="row mb-3" id="bankField_{{$data->id}}">
+                                                                    <label for="input42"
+                                                                           class="col-sm-3 col-form-label">Bank</label>
+                                                                    <div class="col-sm-9">
+                                                                        <div class="input-group mb-3">
+                                                                            <div class="input-group-text"><i
+                                                                                    class="bx bx-credit-card"></i></div>
+                                                                            <select class="form-select"
+                                                                                    id="single-select-field"
+                                                                                    name="bank_id"
+                                                                                    data-placeholder="-- Nama Bank --">
+                                                                                <option></option>
+                                                                                @foreach($bank as $banks)
+                                                                                    <option
+                                                                                        value="{{$banks->id}}">{{$banks->name}}
+                                                                                        ({{$banks->code}})
+                                                                                    </option>
+                                                                                @endforeach
+                                                                            </select>
+                                                                        </div>
                                                                     </div>
                                                                 </div>
-                                                            </div>
-                                                            <div class="row mb-3" id="penerimaField_{{$data->id}}">
-                                                                <label for="input42" class="col-sm-3 col-form-label">Penerima</label>
-                                                                <div class="col-sm-9">
-                                                                    <div class="position-relative input-icon">
-                                                                        <input type="text" class="form-control"
-                                                                            name="penerima" id="penerima_{{$data->id}}">
-                                                                        <span
-                                                                            class="position-absolute top-50 translate-middle-y"><i
-                                                                                class='bx bx-user'></i></span>
+                                                                <div class="row mb-3" id="penerimaField_{{$data->id}}">
+                                                                    <label for="input42"
+                                                                           class="col-sm-3 col-form-label">Penerima</label>
+                                                                    <div class="col-sm-9">
+                                                                        <div class="position-relative input-icon">
+                                                                            <input type="text" class="form-control"
+                                                                                   name="penerima"
+                                                                                   id="penerima_{{$data->id}}">
+                                                                            <span
+                                                                                class="position-absolute top-50 translate-middle-y"><i
+                                                                                    class='bx bx-user'></i></span>
+                                                                        </div>
                                                                     </div>
                                                                 </div>
-                                                            </div>
-                                                            <div class="row mb-3">
-                                                                <label for="input42" class="col-sm-3 col-form-label"><i
-                                                                        class="text-danger"></i> </label>
-                                                                <div class="col-sm-9">
-                                                                    <div class="position-relative input-icon">
-                                                                        <input type="checkbox" class="form-check"
-                                                                            id="lainya_{{$data->id}}">
-                                                                        <span class="position-absolute top-50 translate-middle-y ms-1"> Lainya</span>
+                                                                <div class="row mb-3">
+                                                                    <label for="input42"
+                                                                           class="col-sm-3 col-form-label"><i
+                                                                            class="text-danger"></i> </label>
+                                                                    <div class="col-sm-9">
+                                                                        <div class="position-relative input-icon">
+                                                                            <input type="checkbox" class="form-check"
+                                                                                   id="lainya_{{$data->id}}">
+                                                                            <span
+                                                                                class="position-absolute top-50 translate-middle-y ms-1"> Lainya</span>
+                                                                        </div>
                                                                     </div>
                                                                 </div>
-                                                            </div>
-                                                            <div class="row mb-3" id="descriptionField">
-                                                                <label for="input42"
-                                                                    class="col-sm-3 col-form-label"></label>
-                                                                <div class="col-sm-9">
+                                                                <div class="row mb-3" id="descriptionField">
+                                                                    <label for="input42"
+                                                                           class="col-sm-3 col-form-label"></label>
+                                                                    <div class="col-sm-9">
                                                                     <textarea id="description_{{$data->id}}" type="text"
-                                                                            class="form-control" name="description"
-                                                                            placeholder="Isi Lainya pembayaran melalui apa?"></textarea>
+                                                                              class="form-control" name="description"
+                                                                              placeholder="Isi Lainya pembayaran melalui apa?"></textarea>
+                                                                    </div>
                                                                 </div>
                                                             </div>
-                                                        </div>
-                                                        <div class="modal-footer">
-                                                            <button class="btn btn-primary" id="bayarbutton">Save</button>
-                                                        </div>
-                                                    </form>
+                                                            <div class="modal-footer">
+                                                                <button class="btn btn-primary" id="bayarbutton">Save
+                                                                </button>
+                                                            </div>
+                                                        </form>
+                                                    </div>
                                                 </div>
                                             </div>
-                                        </div>
+                                            <form action="{{ route('admin.service.finis', $data->id) }}" method="POST">
+                                                @csrf
+                                                <button type="submit"
+                                                        class="btn-sm btn btn-success lni lni-checkmark  mt-1"
+                                                        data-bs-toggle="tooltip" data-bs-placement="top"
+                                                        title="Finished">
+
+                                                </button>
+                                            </form>
                                         @endif
                                         @if($data->total_invoice == 0 || $data->no_inv == 'proses')
-                                        <button class="btn btn-dnd btn-sm lni lni-pencil" data-bs-toggle="modal"
+                                            <button class="btn btn-dnd btn-sm lni lni-pencil" data-bs-toggle="modal"
                                                     data-bs-tool="tooltip" data-bs-placement="top" title="Edit Invoice"
                                                     data-bs-target="#editInvoice{{$data->id}}"></button>
                                             <div class="modal fade" id="editInvoice{{$data->id}}"
-                                                tabindex="-1"
-                                                aria-hidden="true">
+                                                 tabindex="-1"
+                                                 aria-hidden="true">
                                                 <div class="modal-dialog modal-dialog-centered">
                                                     <div class="modal-content">
                                                         <div class="modal-header">
                                                             <h5 class="modal-title">Edit Data</h5>
-                                                            <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                            <button type="button" class="btn-close"
+                                                                    data-bs-dismiss="modal"
                                                                     aria-label="Close"></button>
                                                         </div>
                                                         <form action="{{route('admin.service.invoice', $data->id)}}"
-                                                            method="POST">
+                                                              method="POST">
                                                             @csrf
                                                             @method('PUT')
                                                             <div class="modal-body">
-                                                            <label class="col-form-label">No Invoice</label>
+                                                                <label class="col-form-label">No Invoice</label>
                                                                 <input type="text" value="{{$data->no_inv}}"
-                                                                    class="form-control" name="no_inv"
-                                                                    placeholder="DND/INV/***/**">
+                                                                       class="form-control" name="no_inv"
+                                                                       placeholder="DND/INV/***/**">
                                                                 <label class="col-form-label">Total Invoice</label>
                                                                 <input type="text" onkeyup="formatRupiah2(this)"
-                                                                    class="form-control " name="total_invoice"
-                                                                    placeholder="Enter Date" value="{{$data->total_invoice}}">
+                                                                       class="form-control " name="total_invoice"
+                                                                       placeholder="Enter Date"
+                                                                       value="{{$data->total_invoice}}">
                                                                 <label class="col-form-label">Tanggal Invoice</label>
                                                                 <input type="text" value=""
-                                                                    class="form-control datepicker" name="tgl_inv"
-                                                                    placeholder="Enter Date">
+                                                                       class="form-control datepicker" name="tgl_inv"
+                                                                       placeholder="Enter Date">
                                                             </div>
                                                             <div class="modal-footer">
                                                                 <button type="button" class="btn btn-secondary"
@@ -476,18 +516,22 @@
                                                             <div class="table-responsive">
                                                                 <table id="" class="table table-bordered">
                                                                     <tr>
-                                                                        <th class="bg-primary text-center" colspan="4">CUSTOMER</th>
+                                                                        <th class="bg-primary text-center" colspan="4">
+                                                                            CUSTOMER
+                                                                        </th>
                                                                     </tr>
                                                                     <tr>
                                                                         <th colspan="2" width="10%">Pelanggan</th>
                                                                         <td colspan="2" class="">{{$data->name}}</td>
                                                                     </tr>
                                                                     <tr>
-                                                                        <th class="text-center bg-primary" colspan="4">ITEM</th>
+                                                                        <th class="text-center bg-primary" colspan="4">
+                                                                            ITEM
+                                                                        </th>
                                                                     </tr>
                                                                     <tr>
                                                                         <th colspan="2">
-                                                                            <div class="text-center" >Name Item</div>
+                                                                            <div class="text-center">Name Item</div>
                                                                         </th>
                                                                         <th>
                                                                             <div class="text-center">No Seri</div>
@@ -499,7 +543,8 @@
                                                                     <tr>
 
                                                                         <td colspan="2">
-                                                                            <div class="text-center">{{$data->item}}</div>
+                                                                            <div
+                                                                                class="text-center">{{$data->item}}</div>
                                                                         </td>
                                                                         <td>
                                                                             <div
@@ -527,7 +572,9 @@
                                                                     <tr>
                                                                         <th colspan="2" class="text-center">Date Service
                                                                         </th>
-                                                                        <th colspan="2" class="text-center">Date Finish</th>
+                                                                        <th colspan="2" class="text-center">Date
+                                                                            Finish
+                                                                        </th>
                                                                     </tr>
                                                                     <tr>
                                                                         <td colspan="2"
@@ -545,8 +592,9 @@
                                                                         <th>
                                                                             <div class="float-start">Descript</div>
                                                                         </th>
-                                                                        <td colspan="3" >
-                                                                            <div class="float-start">{{$data->descript}}</div>
+                                                                        <td colspan="3">
+                                                                            <div
+                                                                                class="float-start">{{$data->descript}}</div>
                                                                         </td>
                                                                     </tr>
                                                                     <tr>
@@ -568,7 +616,9 @@
                                                             <div class="table-responsive">
                                                                 <table id="" class="table table-bordered">
                                                                     <tr>
-                                                                        <th colspan="6" class="bg-success text-center">PRICE </th>
+                                                                        <th colspan="6" class="bg-success text-center">
+                                                                            PRICE
+                                                                        </th>
                                                                     </tr>
                                                                     <tr>
                                                                         <th>Total Invoice</th>
@@ -579,7 +629,8 @@
                                                                         <th> Diskon</th>
                                                                     </tr>
                                                                     <tr>
-                                                                        <td>{{formatRupiah($data->total_invoice)}},-</td>
+                                                                        <td>{{formatRupiah($data->total_invoice)}},-
+                                                                        </td>
                                                                         <td>{{formatRupiah($data->nominal_in)}},-</td>
                                                                         <td>{{formatRupiah($data->nominal_out)}},-</td>
                                                                         <td>{{formatRupiah($data->biaya_ganti)}},-</td>
@@ -600,188 +651,209 @@
                                             </div>
                                         </div>
                                         @if($data->nominal_out != 0)
-                                        <button class="btn btn-warning lni lni-dollar btn-sm" data-bs-toggle="modal"
-                                            data-bs-target="#examplemodal{{$data->id}}" data-bs-tool="tooltip"
-                                            data-bs-placement="top" title="Bayar">
-                                        </button>
-                                        <div class="modal fade" id="examplemodal{{$data->id}}" tabindex="-1"
-                                            aria-hidden="true">
-                                            <div class="modal-dialog">
-                                                <div class="modal-content">
-                                                    <div class="modal-header">
-                                                        <h5 class="modal-title">Pembayaran</h5>
-                                                        <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                                                aria-label="Close"></button>
-                                                    </div>
-                                                    <form action="{{route('admin.service.bayar', $data->id)}}" method="POST" id="myForm">
-                                                        @csrf
-                                                        @method('PUT')
-                                                        <div class="modal-body">
-                                                            <div class="row mb-3">
-                                                                <label for="input42" class="col-sm-3 col-form-label"><i
-                                                                        class="text-danger">*</i> Uang Masuk</label>
-                                                                <div class="col-sm-9">
-                                                                    <div class="position-relative input-icon">
-                                                                        <input type="hidden" id="nominal_in_value_{{$data->id}}"
-                                                                            value="{{ $data->nominal_in }}">
-                                                                        <input type="text" class="form-control"
-                                                                            id="nominal_in_{{$data->id}}" name="nominal_in"
-                                                                            value="{{ formatRupiah($data->nominal_in) }}"
-                                                                            readonly>
-                                                                        <span
-                                                                            class="position-absolute top-50 translate-middle-y"><i
-                                                                                class='bx bx-dollar'></i></span>
+                                            <button class="btn btn-warning lni lni-dollar btn-sm" data-bs-toggle="modal"
+                                                    data-bs-target="#examplemodal{{$data->id}}" data-bs-tool="tooltip"
+                                                    data-bs-placement="top" title="Bayar">
+                                            </button>
+                                            <div class="modal fade" id="examplemodal{{$data->id}}" tabindex="-1"
+                                                 aria-hidden="true">
+                                                <div class="modal-dialog">
+                                                    <div class="modal-content">
+                                                        <div class="modal-header">
+                                                            <h5 class="modal-title">Pembayaran</h5>
+                                                            <button type="button" class="btn-close"
+                                                                    data-bs-dismiss="modal"
+                                                                    aria-label="Close"></button>
+                                                        </div>
+                                                        <form action="{{route('admin.service.bayar', $data->id)}}"
+                                                              method="POST" id="myForm">
+                                                            @csrf
+                                                            @method('PUT')
+                                                            <div class="modal-body">
+                                                                <div class="row mb-3">
+                                                                    <label for="input42"
+                                                                           class="col-sm-3 col-form-label"><i
+                                                                            class="text-danger">*</i> Uang Masuk</label>
+                                                                    <div class="col-sm-9">
+                                                                        <div class="position-relative input-icon">
+                                                                            <input type="hidden"
+                                                                                   id="nominal_in_value_{{$data->id}}"
+                                                                                   value="{{ $data->nominal_in }}">
+                                                                            <input type="text" class="form-control"
+                                                                                   id="nominal_in_{{$data->id}}"
+                                                                                   name="nominal_in"
+                                                                                   value="{{ formatRupiah($data->nominal_in) }}"
+                                                                                   readonly>
+                                                                            <span
+                                                                                class="position-absolute top-50 translate-middle-y"><i
+                                                                                    class='bx bx-dollar'></i></span>
+                                                                        </div>
                                                                     </div>
                                                                 </div>
-                                                            </div>
-                                                            <div class="row mb-3">
-                                                                <label for="input42" class="col-sm-3 col-form-label"><i
-                                                                        class="text-danger">*</i> Pay Debts</label>
-                                                                <div class="col-sm-9">
-                                                                    <div class="position-relative input-icon">
-                                                                        <input type="text" class="form-control"
-                                                                            name="pay_debts" id="pay_debts_{{$data->id}}"
-                                                                            onkeyup="formatRupiah2(this)">
-                                                                        <span
-                                                                            class="position-absolute top-50 translate-middle-y"><i
-                                                                                class='bx bx-money'></i></span>
+                                                                <div class="row mb-3">
+                                                                    <label for="input42"
+                                                                           class="col-sm-3 col-form-label"><i
+                                                                            class="text-danger">*</i> Pay Debts</label>
+                                                                    <div class="col-sm-9">
+                                                                        <div class="position-relative input-icon">
+                                                                            <input type="text" class="form-control"
+                                                                                   name="pay_debts"
+                                                                                   id="pay_debts_{{$data->id}}"
+                                                                                   onkeyup="formatRupiah2(this)">
+                                                                            <span
+                                                                                class="position-absolute top-50 translate-middle-y"><i
+                                                                                    class='bx bx-money'></i></span>
+                                                                        </div>
                                                                     </div>
                                                                 </div>
-                                                            </div>
-                                                            <div class="row mb-3">
-                                                                <label for="input42" class="col-sm-3 col-form-label"><i
-                                                                class="text-danger">*</i> Date</label>
-                                                                <div class="col-sm-9">
-                                                                    <div class="position-relative input-icon">
-                                                                        <input type="text" class="form-control datepicker"
-                                                                        name="date_pay" id="input42">
-                                                                        <span
-                                                                        class="position-absolute top-50 translate-middle-y"><i
-                                                                        class='bx bx-calendar'></i></span>
+                                                                <div class="row mb-3">
+                                                                    <label for="input42"
+                                                                           class="col-sm-3 col-form-label"><i
+                                                                            class="text-danger">*</i> Date</label>
+                                                                    <div class="col-sm-9">
+                                                                        <div class="position-relative input-icon">
+                                                                            <input type="text"
+                                                                                   class="form-control datepicker"
+                                                                                   name="date_pay" id="input42">
+                                                                            <span
+                                                                                class="position-absolute top-50 translate-middle-y"><i
+                                                                                    class='bx bx-calendar'></i></span>
+                                                                        </div>
                                                                     </div>
                                                                 </div>
-                                                            </div>
-                                                            <div class="row mb-3">
-                                                                <label for="input42" class="col-sm-3 col-form-label">Biaya Ganti</label>
-                                                                <div class="col-sm-9">
-                                                                    <div class="position-relative input-icon">
-                                                                        <input type="text" class="form-control"
-                                                                            name="biaya_ganti" id="biaya_ganti_{{$data->id}}"
-                                                                            onkeyup="formatRupiah2(this)" value="{{$data->biaya_ganti}}">
-                                                                        <span
-                                                                            class="position-absolute top-50 translate-middle-y"><i
-                                                                                class='bx bx-money'></i></span>
+                                                                <div class="row mb-3">
+                                                                    <label for="input42"
+                                                                           class="col-sm-3 col-form-label">Biaya
+                                                                        Ganti</label>
+                                                                    <div class="col-sm-9">
+                                                                        <div class="position-relative input-icon">
+                                                                            <input type="text" class="form-control"
+                                                                                   name="biaya_ganti"
+                                                                                   id="biaya_ganti_{{$data->id}}"
+                                                                                   onkeyup="formatRupiah2(this)"
+                                                                                   value="{{$data->biaya_ganti}}">
+                                                                            <span
+                                                                                class="position-absolute top-50 translate-middle-y"><i
+                                                                                    class='bx bx-money'></i></span>
+                                                                        </div>
                                                                     </div>
                                                                 </div>
-                                                            </div>
-                                                            <div class="row mb-3" id="bankField_{{$data->id}}">
-                                                                <label for="input42"
-                                                                    class="col-sm-3 col-form-label">Bank</label>
-                                                                <div class="col-sm-9">
-                                                                    <div class="input-group mb-3">
-                                                                        <div class="input-group-text"><i
-                                                                                class="bx bx-credit-card"></i></div>
-                                                                        <select class="form-select" id="single-select-field"
-                                                                                name="bank_id"
-                                                                                data-placeholder="-- Nama Bank --">
-                                                                            <option></option>
-                                                                            @foreach($bank as $banks)
-                                                                                <option
-                                                                                    value="{{$banks->id}}">{{$banks->name}}
-                                                                                    ({{$banks->code}})
-                                                                                </option>
-                                                                            @endforeach
-                                                                        </select>
+                                                                <div class="row mb-3" id="bankField_{{$data->id}}">
+                                                                    <label for="input42"
+                                                                           class="col-sm-3 col-form-label">Bank</label>
+                                                                    <div class="col-sm-9">
+                                                                        <div class="input-group mb-3">
+                                                                            <div class="input-group-text"><i
+                                                                                    class="bx bx-credit-card"></i></div>
+                                                                            <select class="form-select"
+                                                                                    id="single-select-field"
+                                                                                    name="bank_id"
+                                                                                    data-placeholder="-- Nama Bank --">
+                                                                                <option></option>
+                                                                                @foreach($bank as $banks)
+                                                                                    <option
+                                                                                        value="{{$banks->id}}">{{$banks->name}}
+                                                                                        ({{$banks->code}})
+                                                                                    </option>
+                                                                                @endforeach
+                                                                            </select>
+                                                                        </div>
                                                                     </div>
                                                                 </div>
-                                                            </div>
-                                                            <div class="row mb-3" id="penerimaField_{{$data->id}}">
-                                                                <label for="input42" class="col-sm-3 col-form-label">Penerima</label>
-                                                                <div class="col-sm-9">
-                                                                    <div class="position-relative input-icon">
-                                                                        <input type="text" class="form-control"
-                                                                            name="penerima" id="penerima_{{$data->id}}">
-                                                                        <span
-                                                                            class="position-absolute top-50 translate-middle-y"><i
-                                                                                class='bx bx-user'></i></span>
+                                                                <div class="row mb-3" id="penerimaField_{{$data->id}}">
+                                                                    <label for="input42"
+                                                                           class="col-sm-3 col-form-label">Penerima</label>
+                                                                    <div class="col-sm-9">
+                                                                        <div class="position-relative input-icon">
+                                                                            <input type="text" class="form-control"
+                                                                                   name="penerima"
+                                                                                   id="penerima_{{$data->id}}">
+                                                                            <span
+                                                                                class="position-absolute top-50 translate-middle-y"><i
+                                                                                    class='bx bx-user'></i></span>
+                                                                        </div>
                                                                     </div>
                                                                 </div>
-                                                            </div>
-                                                            <div class="row mb-3">
-                                                                <label for="input42" class="col-sm-3 col-form-label"><i
-                                                                        class="text-danger"></i> </label>
-                                                                <div class="col-sm-9">
-                                                                    <div class="position-relative input-icon">
-                                                                        <input type="checkbox" class="form-check"
-                                                                            id="lainya_{{$data->id}}">
-                                                                        <span class="position-absolute top-50 translate-middle-y ms-1"> Lainya</span>
+                                                                <div class="row mb-3">
+                                                                    <label for="input42"
+                                                                           class="col-sm-3 col-form-label"><i
+                                                                            class="text-danger"></i> </label>
+                                                                    <div class="col-sm-9">
+                                                                        <div class="position-relative input-icon">
+                                                                            <input type="checkbox" class="form-check"
+                                                                                   id="lainya_{{$data->id}}">
+                                                                            <span
+                                                                                class="position-absolute top-50 translate-middle-y ms-1"> Lainya</span>
+                                                                        </div>
                                                                     </div>
                                                                 </div>
-                                                            </div>
-                                                            <div class="row mb-3" id="descriptionField">
-                                                                <label for="input42"
-                                                                    class="col-sm-3 col-form-label"></label>
-                                                                <div class="col-sm-9">
+                                                                <div class="row mb-3" id="descriptionField">
+                                                                    <label for="input42"
+                                                                           class="col-sm-3 col-form-label"></label>
+                                                                    <div class="col-sm-9">
                                                                     <textarea id="description_{{$data->id}}" type="text"
-                                                                            class="form-control" name="description"
-                                                                            placeholder="Isi Lainya pembayaran melalui apa?"></textarea>
+                                                                              class="form-control" name="description"
+                                                                              placeholder="Isi Lainya pembayaran melalui apa?"></textarea>
+                                                                    </div>
                                                                 </div>
                                                             </div>
-                                                        </div>
-                                                        <div class="modal-footer">
-                                                            <button class="btn btn-primary" id="bayarbutton">Save</button>
-                                                        </div>
-                                                    </form>
+                                                            <div class="modal-footer">
+                                                                <button class="btn btn-primary" id="bayarbutton">Save
+                                                                </button>
+                                                            </div>
+                                                        </form>
+                                                    </div>
                                                 </div>
                                             </div>
-                                        </div>
                                         @endif
                                         @if($data->total_invoice == 0 || $data->no_inv == 'proses')
-                                    <button class="btn btn-dnd btn-sm lni lni-pencil" data-bs-toggle="modal"
-                                                data-bs-tool="tooltip" data-bs-placement="top" title="Edit Invoice"
-                                                data-bs-target="#editInvoice{{$data->id}}"></button>
-                                        <div class="modal fade" id="editInvoice{{$data->id}}"
-                                             tabindex="-1"
-                                             aria-hidden="true">
-                                            <div class="modal-dialog modal-dialog-centered">
-                                                <div class="modal-content">
-                                                    <div class="modal-header">
-                                                        <h5 class="modal-title">Edit Data</h5>
-                                                        <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                                                aria-label="Close"></button>
+                                            <button class="btn btn-dnd btn-sm lni lni-pencil" data-bs-toggle="modal"
+                                                    data-bs-tool="tooltip" data-bs-placement="top" title="Edit Invoice"
+                                                    data-bs-target="#editInvoice{{$data->id}}"></button>
+                                            <div class="modal fade" id="editInvoice{{$data->id}}"
+                                                 tabindex="-1"
+                                                 aria-hidden="true">
+                                                <div class="modal-dialog modal-dialog-centered">
+                                                    <div class="modal-content">
+                                                        <div class="modal-header">
+                                                            <h5 class="modal-title">Edit Data</h5>
+                                                            <button type="button" class="btn-close"
+                                                                    data-bs-dismiss="modal"
+                                                                    aria-label="Close"></button>
+                                                        </div>
+                                                        <form action="{{route('admin.service.invoices', $data->id)}}"
+                                                              method="POST">
+                                                            @csrf
+                                                            @method('PUT')
+                                                            <div class="modal-body">
+                                                                <label class="col-form-label">No Invoice</label>
+                                                                <input type="text" value="{{$data->no_inv}}"
+                                                                       class="form-control" name="no_inv"
+                                                                       placeholder="DND/INV/***/**">
+                                                                <label class="col-form-label">Total Invoice</label>
+                                                                <input type="text" onkeyup="formatRupiah2(this)"
+                                                                       class="form-control " name="total_invoice"
+                                                                       placeholder="Enter Date"
+                                                                       value="{{$data->total_invoice}}">
+                                                                <label class="col-form-label">Tanggal Invoice</label>
+                                                                <input type="text" value=""
+                                                                       class="form-control datepicker" name="tgl_inv"
+                                                                       placeholder="Enter Date">
+                                                            </div>
+                                                            <div class="modal-footer">
+                                                                <button type="button" class="btn btn-secondary"
+                                                                        data-bs-dismiss="modal">Close
+                                                                </button>
+                                                                <button type="submit" class="btn btn-primary">Save<i
+                                                                        class="bx bx-save"></i></button>
+                                                            </div>
+                                                        </form>
                                                     </div>
-                                                    <form action="{{route('admin.service.invoices', $data->id)}}"
-                                                          method="POST">
-                                                        @csrf
-                                                        @method('PUT')
-                                                        <div class="modal-body">
-                                                        <label class="col-form-label">No Invoice</label>
-                                                            <input type="text" value="{{$data->no_inv}}"
-                                                                   class="form-control" name="no_inv"
-                                                                   placeholder="DND/INV/***/**">
-                                                            <label class="col-form-label">Total Invoice</label>
-                                                            <input type="text" onkeyup="formatRupiah2(this)"
-                                                                   class="form-control " name="total_invoice"
-                                                                   placeholder="Enter Date" value="{{$data->total_invoice}}">
-                                                            <label class="col-form-label">Tanggal Invoice</label>
-                                                            <input type="text" value=""
-                                                                   class="form-control datepicker" name="tgl_inv"
-                                                                   placeholder="Enter Date">
-                                                        </div>
-                                                        <div class="modal-footer">
-                                                            <button type="button" class="btn btn-secondary"
-                                                                    data-bs-dismiss="modal">Close
-                                                            </button>
-                                                            <button type="submit" class="btn btn-primary">Save<i
-                                                                    class="bx bx-save"></i></button>
-                                                        </div>
-                                                    </form>
                                                 </div>
                                             </div>
-                                        </div>
+                                        @endif
                                     @endif
-                                    @endif
-                                    
+
                                 </td>
                             </tr>
                         @endforeach
@@ -799,7 +871,7 @@
     <script src="{{URL::to('assets/js/flatpickr.min.js')}}"></script>
 
     <script>
-         $(document).ready(function () {
+        $(document).ready(function () {
             // Inisialisasi Select2 setelah modal dibuka
             $(document).on('shown.bs.modal', function (e) {
                 let modal = $(e.target); // Modal yang sedang ditampilkan
@@ -869,7 +941,7 @@
             $('#bayarbutton').click(function (event) {
                 // Nonaktifkan tombol dan ubah teksnya
                 $(this).prop('disabled', true).text('Memuat...');
-                
+
                 $('#myForm').submit();
             });
         });
@@ -890,35 +962,60 @@
             element.value = rupiah;
 
             function toggleValidation(id) {
-            if ($(`#lainya_${id}`).is(':checked')) {
-                // Jika checkbox lainya dicentang:
-                $(`#description_${id}`).prop('required', true); // Description wajib diisi
-                $(`#bankField_${id}`).hide(); // Sembunyikan bank field
-                $(`#penerimaField_${id}`).hide(); // Sembunyikan bank field
-                $(`#single-select-field_${id}`).prop('required', false); // Bank tidak wajib
-                $(`#penerima_${id}`).prop('required', false); // Bank tidak wajib
-            } else {
-                // Jika checkbox lainya tidak dicentang:
-                $(`#description_${id}`).prop('required', false); // Description tidak wajib
-                $(`#bankField_${id}`).show(); // Tampilkan bank field
-                $(`#penerimaField_${id}`).show(); // Tampilkan bank field
-                $(`#single-select-field_${id}`).prop('required', true); // Bank wajib diisi
-                $(`#penerima${id}`).prop('required', true); // Bank wajib diisi
+                if ($(`#lainya_${id}`).is(':checked')) {
+                    // Jika checkbox lainya dicentang:
+                    $(`#description_${id}`).prop('required', true); // Description wajib diisi
+                    $(`#bankField_${id}`).hide(); // Sembunyikan bank field
+                    $(`#penerimaField_${id}`).hide(); // Sembunyikan bank field
+                    $(`#single-select-field_${id}`).prop('required', false); // Bank tidak wajib
+                    $(`#penerima_${id}`).prop('required', false); // Bank tidak wajib
+                } else {
+                    // Jika checkbox lainya tidak dicentang:
+                    $(`#description_${id}`).prop('required', false); // Description tidak wajib
+                    $(`#bankField_${id}`).show(); // Tampilkan bank field
+                    $(`#penerimaField_${id}`).show(); // Tampilkan bank field
+                    $(`#single-select-field_${id}`).prop('required', true); // Bank wajib diisi
+                    $(`#penerima${id}`).prop('required', true); // Bank wajib diisi
+                }
             }
-        }
 
-        // Event listener untuk checkbox lainya
-        $("[id^='lainya_']").on('change', function () {
-            var id = $(this).attr('id').split('_')[1]; // Ambil ID dinamis
-            toggleValidation(id);
-        });
+            // Event listener untuk checkbox lainya
+            $("[id^='lainya_']").on('change', function () {
+                var id = $(this).attr('id').split('_')[1]; // Ambil ID dinamis
+                toggleValidation(id);
+            });
 
-        // Inisialisasi validasi saat halaman dimuat
-        $("[id^='lainya_']").each(function () {
-            var id = $(this).attr('id').split('_')[1]; // Ambil ID dinamis
-            toggleValidation(id);
-        });
-        
+            // Inisialisasi validasi saat halaman dimuat
+            $("[id^='lainya_']").each(function () {
+                var id = $(this).attr('id').split('_')[1]; // Ambil ID dinamis
+                toggleValidation(id);
+            });
+
         }
+        document.addEventListener('DOMContentLoaded', function() {
+            // Tambahkan event listener untuk tombol "Finish"
+            document.querySelectorAll('form button[type="submit"]').forEach(function(button) {
+                button.addEventListener('click', function(event) {
+                    event.preventDefault(); // Mencegah form dikirimkan langsung
+
+                    const form = this.closest('form'); // Ambil form terdekat
+
+                    Swal.fire({
+                        title: 'Konfirmasi',
+                        text: "Apakah Anda yakin ingin menyelesaikan Servis ini?",
+                        icon: 'warning',
+                        showCancelButton: true,
+                        confirmButtonColor: '#3085d6',
+                        cancelButtonColor: '#d33',
+                        confirmButtonText: 'Ya, selesai!',
+                        cancelButtonText: 'Batal'
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            form.submit(); // Kirimkan form jika tombol "Ya" diklik
+                        }
+                    });
+                });
+            });
+        });
     </script>
 @endpush

@@ -77,6 +77,7 @@ Route::group(['middleware' => ['auth:web', 'role:admin'], 'prefix' => 'admin'], 
     Route::put('/invoices/edit/{id}', [ServiceController::class, 'invoices'])->name('admin.service.invoices');
     Route::get('/history/service', [ServiceController::class, 'history'])->name('admin.service.history');
     Route::put('/pembayaran/service/{id}', [ServiceController::class, 'bayar'])->name('admin.service.bayar');
+    Route::post('/service/finis/{id}', [ServiceController::class, 'finis'])->name('admin.service.finis');
     //service end
 
     //report

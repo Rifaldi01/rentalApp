@@ -276,4 +276,14 @@ class ServiceController extends Controller
 
         return back()->withSuccess('Invoice Berhasil Diubah');
     }
+    public function finis($id)
+    {
+        // Temukan objek rental berdasarkan ID
+        $service = Service::findOrFail($id);
+        $service->nominal_out = 0;
+        $service->status = 1;
+        $service->save();
+
+        return redirect()->back()->with('success', 'Rental Finished');
+    }
 }
