@@ -445,7 +445,7 @@
                                             <form action="{{ route('admin.service.finis', $data->id) }}" method="POST">
                                                 @csrf
                                                 <button type="submit"
-                                                        class="btn-sm btn btn-success lni lni-checkmark  mt-1"
+                                                        class="btn-sm btn btn-success lni lni-checkmark btn-finish mt-1"
                                                         data-bs-toggle="tooltip" data-bs-placement="top"
                                                         title="Finished">
 
@@ -994,7 +994,7 @@
         }
         document.addEventListener('DOMContentLoaded', function() {
             // Tambahkan event listener untuk tombol "Finish"
-            document.querySelectorAll('form button[type="submit"]').forEach(function(button) {
+            document.querySelectorAll('.btn-finish').forEach(function(button) {
                 button.addEventListener('click', function(event) {
                     event.preventDefault(); // Mencegah form dikirimkan langsung
 
