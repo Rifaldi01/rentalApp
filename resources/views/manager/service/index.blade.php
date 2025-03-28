@@ -233,7 +233,7 @@
                                                         <button type="button" class="btn-close" data-bs-dismiss="modal"
                                                                 aria-label="Close"></button>
                                                     </div>
-                                                    <form action="{{route('manager.service.update', $data->id)}}"
+                                                    <form action="{{route('manager.service.finis', $data->id)}}"
                                                           method="POST">
                                                         @csrf
                                                         @method('PUT')
@@ -444,6 +444,15 @@
                                             </div>
                                         @endif
                                     @else($data->status == 1)
+
+                                        <a href="{{route('manager.service.edit', $data->id)}}"
+                                           class=" bx bx-edit btn btn-sm btn-warning" data-bs-toggle="tooltip"
+                                           data-bs-placement="top" title="Edit Service">
+                                        </a>
+                                        <a href="{{ route('manager.service.destroy', $data->id) }}" data-confirm-delete="true"
+                                            class=" bx bx-trash btn btn-sm btn-danger" data-bs-toggle="tooltip"
+                                            data-bs-placement="top" title="Hapus">
+                                        </a>
                                         <button class="btn btn-warning lni lni-eye btn-sm" data-bs-toggle="modal"
                                                 data-bs-tool="tooltip" data-bs-placement="top" title="Detail"
                                                 data-bs-target="#exampleLargeModal{{$data->id}}"></button>
@@ -586,10 +595,6 @@
                                                 </div>
                                             </div>
                                         </div>
-                                        <a href="{{ route('manager.service.destroy', $data->id) }}" data-confirm-delete="true"
-                                            class=" bx bx-trash btn btn-sm btn-danger" data-bs-toggle="tooltip"
-                                            data-bs-placement="top" title="Hapus">
-                                        </a>
                                         @if($data->nominal_out != 0)
                                         <button class="btn btn-warning lni lni-dollar btn-sm" data-bs-toggle="modal"
                                             data-bs-target="#examplemodal{{$data->id}}" data-bs-tool="tooltip"
@@ -772,7 +777,7 @@
                                         </div>
                                     @endif
                                     @endif
-                                    
+
                                 </td>
                             </tr>
                         @endforeach
@@ -860,7 +865,7 @@
             $('#bayarbutton').click(function (event) {
                 // Nonaktifkan tombol dan ubah teksnya
                 $(this).prop('disabled', true).text('Memuat...');
-                
+
                 $('#myForm').submit();
             });
         });
@@ -909,7 +914,7 @@
             var id = $(this).attr('id').split('_')[1]; // Ambil ID dinamis
             toggleValidation(id);
         });
-        
+
         }
     </script>
 @endpush

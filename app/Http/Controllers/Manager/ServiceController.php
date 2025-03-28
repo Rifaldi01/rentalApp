@@ -76,34 +76,7 @@ class ServiceController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        $request->validate([
-            'date_finis' => 'required|date',
-        ]);
-
-        $service = Service::find($id);
-
-        // Simpan nilai biaya_ganti sebelumnya
-        $previous_biaya_ganti = $service->biaya_ganti;
-
-        // Perbarui kolom service
-        $service->date_finis = $request->input('date_finis');
-        $service->descript = $request->input('descript');
-        $service->biaya_ganti = $request->input('biaya_ganti');
-        $service->status = 1;
-
-        // Cek apakah biaya_ganti berubah
-        if ($previous_biaya_ganti != $service->biaya_ganti) {
-            $difference = $service->biaya_ganti - $previous_biaya_ganti;
-
-            // Update total_invoice dan nominal_out dengan selisih
-            $service->total_invoice += $difference;
-            $service->nominal_out += $difference;
-        }
-
-        $service->save();
-
-        Alert::success('Finish', 'Service Has been Finished');
-        return back();
+        return $this->save($request, $id);
     }
 
     /**
@@ -147,14 +120,21 @@ class ServiceController extends Controller
             'nominal_in.numeric'     => 'Uang masuk Harus Berupa Angka',
             'nominal_out.numeric'    => 'Sisa Pembayaran Harus Berupa Angka',
             'diskon.numeric'         => 'Diskon Harus Berupa Angka',
-            'biaya_ganti.numeric'    => 'Ongkir Harus Berupa Angka',
+            'biaya_ganti.numeric'    => 'Biaya Ganti Harus Berupa Angka',
             'ongkir.numeric'         => 'Ongkir Harus Berupa Angka',
             'type.required'          => 'Type Wajib Diisi',
             'no_inv.required'        => 'No Invoice Wajib Diisi',
             'tgl_inv.required'       => 'Tanggal Invoice Wajib Diisi',
             'total_invoice.required' => 'Total Invoice Wajib Diisi',
         ]);
+
+        // Cek apakah data service baru atau edit
+        $isNew = is_null($id);
+
+        // Jika baru, buat instance baru, jika edit cari berdasarkan ID
         $service = Service::firstOrNew(['id' => $id]);
+
+        // Simpan data service
         $service->name          = $request->input('name');
         $service->phone         = $request->input('phone');
         $service->item          = $request->input('item');
@@ -174,16 +154,63 @@ class ServiceController extends Controller
         $service->tgl_inv       = $request->input('tgl_inv');
         $service->save();
 
-        $debts = DebtServic::create([
-            'service_id' => $service->id,
-            'bank_id'    => $request->input('bank_id'),
-            'pay_debts'  => $service->nominal_in,
-            'penerima'   => $request->input('penerima'),
-            'date_pay'   => $request->input('date_pay'),
-            'description'=> $request->input('description'),
-        ]);
+        // Jika service baru, buat DebtServic baru
+        if ($isNew) {
+            $debts = DebtServic::create([
+                'service_id'  => $service->id,
+                'bank_id'     => $request->input('bank_id'),
+                'pay_debts'   => $service->nominal_in,
+                'penerima'    => $request->input('penerima'),
+                'date_pay'    => $request->input('date_pay'),
+                'description' => $request->input('description'),
+            ]);
+        } else {
+            // Jika service diedit, update DebtServic yang sudah ada
+            $debts = DebtServic::where('service_id', $service->id)->first();
+            if ($debts) {
+                $debts->update([
+                    'bank_id'     => $request->input('bank_id'),
+                    'pay_debts'   => $service->nominal_in,
+                    'penerima'    => $request->input('penerima'),
+                    'date_pay'    => $request->input('date_pay'),
+                    'description' => $request->input('description'),
+                ]);
+            }
+        }
 
         return redirect()->route('manager.service.index')->withSuccess('Upload Data Success');
+    }
+
+    public function finis(Request $request, string $id)
+    {
+        $request->validate([
+            'date_finis' => 'required|date',
+        ]);
+
+        $service = Service::find($id);
+
+        // Simpan nilai biaya_ganti sebelumnya
+        $previous_biaya_ganti = $service->biaya_ganti;
+
+        // Perbarui kolom service
+        $service->date_finis = $request->input('date_finis');
+        $service->descript = $request->input('descript');
+        $service->biaya_ganti = $request->input('biaya_ganti');
+        $service->status = 1;
+
+        // Cek apakah biaya_ganti berubah
+        if ($previous_biaya_ganti != $service->biaya_ganti) {
+            $difference = $service->biaya_ganti - $previous_biaya_ganti;
+
+            // Update total_invoice dan nominal_out dengan selisih
+            $service->total_invoice += $difference;
+            $service->nominal_out += $difference;
+        }
+
+        $service->save();
+
+        Alert::success('Finish', 'Service Has been Finished');
+        return back();
     }
     public function bayar(Request $request, $id)
     {
