@@ -482,7 +482,7 @@
                                                                        placeholder="Enter Date"
                                                                        value="{{$data->total_invoice}}">
                                                                 <label class="col-form-label">Tanggal Invoice</label>
-                                                                <input type="text" value=""
+                                                                <input type="text" value="{{$data->tgl_inv}}"
                                                                        class="form-control datepicker" name="tgl_inv"
                                                                        placeholder="Enter Date">
                                                             </div>
