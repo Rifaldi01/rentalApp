@@ -85,48 +85,40 @@
                         @foreach($report as $key => $data)
                             <tr>
                                 <td data-index="{{ $key +1 }}">{{$key +1}}</td>
-                                <td>{{$data->no_inv}}</td>
-                                <td>{{$data->name}}</td>
-                                <td>@foreach(explode(',', $data->item) as $item)
+                                <td>{{ optional($data->service)->no_inv }}</td>
+                                <td>{{ optional($data->service)->name }}</td>
+                                <td>@foreach(explode(',', optional($data->service)->item) as $item)
                                         <li>{{ trim($item) }}</li>
                                     @endforeach
                                 </td>
-                                <td>@foreach(explode(',', $data->no_seri) as $no_seri)
+                                <td>@foreach(explode(',', optional($data->service)->no_seri) as $no_seri)
                                         <li>{{ trim($no_seri) }}</li>
                                     @endforeach
                                 </td>
                                 <td>
-                                    @foreach(explode(',', $data->type) as $type)
+                                    @foreach(explode(',', optional($data->service)->type) as $type)
                                         <li>{{ trim($type) }} </li>
                                     @endforeach
                                 </td>
-                                <td>{{formatId($data->date_service)}}</td>
+                                <td>{{formatId(optional($data->service)->date_service)}}</td>
                                 <td>
-                                    @if($data->date_finis)
-                                    {{formatId($data->date_finis)}}
+                                    @if(optional($data->service)->date_finis)
+                                    {{formatId(optional($data->service)->date_finis)}}
                                     @else
                                     <div class="text-center">-</div>
                                     @endif
                                 </td>
-                                <td>{{formatRupiah($data->total_invoice)}}</td>
-                                <td>{{formatRupiah($data->biaya_ganti)}}</td>
-                                <td>{{formatRupiah($data->diskon)}}</td>
-                                <td>{{formatRupiah($data['nominal_in'] - $data['diskon']- $data['biaya_ganti'])}}</td>
-                                <td>{{formatRupiah($data->nominal_in)}}</td>
-                                <td>{{formatRupiah($data->nominal_out)}}</td>
+                                <td>{{formatRupiah(optional($data->service)->total_invoice)}}</td>
+                                <td>{{formatRupiah(optional($data->service)->biaya_ganti)}}</td>
+                                <td>{{formatRupiah(optional($data->service)->diskon)}}</td>
+                                <td>{{formatRupiah($data->service['nominal_in'] - $data->service['diskon']- $data->service['biaya_ganti'])}}</td>
+                                <td>{{formatRupiah($data->pay_debts)}}</td>
+                                <td>{{formatRupiah(optional($data->service)->nominal_out)}}</td>
                                 <td>
-                                    @if($data->debtService->isNotEmpty())
-                                        @foreach($data->debtService as $debt)
-                                            @if($debt->bank)
-                                                <li>{{ $debt->date_pay }}, {{ $debt->bank->name }}</li>
-                                            @elseif($debt->description)
-                                                <li>{{ $debt->date_pay }}, {{ $debt->description }}</li>
-                                            @else
-                                                <li>{{ $debt->date_pay }}, {{ $data->descript }}</li>
-                                            @endif
-                                        @endforeach
+                                    @if($data->bank_id)
+                                    {{$data->bank->name}}, {{formatId($data->date_pay)}}
                                     @else
-                                        <li>{{ $data->descript }}</li>
+                                        {{ $data->description }}
                                     @endif
                                 </td>
                                 <td>
@@ -141,9 +133,9 @@
                                 </td>
                                 <td>{{$data->date_pays}}</td>
                                 <td>
-                                    @if($data->status == 0)
+                                    @if(optional($data->service)->status == 0)
                                         <span class="badge bg-success">Service</span>
-                                    @else($data->status == 1)
+                                    @else(optional($data->service)->status == 1)
                                         <span class="badge bg-secondary">Finished</span>
                                     @endif
                                 </td>
