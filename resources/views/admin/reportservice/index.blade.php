@@ -111,7 +111,7 @@
                                 <td>{{formatRupiah(optional($data->service)->total_invoice)}}</td>
                                 <td>{{formatRupiah(optional($data->service)->biaya_ganti)}}</td>
                                 <td>{{formatRupiah(optional($data->service)->diskon)}}</td>
-                                <td>{{formatRupiah($data->service['nominal_in'] - $data->service['diskon']- $data->service['biaya_ganti'])}}</td>
+                                <td>{{ formatRupiah(optional($data->service)->nominal_in - optional($data->service)->diskon - optional($data->service)->biaya_ganti) }}</td>
                                 <td>{{formatRupiah($data->pay_debts)}}</td>
                                 <td>{{formatRupiah(optional($data->service)->nominal_out)}}</td>
                                 <td>
