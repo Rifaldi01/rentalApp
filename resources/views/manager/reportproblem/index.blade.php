@@ -75,7 +75,7 @@
                     <tr>
                         @foreach ($report as $key => $data)
                             <td>{{$key +1}}</td>
-                            <td>{{$data->rental->cust->name}}</td>
+                            <td>{{$data->rental->cust->name ?? null}}</td>
                             <td>
                                 @php
                                     $itemIds = json_decode($data->item_id);
@@ -112,7 +112,7 @@
                                     <li>{{ $accessory }}</li>
                                 @endforeach
                             @else
-                               
+
                             @endif
                             </td>
                             <td>
