@@ -116,6 +116,8 @@
                     this.data(i++);
                 });
             }).draw();
+            table.buttons().container()
+                .appendTo( '#mainten_wrapper .col-md-6:eq(0)' );
         });
     </script>
 @endpush
