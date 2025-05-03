@@ -83,13 +83,13 @@
                         @foreach($cicilan as $key => $datas)
                             <tr>
                                 <td class="text-center">{{$key +1}}</td>
-                                <td>{{$datas->rental->tgl_inv}}</td>
-                                <td>{{$datas->rental->no_inv}}</td>
+                                <td>{{$datas->rental->tgl_inv ?? null}}</td>
+                                <td>{{$datas->rental->no_inv ?? null}}</td>
                                 <td>{{formatId($datas->date_pay)}}</td>
-                                <td>{{$datas->rental->cust->name}}</td>
+                                <td>{{$datas->rental->cust->name ?? null}}</td>
                                 <td>
                                     @php
-                                        $itemIds = json_decode($datas->rental->item_id);
+                                        $itemIds = json_decode($datas->rental->item_id ?? null);
                                     @endphp
                                     @if(is_array($itemIds))
                                         @foreach($itemIds as $itemId)
@@ -104,7 +104,7 @@
                                 </td>
                                 <td>
                                     @php
-                                        $itemIds = json_decode($datas->rental->item_id);
+                                        $itemIds = json_decode($datas->rental->item_id ?? null);
                                     @endphp
                                     @if(is_array($itemIds))
                                         @foreach($itemIds as $itemId)
@@ -117,23 +117,23 @@
                                         {{ $itemIds }}
                                     @endif
                                 </td>
-                                <td>{{formatId($datas->rental->date_start)}}</td>
-                                <td>{{formatId($datas->rental->date_end)}}</td>
+                                <td>{{formatId($datas->rental->date_start ?? null)}}</td>
+                                <td>{{formatId($datas->rental->date_end ?? null)}}</td>
                                 <td>
-                                    @if($datas->rental->total_invoice)
-                                        {{formatRupiah($datas->rental->total_invoice)}}
+                                    @if($datas->rental->total_invoice ?? null)
+                                        {{formatRupiah($datas->rental->total_invoice ?? null)}}
                                     @else
                                         0
                                     @endif
                                 </td>
-                                <td>{{formatRupiah($datas->rental->diskon)}}</td>
+                                <td>{{formatRupiah($datas->rental->diskon ?? null)}}</td>
                                 <td>{{formatRupiah($total[$datas->id])}}</td>
                                 <td>
                                     {{formatRupiah($datas->pay_debts)}}
                                 </td>
                                 <td>
                                     {{formatRupiah($sisa[$datas->id])}}
-                                </td>                               
+                                </td>
                                 <td>
                                 @if($datas->bank_id)
                                     {{$datas->bank->name}}
@@ -149,13 +149,16 @@
                                     @endif
                                 </td>
                                 <td class="text-center">
-                                    @if($datas->rental->status == 1)
+                                    @php $status = optional($datas->rental)->status; @endphp
+
+                                    @if($status === 1)
                                         <span class="badge bg-success">Rent</span>
-                                    @elseif($datas->rental->status == 0)
+                                    @elseif($status === 0)
                                         <span class="badge bg-secondary">Finished</span>
-                                    @elseif($datas->rental->status == 2)
+                                    @elseif($status === 2)
                                         <span class="badge bg-danger">Problem</span>
                                     @endif
+
                                 </td>
                             </tr>
                         @endforeach
@@ -218,7 +221,7 @@
                             <th class="border" > <strong>Total Bersih</strong></th>
                             <th class="border" >{{formatRupiah($totalbersih)}},-</th>
                         </tr>
-                    
+
                     </tfoot>
                 </table>
             </div>
@@ -229,7 +232,7 @@
                             <td><h5>:</h5></td>
                             <td><h5 class="ms-3">{{formatRupiah($uangmasuk)}},-</h5></td>
                         </tr>
-                        
+
                     </table>
             </div>
         </div>
@@ -370,7 +373,7 @@
                                         @if($debt->bank)
                                             <li>{{$debt->date_pay}}, {{ $debt->bank->name }}</li>
                                         @else
-                                        
+
                                         @endif
                                     @endforeach
                                 @else
@@ -446,7 +449,7 @@
                 </div>
         </div>
     </div>
-    
+
 @endsection
 
 @push('head')
@@ -479,18 +482,18 @@
                         },
                         exportOptions: {
                             columns: ':visible',
-                            footer: true, 
+                            footer: true,
                             format: {
                                 body: function (data) {
                                     if (data === null || data === undefined) {
-                                        return ''; 
+                                        return '';
                                     }
                                     return String(data)
-                                        .replace(/\./g, '')  
-                                        .replace(/<li>/g, '') 
-                                        .replace(/<\/li>/g, '\n') 
-                                        .replace(/<br\s*\/?>/g, '\n') 
-                                        .replace(/<\/?[^>]+(>|$)/g, ''); 
+                                        .replace(/\./g, '')
+                                        .replace(/<li>/g, '')
+                                        .replace(/<\/li>/g, '\n')
+                                        .replace(/<br\s*\/?>/g, '\n')
+                                        .replace(/<\/?[^>]+(>|$)/g, '');
                                 },
                             }
                         },
@@ -636,18 +639,18 @@
                         },
                         exportOptions: {
                             columns: ':visible',
-                            footer: true, 
+                            footer: true,
                             format: {
                                 body: function (data) {
                                     if (data === null || data === undefined) {
-                                        return ''; 
+                                        return '';
                                     }
                                     return String(data)
-                                        .replace(/\./g, '')  
-                                        .replace(/<li>/g, '') 
-                                        .replace(/<\/li>/g, '\n') 
-                                        .replace(/<br\s*\/?>/g, '\n') 
-                                        .replace(/<\/?[^>]+(>|$)/g, ''); 
+                                        .replace(/\./g, '')
+                                        .replace(/<li>/g, '')
+                                        .replace(/<\/li>/g, '\n')
+                                        .replace(/<br\s*\/?>/g, '\n')
+                                        .replace(/<\/?[^>]+(>|$)/g, '');
                                 },
                             }
                         },
@@ -679,7 +682,7 @@
                         filename: 'Laporan_Rental_Cicilan',
                         exportOptions: {
                             stripHtml: false,
-                            footer: true, 
+                            footer: true,
                         }
                     },
                     {
@@ -687,14 +690,14 @@
                         title: 'Laporan Cicilan Rental',
                         exportOptions: {
                             stripHtml: false,
-                            footer: true, 
+                            footer: true,
                         },
                         customize: function (win) {
                             $(win.document.body)
                                 .find('table')
                                 .addClass('compact')
                                 .css('font-size', '9.8px');
-                            
+
                             var tfoot = $('#table-report-cicilan tfoot').clone();
                             $(win.document.body).find('table').append(tfoot);
                         }
