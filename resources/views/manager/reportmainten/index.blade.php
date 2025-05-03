@@ -58,7 +58,7 @@
         </div>
         <div class="card-body">
             <div class="table-responsive">
-                <table id="example3" class="table table-striped table-bordered" style="width:100%">
+                <table id="mainten" class="table table-striped table-bordered" style="width:100%">
                     <thead>
                     <tr>
                         <th width="2%">No</th>
@@ -104,7 +104,7 @@
 @push('js')
     <script>
         $(document).ready(function () {
-            var table = $('#example3').DataTable({
+            var table = $('#mainten').DataTable({
                 lengthChange: false,
                 buttons: [ 'pdf', 'print', 'excel']
             });
