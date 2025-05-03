@@ -112,8 +112,13 @@ class ServiceController extends Controller
      */
     public function destroy(string $id)
     {
+        // Hapus semua debt service yang berelasi dengan service
+        DebtServic::where('service_id', $id)->delete();
+
+        // Hapus service
         Service::whereId($id)->delete();
-        Alert::success('Success','');
+
+        Alert::success('Success', 'Service dan data hutangnya berhasil dihapus.');
         return back();
     }
 

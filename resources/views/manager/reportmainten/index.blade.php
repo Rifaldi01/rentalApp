@@ -18,21 +18,21 @@
     <div class="card table-timbang">
         <div class="card-head">
             @if ($errors->any())
-            @foreach ($errors->all() as $error)
-                <div class="alert border-0 border-start border-5 border-danger alert-dismissible fade show py-2">
-                    <div class="d-flex align-items-center">
-                        <div class="font-35 text-danger"><i class='bx bxs-message-square-x'></i>
-                        </div>
-                        <div class="ms-3">
-                            <h6 class="mb-0 text-danger">Error</h6>
-                            <div>
-                                <div>{{ $error }}</div>
+                @foreach ($errors->all() as $error)
+                    <div class="alert border-0 border-start border-5 border-danger alert-dismissible fade show py-2">
+                        <div class="d-flex align-items-center">
+                            <div class="font-35 text-danger"><i class='bx bxs-message-square-x'></i>
+                            </div>
+                            <div class="ms-3">
+                                <h6 class="mb-0 text-danger">Error</h6>
+                                <div>
+                                    <div>{{ $error }}</div>
+                                </div>
                             </div>
                         </div>
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                     </div>
-                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                </div>
-            @endforeach
+                @endforeach
             @endif
             <div class="row">
                 <form action="{{route('manager.mainten.filter')}}" method="GET">
@@ -41,13 +41,13 @@
                             <label class="form-label">
                                 Start Date
                             </label>
-                            <input type="date" class="form-control" name="start_date"  required>
+                            <input type="date" class="form-control" name="start_date" required>
                         </div>
                         <div class="col-6 mt-2">
                             <label class="form-label">
                                 End Date
                             </label>
-                            <input type="date" class="form-control" name="end_date"  required>
+                            <input type="date" class="form-control" name="end_date" required>
                         </div>
                     </div>
                     <div class="col-md-1 pt-4 float-end me-5">
@@ -62,7 +62,7 @@
                     <thead>
                     <tr>
                         <th width="2%">No</th>
-                        <th>Name </th>
+                        <th>Name</th>
                         <th>No Seri</th>
                         <th>Descript</th>
                         <th>Date Maintenance</th>
@@ -70,8 +70,8 @@
                     </tr>
                     </thead>
                     <tbody>
-                    <tr>
-                        @foreach ($report as $key => $data)
+                    @foreach ($report as $key => $data)
+                        <tr>
                             <td>{{$key +1}}</td>
                             <td>{{$data->item->name}}</td>
                             <td>{{$data->item->cat->name}}-{{$data->item->no_seri}}</td>
@@ -88,7 +88,7 @@
                                     <span class="badge bg-danger">Maintenance</span>
                                 @endif
                             </td>
-                    </tr>
+                        </tr>
                     @endforeach
                     </tbody>
                 </table>
@@ -102,17 +102,20 @@
 @endpush
 
 @push('js')
-<script>
-    $(document).ready(function() {
-        var table = $('#example3').DataTable();
-
-        // Mengurutkan ulang nomor saat tabel diurutkan atau difilter
-        table.on('order.dt search.dt', function() {
-            let i = 1;
-            table.cells(null, 0, { search: 'applied', order: 'applied' }).every(function(cell) {
-                this.data(i++);
+    <script>
+        $(document).ready(function () {
+            var table = $('#example3').DataTable({
+                lengthChange: false,
+                buttons: [ 'pdf', 'print', 'excel']
             });
-        }).draw();
-    });
-</script>
+
+            // Mengurutkan ulang nomor saat tabel diurutkan atau difilter
+            table.on('order.dt search.dt', function () {
+                let i = 1;
+                table.cells(null, 0, {search: 'applied', order: 'applied'}).every(function (cell) {
+                    this.data(i++);
+                });
+            }).draw();
+        });
+    </script>
 @endpush
