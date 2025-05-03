@@ -56,12 +56,14 @@ class ReportController extends Controller
         });
 
         $uangmasuk = $cicilan->sum('pay_debts');
-            $sisa = $cicilan->groupBy('id')->map(function ($group) {
-                return $group->sum(function ($item){
-                    return $item->rental->total_invoice -$item->pay_debts;
-                });
+        $sisa = $cicilan->groupBy('id')->map(function ($group) {
+            return $group->sum(function ($item) {
+                $totalInvoice = $item->rental?->total_invoice ?? 0;
+                return $totalInvoice - $item->pay_debts;
             });
-            $diskon = $cicilan->sum(function ($item) {
+        });
+
+        $diskon = $cicilan->sum(function ($item) {
                 return $item->rental->diskon;
             });
             $sisabayar = $cicilan->sum(function ($item) {
@@ -129,12 +131,14 @@ class ReportController extends Controller
         });
 
         $uangmasuk = $cicilan->sum('pay_debts');
-            $sisa = $cicilan->groupBy('id')->map(function ($group) {
-                return $group->sum(function ($item){
-                    return $item->rental->total_invoice -$item->pay_debts;
-                });
+        $sisa = $cicilan->groupBy('id')->map(function ($group) {
+            return $group->sum(function ($item) {
+                $totalInvoice = $item->rental?->total_invoice ?? 0;
+                return $totalInvoice - $item->pay_debts;
             });
-            $diskon = $cicilan->sum(function ($item) {
+        });
+
+        $diskon = $cicilan->sum(function ($item) {
                 return $item->rental->diskon;
             });
             $sisabayar = $cicilan->sum(function ($item) {
@@ -204,10 +208,12 @@ class ReportController extends Controller
 
         $uangmasuk = $cicilan->sum('pay_debts');
         $sisa = $cicilan->groupBy('id')->map(function ($group) {
-            return $group->sum(function ($item){
-                return $item->rental->total_invoice -$item->pay_debts;
+            return $group->sum(function ($item) {
+                $totalInvoice = $item->rental?->total_invoice ?? 0;
+                return $totalInvoice - $item->pay_debts;
             });
         });
+
         $diskon = $cicilan->sum(function ($item) {
             return $item->rental->diskon;
         });
