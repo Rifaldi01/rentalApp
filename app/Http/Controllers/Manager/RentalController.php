@@ -146,12 +146,16 @@ class RentalController extends Controller
         // Menghapus rental berdasarkan id
         $rental = Rental::findOrFail($id);
         $rental->delete();
-    
+
         // Menghapus problem yang memiliki rental_id sesuai id yang dihapus
         Problem::where('rental_id', $id)->delete();
-    
-        return back()->withSuccess('Rental Berhadil Dihapus');
-    }    
+
+        // Menghapus debt yang memiliki rental_id sesuai id yang dihapus
+        Debts::where('rental_id', $id)->delete();
+
+        return back()->withSuccess('Rental berhasil dihapus');
+    }
+
 
     public function save(Request $request, $id = null)
     {
@@ -313,7 +317,7 @@ class RentalController extends Controller
         return redirect()->route('manager.rental.index');
     }
 
-    
+
     public function finis($id)
 {
     // Temukan objek rental berdasarkan ID
