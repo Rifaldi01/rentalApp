@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Manager;
 
 use App\Http\Controllers\Controller;
+use App\Models\DebtServic;
 use App\Models\Service;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -15,23 +16,45 @@ class ReportServiceController extends Controller
         $currentYear = now()->year;
 
         // Filter data berdasarkan tahun saat ini
-        $report = Service::whereYear('date_service', $currentYear)
-            ->orderBy('date_service', 'asc')
+        $report = DebtServic::with('service')
+            ->whereYear('date_pay', $currentYear)
+            ->orderBy('date_pay', 'asc')
             ->get();
 
         // Hitung total berdasarkan data yang difilter
         $totalincome = $report->sum(function ($item) {
-            return $item->nominal_in - $item->diskon - $item->biaya_ganti;
+            return optional($item->service)->nominal_in - optional($item->service)->diskon - optional($item->service)->biaya_ganti;
         });
-        $totaldiskon = $report->sum('diskon');
-        $totalbiaya = $report->sum('biaya_ganti');
-        $totalin = $report->sum('nominal_in');
-        $totaloutside = $report->sum('nominal_out');
 
-        return view('manager.reportservice.index', compact('totalin', 'totalbiaya', 'report', 'totalincome', 'totaloutside', 'totaldiskon'));
+        $totaldiskon = $report->sum(function ($item) {
+            return optional($item->service)->diskon ?? 0;
+        });
+
+        $totalbiaya = $report->sum(function ($item) {
+            return optional($item->service)->biaya_ganti ?? 0;
+        });
+
+        $totalin = $report->sum(function ($item) {
+            return $item->pay_debts ?? 0;
+        });
+
+        $totaloutside = $report->sum(function ($item) {
+            return optional($item->service)->nominal_out ?? 0;
+        });
+
+
+        return view('manager.reportservice.index', compact(
+            'totalin',
+            'totalbiaya',
+            'report',
+            'totalincome',
+            'totaloutside',
+            'totaldiskon'
+        ));
     }
 
-    public function filter(Request $request){
+    public function filter(Request $request)
+    {
         $request->validate([
             'start_date' => 'required|date|before_or_equal:today',
             'end_date' => 'required|date|after_or_equal:start_date|before_or_equal:today',
@@ -42,15 +65,36 @@ class ReportServiceController extends Controller
         ]);
         $start_date = Carbon::parse(request()->start_date)->toDateTimeString();
         $end_date = Carbon::parse(request()->end_date)->toDateTimeString();
-        $report = Service::whereBetween('date_service',[$start_date,$end_date])->orderBy('date_service', 'asc')->get();
-        $totalincome = $report->sum(function($item) {
-            return $item->nominal_in - $item->diskon - $item->ongkir - $item->biaya_ganti;
+        $report = DebtServic::with('service', 'bank')
+            ->whereBetween('date_pay', [$start_date, $end_date])
+            ->orderBy('date_pay')
+            ->get();
+        $totalincome = $report->sum(function ($item) {
+            return optional($item->service)->nominal_in - optional($item->service)->diskon - optional($item->service)->biaya_ganti;
         });
-        $totaldiskon = $report->sum('diskon');
-        $totalbiaya= $report->sum('biaya_ganti');
-        $totalin = $report->sum('nominal_in');
-        $totalongkir = $report->sum('ongkir');
-        $totaloutside = $report->sum('nominal_out');
-        return view('manager.reportservice.index', compact('totalbiaya','totalin','report', 'totalincome', 'totaloutside', 'totaldiskon', 'totalongkir'));
+
+        $totaldiskon = $report->sum(function ($item) {
+            return optional($item->service)->diskon ?? 0;
+        });
+
+        $totalbiaya = $report->sum(function ($item) {
+            return optional($item->service)->biaya_ganti ?? 0;
+        });
+
+        $totalin = $report->sum(function ($item) {
+            return $item->pay_debts ?? 0;
+        });
+
+        $totaloutside = $report->sum(function ($item) {
+            return optional($item->service)->nominal_out ?? 0;
+        });
+        return view('manager.reportservice.index', compact(
+            'report',
+            'totalbiaya',
+            'totalin',
+            'totalincome',
+            'totaloutside',
+            'totaldiskon'
+        ));
     }
 }

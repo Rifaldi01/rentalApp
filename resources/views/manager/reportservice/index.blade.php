@@ -58,123 +58,116 @@
         </div>
         <div class="card-body">
             <div class="table-responsive">
-            <table id="table-report" class="table table-striped table-bordered" style="width:100%">
+                <table id="table-report" class="table table-striped table-bordered" style="width:100%">
                     <thead>
-                        <tr>
-                            <th width="2%">No</th>
-                            <th>No Invoce</th>
-                            <th>Pelanggan</th>
-                            <th>Item</th>
-                            <th>No Seri</th>
-                            <th>Type</th>
-                            <th>Tgl. Service</th>
-                            <th>Tgl. Selesai</th>
-                            <th>Total Inv</th>
-                            <th>Biaya Ganti</th>
-                            <th>Fee/ <br>Diskon</th>
-                            <th>Total <br>bersih</th>
-                            <th>Uang <br>Masuk</th>
-                            <th>Sisa <br>Bayar</th>
-                            <th>Ket. Bayar</th>
-                            <th>Penerima</th>
-                            <th>Ket. Ganti</th>
-                            <th>Status</th>
-                        </tr>
+                    <tr>
+                        <th width="2%">No</th>
+                        <th>No Invoce</th>
+                        <th>Pelanggan</th>
+                        <th>Item</th>
+                        <th>No Seri</th>
+                        <th>Type</th>
+                        <th>Tgl. Service</th>
+                        <th>Tgl. Selesai</th>
+                        <th>Total Inv</th>
+                        <th>Biaya Ganti</th>
+                        <th>Fee/ <br>Diskon</th>
+                        <th>Total <br>bersih</th>
+                        <th>Uang <br>Masuk</th>
+                        <th>Sisa <br>Bayar</th>
+                        <th>Ket. Bayar</th>
+                        <th>Penerima</th>
+                        <th>Ket. Ganti</th>
+                        <th>Status</th>
+                    </tr>
                     </thead>
                     <tbody>
-                        @foreach($report as $key => $data)
-                            <tr>
-                                <td data-index="{{ $key +1 }}">{{$key +1}}</td>
-                                <td>{{$data->no_inv}}</td>
-                                <td>{{$data->name}}</td>
-                                <td>@foreach(explode(',', $data->item) as $item)
-                                        <li>{{ trim($item) }}</li>
-                                    @endforeach
-                                </td>
-                                <td>@foreach(explode(',', $data->no_seri) as $no_seri)
-                                        <li>{{ trim($no_seri) }}</li>
-                                    @endforeach
-                                </td>
-                                <td>
-                                    @foreach(explode(',', $data->type) as $type)
-                                        <li>{{ trim($type) }} </li>
-                                    @endforeach
-                                </td>
-                                <td>{{formatId($data->date_service)}}</td>
-                                <td>
-                                    @if($data->date_finis)
-                                    {{formatId($data->date_finis)}}
-                                    @else
+                    @foreach($report as $key => $data)
+                        <tr>
+                            <td data-index="{{ $key +1 }}">{{$key +1}}</td>
+                            <td>{{ optional($data->service)->no_inv }}</td>
+                            <td>{{ optional($data->service)->name }}</td>
+                            <td>@foreach(explode(',', optional($data->service)->item) as $item)
+                                    <li>{{ trim($item) }}</li>
+                                @endforeach
+                            </td>
+                            <td>
+                                @foreach(preg_split('/[\s,]+/', optional($data->service)->no_seri ?? '') as $no_seri)
+                                    <li>{{ trim($no_seri) }}</li>
+                                @endforeach
+                            </td>
+                            <td>
+                                @foreach(explode(',', optional($data->service)->type) as $type)
+                                    <li>{{ trim($type) }} </li>
+                                @endforeach
+                            </td>
+                            <td>{{formatId(optional($data->service)->date_service)}}</td>
+                            <td>
+                                @if(optional($data->service)->date_finis)
+                                    {{formatId(optional($data->service)->date_finis)}}
+                                @else
                                     <div class="text-center">-</div>
-                                    @endif
-                                </td>
-                                <td>{{formatRupiah($data->total_invoice)}}</td>
-                                <td>{{formatRupiah($data->biaya_ganti)}}</td>
-                                <td>{{formatRupiah($data->diskon)}}</td>
-                                <td>{{formatRupiah($data['nominal_in'] - $data['diskon'])}}</td>
-                                <td>{{formatRupiah($data->nominal_in)}}</td>
-                                <td>{{formatRupiah($data->nominal_out)}}</td>
-                                <td>
-                                    @if($data->debtService->isNotEmpty())
-                                        @foreach($data->debtService as $debt)
-                                            @if($debt->bank)
-                                                <li>{{ $debt->date_pay }}, {{ $debt->bank->name }}</li>
-                                            @elseif($debt->description)
-                                                <li>{{ $debt->date_pay }}, {{ $debt->description }}</li>
-                                            @else
-                                                <li>{{ $data->descript }}</li>
-                                            @endif
-                                        @endforeach
-                                    @else
-                                        <li>{{ $data->descript }}</li>
-                                    @endif   
-                                    
-                                </td>
-                                <td>
-                                    @if($data->debtService && $data->debtService->isNotEmpty())
-                                        @foreach($data->debtService as $debt)
-                                            <li>{{$debt->penerima}}</li>
-                                        @endforeach
-                                    @else
-                                        Tidak ada data
-                                    @endif
+                                @endif
+                            </td>
+                            <td>{{formatRupiah(optional($data->service)->total_invoice)}}</td>
+                            <td>{{formatRupiah(optional($data->service)->biaya_ganti)}}</td>
+                            <td>{{formatRupiah(optional($data->service)->diskon)}}</td>
+                            <td>{{formatRupiah($data->service['nominal_in'] - $data->service['diskon']- $data->service['biaya_ganti'])}}</td>
+                            <td>{{formatRupiah($data->pay_debts)}}</td>
+                            <td>{{formatRupiah(optional($data->service)->nominal_out)}}</td>
+                            <td>
+                                @if($data->bank_id)
+                                    {{$data->bank->name}}, {{formatId($data->date_pay)}}
+                                @else
+                                    {{ $data->description }}
+                                @endif
+                            </td>
+                            <td>
+                                @if($data->debtService && $data->debtService->isNotEmpty())
+                                    @foreach($data->debtService as $debt)
+                                        <li>{{$debt->penerima}}</li>
+                                    @endforeach
+                                @else
+                                    Tidak ada data
+                                @endif
 
-                                </td>
-                                <td>{{$data->date_pays}}</td>
-                                <td>
-                                    @if($data->status == 0)
-                                        <span class="badge bg-success">Service</span>
-                                    @else($data->status == 1)
-                                        <span class="badge bg-secondary">Finished</span>
-                                    @endif
-                                </td>
-                            </tr>
-                        @endforeach
+                            </td>
+                            <td>{{$data->date_pays}}</td>
+                            <td>
+                                @if(optional($data->service)->status == 0)
+                                    <span class="badge bg-success">Service</span>
+                                @else(optional($data->service)->status == 1)
+                                    <span class="badge bg-secondary">Finished</span>
+                                @endif
+                            </td>
+                        </tr>
+                    @endforeach
                     </tbody>
                     <tfoot>
-                        <tr>
-                            <th class="border" colspan="2">Total Biaya Ganti</th>
-                            <th class="border">{{formatRupiah($totalbiaya)}},-</th>
-                        </tr>
-                        <tr>
-                            <th class="border" colspan="2">Total Uang Masuk</th>
-                            <th class="border">{{formatRupiah($totalin)}},-</th>
-                        </tr>
-                        <tr>
-                            <th class="border" colspan="2">Total Belum Bayar</th>
-                            <th class="border">{{formatRupiah($totaloutside)}},-</th>
-                        </tr>
-                        <tr>
-                            <th class="border" colspan="2">Total Fee/Diskon</th>
-                            <th class="border">{{formatRupiah($totaldiskon)}},-</th>
-                        </tr>
-                        
-                        <tr>
-                            <th class="border" colspan="2">Grand Total</th>
-                            <th class="border">{{formatRupiah($totalincome)}},-</th>
-                        </tr>
+                    <tr>
+                        <th class="border" colspan="2">Total Biaya Ganti</th>
+                        <th class="border">{{formatRupiah($totalbiaya)}},-</th>
+                    </tr>
+                    <tr>
+                        <th class="border" colspan="2">Total Uang Masuk</th>
+                        <th class="border">{{formatRupiah($totalin)}},-</th>
+                    </tr>
+                    <tr>
+                        <th class="border" colspan="2">Total Belum Bayar</th>
+                        <th class="border">{{formatRupiah($totaloutside)}},-</th>
+                    </tr>
+                    <tr>
+                        <th class="border" colspan="2">Total Fee/Diskon</th>
+                        <th class="border">{{formatRupiah($totaldiskon)}},-</th>
+                    </tr>
+
+                    <tr>
+                        <th class="border" colspan="2">Grand Total</th>
+                        <th class="border">{{formatRupiah($totalincome)}},-</th>
+                    </tr>
                     </tfoot>
-                </table></div>
+                </table>
+            </div>
         </div>
     </div>
 @endsection
@@ -185,8 +178,8 @@
             font-size: 12px /* Atur ukuran font */
         }
         table.dataTable td {
-        padding: 3px; /* Atur padding agar lebih rapat jika diperlukan */
-    }
+            padding: 3px; /* Atur padding agar lebih rapat jika diperlukan */
+        }
 
     </style>
 @endpush
@@ -198,68 +191,11 @@
                 lengthChange: false,
                 buttons: [
                     {
-                        extend: 'excel',
-                        text: 'Excel',
-                        title: function () {
-                            var currentDate = new Date();
-                            var day = String(currentDate.getDate()).padStart(2, '0');
-                            var month = String(currentDate.getMonth() + 1).padStart(2, '0');
-                            var year = String(currentDate.getFullYear()).slice(-2);
-                            return 'Laporan Pembayaran Tanggal ' + `${day}/${month}/${year}`;
-                        },
-                        exportOptions: {
-                            columns: ':visible',
-                            footer: true, 
-                            format: {
-                                body: function (data) {
-                                    if (data === null || data === undefined) {
-                                        return ''; 
-                                    }
-                                    return String(data)
-                                        .replace(/\./g, '')  
-                                        .replace(/<li>/g, '') 
-                                        .replace(/<\/li>/g, '\n') 
-                                        .replace(/<br\s*\/?>/g, '\n') 
-                                        .replace(/<\/?[^>]+(>|$)/g, ''); 
-                                },
-                            }
-                        },
-                        customize: function (xlsx) {
-                            var sheet = xlsx.xl.worksheets['sheet1.xml'];
-                            var rows = $('row', sheet);
-
-                            // Salin footer dari tabel
-                            var tfoot = $('#table-report tfoot');
-                            var tfootRows = '';
-
-                            tfoot.find('tr').each(function () {
-                                var trow = '<row>';
-                                $(this).find('th, td').each(function () {
-                                    var cellText = $(this).text().trim();
-                                    var cell = `<c t="inlineStr"><is><t>${cellText}</t></is></c>`;
-                                    trow += cell;
-                                });
-                                trow += '</row>';
-                                tfootRows += trow;
-                            });
-
-                            // Sisipkan footer setelah baris terakhir
-                            rows.last().after(tfootRows);
-                        }
-                    },
-                    {
                         extend: 'pdf',
+                        filename: 'Laporan_Service',
                         exportOptions: {
                             stripHtml: false,
                         },
-                        title: function () {
-                                    var currentDate = new Date();
-                                    var day = String(currentDate.getDate()).padStart(2, '0'); // Mendapatkan tanggal dengan dua digit
-                                    var month = String(currentDate.getMonth() + 1).padStart(2, '0'); // Mendapatkan bulan dengan dua digit
-                                    var year = String(currentDate.getFullYear()).slice(-2); // Mendapatkan dua digit terakhir tahun
-                                    var formattedDate = `${day}/${month}/${year}`; // Menggabungkan format tanggal/bulan/tahun
-                                    return 'Laporan Service Tanggal ' + formattedDate; // Nama file sesuai tanggal
-                                },
                         customize: function (doc) {
                             // Set ukuran halaman PDF
                             doc.pageSize = {
@@ -340,29 +276,13 @@
                             stripHtml: false,
                             tfoot: true,
                         },
-                        title: function () {
-                                    var currentDate = new Date();
-                                    var day = String(currentDate.getDate()).padStart(2, '0'); // Mendapatkan tanggal dengan dua digit
-                                    var month = String(currentDate.getMonth() + 1).padStart(2, '0'); // Mendapatkan bulan dengan dua digit
-                                    var year = String(currentDate.getFullYear()).slice(-2); // Mendapatkan dua digit terakhir tahun
-                                    var formattedDate = `${day}/${month}/${year}`; // Menggabungkan format tanggal/bulan/tahun
-                                    return 'Laporan Service Tanggal ' + formattedDate; // Nama file sesuai tanggal
-                                },
                         customize: function (win) {
                             $(win.document.body)
                                 .find('table')
                                 .addClass('compact')
-                                .css('font-size', '9px');
+                                .css('font-size', '10px');
                             var tfoot = $('#table-report tfoot').clone();
                             $(win.document.body).find('table').append(tfoot);
-
-                            $(win.document.body)
-                            .find('h1') // Selector untuk elemen judul
-                            .css({
-                                fontSize: '14px', // Atur ukuran font menjadi 12px
-                                fontWeight: 'bold',
-                                textAlign: 'center',
-                            });
                         },
                     },
                 ],
