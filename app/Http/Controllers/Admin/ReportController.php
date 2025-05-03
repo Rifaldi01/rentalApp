@@ -49,10 +49,12 @@ class ReportController extends Controller
             ->with(['rental.cust', 'rental.item', 'bank'])
             ->get();
         $total = $cicilan->groupBy('id')->map(function ($group) {
-            return $group->sum(function ($item){
-                return $item->pay_debts - $item->rental->diskon;
+            return $group->sum(function ($item) {
+                $diskon = $item->rental?->diskon ?? 0; // Gunakan null-safe operator dan fallback 0
+                return $item->pay_debts - $diskon;
             });
         });
+
         $uangmasuk = $cicilan->sum('pay_debts');
         $sisa = $cicilan->groupBy('id')->map(function ($group) {
             return $group->sum(function ($item){
@@ -120,10 +122,12 @@ class ReportController extends Controller
         $cicilan = Debts::with(['rental.cust', 'rental.item', 'bank'])
             ->get();
         $total = $cicilan->groupBy('id')->map(function ($group) {
-            return $group->sum(function ($item){
-                return $item->pay_debts - $item->rental->diskon;
+            return $group->sum(function ($item) {
+                $diskon = $item->rental?->diskon ?? 0; // Gunakan null-safe operator dan fallback 0
+                return $item->pay_debts - $diskon;
             });
         });
+
         $uangmasuk = $cicilan->sum('pay_debts');
         $sisa = $cicilan->groupBy('id')->map(function ($group) {
             return $group->sum(function ($item){
@@ -191,10 +195,12 @@ class ReportController extends Controller
             ->orderBy('date_pay', 'asc')
             ->get();
         $total = $cicilan->groupBy('id')->map(function ($group) {
-            return $group->sum(function ($item){
-                return $item->pay_debts - $item->rental->diskon;
+            return $group->sum(function ($item) {
+                $diskon = $item->rental?->diskon ?? 0; // Gunakan null-safe operator dan fallback 0
+                return $item->pay_debts - $diskon;
             });
         });
+
 
         $uangmasuk = $cicilan->sum('pay_debts');
         $sisa = $cicilan->groupBy('id')->map(function ($group) {
