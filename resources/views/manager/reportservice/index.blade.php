@@ -191,6 +191,55 @@
                 lengthChange: false,
                 buttons: [
                     {
+                        extend: 'excel',
+                        text: 'Excel',
+                        title: function () {
+                            var currentDate = new Date();
+                            var day = String(currentDate.getDate()).padStart(2, '0');
+                            var month = String(currentDate.getMonth() + 1).padStart(2, '0');
+                            var year = String(currentDate.getFullYear()).slice(-2);
+                            return 'Laporan Pembayaran Tanggal ' + `${day}/${month}/${year}`;
+                        },
+                        exportOptions: {
+                            columns: ':visible',
+                            footer: true,
+                            format: {
+                                body: function (data) {
+                                    if (data === null || data === undefined) {
+                                        return '';
+                                    }
+                                    return String(data)
+                                        .replace(/\./g, '')
+                                        .replace(/<li>/g, '')
+                                        .replace(/<\/li>/g, '\n')
+                                        .replace(/<br\s*\/?>/g, '\n')
+                                        .replace(/<\/?[^>]+(>|$)/g, '');
+                                },
+                            }
+                        },
+                        customize: function (xlsx) {
+                            var sheet = xlsx.xl.worksheets['sheet1.xml'];
+                            var rows = $('row', sheet);
+
+                            // Salin footer dari tabel
+                            var tfoot = $('#table-report tfoot');
+                            var tfootRows = '';
+
+                            tfoot.find('tr').each(function () {
+                                var trow = '<row>';
+                                $(this).find('th, td').each(function () {
+                                    var cellText = $(this).text().trim();
+                                    var cell = `<c t="inlineStr"><is><t>${cellText}</t></is></c>`;
+                                    trow += cell;
+                                });
+                                trow += '</row>';
+                                tfootRows += trow;
+                            });
+
+                            // Sisipkan footer setelah baris terakhir
+                            rows.last().after(tfootRows);
+                        }
+                    },{
                         extend: 'pdf',
                         filename: 'Laporan_Service',
                         exportOptions: {
