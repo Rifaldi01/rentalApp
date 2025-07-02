@@ -695,29 +695,99 @@
 
                     {
                         extend: 'pdf',
-                        filename: 'Laporan_Rental_Cicilan',
+                        filename: 'Laporan_Rental',
                         exportOptions: {
                             stripHtml: false,
-                            footer: true,
-                        }
+                        },
+                        customize: function (doc) {
+                            // Set ukuran halaman PDF
+                            doc.pageSize = {
+                                width: 880,
+                                height: 595,
+                            };
+                            doc.pageOrientation = 'landscape';
+                            doc.pageMargins = [20, 20, 20, 20];
+
+                            // Ambil seluruh data dari DataTables (termasuk yang tidak terlihat)
+                            var allData = table.data().toArray();
+
+                            // Header Tabel
+                            var headers = [];
+                            $('#table-report thead th').each(function () {
+                                headers.push({ text: $(this).text(), style: 'tableHeader' });
+                            });
+
+                            // Isi Tabel
+                            var tableBody = [];
+                            tableBody.push(headers); // Tambahkan header ke body
+
+                            allData.forEach(function (rowData) {
+                                var row = [];
+                                rowData.forEach(function (cellData) {
+                                    // Hapus tag HTML seperti <li> dan <br>
+                                    var cleanedText = cellData
+                                        .replace(/<li>/g, '') // Hapus <li>
+                                        .replace(/<\/li>/g, '\n') // Ganti </li> dengan baris baru
+                                        .replace(/<br\s*\/?>/g, '\n') // Hapus <br> dan ganti dengan baris baru
+                                        .replace(/<\/?[^>]+(>|$)/g, ''); // Hapus tag HTML lainnya
+                                    row.push({ text: cleanedText.trim(), style: 'tableCell' });
+                                });
+                                tableBody.push(row);
+                            });
+
+                            // Footer Tabel (Jika Ada)
+                            var tfoot = $('#table-report tfoot').clone();
+                            if (tfoot.length) {
+                                var footerRow = [];
+                                tfoot.find('th').each(function () {
+                                    footerRow.push({ text: $(this).text(), style: 'tableCell' });
+                                });
+                                while (footerRow.length < headers.length) {
+                                    footerRow.push({ text: '' });
+                                }
+                                tableBody.push(footerRow);
+                            }
+
+                            // Tambahkan Tabel ke Dokumen
+                            doc.content = [
+                                {
+                                    table: {
+                                        headerRows: 1,
+                                        widths: Array(headers.length).fill('auto'), // Perkecil kolom otomatis
+                                        body: tableBody,
+                                    },
+                                    layout: 'lightHorizontalLines',
+                                },
+                            ];
+
+                            // Styling
+                            doc.styles.tableHeader = {
+                                bold: true,
+                                fontSize: 8, // Ukuran lebih kecil
+                                color: 'black',
+                                fillColor: '#f2f2f2',
+                                alignment: 'center',
+                            };
+                            doc.styles.tableCell = {
+                                fontSize: 7, // Ukuran lebih kecil
+                            };
+                        },
                     },
                     {
                         extend: 'print',
-                        title: 'Laporan Cicilan Rental',
                         exportOptions: {
                             stripHtml: false,
-                            footer: true,
+                            tfoot: true,
                         },
                         customize: function (win) {
                             $(win.document.body)
                                 .find('table')
                                 .addClass('compact')
-                                .css('font-size', '9.8px');
-
-                            var tfoot = $('#table-report-cicilan tfoot').clone();
+                                .css('font-size', '10px');
+                            var tfoot = $('#table-report tfoot').clone();
                             $(win.document.body).find('table').append(tfoot);
-                        }
-                    }
+                        },
+                    },
                 ],
             });
 
