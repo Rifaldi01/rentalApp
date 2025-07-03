@@ -28,17 +28,17 @@
     <!--start page wrapper -->
     <div class="page-wrapper">
         <div class="page-content">
-            <div class="alert alert-warning border-0 bg-warning alert-dismissible fade show py-2">
-                <div class="d-flex align-items-center">
-                    <div class="font-35 text-dark"><i class='bx bx-info-circle'></i>
-                    </div>
-                    <div class="ms-3">
-                        <h6 class="mb-0 text-dark">Warning Hosting</h6>
-                        <div class="text-dark">Kami ingin mengingatkan bahwa hosting dnd-survey.com Anda akan berakhir pada 05 Juli 2025.</div>
-                    </div>
-                </div>
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-            </div>
+{{--            <div class="alert alert-warning border-0 bg-warning alert-dismissible fade show py-2">--}}
+{{--                <div class="d-flex align-items-center">--}}
+{{--                    <div class="font-35 text-dark"><i class='bx bx-info-circle'></i>--}}
+{{--                    </div>--}}
+{{--                    <div class="ms-3">--}}
+{{--                        <h6 class="mb-0 text-dark">Warning Hosting</h6>--}}
+{{--                        <div class="text-dark">Kami ingin mengingatkan bahwa hosting dnd-survey.com Anda akan berakhir pada 05 Juli 2025.</div>--}}
+{{--                    </div>--}}
+{{--                </div>--}}
+{{--                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>--}}
+{{--            </div>--}}
 
             @yield('content')
         </div>
