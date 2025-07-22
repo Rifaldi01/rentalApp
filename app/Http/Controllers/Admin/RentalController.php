@@ -287,26 +287,28 @@ class RentalController extends Controller
         }
 
         // **Perbaikan di bagian Debts**
-        $debt = Debts::where('rental_id', $rental->id)->first();
-        if ($debt) {
-            // Jika sudah ada, update data hutang
-            $debt->update([
-                'bank_id'    => $request->input('bank_id'),
-                'pay_debts'  => $rental->nominal_in,
-                'penerima'   => $request->input('penerima'),
-                'date_pay'   => $request->input('date_pay'),
-                'description'=> $request->input('description'),
-            ]);
-        } else {
-            // Jika belum ada, buat data baru
-            Debts::create([
-                'rental_id'  => $rental->id,
-                'bank_id'    => $request->input('bank_id'),
-                'pay_debts'  => $rental->nominal_in,
-                'penerima'   => $request->input('penerima'),
-                'date_pay'   => $request->input('date_pay'),
-                'description'=> $request->input('description'),
-            ]);
+        if ($rental->nominal_in > 0) {
+            $debt = Debts::where('rental_id', $rental->id)->first();
+            if ($debt) {
+                // Jika sudah ada, update data hutang
+                $debt->update([
+                    'bank_id'    => $request->input('bank_id'),
+                    'pay_debts'  => $rental->nominal_in,
+                    'penerima'   => $request->input('penerima'),
+                    'date_pay'   => $request->input('date_pay'),
+                    'description'=> $request->input('description'),
+                ]);
+            } else {
+                // Jika belum ada, buat data baru
+                Debts::create([
+                    'rental_id'  => $rental->id,
+                    'bank_id'    => $request->input('bank_id'),
+                    'pay_debts'  => $rental->nominal_in,
+                    'penerima'   => $request->input('penerima'),
+                    'date_pay'   => $request->input('date_pay'),
+                    'description'=> $request->input('description'),
+                ]);
+            }
         }
 
         Alert::success('Success', 'Rental has been saved!');
