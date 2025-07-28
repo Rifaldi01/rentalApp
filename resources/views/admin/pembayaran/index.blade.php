@@ -14,70 +14,220 @@
             <div class="table-responsive">
                 <table id="excel" class="table table-striped table-bordered" style="width:100%">
                     <thead>
-                    <tr>
-                        <th width="4%">No</th>
-                        <th class="text-center" width="5%">Invoice</th>
-                        <th>Customer</th>
-                        <th class="text-center" width="5%">Total Invoice</th>
-                        <th class="text-center" width="5%">Uang Masuk</th>
-                        <th class="text-center" width="5%">Sisa Bayar</th>
-                        <th class="text-center" width="5%">Diskon</th>
-                        <th class="text-center" width="5%">Total</th>
-                        <th class="text-center" width="5%">Action</th>
-                    </tr>
+                        <tr>
+                            <th width="4%">No</th>
+                            <th class="text-center" width="5%">Invoice</th>
+                            <th>Customer</th>
+                            <th class="text-center" width="5%">Total Invoice</th>
+                            <th class="text-center" width="5%">PPN</th>
+                            <th class="text-center" width="5%">Uang Masuk</th>
+                            <th class="text-center" width="5%">Sisa Bayar</th>
+                            <th class="text-center" width="5%">Diskon</th>
+                            <th class="text-center" width="5%">Total</th>
+                            <th class="text-center" width="5%">Action</th>
+                        </tr>
                     </thead>
                     <tbody>
-                    @foreach($rental as $key => $data)
-
-
-                        <tr>
-                            <td data-index="{{ $key + 1 }}">{{$key +1}}</td>
-                            <td>{{$data->no_inv}}</td>
-                            <td>{{$data->cust->name}}</td>
-                            <td class="text-center">
-                                @if($data->total_invoice)
-                                    {{formatRupiah($data->total_invoice)}}
-                                @else
-                                    Rp. 0
-                                @endif
-                            </td>
-                            <td>{{formatRupiah($data->nominal_in)}}</td>
-                            <td>{{formatRupiah($data->nominal_out)}}</td>
-                            <td>{{formatRupiah($data->diskon)}}</td>
-                            <td>{{formatRupiah($total[$data->id])}}</td>
-                            <td class="text-center">
-                                @if($data->total_invoice == 0 || $data->total_invoice == null)
-                                    <button class="btn btn-dnd lni lni-pencil btn-sm" data-bs-toggle="modal"
-                                            data-bs-target="#edit{{$data->id}}" data-bs-tool="tooltip"
+                        @foreach ($rental as $key => $data)
+                            <tr>
+                                <td data-index="{{ $key + 1 }}">{{ $key + 1 }}</td>
+                                <td>{{ $data->no_inv }}</td>
+                                <td>{{ $data->cust->name }}</td>
+                                <td class="text-center">
+                                    @if ($data->total_invoice)
+                                        {{ formatRupiah($data->total_invoice) }}
+                                    @else
+                                        Rp. 0
+                                    @endif
+                                </td>
+                                <td>{{ formatRupiah($data->ppn) }}</td>
+                                <td>{{ formatRupiah($data->nominal_in) }}</td>
+                                <td>
+                                    @if ($data->total_invoice == 0 || $data->total_invoice == null)
+                                        {{ formatRupiah($data->nominal_out) }}
+                                    @else
+                                        {{ formatRupiah($data->total_invoice + $data->ppn - $data->nominal_in) }}
+                                    @endif
+                                </td>
+                                <td>{{ formatRupiah($data->diskon) }}</td>
+                                <td>{{ formatRupiah($total[$data->id]) }}</td>
+                                <td class="text-center">
+                                    @if ($data->total_invoice + $data->ppn == 0 || $data->total_invoice + $data->ppn == null)
+                                        <button class="btn btn-dnd lni lni-pencil btn-sm" data-bs-toggle="modal"
+                                            data-bs-target="#edit{{ $data->id }}" data-bs-tool="tooltip"
                                             data-bs-placement="top" title="edit">
+                                        </button>
+                                        <div class="modal fade" id="edit{{ $data->id }}" tabindex="-1"
+                                            aria-hidden="true">
+                                            <div class="modal-dialog">
+                                                <div class="modal-content">
+                                                    <div class="modal-header">
+                                                        <h5 class="modal-title">Edit Total Invoice</h5>
+                                                        <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                            aria-label="Close"></button>
+                                                    </div>
+                                                    <form action="{{ route('admin.update.totalinv', $data->id) }}"
+                                                        method="POST" id="myForm">
+                                                        @csrf
+                                                        @method('PUT')
+                                                        <div class="modal-body">
+                                                            <div class="row mb-3">
+                                                                <label for="input42" class="col-sm-3 col-form-label"><i
+                                                                        class="text-danger">*</i> Total Invoice</label>
+                                                                <div class="col-sm-9">
+                                                                    <div class="position-relative input-icon">
+                                                                        <input type="text" class="form-control"
+                                                                            name="total_invoice"
+                                                                            value="{{ $data->total_invoice }}"
+                                                                            onkeyup="formatRupiah2(this)">
+                                                                        <span
+                                                                            class="position-absolute top-50 translate-middle-y"><i
+                                                                                class='bx bx-dollar'></i></span>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="modal-footer">
+                                                            <button class="btn btn-primary" id="bayarbutton">Save</button>
+                                                        </div>
+                                                    </form>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    @else
+                                    @endif
+                                    <button class="btn btn-warning lni lni-dollar btn-sm" data-bs-toggle="modal"
+                                        data-bs-target="#examplemodal{{ $data->id }}" data-bs-tool="tooltip"
+                                        data-bs-placement="top" title="Bayar">
                                     </button>
-                                    <div class="modal fade" id="edit{{$data->id}}" tabindex="-1"
-                                         aria-hidden="true">
+                                    <div class="modal fade" id="examplemodal{{ $data->id }}" tabindex="-1"
+                                        aria-hidden="true">
                                         <div class="modal-dialog">
                                             <div class="modal-content">
                                                 <div class="modal-header">
-                                                    <h5 class="modal-title">Edit Total Invoice</h5>
+                                                    <h5 class="modal-title">Pembayaran</h5>
                                                     <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                                            aria-label="Close"></button>
+                                                        aria-label="Close"></button>
                                                 </div>
-                                                <form action="{{route('admin.update.totalinv', $data->id)}}"
-                                                      method="POST" id="myForm">
+                                                <form action="{{ route('admin.pembayaran.bayar', $data->id) }}"
+                                                    method="POST" id="myForm">
                                                     @csrf
                                                     @method('PUT')
                                                     <div class="modal-body">
                                                         <div class="row mb-3">
                                                             <label for="input42" class="col-sm-3 col-form-label"><i
-                                                                    class="text-danger">*</i> Total Invoice</label>
+                                                                    class="text-danger">*</i> Uang Masuk</label>
                                                             <div class="col-sm-9">
                                                                 <div class="position-relative input-icon">
+                                                                    <input type="hidden"
+                                                                        id="nominal_in_value_{{ $data->id }}"
+                                                                        value="{{ $data->nominal_in }}">
                                                                     <input type="text" class="form-control"
-                                                                           name="total_invoice"
-                                                                           value="{{$data->total_invoice}}"
-                                                                           onkeyup="formatRupiah2(this)">
+                                                                        id="nominal_in_{{ $data->id }}"
+                                                                        name="nominal_in"
+                                                                        value="{{ formatRupiah($data->nominal_in) }}"
+                                                                        readonly>
                                                                     <span
                                                                         class="position-absolute top-50 translate-middle-y"><i
                                                                             class='bx bx-dollar'></i></span>
                                                                 </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="row mb-3">
+                                                            <label for="input42" class="col-sm-3 col-form-label"><i
+                                                                    class="text-danger">*</i> Pay Debts</label>
+                                                            <div class="col-sm-9">
+                                                                <div class="position-relative input-icon">
+                                                                    <input type="text" class="form-control"
+                                                                        name="pay_debts"
+                                                                        id="pay_debts_{{ $data->id }}"
+                                                                        onkeyup="formatRupiah2(this)">
+                                                                    <span
+                                                                        class="position-absolute top-50 translate-middle-y"><i
+                                                                            class='bx bx-money'></i></span>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="row mb-3">
+                                                            <label for="input42"
+                                                                class="col-sm-3 col-form-label">Diskon</label>
+                                                            <div class="col-sm-9">
+                                                                <div class="position-relative input-icon">
+                                                                    <input type="text" class="form-control"
+                                                                        value="0" name="diskon"
+                                                                        id="diskon_{{ $data->id }}"
+                                                                        onkeyup="formatRupiah2(this)">
+                                                                    <span
+                                                                        class="position-absolute top-50 translate-middle-y"><i
+                                                                            class='lni lni-tag'></i></span>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="row mb-3">
+                                                            <label for="input42" class="col-sm-3 col-form-label"><i
+                                                                    class="text-danger">*</i> Date</label>
+                                                            <div class="col-sm-9">
+                                                                <div class="position-relative input-icon">
+                                                                    <input type="text" class="form-control datepicker"
+                                                                        name="date_pay" id="input42">
+                                                                    <span
+                                                                        class="position-absolute top-50 translate-middle-y"><i
+                                                                            class='bx bx-calendar'></i></span>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="row mb-3" id="bankField_{{ $data->id }}">
+                                                            <label for="input42"
+                                                                class="col-sm-3 col-form-label">Bank</label>
+                                                            <div class="col-sm-9">
+                                                                <div class="input-group mb-3">
+                                                                    <div class="input-group-text"><i
+                                                                            class="bx bx-credit-card"></i></div>
+                                                                    <select class="form-select" id="single-select-field"
+                                                                        name="bank_id" data-placeholder="-- Nama Bank --">
+                                                                        <option></option>
+                                                                        @foreach ($bank as $banks)
+                                                                            <option value="{{ $banks->id }}">
+                                                                                {{ $banks->name }}
+                                                                                ({{ $banks->code }})
+                                                                            </option>
+                                                                        @endforeach
+                                                                    </select>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="row mb-3" id="penerimaField_{{ $data->id }}">
+                                                            <label for="input42"
+                                                                class="col-sm-3 col-form-label">Penerima</label>
+                                                            <div class="col-sm-9">
+                                                                <div class="position-relative input-icon">
+                                                                    <input type="text" class="form-control"
+                                                                        name="penerima"
+                                                                        id="penerima_{{ $data->id }}">
+                                                                    <span
+                                                                        class="position-absolute top-50 translate-middle-y"><i
+                                                                            class='bx bx-user'></i></span>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="row mb-3">
+                                                            <label for="input42" class="col-sm-3 col-form-label"><i
+                                                                    class="text-danger"></i> </label>
+                                                            <div class="col-sm-9">
+                                                                <div class="position-relative input-icon">
+                                                                    <input type="checkbox" class="form-check"
+                                                                        id="lainya_{{ $data->id }}">
+                                                                    <span
+                                                                        class="position-absolute top-50 translate-middle-y ms-1">
+                                                                        Lainya</span>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="row mb-3" id="descriptionField">
+                                                            <label for="input42" class="col-sm-3 col-form-label"></label>
+                                                            <div class="col-sm-9">
+                                                                <textarea id="description_{{ $data->id }}" type="text" class="form-control" name="description"
+                                                                    placeholder="Isi Lainya pembayaran melalui apa?"></textarea>
                                                             </div>
                                                         </div>
                                                     </div>
@@ -88,173 +238,37 @@
                                             </div>
                                         </div>
                                     </div>
-                                @else
-                                @endif
-                                <button class="btn btn-warning lni lni-dollar btn-sm" data-bs-toggle="modal"
-                                        data-bs-target="#examplemodal{{$data->id}}" data-bs-tool="tooltip"
-                                        data-bs-placement="top" title="Bayar">
-                                </button>
-                                <div class="modal fade" id="examplemodal{{$data->id}}" tabindex="-1"
-                                     aria-hidden="true">
-                                    <div class="modal-dialog">
-                                        <div class="modal-content">
-                                            <div class="modal-header">
-                                                <h5 class="modal-title">Pembayaran</h5>
-                                                <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                                        aria-label="Close"></button>
-                                            </div>
-                                            <form action="{{route('admin.pembayaran.bayar', $data->id)}}" method="POST"
-                                                  id="myForm">
-                                                @csrf
-                                                @method('PUT')
-                                                <div class="modal-body">
-                                                    <div class="row mb-3">
-                                                        <label for="input42" class="col-sm-3 col-form-label"><i
-                                                                class="text-danger">*</i> Uang Masuk</label>
-                                                        <div class="col-sm-9">
-                                                            <div class="position-relative input-icon">
-                                                                <input type="hidden" id="nominal_in_value_{{$data->id}}"
-                                                                       value="{{ $data->nominal_in }}">
-                                                                <input type="text" class="form-control"
-                                                                       id="nominal_in_{{$data->id}}" name="nominal_in"
-                                                                       value="{{ formatRupiah($data->nominal_in) }}"
-                                                                       readonly>
-                                                                <span
-                                                                    class="position-absolute top-50 translate-middle-y"><i
-                                                                        class='bx bx-dollar'></i></span>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                    <div class="row mb-3">
-                                                        <label for="input42" class="col-sm-3 col-form-label"><i
-                                                                class="text-danger">*</i> Pay Debts</label>
-                                                        <div class="col-sm-9">
-                                                            <div class="position-relative input-icon">
-                                                                <input type="text" class="form-control"
-                                                                       name="pay_debts" id="pay_debts_{{$data->id}}"
-                                                                       onkeyup="formatRupiah2(this)">
-                                                                <span
-                                                                    class="position-absolute top-50 translate-middle-y"><i
-                                                                        class='bx bx-money'></i></span>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                    <div class="row mb-3">
-                                                        <label for="input42"
-                                                               class="col-sm-3 col-form-label">Diskon</label>
-                                                        <div class="col-sm-9">
-                                                            <div class="position-relative input-icon">
-                                                                <input type="text" class="form-control" value="0"
-                                                                       name="diskon" id="diskon_{{$data->id}}"
-                                                                       onkeyup="formatRupiah2(this)">
-                                                                <span
-                                                                    class="position-absolute top-50 translate-middle-y"><i
-                                                                        class='lni lni-tag'></i></span>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                    <div class="row mb-3">
-                                                        <label for="input42" class="col-sm-3 col-form-label"><i
-                                                                class="text-danger">*</i> Date</label>
-                                                        <div class="col-sm-9">
-                                                            <div class="position-relative input-icon">
-                                                                <input type="text" class="form-control datepicker"
-                                                                       name="date_pay" id="input42">
-                                                                <span
-                                                                    class="position-absolute top-50 translate-middle-y"><i
-                                                                        class='bx bx-calendar'></i></span>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                    <div class="row mb-3" id="bankField_{{$data->id}}">
-                                                        <label for="input42"
-                                                               class="col-sm-3 col-form-label">Bank</label>
-                                                        <div class="col-sm-9">
-                                                            <div class="input-group mb-3">
-                                                                <div class="input-group-text"><i
-                                                                        class="bx bx-credit-card"></i></div>
-                                                                <select class="form-select" id="single-select-field"
-                                                                        name="bank_id"
-                                                                        data-placeholder="-- Nama Bank --">
-                                                                    <option></option>
-                                                                    @foreach($bank as $banks)
-                                                                        <option
-                                                                            value="{{$banks->id}}">{{$banks->name}}
-                                                                            ({{$banks->code}})
-                                                                        </option>
-                                                                    @endforeach
-                                                                </select>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                    <div class="row mb-3" id="penerimaField_{{$data->id}}">
-                                                        <label for="input42"
-                                                               class="col-sm-3 col-form-label">Penerima</label>
-                                                        <div class="col-sm-9">
-                                                            <div class="position-relative input-icon">
-                                                                <input type="text" class="form-control"
-                                                                       name="penerima" id="penerima_{{$data->id}}">
-                                                                <span
-                                                                    class="position-absolute top-50 translate-middle-y"><i
-                                                                        class='bx bx-user'></i></span>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                    <div class="row mb-3">
-                                                        <label for="input42" class="col-sm-3 col-form-label"><i
-                                                                class="text-danger"></i> </label>
-                                                        <div class="col-sm-9">
-                                                            <div class="position-relative input-icon">
-                                                                <input type="checkbox" class="form-check"
-                                                                       id="lainya_{{$data->id}}">
-                                                                <span
-                                                                    class="position-absolute top-50 translate-middle-y ms-1"> Lainya</span>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                    <div class="row mb-3" id="descriptionField">
-                                                        <label for="input42"
-                                                               class="col-sm-3 col-form-label"></label>
-                                                        <div class="col-sm-9">
-                                                                <textarea id="description_{{$data->id}}" type="text"
-                                                                          class="form-control" name="description"
-                                                                          placeholder="Isi Lainya pembayaran melalui apa?"></textarea>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <div class="modal-footer">
-                                                    <button class="btn btn-primary" id="bayarbutton">Save</button>
-                                                </div>
-                                            </form>
-                                        </div>
-                                    </div>
-                                </div>
-                                <form id="finisForm-{{ $data->id }}"
-                                      action="{{ route('admin.pembayaran.finis', $data->id) }}" method="POST">
-                                    @csrf
-                                    <button type="button" class="btn-sm btn btn-success lni lni-checkmark mt-1"
+                                    <form id="finisForm-{{ $data->id }}"
+                                        action="{{ route('admin.pembayaran.finis', $data->id) }}" method="POST">
+                                        @csrf
+                                        <button type="button" class="btn-sm btn btn-success lni lni-checkmark mt-1"
                                             data-bs-toggle="tooltip" data-bs-placement="top" title="Finished"
                                             onclick="confirmFinis('{{ $data->id }}')">
-                                    </button>
-                                </form>
-                            </td>
-                        </tr>
-
-                    @endforeach
+                                        </button>
+                                    </form>
+                                </td>
+                            </tr>
+                        @endforeach
                     <tfoot>
-                    <tr>
-                        <th class="border" colspan="2"> Total Sisa Bayar</th>
-                        <th class="border" colspan="2">{{formatRupiah($hutang)}},-</th>
-                    </tr>
+                        <tr>
+                            <th class="border" colspan="2"> Total Sisa Bayar</th>
+                            <th class="border" colspan="2">{{ formatRupiah($hutang) }},-</th>
+                        </tr>
                     </tfoot>
                 </table>
             </div>
             <div class="card-footer">
                 <table>
                     <tr>
-                        <th><h5 class="mb-0 text-uppercase">Total Sisa Bayar</h5></th>
-                        <td><h5>:</h5></td>
-                        <td><h5 class="ms-3">{{formatRupiah($hutang)}},-</h5></td>
+                        <th>
+                            <h5 class="mb-0 text-uppercase">Total Sisa Bayar</h5>
+                        </th>
+                        <td>
+                            <h5>:</h5>
+                        </td>
+                        <td>
+                            <h5 class="ms-3">{{ formatRupiah($hutang) }},-</h5>
+                        </td>
                     </tr>
 
                 </table>
@@ -273,7 +287,7 @@
         </div>
         <div class="card-body">
             <div class="row">
-                <form action="{{route('admin.pembayaran.filter')}}" method="GET">
+                <form action="{{ route('admin.pembayaran.filter') }}" method="GET">
                     <div class="row">
                         <div class="col-5 ms-2 mt-2">
                             <label class="form-label">
@@ -296,200 +310,223 @@
             <div class="table-responsive">
                 <table id="transaction" class="table table-striped table-bordered" style="width:100%">
                     <thead>
-                    <tr>
-                        <th width="2%">No</th>
-                        <th>Tgl Inv</th>
-                        <th>Invoice</th>
-                        <th>Tgl Bayar</th>
-                        <th>Pelanggan</th>
-                        <th>Item</th>
-                        <th>No Seri</th>
-                        <th>Tgl Mulai</th>
-                        <th>Tgl Selesai</th>
-                        <th>Total <br>Inv</th>
-                        <th>Fee /<br>Discount</th>
-                        <th>Total</th>
-                        <th width="">Ung <br>Masuk</th>
-                        <th>Sisa <br>Bayar</th>
-                        <th>Ket. (Nama Bank)</th>
-                        <th>Penerima</th>
-                    </tr>
+                        <tr>
+                            <th width="2%">No</th>
+                            <th>Tgl Inv</th>
+                            <th>Invoice</th>
+                            <th>Tgl Bayar</th>
+                            <th>Pelanggan</th>
+                            <th>Item</th>
+                            <th>No Seri</th>
+                            <th>Tgl Mulai</th>
+                            <th>Tgl Selesai</th>
+                            <th>Total <br>Inv</th>
+                            <th>Fee /<br>Discount</th>
+                            <th>Total</th>
+                            <th width="">Ung <br>Masuk</th>
+                            <th>Sisa <br>Bayar</th>
+                            <th>Ket. (Nama Bank)</th>
+                            <th>Penerima</th>
+                        </tr>
                     </thead>
                     <tbody>
-                    @foreach($debt as $key => $data)
-
-                        <tr>
-                            <td class="text-center">{{$key+1}}</td>
-                            <td>{{formatId($data->rental->tgl_inv)}}</td>
-                            <td>
-                                @if($data->rental)
-                                    {{$data->rental->no_inv}}
-                                @else
-                                @endif
-                            </td>
-                            <td>{{formatId($data->date_pay)}}</td>
-                            <td>
-                                @if($data->rental)
-                                    {{$data->rental->cust->name}}
-                                @else
-                                @endif
-                            </td>
-                            <td>
-                                @php
-                                    $itemIds = json_decode($data->rental->item_id);
-                                @endphp
-                                @if(is_array($itemIds))
-                                    @foreach($itemIds as $itemId)
-                                        @php
-                                            $item = \App\Models\Item::find($itemId);
-                                        @endphp
-                                        <li>{{ $item ? $item->name : 'Item not found' }}</li>
-                                    @endforeach
-                                @else
-                                    {{ $itemIds }}
-                                @endif
-                            </td>
-                            <td>
-                                @php
-                                    $itemIds = json_decode($data->rental->item_id);
-                                @endphp
-                                @if(is_array($itemIds))
-                                    @foreach($itemIds as $itemId)
-                                        @php
-                                            $item = \App\Models\Item::find($itemId);
-                                        @endphp
-                                        <li>{{ $item ? $item->no_seri : 'Item not found' }}</li>
-                                    @endforeach
-                                @else
-                                    {{ $itemIds }}
-                                @endif
-                            </td>
-                            <td>{{formatId($data->rental->date_start)}}</td>
-                            <td>{{formatId($data->rental->date_end)}}</td>
-                            <td>
-                                @if($data->rental->total_invoice)
-                                    {{formatRupiah($data->rental->total_invoice)}}
-                                @else
-                                    0
-                                @endif
-                            </td>
-                            <td>{{formatRupiah($data->rental->diskon)}}</td>
-                            <td>{{formatRupiah($totals[$data->id])}}</td>
-                            <td>{{formatRupiah($data->pay_debts)}}</td>
-                            <td>{{formatRupiah($data->rental->nominal_out)}}</td>
-                            <td>
-                                @if($data->bank_id)
-                                    {{$data->bank->name}}
-                                @else
-                                    {{$data->description}}
-                                @endif
-                            </td>
-                            <td>
-                                @if($data->penerima)
-                                    {{$data->penerima}}
-                                @else
-                                    -
-                                @endif
-                            </td>
-                        </tr>
-                    @endforeach
+                        @foreach ($debt as $key => $data)
+                            <tr>
+                                <td class="text-center">{{ $key + 1 }}</td>
+                                <td>{{ formatId($data->rental->tgl_inv) }}</td>
+                                <td>
+                                    @if ($data->rental)
+                                        {{ $data->rental->no_inv }}
+                                    @else
+                                    @endif
+                                </td>
+                                <td>{{ formatId($data->date_pay) }}</td>
+                                <td>
+                                    @if ($data->rental)
+                                        {{ $data->rental->cust->name }}
+                                    @else
+                                    @endif
+                                </td>
+                                <td>
+                                    @php
+                                        $itemIds = json_decode($data->rental->item_id);
+                                    @endphp
+                                    @if (is_array($itemIds))
+                                        @foreach ($itemIds as $itemId)
+                                            @php
+                                                $item = \App\Models\Item::find($itemId);
+                                            @endphp
+                                            <li>{{ $item ? $item->name : 'Item not found' }}</li>
+                                        @endforeach
+                                    @else
+                                        {{ $itemIds }}
+                                    @endif
+                                </td>
+                                <td>
+                                    @php
+                                        $itemIds = json_decode($data->rental->item_id);
+                                    @endphp
+                                    @if (is_array($itemIds))
+                                        @foreach ($itemIds as $itemId)
+                                            @php
+                                                $item = \App\Models\Item::find($itemId);
+                                            @endphp
+                                            <li>{{ $item ? $item->no_seri : 'Item not found' }}</li>
+                                        @endforeach
+                                    @else
+                                        {{ $itemIds }}
+                                    @endif
+                                </td>
+                                <td>{{ formatId($data->rental->date_start) }}</td>
+                                <td>{{ formatId($data->rental->date_end) }}</td>
+                                <td>
+                                    @if ($data->rental->total_invoice)
+                                        {{ formatRupiah($data->rental->total_invoice) }}
+                                    @else
+                                        0
+                                    @endif
+                                </td>
+                                <td>{{ formatRupiah($data->rental->diskon) }}</td>
+                                <td>{{ formatRupiah($totals[$data->id]) }}</td>
+                                <td>{{ formatRupiah($data->pay_debts) }}</td>
+                                <td>{{ formatRupiah($data->rental->nominal_out) }}</td>
+                                <td>
+                                    @if ($data->bank_id)
+                                        {{ $data->bank->name }}
+                                    @else
+                                        {{ $data->description }}
+                                    @endif
+                                </td>
+                                <td>
+                                    @if ($data->penerima)
+                                        {{ $data->penerima }}
+                                    @else
+                                        -
+                                    @endif
+                                </td>
+                            </tr>
+                        @endforeach
                     <tfoot>
-                    <tr>
-                        <td>-</td>
-                        <td>-</td>
-                        <td>-</td>
-                        <td>-</td>
-                        <td>-</td>
-                        <td>-</td>
-                        <td>-</td>
-                        <td>-</td>
-                        <td>-</td>
-                        <td>-</td>
-                        <td>-</td>
-                        <td>-</td>
-                        <td>-</td>
-                        <td>-</td>
-                        <th class="border"><strong>Total Uang Masuk</strong></th>
-                        <th class="border">{{formatRupiah($uangmasuk)}},-</th>
-                    </tr>
-                    <tr>
-                        <td>-</td>
-                        <td>-</td>
-                        <td>-</td>
-                        <td>-</td>
-                        <td>-</td>
-                        <td>-</td>
-                        <td>-</td>
-                        <td>-</td>
-                        <td>-</td>
-                        <td>-</td>
-                        <td>-</td>
-                        <td>-</td>
-                        <td>-</td>
-                        <td>-</td>
-                        <th class="border"><strong>Total Diskon</strong></th>
-                        <th class="border">{{formatRupiah($diskon)}},-</th>
-                    </tr>
-                    <tr>
-                        <td>-</td>
-                        <td>-</td>
-                        <td>-</td>
-                        <td>-</td>
-                        <td>-</td>
-                        <td>-</td>
-                        <td>-</td>
-                        <td>-</td>
-                        <td>-</td>
-                        <td>-</td>
-                        <td>-</td>
-                        <td>-</td>
-                        <td>-</td>
-                        <td>-</td>
-                        <th class="border"><strong>Total Bersih</strong></th>
-                        <th class="border">{{formatRupiah($totalbersih)}},-</th>
-                    </tr>
-                    <tr>
-                        <td>-</td>
-                        <td>-</td>
-                        <td>-</td>
-                        <td>-</td>
-                        <td>-</td>
-                        <td>-</td>
-                        <td>-</td>
-                        <td>-</td>
-                        <td>-</td>
-                        <td>-</td>
-                        <td>-</td>
-                        <td>-</td>
-                        <td>-</td>
-                        <td>-</td>
-                        <th class="border"><strong>Total Sisa Bayar</strong></th>
-                        <th class="border">{{formatRupiah($sisabayar)}},-</th>
-                    </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>-</td>
+                            <td>-</td>
+                            <td>-</td>
+                            <td>-</td>
+                            <td>-</td>
+                            <td>-</td>
+                            <td>-</td>
+                            <td>-</td>
+                            <td>-</td>
+                            <td>-</td>
+                            <td>-</td>
+                            <td>-</td>
+                            <td>-</td>
+                            <th class="border"><strong>Total Uang Masuk</strong></th>
+                            <th class="border">{{ formatRupiah($uangmasuk) }},-</th>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>-</td>
+                            <td>-</td>
+                            <td>-</td>
+                            <td>-</td>
+                            <td>-</td>
+                            <td>-</td>
+                            <td>-</td>
+                            <td>-</td>
+                            <td>-</td>
+                            <td>-</td>
+                            <td>-</td>
+                            <td>-</td>
+                            <td>-</td>
+                            <th class="border"><strong>Total Diskon</strong></th>
+                            <th class="border">{{ formatRupiah($diskon) }},-</th>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>-</td>
+                            <td>-</td>
+                            <td>-</td>
+                            <td>-</td>
+                            <td>-</td>
+                            <td>-</td>
+                            <td>-</td>
+                            <td>-</td>
+                            <td>-</td>
+                            <td>-</td>
+                            <td>-</td>
+                            <td>-</td>
+                            <td>-</td>
+                            <th class="border"><strong>Total Bersih</strong></th>
+                            <th class="border">{{ formatRupiah($totalbersih) }},-</th>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>-</td>
+                            <td>-</td>
+                            <td>-</td>
+                            <td>-</td>
+                            <td>-</td>
+                            <td>-</td>
+                            <td>-</td>
+                            <td>-</td>
+                            <td>-</td>
+                            <td>-</td>
+                            <td>-</td>
+                            <td>-</td>
+                            <td>-</td>
+                            <th class="border"><strong>Total Sisa Bayar</strong></th>
+                            <th class="border">{{ formatRupiah($sisabayar) }},-</th>
+                        </tr>
                     </tfoot>
                 </table>
             </div>
             <div class="card-footer">
                 <table>
                     <tr>
-                        <th><h5 class="mb-0 text-uppercase"><strong>Total Uang Masuk</strong></h5></th>
-                        <td><h5>:</h5></td>
-                        <td><h5 class="ms-3">{{formatRupiah($uangmasuk)}},-</h5></td>
+                        <th>
+                            <h5 class="mb-0 text-uppercase"><strong>Total Uang Masuk</strong></h5>
+                        </th>
+                        <td>
+                            <h5>:</h5>
+                        </td>
+                        <td>
+                            <h5 class="ms-3">{{ formatRupiah($uangmasuk) }},-</h5>
+                        </td>
                     </tr>
                     <tr>
-                        <th><h5 class="mb-0 text-uppercase"><strong>Total Diskon</strong></h5></th>
-                        <td><h5>:</h5></td>
-                        <td><h5 class="ms-3">{{formatRupiah($diskon)}},-</h5></td>
+                        <th>
+                            <h5 class="mb-0 text-uppercase"><strong>Total Diskon</strong></h5>
+                        </th>
+                        <td>
+                            <h5>:</h5>
+                        </td>
+                        <td>
+                            <h5 class="ms-3">{{ formatRupiah($diskon) }},-</h5>
+                        </td>
                     </tr>
                     <tr>
-                        <th><h5 class="mb-0 text-uppercase"><strong>Total Bersih</strong></h5></th>
-                        <td><h5>:</h5></td>
-                        <td><h5 class="ms-3">{{formatRupiah($totalbersih)}},-</h5></td>
+                        <th>
+                            <h5 class="mb-0 text-uppercase"><strong>Total Bersih</strong></h5>
+                        </th>
+                        <td>
+                            <h5>:</h5>
+                        </td>
+                        <td>
+                            <h5 class="ms-3">{{ formatRupiah($totalbersih) }},-</h5>
+                        </td>
                     </tr>
                     <tr>
-                        <th><h5 class="mb-0 text-uppercase"><strong>Total Sisa Bayar</strong></h5></th>
-                        <td><h5>:</h5></td>
-                        <td><h5 class="ms-3">{{formatRupiah($sisabayar)}},-</h5></td>
+                        <th>
+                            <h5 class="mb-0 text-uppercase"><strong>Total Sisa Bayar</strong></h5>
+                        </th>
+                        <td>
+                            <h5>:</h5>
+                        </td>
+                        <td>
+                            <h5 class="ms-3">{{ formatRupiah($sisabayar) }},-</h5>
+                        </td>
                     </tr>
 
                 </table>
@@ -499,7 +536,7 @@
 @endsection
 
 @push('head')
-    <link href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css" rel="stylesheet"/>
+    <link href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css" rel="stylesheet" />
 @endpush
 
 @push('js')
@@ -551,26 +588,30 @@
             });
         }
 
-        $(document).ready(function () {
+        $(document).ready(function() {
             var table = $('#excel').DataTable({
                 lengthChange: false,
                 paginate: false,
-                buttons: [
-                    {
+                buttons: [{
                         extend: 'pdf',
                         exportOptions: {
                             stripHtml: false,
                         },
-                        title: function () {
+                        title: function() {
                             var currentDate = new Date();
-                            var day = String(currentDate.getDate()).padStart(2, '0'); // Mendapatkan tanggal dengan dua digit
-                            var month = String(currentDate.getMonth() + 1).padStart(2, '0'); // Mendapatkan bulan dengan dua digit
-                            var year = String(currentDate.getFullYear()).slice(-2); // Mendapatkan dua digit terakhir tahun
-                            var formattedDate = `${day}/${month}/${year}`; // Menggabungkan format tanggal/bulan/tahun
-                            return 'Laporan Pembayaran Tanggal ' + formattedDate; // Nama file sesuai tanggal
+                            var day = String(currentDate.getDate()).padStart(2,
+                            '0'); // Mendapatkan tanggal dengan dua digit
+                            var month = String(currentDate.getMonth() + 1).padStart(2,
+                            '0'); // Mendapatkan bulan dengan dua digit
+                            var year = String(currentDate.getFullYear()).slice(-
+                            2); // Mendapatkan dua digit terakhir tahun
+                            var formattedDate =
+                            `${day}/${month}/${year}`; // Menggabungkan format tanggal/bulan/tahun
+                            return 'Laporan Pembayaran Tanggal ' +
+                            formattedDate; // Nama file sesuai tanggal
                         },
 
-                        customize: function (doc) {
+                        customize: function(doc) {
                             // Set ukuran halaman PDF
 
                             // Ambil seluruh data dari DataTables (termasuk yang tidak terlihat)
@@ -578,24 +619,33 @@
 
                             // Header Tabel
                             var headers = [];
-                            $('#excel thead th').each(function () {
-                                headers.push({text: $(this).text(), style: 'tableHeader'});
+                            $('#excel thead th').each(function() {
+                                headers.push({
+                                    text: $(this).text(),
+                                    style: 'tableHeader'
+                                });
                             });
 
                             // Isi Tabel
                             var tableBody = [];
                             tableBody.push(headers); // Tambahkan header ke body
 
-                            allData.forEach(function (rowData) {
+                            allData.forEach(function(rowData) {
                                 var row = [];
-                                rowData.forEach(function (cellData) {
+                                rowData.forEach(function(cellData) {
                                     // Hapus tag HTML seperti <li> dan <br>
                                     var cleanedText = cellData
                                         .replace(/<li>/g, '') // Hapus <li>
-                                        .replace(/<\/li>/g, '\n') // Ganti </li> dengan baris baru
-                                        .replace(/<br\s*\/?>/g, '\n') // Hapus <br> dan ganti dengan baris baru
-                                        .replace(/<\/?[^>]+(>|$)/g, ''); // Hapus tag HTML lainnya
-                                    row.push({text: cleanedText.trim(), style: 'tableCell'});
+                                        .replace(/<\/li>/g,
+                                        '\n') // Ganti </li> dengan baris baru
+                                        .replace(/<br\s*\/?>/g,
+                                        '\n') // Hapus <br> dan ganti dengan baris baru
+                                        .replace(/<\/?[^>]+(>|$)/g,
+                                        ''); // Hapus tag HTML lainnya
+                                    row.push({
+                                        text: cleanedText.trim(),
+                                        style: 'tableCell'
+                                    });
                                 });
                                 tableBody.push(row);
                             });
@@ -604,26 +654,30 @@
                             var tfoot = $('#excel tfoot').clone();
                             if (tfoot.length) {
                                 var footerRow = [];
-                                tfoot.find('th').each(function () {
-                                    footerRow.push({text: $(this).text(), style: 'tableCell'});
+                                tfoot.find('th').each(function() {
+                                    footerRow.push({
+                                        text: $(this).text(),
+                                        style: 'tableCell'
+                                    });
                                 });
                                 while (footerRow.length < headers.length) {
-                                    footerRow.push({text: ''});
+                                    footerRow.push({
+                                        text: ''
+                                    });
                                 }
                                 tableBody.push(footerRow);
                             }
 
                             // Tambahkan Tabel ke Dokumen
-                            doc.content = [
-                                {
-                                    table: {
-                                        headerRows: 1,
-                                        widths: Array(headers.length).fill('auto'), // Perkecil kolom otomatis
-                                        body: tableBody,
-                                    },
-                                    layout: 'lightHorizontalLines',
+                            doc.content = [{
+                                table: {
+                                    headerRows: 1,
+                                    widths: Array(headers.length).fill(
+                                    'auto'), // Perkecil kolom otomatis
+                                    body: tableBody,
                                 },
-                            ];
+                                layout: 'lightHorizontalLines',
+                            }, ];
 
                             // Styling
                             doc.styles.tableHeader = {
@@ -645,16 +699,21 @@
                             tfoot: true,
                             columns: [0, 1, 2, 3, 4, 5, 6, 7]
                         },
-                        title: function () {
+                        title: function() {
                             var currentDate = new Date();
-                            var day = String(currentDate.getDate()).padStart(2, '0'); // Mendapatkan tanggal dengan dua digit
-                            var month = String(currentDate.getMonth() + 1).padStart(2, '0'); // Mendapatkan bulan dengan dua digit
-                            var year = String(currentDate.getFullYear()).slice(-2); // Mendapatkan dua digit terakhir tahun
-                            var formattedDate = `${day}/${month}/${year}`; // Menggabungkan format tanggal/bulan/tahun
-                            return 'Laporan Pembayaran Tanggal ' + formattedDate; // Nama file sesuai tanggal
+                            var day = String(currentDate.getDate()).padStart(2,
+                            '0'); // Mendapatkan tanggal dengan dua digit
+                            var month = String(currentDate.getMonth() + 1).padStart(2,
+                            '0'); // Mendapatkan bulan dengan dua digit
+                            var year = String(currentDate.getFullYear()).slice(-
+                            2); // Mendapatkan dua digit terakhir tahun
+                            var formattedDate =
+                            `${day}/${month}/${year}`; // Menggabungkan format tanggal/bulan/tahun
+                            return 'Laporan Pembayaran Tanggal ' +
+                            formattedDate; // Nama file sesuai tanggal
                         },
 
-                        customize: function (win) {
+                        customize: function(win) {
                             $(win.document.body)
                                 .find('table')
                                 .addClass('compact')
@@ -683,26 +742,30 @@
     </script>
 
     <script>
-        $(document).ready(function () {
+        $(document).ready(function() {
             var table = $('#transaction').DataTable({
                 lengthChange: false,
-                buttons: [
-                    {
+                buttons: [{
                         extend: 'pdf',
                         exportOptions: {
                             stripHtml: false,
                             tfoot: true,
                         },
-                        title: function () {
+                        title: function() {
                             var currentDate = new Date();
-                            var day = String(currentDate.getDate()).padStart(2, '0'); // Mendapatkan tanggal dengan dua digit
-                            var month = String(currentDate.getMonth() + 1).padStart(2, '0'); // Mendapatkan bulan dengan dua digit
-                            var year = String(currentDate.getFullYear()).slice(-2); // Mendapatkan dua digit terakhir tahun
-                            var formattedDate = `${day}/${month}/${year}`; // Menggabungkan format tanggal/bulan/tahun
-                            return 'Laporan Pembayaran Tanggal ' + formattedDate; // Nama file sesuai tanggal
+                            var day = String(currentDate.getDate()).padStart(2,
+                            '0'); // Mendapatkan tanggal dengan dua digit
+                            var month = String(currentDate.getMonth() + 1).padStart(2,
+                            '0'); // Mendapatkan bulan dengan dua digit
+                            var year = String(currentDate.getFullYear()).slice(-
+                            2); // Mendapatkan dua digit terakhir tahun
+                            var formattedDate =
+                            `${day}/${month}/${year}`; // Menggabungkan format tanggal/bulan/tahun
+                            return 'Laporan Pembayaran Tanggal ' +
+                            formattedDate; // Nama file sesuai tanggal
                         },
 
-                        customize: function (doc) {
+                        customize: function(doc) {
                             // Set ukuran halaman PDF
                             doc.pageSize = {
                                 width: 880,
@@ -715,24 +778,33 @@
 
                             // Header Tabel
                             var headers = [];
-                            $('#transaction thead th').each(function () {
-                                headers.push({text: $(this).text(), style: 'tableHeader'});
+                            $('#transaction thead th').each(function() {
+                                headers.push({
+                                    text: $(this).text(),
+                                    style: 'tableHeader'
+                                });
                             });
 
                             // Isi Tabel
                             var tableBody = [];
                             tableBody.push(headers); // Tambahkan header ke body
 
-                            allData.forEach(function (rowData) {
+                            allData.forEach(function(rowData) {
                                 var row = [];
-                                rowData.forEach(function (cellData) {
+                                rowData.forEach(function(cellData) {
                                     // Hapus tag HTML seperti <li> dan <br>
                                     var cleanedText = cellData
                                         .replace(/<li>/g, '') // Hapus <li>
-                                        .replace(/<\/li>/g, '\n') // Ganti </li> dengan baris baru
-                                        .replace(/<br\s*\/?>/g, '\n') // Hapus <br> dan ganti dengan baris baru
-                                        .replace(/<\/?[^>]+(>|$)/g, ''); // Hapus tag HTML lainnya
-                                    row.push({text: cleanedText.trim(), style: 'tableCell'});
+                                        .replace(/<\/li>/g,
+                                        '\n') // Ganti </li> dengan baris baru
+                                        .replace(/<br\s*\/?>/g,
+                                        '\n') // Hapus <br> dan ganti dengan baris baru
+                                        .replace(/<\/?[^>]+(>|$)/g,
+                                        ''); // Hapus tag HTML lainnya
+                                    row.push({
+                                        text: cleanedText.trim(),
+                                        style: 'tableCell'
+                                    });
                                 });
                                 tableBody.push(row);
                             });
@@ -741,26 +813,30 @@
                             var tfoot = $('#transaction tfoot').clone();
                             if (tfoot.length) {
                                 var footerRow = [];
-                                tfoot.find('th').each(function () {
-                                    footerRow.push({text: $(this).text(), style: 'tableCell'});
+                                tfoot.find('th').each(function() {
+                                    footerRow.push({
+                                        text: $(this).text(),
+                                        style: 'tableCell'
+                                    });
                                 });
                                 while (footerRow.length < headers.length) {
-                                    footerRow.push({text: ''});
+                                    footerRow.push({
+                                        text: ''
+                                    });
                                 }
                                 tableBody.push(footerRow);
                             }
 
                             // Tambahkan Tabel ke Dokumen
-                            doc.content = [
-                                {
-                                    table: {
-                                        headerRows: 1,
-                                        widths: Array(headers.length).fill('auto'), // Perkecil kolom otomatis
-                                        body: tableBody,
-                                    },
-                                    layout: 'lightHorizontalLines',
+                            doc.content = [{
+                                table: {
+                                    headerRows: 1,
+                                    widths: Array(headers.length).fill(
+                                    'auto'), // Perkecil kolom otomatis
+                                    body: tableBody,
                                 },
-                            ];
+                                layout: 'lightHorizontalLines',
+                            }, ];
 
                             // Styling
                             doc.styles.tableHeader = {
@@ -781,15 +857,20 @@
                             stripHtml: false,
                             tfoot: true,
                         },
-                        title: function () {
+                        title: function() {
                             var currentDate = new Date();
-                            var day = String(currentDate.getDate()).padStart(2, '0'); // Mendapatkan tanggal dengan dua digit
-                            var month = String(currentDate.getMonth() + 1).padStart(2, '0'); // Mendapatkan bulan dengan dua digit
-                            var year = String(currentDate.getFullYear()).slice(-2); // Mendapatkan dua digit terakhir tahun
-                            var formattedDate = `${day}/${month}/${year}`; // Menggabungkan format tanggal/bulan/tahun
-                            return 'Laporan Pembayaran Tanggal ' + formattedDate; // Nama file sesuai tanggal
+                            var day = String(currentDate.getDate()).padStart(2,
+                            '0'); // Mendapatkan tanggal dengan dua digit
+                            var month = String(currentDate.getMonth() + 1).padStart(2,
+                            '0'); // Mendapatkan bulan dengan dua digit
+                            var year = String(currentDate.getFullYear()).slice(-
+                            2); // Mendapatkan dua digit terakhir tahun
+                            var formattedDate =
+                            `${day}/${month}/${year}`; // Menggabungkan format tanggal/bulan/tahun
+                            return 'Laporan Pembayaran Tanggal ' +
+                            formattedDate; // Nama file sesuai tanggal
                         },
-                        customize: function (win) {
+                        customize: function(win) {
                             $(win.document.body)
                                 .find('table')
                                 .addClass('compact')
@@ -817,9 +898,9 @@
         });
     </script>
     <script>
-        $(document).ready(function () {
+        $(document).ready(function() {
             // Inisialisasi Select2 setelah modal dibuka
-            $(document).on('shown.bs.modal', function (e) {
+            $(document).on('shown.bs.modal', function(e) {
                 let modal = $(e.target); // Modal yang sedang ditampilkan
                 modal.find('#single-select-field').select2({
                     dropdownParent: modal, // Tetapkan parent dropdown ke modal yang aktif
@@ -832,7 +913,7 @@
     </script>
 
     <script>
-        $(document).ready(function () {
+        $(document).ready(function() {
             function calculateTotal(id) {
                 let nominal_in = parseFloat($(`#nominal_in_value_${id}`).val()) || 0;
                 let pay_debts = parseFloat($(`#pay_debts_${id}`).val().replace(/[^0-9]/g, '')) || 0;
@@ -841,20 +922,20 @@
                 $(`#nominal_in_${id}`).val('Rp. ' + total.toLocaleString('id-ID'));
             }
 
-            $('[id^=pay_debts_]').on('input', function () {
+            $('[id^=pay_debts_]').on('input', function() {
                 let id = $(this).attr('id').split('_')[2];
                 calculateTotal(id);
             });
 
-            $('[id^=nominal_in_value_]').each(function () {
+            $('[id^=nominal_in_value_]').each(function() {
                 let id = $(this).attr('id').split('_')[2];
                 calculateTotal(id);
             });
         });
     </script>
     <script>
-        $(document).ready(function () {
-            $('#bayarbutton').click(function (event) {
+        $(document).ready(function() {
+            $('#bayarbutton').click(function(event) {
                 // Nonaktifkan tombol dan ubah teksnya
                 $(this).prop('disabled', true).text('Memuat...');
                 $('#myForm').submit();
@@ -895,19 +976,17 @@
             }
 
             // Event listener untuk checkbox lainya
-            $("[id^='lainya_']").on('change', function () {
+            $("[id^='lainya_']").on('change', function() {
                 var id = $(this).attr('id').split('_')[1]; // Ambil ID dinamis
                 toggleValidation(id);
             });
 
             // Inisialisasi validasi saat halaman dimuat
-            $("[id^='lainya_']").each(function () {
+            $("[id^='lainya_']").each(function() {
                 var id = $(this).attr('id').split('_')[1]; // Ambil ID dinamis
                 toggleValidation(id);
             });
 
         }
     </script>
-
 @endpush
-

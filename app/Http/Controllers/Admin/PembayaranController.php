@@ -2,12 +2,12 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Http\Controllers\Controller;
-use App\Models\Rental;
+use Carbon\Carbon;
 use App\Models\Bank;
 use App\Models\Debts;
-use Carbon\Carbon;
+use App\Models\Rental;
 use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Validator;
 
 class PembayaranController extends Controller
@@ -23,7 +23,7 @@ class PembayaranController extends Controller
         });
         $total = $rental->groupBy('id')->map(function ($group) {
             return $group->sum(function ($item){
-                return $item->nominal_in - $item->diskon;
+                return $item->total_invoice - $item->diskon + $item->ppn;
             });
         });
         $currentYear = now()->year;

@@ -2,22 +2,22 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Http\Controllers\Controller;
-use App\Models\Accessories;
-use App\Models\AccessoriesCategory;
-use App\Models\Bank;
-use App\Models\Customer;
-use App\Models\Debts;
-use App\Models\Item;
-use App\Models\Problem;
-use App\Models\Rental;
+use ZipArchive;
 use Carbon\Carbon;
+use App\Models\Bank;
+use App\Models\Item;
+use App\Models\Debts;
+use App\Models\Rental;
+use App\Models\Problem;
+use App\Models\Customer;
+use App\Models\Accessories;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use App\Models\AccessoriesCategory;
+use App\Http\Controllers\Controller;
+use RealRashid\SweetAlert\Facades\Alert;
 use Intervention\Image\ImageManagerStatic;
 use Intervention\Image\ImageManagerStatic as Image;
-use RealRashid\SweetAlert\Facades\Alert;
-use ZipArchive;
 
 class RentalController extends Controller
 {
