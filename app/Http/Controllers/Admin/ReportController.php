@@ -51,7 +51,8 @@ class ReportController extends Controller
         $total = $cicilan->groupBy('id')->map(function ($group) {
             return $group->sum(function ($item) {
                 $diskon = $item->rental?->diskon ?? 0; // Gunakan null-safe operator dan fallback 0
-                return $item->pay_debts - $diskon;
+                $ppn = $item->rental?->ppn ?? 0; // Gunakan null-safe operator dan fallback 0
+                return $item->pay_debts + $ppn - $diskon;
             });
         });
 
@@ -64,6 +65,9 @@ class ReportController extends Controller
         $diskon = $cicilan->sum(function ($item) {
             return $item->rental->diskon;
         });
+        $totalppn = $cicilan->sum(function ($item) {
+            return $item->rental->ppn;
+        });
         $sisabayar = $cicilan->sum(function ($item) {
             return $item->rental->nominal_out;
         });
@@ -72,7 +76,7 @@ class ReportController extends Controller
         });
 
         // return $debt;
-        return view('admin.report.index', compact('sisabayar','totalbersih','diskon','sisa','totalin', 'report', 'totaldiskon', 'totalincome', 'totaloutside', 'cicilan', 'total', 'uangmasuk'));
+        return view('admin.report.index', compact('totalppn', 'sisabayar','totalbersih','diskon','sisa','totalin', 'report', 'totaldiskon', 'totalincome', 'totaloutside', 'cicilan', 'total', 'uangmasuk'));
     }
 
     public function filter(Request $request){
@@ -143,9 +147,12 @@ class ReportController extends Controller
         $totalbersih = $cicilan->sum(function ($item) {
             return $item->pay_debts - $item->rental->diskon;
         });
+        $totalppn = $cicilan->sum(function ($item) {
+            return $item->rental->ppn;
+        });
 
         // return $debt;
-        return view('admin.report.index', compact('sisabayar','totalbersih','diskon','sisa','totalin', 'report', 'totaldiskon', 'totalincome', 'totaloutside', 'cicilan', 'total', 'uangmasuk'));
+        return view('admin.report.index', compact('totalppn','sisabayar','totalbersih','diskon','sisa','totalin', 'report', 'totaldiskon', 'totalincome', 'totaloutside', 'cicilan', 'total', 'uangmasuk'));
     }
     public function filtercicilan(Request $request){
         $request->validate([
@@ -217,9 +224,13 @@ class ReportController extends Controller
         $totalbersih = $cicilan->sum(function ($item) {
             return $item->pay_debts - $item->rental->diskon;
         });
+        $totalppn = $cicilan->sum(function ($item) {
+            return $item->rental->ppn;
+        });
 
         // return $debt;
         return view('admin.report.index', compact([
+            'totalppn',
             'sisabayar',
             'totalbersih',
             'diskon',

@@ -173,6 +173,7 @@ class ServiceController extends Controller
         $service->no_inv        = $request->input('no_inv');
         $service->total_invoice = $request->input('total_invoice');
         $service->tgl_inv       = $request->input('tgl_inv');
+        $service->ppn           = $request->input('ppn');
         $service->save();
 
         $debts = DebtServic::create([

@@ -214,6 +214,7 @@ class RentalController extends Controller
         $rental->nominal_out = $request->input('nominal_out') ?? 0;
         $rental->diskon = $request->input('diskon') ?? 0;
         $rental->date_pays = $request->input('date_pays');
+        $rental->ppn = $request->input('ppn');
         $rental->no_inv = $request->input('no_inv');
         $rental->total_invoice = $request->input('total_invoice');
         $rental->tgl_inv = $request->input('tgl_inv');

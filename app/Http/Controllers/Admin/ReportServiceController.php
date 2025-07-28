@@ -33,6 +33,9 @@ class ReportServiceController extends Controller
         $totalbiaya = $report->sum(function ($item) {
             return optional($item->service)->biaya_ganti ?? 0;
         });
+        $totalppn = $report->sum(function ($item) {
+            return optional($item->service)->ppn ?? 0;
+        });
 
         $totalin = $report->sum(function ($item) {
             return $item->pay_debts ?? 0;
@@ -44,6 +47,7 @@ class ReportServiceController extends Controller
 
 
         return view('admin.reportservice.index', compact(
+            'totalppn',
             'totalin',
             'totalbiaya',
             'report',
@@ -84,11 +88,15 @@ class ReportServiceController extends Controller
         $totalin = $report->sum(function ($item) {
             return $item->pay_debts ?? 0;
         });
+        $totalppn = $report->sum(function ($item) {
+            return optional($item->service)->ppn ?? 0;
+        });
 
         $totaloutside = $report->sum(function ($item) {
             return optional($item->service)->nominal_out ?? 0;
         });
         return view('admin.reportservice.index', compact(
+            'totalppn',
             'report',
             'totalbiaya',
             'totalin',

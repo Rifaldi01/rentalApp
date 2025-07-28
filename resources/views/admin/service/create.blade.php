@@ -100,12 +100,21 @@
                     <label for="">Nama Pemenerima</label>
                     <input type="text" class="form-control" name="penerima" value="{{old('penerima')}}">
                 </div>
+                <div class="col-md-12">
+                    <label for="input" class="form-label">Keterangan Bayar</label>
+                    <textarea class="form-control @error('description') is-invalid @enderror" name="description"
+                              placeholder="Keterangan Bayar">{{old('description')}}</textarea>
+                    @error('descript')
+                    <span class="invalid-feedback" role="alert">
+                        <strong>{{$message}}</strong>
+                    </span>
+                    @enderror
+                </div>
                 <div class="col-md-2">
                     <label for="input" class="form-label"><i class="text-danger">*</i> Total Inv</label>
                     <input type="number" value="{{isset($service) ? $service->total_invoice : 0 + old('total_invoice')}}"
                            class="form-control" name="total_invoice" placeholder="Total Invoice">
                 </div>
-                
                  <div class="col-md-2">
                     <label for="input" class="form-label"><i class="text-danger">*</i> Uang Masuk</label>
                     <input type="number" value="{{isset($service) ? $service->nominal_in : 0 + old('nominal_in')}}"
@@ -116,7 +125,7 @@
                         </span>
                      @enderror
                 </div>
-                 
+
                  <div class="col-md-2">
                     <label for="input" class="form-label">Sisa Bayar</label>
                     <input type="number" value="{{isset($service) ? $service->nominal_out : 0 +  old('nominal_out')}}"
@@ -131,6 +140,11 @@
                     <label for="input" class="form-label">Fee/Diskon</label>
                     <input type="number" value="{{isset($service) ? $service->diskon : 0 + old('diskon')}}"
                            class="form-control" name="diskon" placeholder="Fee/Diskon (Rp)">
+                </div>
+                <div class="col-md-2">
+                    <label for="input" class="form-label">PPN</label>
+                    <input type="number" value="{{isset($service) ? $service->ppn : 0 + old('ppn')}}"
+                           class="form-control" name="diskon" placeholder="ppn (Rp)">
                 </div>
                 <div class="col-md-2">
                     <label for="input" class="form-label">Tanggal Bayar</label>

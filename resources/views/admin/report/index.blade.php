@@ -70,6 +70,7 @@
                         <th>Tgl Mulai</th>
                         <th>Tgl Selesai</th>
                         <th>Total <br>Inv</th>
+                        <th>PPN</th>
                         <th>Fee /<br>Discount</th>
                         <th>Total</th>
                         <th width="">Ung <br>Masuk</th>
@@ -126,6 +127,7 @@
                                     0
                                 @endif
                             </td>
+                            <td>{{formatRupiah($datas->rental->ppn)}}</td>
                             <td>{{formatRupiah($datas->rental->diskon)}}</td>
                             <td>{{formatRupiah($total[$datas->id])}}</td>
                             <td>
@@ -177,10 +179,12 @@
                         <td>-</td>
                         <td>-</td>
                         <td>-</td>
+                        <td>-</td>
                         <th class="border" > <strong>Total Uang Masuk</strong></th>
                         <th class="border" >{{formatRupiah($uangmasuk)}},-</th>
                     </tr>
                     <tr>
+                        <td>-</td>
                         <td>-</td>
                         <td>-</td>
                         <td>-</td>
@@ -215,6 +219,7 @@
                         <td>-</td>
                         <td>-</td>
                         <td>-</td>
+                        <td>-</td>
                         <th class="border" > <strong>Total Bersih</strong></th>
                         <th class="border" >{{formatRupiah($totalbersih)}},-</th>
                     </tr>
@@ -234,8 +239,29 @@
                         <td>-</td>
                         <td>-</td>
                         <td>-</td>
+                        <td>-</td>
                         <th class="border" > <strong>Total Sisa Bayar</strong></th>
                         <th class="border" >{{formatRupiah($sisabayar)}},-</th>
+                    </tr>
+                    <tr>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <th class="border" > <strong>Total PPN</strong></th>
+                        <th class="border" >{{formatRupiah($totalppn)}},-</th>
                     </tr>
                     </tfoot>
                 </table>

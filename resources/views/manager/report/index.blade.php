@@ -70,6 +70,7 @@
                             <th>Tgl Mulai</th>
                             <th>Tgl Selesai</th>
                             <th>Total <br>Inv</th>
+                            <th>ppn</th>
                             <th>Fee /<br>Discount</th>
                             <th>Total</th>
                             <th width="">Ung <br>Masuk</th>
@@ -126,6 +127,7 @@
                                         0
                                     @endif
                                 </td>
+                                <td>{{formatRupiah($datas->rental->ppn ?? null)}}</td>
                                 <td>{{formatRupiah($datas->rental->diskon ?? null)}}</td>
                                 <td>{{formatRupiah($total[$datas->id])}}</td>
                                 <td>

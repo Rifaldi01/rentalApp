@@ -181,6 +181,11 @@
                     <input type="number" value="{{isset($rental) ? $rental->diskon :0 }}{{old('diskon')}}"
                            class="form-control" name="diskon">
                 </div>
+                <div class="col-md-3">
+                    <label for="input" class="form-label">PPN</label>
+                    <input type="number" value="{{isset($rental) ? $rental->ppn :0 }}{{old('ppn')}}"
+                           class="form-control" name="ppn">
+                </div>
 
                 <div class="col-md-12">
                     <label for="input4" class="form-label">Bank</label>
@@ -197,9 +202,8 @@
                 </div>
                 <div class="col-md-12">
                     <label for="input4" class="form-label">Keterangan Bayar</label>
-                    <textarea type="text" name="date_pays" class="form-control @error('date_pays') is-invalid @enderror"
-                              id="input4" placeholder="Maukan Pembayran">{{isset($rental)?$rental->date_pays : null}}{{ old('date_pays') }}
-                    </textarea>
+                    <textarea type="text" name="description" class="form-control @error('description') is-invalid @enderror"
+                              id="input4" placeholder="Maukan Pembayran">{{isset($rental)?$rental->debt->description : null}}{{ old('description') }}</textarea>
                     @error('date_pays')
                     <span class="invalid-feedback" role="alert">
                         <strong>{{ $message }}</strong>

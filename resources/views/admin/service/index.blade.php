@@ -50,6 +50,7 @@
                             <th>Type</th>
                             <th>Total Inv</th>
                             <th>Biaya Ganti</th>
+                            <th>PPN</th>
                             <th>Uang Masuk</th>
                             <th>Sisa Bayar</th>
                             <th>Tgl Servis</th>
@@ -78,6 +79,7 @@
                                 </td>
                                 <td>{{formatRupiah($data->total_invoice)}}</td>
                                 <td>{{formatRupiah($data->biaya_ganti)}}</td>
+                                <td>{{formatRupiah($data->ppn)}}</td>
                                 <td>{{formatRupiah($data->nominal_in)}}</td>
                                 <td class="text-center">
                                     @if($data->nominal_out == 0)

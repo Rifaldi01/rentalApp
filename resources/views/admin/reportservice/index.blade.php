@@ -71,6 +71,7 @@
                             <th>Tgl. Selesai</th>
                             <th>Total Inv</th>
                             <th>Biaya Ganti</th>
+                            <th>PPN</th>
                             <th>Fee/ <br>Diskon</th>
                             <th>Total <br>bersih</th>
                             <th>Uang <br>Masuk</th>
@@ -110,8 +111,9 @@
                                 </td>
                                 <td>{{formatRupiah(optional($data->service)->total_invoice)}}</td>
                                 <td>{{formatRupiah(optional($data->service)->biaya_ganti)}}</td>
+                                <td>{{formatRupiah(optional($data->service)->ppn)}}</td>
                                 <td>{{formatRupiah(optional($data->service)->diskon)}}</td>
-                                <td>{{formatRupiah($data->service['nominal_in'] - $data->service['diskon']- $data->service['biaya_ganti'])}}</td>
+                                <td>{{formatRupiah($data->service['nominal_in'] + $data->service['ppn'] - $data->service['diskon']- $data->service['biaya_ganti'])}}</td>
                                 <td>{{formatRupiah($data->pay_debts)}}</td>
                                 <td>{{formatRupiah(optional($data->service)->nominal_out)}}</td>
                                 <td>
@@ -158,6 +160,10 @@
                         <tr>
                             <th class="border" colspan="2">Total Fee/Diskon</th>
                             <th class="border">{{formatRupiah($totaldiskon)}},-</th>
+                        </tr>
+                        <tr>
+                            <th class="border" colspan="2">Total PPN</th>
+                            <th class="border">{{formatRupiah($totalppn)}},-</th>
                         </tr>
 
                         <tr>
