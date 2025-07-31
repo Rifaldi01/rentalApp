@@ -124,24 +124,30 @@ class CustomerController extends Controller
             'image'        => $id ? 'nullable|array' : 'required|array',
             'image.*'      => 'image',
         ]);
-    
+
         if ($validator->fails()) {
             return back()->withErrors($validator)->withInput();
         }
-    
+
         $customer = Customer::firstOrNew(['id' => $id]);
         $customer->name = $request->input('name');
-        $customer->no_identity = $request->input('no_identity');
-        $customer->phone = $request->input('phone');
+        if ($request->filled('no_identity') && $request->input('no_identity') != $customer->no_identity) {
+            $customer->no_identity = $request->input('no_identity');
+        }
+
+        if ($request->filled('phone') && $request->input('phone') != $customer->phone) {
+            $customer->phone = $request->input('phone');
+        }
+
         $customer->addres = $request->input('addres');
-    
+
         if ($request->hasFile('image')) {
             $newImages = [];
-            
+
             // Handle new images
             foreach ($request->file('image') as $file) {
                 $file_name = md5(now()->timestamp . $file->getClientOriginalName()) . '.jpg';
-                
+
                 try {
                     $img = ImageManagerStatic::make($file);
                     $img->resize(null, 600, function ($constraint) {
@@ -153,17 +159,17 @@ class CustomerController extends Controller
                     return back()->withErrors(['image' => 'Error processing the image: ' . $e->getMessage()])->withInput();
                 }
             }
-    
+
             // Combine old images with new ones
             $existingImages = json_decode($customer->image, true) ?? [];
             $customer->image = json_encode(array_merge($existingImages, $newImages));
         }
-    
+
         $customer->save();
-        
+
         return redirect()->route('admin.customer.index')->withSuccess('Berhasil');
     }
-    
+
     public function downloadImages($id)
     {
         $customer = Customer::findOrFail($id);
