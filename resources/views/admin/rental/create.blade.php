@@ -203,7 +203,7 @@
                 <div class="col-md-12">
                     <label for="input4" class="form-label">Keterangan Bayar</label>
                     <textarea type="text" name="description" class="form-control @error('description') is-invalid @enderror"
-                              id="input4" placeholder="Maukan Pembayran">{{isset($rental)?$rental->debt->first()->description : null}}{{ old('description') }}</textarea>
+                              id="input4" placeholder="Maukan Pembayran">{{isset($rental) && $rental->debt->isNotEmpty() ?? $rental->debt->first()->description : old('description')}}</textarea>
                     @error('date_pays')
                     <span class="invalid-feedback" role="alert">
                         <strong>{{ $message }}</strong>
