@@ -13,13 +13,13 @@
                     <input type="text" value="{{isset($service) ? ($service->name) : old('name')}}" class="form-control @error('name') is-invalid @enderror"
                            name="name" placeholder="Enter Name Customer">
                     @error('name')
-                        <span class="invalid-feedback" role="alert">
+                    <span class="invalid-feedback" role="alert">
                             <strong>{{ $message }}</strong>
                         </span>
                     @enderror
                 </div>
                 <div class="col-md-3">
-                <label for="input1" class="form-label"><i class="text-danger">*</i> Tanggal Invoice</label>
+                    <label for="input1" class="form-label"><i class="text-danger">*</i> Tanggal Invoice</label>
                     <input type="text" value="{{isset($service) ? ($service->tgl_inv) : old('tgl_inv')}}" class="form-control @error('tgl_inv') is-invalid @enderror datepicker"
                            name="tgl_inv" placeholder="Tanggal Invoice">
                     @error('tgl_inv')
@@ -90,39 +90,49 @@
                 </div>
                 <div class="col-md-12">
                     <label for="">Nama Bank</label>
-                    {{ html()->select('bank_id', $bank, isset($rental) ? $debts->bank_id : old('bank_id'))
+                    {{ html()->select('bank_id', $bank, isset($service) && $service->debtService->isNotEmpty() ? $service->debtService->first()->bank_id : old('bank_id'))
                             ->class(['form-control', 'is-invalid' => $errors->has('bank_id')])
                             ->id('bank-select')
                             ->placeholder("--Select Bank--")
                         }}
+
                 </div>
                 <div class="col-md-12">
                     <label for="">Nama Pemenerima</label>
-                    <input type="text" class="form-control" name="penerima" value="{{old('penerima')}}">
+                    <input type="text" class="form-control" name="penerima" value="{{ isset($service) ? $service->debtService->first()->penerima : null || old('penerima') }}">
+                </div>
+                <div class="col-md-12">
+                    <label for="input" class="form-label">Keterangan Bayar</label>
+                    <textarea class="form-control @error('description') is-invalid @enderror" name="description"
+                              placeholder="Keterangan Bayar">{{ isset($service) ? $service->debtService->first()->description : null || old('description') }}</textarea>
+                    @error('descript')
+                    <span class="invalid-feedback" role="alert">
+                        <strong>{{$message}}</strong>
+                    </span>
+                    @enderror
                 </div>
                 <div class="col-md-2">
                     <label for="input" class="form-label"><i class="text-danger">*</i> Total Inv</label>
                     <input type="number" value="{{isset($service) ? $service->total_invoice : 0 + old('total_invoice')}}"
                            class="form-control" name="total_invoice" placeholder="Total Invoice">
                 </div>
-                
-                 <div class="col-md-2">
+                <div class="col-md-2">
                     <label for="input" class="form-label"><i class="text-danger">*</i> Uang Masuk</label>
                     <input type="number" value="{{isset($service) ? $service->nominal_in : 0 + old('nominal_in')}}"
                            class="form-control @error('nominal_in') is-invalid @enderror" name="nominal_in" placeholder="Nominal In (Rp)">
-                     @error('nominal_in')
-                        <span class="invalid-feedback" role="alert">
+                    @error('nominal_in')
+                    <span class="invalid-feedback" role="alert">
                             <strong>{{$message}}</strong>
                         </span>
-                     @enderror
+                    @enderror
                 </div>
-                 
-                 <div class="col-md-2">
+
+                <div class="col-md-2">
                     <label for="input" class="form-label">Sisa Bayar</label>
                     <input type="number" value="{{isset($service) ? $service->nominal_out : 0 +  old('nominal_out')}}"
                            class="form-control" name="nominal_out" placeholder="Nominal Out (Rp)">
                 </div>
-                 <div class="col-md-2">
+                <div class="col-md-2">
                     <label for="input" class="form-label">Biaya Ganti</label>
                     <input type="number" value="{{isset($service) ? $service->biaya_ganti : 0 + old('biaya_ganti')}}"
                            class="form-control" name="biaya_ganti" placeholder="Biaya Ganti (Rp)">
@@ -133,9 +143,14 @@
                            class="form-control" name="diskon" placeholder="Fee/Diskon (Rp)">
                 </div>
                 <div class="col-md-2">
+                    <label for="input" class="form-label">PPN</label>
+                    <input type="number" value="{{isset($service) ? $service->ppn : 0 + old('ppn')}}"
+                           class="form-control" name="ppn" placeholder="ppn (Rp)">
+                </div>
+                <div class="col-md-2">
                     <label for="input" class="form-label">Tanggal Bayar</label>
-                    <input type="text" value=""
-                           class="form-control datepicker " name="date_pay" placeholder="Tanggal Bayar" value="{{isset($service) ? $service->date_pay : old('date_pay')}}">
+                    <input type="text"
+                           class="form-control datepicker " name="date_pay" placeholder="Tanggal Bayar" value="{{isset($service) ? $service->debtService->first()->date_pay : old('date_pay')}}">
                 </div>
                 <div class="col-md-12">
                     <label for="input" class="form-label">Keterangan</label>

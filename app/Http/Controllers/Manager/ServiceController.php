@@ -36,13 +36,16 @@ class ServiceController extends Controller
             'url' => route('manager.service.store')
         ];
         if ($id){
+            $bank = Bank::pluck('name', 'id')->toArray();
+            $debtService = DebtServic::all();
             $service = Service::whereId($id)->first();
             $inject = [
                 'url' => route('manager.service.update', $id),
+                'debtService' => $debtService,
+                'bank' => $bank,
                 'service' => $service
             ];
         }
-        $bank = Bank::pluck('name', 'id')->toArray();
         return view('manager.service.create', $inject, compact('bank'));
     }
 

@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Bank;
+use App\Models\Debts;
 use App\Models\DebtServic;
 use App\Models\Service;
 use Illuminate\Http\Request;
@@ -37,13 +38,16 @@ class ServiceController extends Controller
             'url' => route('admin.service.store')
         ];
         if ($id){
+            $bank = Bank::pluck('name', 'id')->toArray();
+            $debt = DebtServic::all();
             $service = Service::whereId($id)->first();
             $inject = [
                 'url' => route('admin.service.update', $id),
+                'debt' => $debt,
+                'bank' => $bank,
                 'service' => $service
             ];
         }
-        $bank = Bank::pluck('name', 'id')->toArray();
         return view('admin.service.create', $inject, compact('bank'));
     }
 

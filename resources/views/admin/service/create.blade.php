@@ -90,7 +90,7 @@
                 </div>
                 <div class="col-md-12">
                     <label for="">Nama Bank</label>
-                    {{ html()->select('bank_id', $bank, isset($rental) ? $debts->bank_id : old('bank_id'))
+                    {{ html()->select('bank_id', $bank, isset($service) && $service->debt->isNotEmpty() ? $service->debt->first()->bank_id : old('bank_id'))
                             ->class(['form-control', 'is-invalid' => $errors->has('bank_id')])
                             ->id('bank-select')
                             ->placeholder("--Select Bank--")
@@ -98,7 +98,7 @@
                 </div>
                 <div class="col-md-12">
                     <label for="">Nama Pemenerima</label>
-                    <input type="text" class="form-control" name="penerima" value="{{old('penerima')}}">
+                    <input type="text" class="form-control" name="penerima" value="{{$service->debt->first()->penerima}}">
                 </div>
                 <div class="col-md-12">
                     <label for="input" class="form-label">Keterangan Bayar</label>
@@ -148,8 +148,8 @@
                 </div>
                 <div class="col-md-2">
                     <label for="input" class="form-label">Tanggal Bayar</label>
-                    <input type="text" value=""
-                           class="form-control datepicker " name="date_pay" placeholder="Tanggal Bayar" value="{{isset($service) ? $service->date_pay : old('date_pay')}}">
+                    <input type="text"
+                           class="form-control datepicker " name="date_pay" placeholder="Tanggal Bayar" value="{{isset($service) ? $service->debt->date_pay : old('date_pay')}}">
                 </div>
                 <div class="col-md-12">
                     <label for="input" class="form-label">Keterangan</label>
