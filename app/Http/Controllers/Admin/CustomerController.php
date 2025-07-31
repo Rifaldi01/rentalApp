@@ -131,14 +131,13 @@ class CustomerController extends Controller
 
         $customer = Customer::firstOrNew(['id' => $id]);
         $customer->name = $request->input('name');
-        if ($request->filled('no_identity') && $request->input('no_identity') != $customer->no_identity) {
+        if ($request->has('no_identity') && $request->input('no_identity') != null) {
             $customer->no_identity = $request->input('no_identity');
         }
 
-        if ($request->filled('phone') && $request->input('phone') != $customer->phone) {
+        if ($request->has('phone') && $request->input('phone') != null) {
             $customer->phone = $request->input('phone');
         }
-
         $customer->addres = $request->input('addres');
 
         if ($request->hasFile('image')) {
