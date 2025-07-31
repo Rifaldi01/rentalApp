@@ -144,7 +144,7 @@
                 <div class="col-md-2">
                     <label for="input" class="form-label">PPN</label>
                     <input type="number" value="{{isset($service) ? $service->ppn : 0 + old('ppn')}}"
-                           class="form-control" name="diskon" placeholder="ppn (Rp)">
+                           class="form-control" name="ppn" placeholder="ppn (Rp)">
                 </div>
                 <div class="col-md-2">
                     <label for="input" class="form-label">Tanggal Bayar</label>
