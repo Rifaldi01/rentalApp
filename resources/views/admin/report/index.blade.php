@@ -700,7 +700,7 @@
                             var rows = $('row', sheet);
 
                             // Salin footer dari tabel
-                            var tfoot = $('#table-report tfoot');
+                            var tfoot = $('#table-report-cicilan tfoot');
                             var tfootRows = '';
 
                             tfoot.find('tr').each(function () {
@@ -762,7 +762,7 @@
                             });
 
                             // Footer Tabel (Jika Ada)
-                            var tfoot = $('#table-report tfoot').clone();
+                            var tfoot = $('#table-report-cicilan tfoot').clone();
                             if (tfoot.length) {
                                 var footerRow = [];
                                 tfoot.find('th').each(function () {
@@ -810,7 +810,7 @@
                                 .find('table')
                                 .addClass('compact')
                                 .css('font-size', '10px');
-                            var tfoot = $('#table-report tfoot').clone();
+                            var tfoot = $('#table-report-cicilan tfoot').clone();
                             $(win.document.body).find('table').append(tfoot);
                         },
                     },
