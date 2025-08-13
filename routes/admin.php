@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Admin\PoinController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\RentalController;
@@ -91,6 +92,9 @@ Route::group(['middleware' => ['auth:web', 'role:admin'], 'prefix' => 'admin'], 
     Route::get('report/service', [ReportServiceController::class, 'index'])->name('admin.report.service.index');
     Route::get('/report/service/filter', [ReportServiceController::class, 'filter'])->name('admin.service.filter');
     //report end
+
+    //poin
+    Route::get('/poin', [PoinController::class, 'index'])->name('admin.poin.index');
 });
 
 

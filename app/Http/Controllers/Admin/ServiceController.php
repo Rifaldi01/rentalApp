@@ -34,21 +34,24 @@ class ServiceController extends Controller
      */
     public function create($id = null)
     {
+        $bank = Bank::pluck('name', 'id')->toArray();
+        $debt = DebtServic::all();
+        $service = null; // default null untuk mode create
+
         $inject = [
-            'url' => route('admin.service.store')
+            'url' => route('admin.service.store'),
+            'bank' => $bank,
+            'debt' => $debt,
+            'service' => $service
         ];
-        if ($id){
-            $bank = Bank::pluck('name', 'id')->toArray();
-            $debt = DebtServic::all();
+
+        if ($id) {
             $service = Service::whereId($id)->first();
-            $inject = [
-                'url' => route('admin.service.update', $id),
-                'debt' => $debt,
-                'bank' => $bank,
-                'service' => $service
-            ];
+            $inject['url'] = route('admin.service.update', $id);
+            $inject['service'] = $service;
         }
-        return view('admin.service.create', $inject, compact('bank'));
+
+        return view('admin.service.create', $inject);
     }
 
     /**

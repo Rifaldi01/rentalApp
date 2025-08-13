@@ -60,6 +60,13 @@
                 <div class="menu-title">Pembayaran</div>
             </a>
         </li>
+{{--        <li>--}}
+{{--            <a href="{{route('admin.pembayaran.index')}}">--}}
+{{--                <div class="parent-icon"><i class='bx bx-coin'></i>--}}
+{{--                </div>--}}
+{{--                <div class="menu-title">Poin</div>--}}
+{{--            </a>--}}
+{{--        </li>--}}
         <li class="menu-label">Items</li>
         <li>
             <a href="javascript:;" class="has-arrow">
