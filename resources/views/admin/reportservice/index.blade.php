@@ -124,16 +124,15 @@
                                     @endif
                                 </td>
                                 <td>
-                                    @if($data->debtService && $data->debtService->isNotEmpty())
-                                        @foreach($data->debtService as $debt)
-                                            <li>{{$debt->penerima}}</li>
-                                        @endforeach
+                                    @if($data->penerima)
+                                        <li>{{ $data->penerima }}</li>
                                     @else
                                         Tidak ada data
                                     @endif
 
+
                                 </td>
-                                <td>{{$data->date_pays}}</td>
+                                <td>{{$data->service->descript}}</td>
                                 <td>
                                     @if(optional($data->service)->status == 0)
                                         <span class="badge bg-success">Service</span>
