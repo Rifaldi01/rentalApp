@@ -120,7 +120,7 @@
                                     @if($data->bank_id)
                                     {{$data->bank->name}}, {{formatId($data->date_pay)}}
                                     @else
-                                        {{ $data->description }}
+                                        {{ $data->description }}, {{formatId($data->date_pay)}}
                                     @endif
                                 </td>
                                 <td>
