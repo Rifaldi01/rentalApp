@@ -174,7 +174,7 @@
 
                 {{-- Keterangan --}}
                 <div class="col-md-12">
-                    <label>Keterangan</label>
+                    <label>Keterangan Ganti</label>
                     <textarea class="form-control @error('descript') is-invalid @enderror"
                               name="descript" placeholder="Enter Descript">{{ isset($service) ? $service->descript : old('descript') }}</textarea>
                     @error('descript') <span class="invalid-feedback">{{ $message }}</span> @enderror
