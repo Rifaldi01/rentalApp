@@ -53,7 +53,9 @@ class ReportController extends Controller
 
         $total = $cicilan->groupBy('id')->map(function ($group) {
             return $group->sum(function ($item) {
-                return $item->pay_debts - (optional($item->rental)->diskon ?? 0);
+                $diskon = $item->rental?->diskon ?? 0; // Gunakan null-safe operator dan fallback 0
+                $ppn = $item->rental?->ppn ?? 0; // Gunakan null-safe operator dan fallback 0
+                return $item->rental->total_invoice + $ppn - $diskon;
             });
         });
 
@@ -133,7 +135,9 @@ class ReportController extends Controller
             ->get();
         $total = $cicilan->groupBy('id')->map(function ($group) {
             return $group->sum(function ($item) {
-                return $item->pay_debts - (optional($item->rental)->diskon ?? 0);
+                $diskon = $item->rental?->diskon ?? 0; // Gunakan null-safe operator dan fallback 0
+                $ppn = $item->rental?->ppn ?? 0; // Gunakan null-safe operator dan fallback 0
+                return $item->rental->total_invoice + $ppn - $diskon;
             });
         });
             $uangmasuk = $cicilan->sum('pay_debts');
@@ -204,7 +208,9 @@ class ReportController extends Controller
         ->get();
         $total = $cicilan->groupBy('id')->map(function ($group) {
             return $group->sum(function ($item) {
-                return $item->pay_debts - (optional($item->rental)->diskon ?? 0);
+                $diskon = $item->rental?->diskon ?? 0; // Gunakan null-safe operator dan fallback 0
+                $ppn = $item->rental?->ppn ?? 0; // Gunakan null-safe operator dan fallback 0
+                return $item->rental->total_invoice + $ppn - $diskon;
             });
         });
 
