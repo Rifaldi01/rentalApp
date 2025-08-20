@@ -59,7 +59,7 @@ class ReportController extends Controller
         $uangmasuk = $cicilan->sum('pay_debts');
         $sisa = $cicilan->groupBy('id')->map(function ($group) {
             return $group->sum(function ($item){
-                return $item->rental->total_invoice -$item->pay_debts;
+                 return $item->rental->total_invoice + $item->rental->ppn - $item->pay_debts;
             });
         });
         $diskon = $cicilan->sum(function ($item) {
@@ -136,7 +136,7 @@ class ReportController extends Controller
         $uangmasuk = $cicilan->sum('pay_debts');
         $sisa = $cicilan->groupBy('id')->map(function ($group) {
             return $group->sum(function ($item){
-                return $item->rental->total_invoice -$item->pay_debts;
+                 return $item->rental->total_invoice + $item->rental->ppn - $item->pay_debts;
             });
         });
         $diskon = $cicilan->sum(function ($item) {
@@ -214,7 +214,7 @@ class ReportController extends Controller
         $uangmasuk = $cicilan->sum('pay_debts');
         $sisa = $cicilan->groupBy('id')->map(function ($group) {
             return $group->sum(function ($item){
-                return $item->rental->total_invoice + $item->rental->ppn - $item->pay_debts;
+                 return $item->rental->total_invoice + $item->rental->ppn - $item->pay_debts;
             });
         });
         $diskon = $cicilan->sum(function ($item) {
