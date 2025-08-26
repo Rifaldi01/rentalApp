@@ -59,6 +59,7 @@ Route::group(['middleware' => ['auth:web', 'role:manager'], 'prefix' => 'manager
 
     //accessories
     Route::resource('/accessories', AccessoriesController::class)->names('manager.acces');
+    Route::get('accessories-kosong/', [AccessoriesController::class, 'accesKosong'])->name('manager.acces.kosong');
     //accessories end
 
     //report

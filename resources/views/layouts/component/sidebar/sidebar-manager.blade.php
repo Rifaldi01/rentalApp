@@ -95,6 +95,14 @@
             </a>
         </li>
         <li>
+            <a href="{{route('manager.acces.kosong')}}">
+                <div class="parent-icon">
+                    <i class='bx bx-collection'></i>
+                </div>
+                <div class="menu-title">Accessories Kosong</div>
+            </a>
+        </li>
+        <li>
             <a href="{{route('manager.sale')}}">
                 <div class="parent-icon"><i class='bx bx-dollar'></i>
                 </div>
