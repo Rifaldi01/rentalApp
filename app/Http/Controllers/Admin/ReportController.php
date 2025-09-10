@@ -41,7 +41,7 @@ class ReportController extends Controller
         // Perhitungan total
         $totaldiskon = $report->sum('diskon');
         $totalin = $report->sum('nominal_in');
-        $totalincome = $report->sum(function($item) {
+        $totalincome = $report->sum(function ($item) {
             return $item->nominal_in - $item->diskon;
         });
         $totaloutside = $report->sum('nominal_out');
@@ -58,8 +58,8 @@ class ReportController extends Controller
 
         $uangmasuk = $cicilan->sum('pay_debts');
         $sisa = $cicilan->groupBy('id')->map(function ($group) {
-            return $group->sum(function ($item){
-                 return $item->rental->total_invoice + $item->rental->ppn - $item->rental->nominal_in;
+            return $group->sum(function ($item) {
+                return $item->rental->total_invoice + $item->rental->ppn - $item->rental->nominal_in - $item->rental->diskon;
             });
         });
         $diskon = $cicilan->sum(function ($item) {
@@ -76,10 +76,11 @@ class ReportController extends Controller
         });
 
         // return $debt;
-        return view('admin.report.index', compact('totalppn', 'sisabayar','totalbersih','diskon','sisa','totalin', 'report', 'totaldiskon', 'totalincome', 'totaloutside', 'cicilan', 'total', 'uangmasuk'));
+        return view('admin.report.index', compact('totalppn', 'sisabayar', 'totalbersih', 'diskon', 'sisa', 'totalin', 'report', 'totaldiskon', 'totalincome', 'totaloutside', 'cicilan', 'total', 'uangmasuk'));
     }
 
-    public function filter(Request $request){
+    public function filter(Request $request)
+    {
         $request->validate([
             'start_date' => 'required|date|before_or_equal:today',
             'end_date' => 'required|date|after_or_equal:start_date|before_or_equal:today',
@@ -99,9 +100,9 @@ class ReportController extends Controller
             ->leftjoin('accessories as b', 'a.accessories_id', '=', 'b.id')
             ->select(
                 'rentals.id', 'rentals.customer_id', 'rentals.item_id', 'rentals.name_company',
-                'rentals.addres_company', 'rentals.phone_company', 'rentals.no_po','rentals.date_start',
-                'rentals.date_end', 'rentals.status', 'nominal_in', 'nominal_out', 'diskon', 'a.rental_id','ongkir', 'rentals.created_at',
-                'rentals.no_inv',  'rentals.tgl_inv', 'rentals.date_pays', 'rentals.total_invoice',
+                'rentals.addres_company', 'rentals.phone_company', 'rentals.no_po', 'rentals.date_start',
+                'rentals.date_end', 'rentals.status', 'nominal_in', 'nominal_out', 'diskon', 'a.rental_id', 'ongkir', 'rentals.created_at',
+                'rentals.no_inv', 'rentals.tgl_inv', 'rentals.date_pays', 'rentals.total_invoice',
                 DB::raw('GROUP_CONCAT(DISTINCT b.name) as access'), // Diedit: Menambahkan DISTINCT untuk menghindari duplikasi nama accessories
                 DB::raw('nominal_in - diskon  as total'),
                 DB::raw('(nominal_in + nominal_out) as total_nominal')
@@ -110,7 +111,7 @@ class ReportController extends Controller
                 'rentals.id', 'rentals.customer_id', 'rentals.item_id', 'rentals.name_company',
                 'rentals.addres_company', 'rentals.phone_company', 'rentals.no_po', 'rentals.date_start',
                 'rentals.date_end', 'rentals.status', 'nominal_in', 'nominal_out', 'diskon', 'a.rental_id', 'ongkir',
-                'rentals.created_at', 'rentals.no_inv',  'rentals.tgl_inv', 'rentals.date_pays', 'rentals.total_invoice',
+                'rentals.created_at', 'rentals.no_inv', 'rentals.tgl_inv', 'rentals.date_pays', 'rentals.total_invoice',
             )
             ->whereBetween('rentals.created_at', [$start_date, $end_date])
             ->orderBy('rentals.created_at', 'asc')
@@ -119,8 +120,8 @@ class ReportController extends Controller
         // Calculate totals
         $totaldiskon = $report->sum('diskon');
         $totalin = $report->sum('nominal_in');
-        $totalincome = $report->sum(function($item) {
-            return $item->nominal_in - $item->diskon ;
+        $totalincome = $report->sum(function ($item) {
+            return $item->nominal_in - $item->diskon;
         });
         $totaloutside = $report->sum('nominal_out');
         $cicilan = Debts::with(['rental.cust', 'rental.item', 'bank'])
@@ -135,8 +136,8 @@ class ReportController extends Controller
 
         $uangmasuk = $cicilan->sum('pay_debts');
         $sisa = $cicilan->groupBy('id')->map(function ($group) {
-            return $group->sum(function ($item){
-                 return $item->rental->total_invoice + $item->rental->ppn - $item->rental->nominal_in;
+            return $group->sum(function ($item) {
+                return $item->rental->total_invoice + $item->rental->ppn - $item->rental->nominal_in - $item->rental->diskon;
             });
         });
         $diskon = $cicilan->sum(function ($item) {
@@ -153,9 +154,11 @@ class ReportController extends Controller
         });
 
         // return $debt;
-        return view('admin.report.index', compact('totalppn','sisabayar','totalbersih','diskon','sisa','totalin', 'report', 'totaldiskon', 'totalincome', 'totaloutside', 'cicilan', 'total', 'uangmasuk'));
+        return view('admin.report.index', compact('totalppn', 'sisabayar', 'totalbersih', 'diskon', 'sisa', 'totalin', 'report', 'totaldiskon', 'totalincome', 'totaloutside', 'cicilan', 'total', 'uangmasuk'));
     }
-    public function filtercicilan(Request $request){
+
+    public function filtercicilan(Request $request)
+    {
         $request->validate([
             'tanggal_mulai' => 'required|date|before_or_equal:today',
             'tanggal_akhir' => 'required|date|after_or_equal:start_date|before_or_equal:today',
@@ -175,9 +178,9 @@ class ReportController extends Controller
             ->leftjoin('accessories as b', 'a.accessories_id', '=', 'b.id')
             ->select(
                 'rentals.id', 'rentals.customer_id', 'rentals.item_id', 'rentals.name_company',
-                'rentals.addres_company', 'rentals.phone_company', 'rentals.no_po','rentals.date_start',
-                'rentals.date_end', 'rentals.status', 'nominal_in', 'nominal_out', 'diskon', 'a.rental_id','ongkir', 'rentals.created_at',
-                'rentals.no_inv',  'rentals.tgl_inv', 'rentals.date_pays', 'rentals.total_invoice',
+                'rentals.addres_company', 'rentals.phone_company', 'rentals.no_po', 'rentals.date_start',
+                'rentals.date_end', 'rentals.status', 'nominal_in', 'nominal_out', 'diskon', 'a.rental_id', 'ongkir', 'rentals.created_at',
+                'rentals.no_inv', 'rentals.tgl_inv', 'rentals.date_pays', 'rentals.total_invoice',
                 DB::raw('GROUP_CONCAT(DISTINCT b.name) as access'), // Diedit: Menambahkan DISTINCT untuk menghindari duplikasi nama accessories
                 DB::raw('nominal_in - diskon  as total'),
                 DB::raw('(nominal_in + nominal_out) as total_nominal')
@@ -186,7 +189,7 @@ class ReportController extends Controller
                 'rentals.id', 'rentals.customer_id', 'rentals.item_id', 'rentals.name_company',
                 'rentals.addres_company', 'rentals.phone_company', 'rentals.no_po', 'rentals.date_start',
                 'rentals.date_end', 'rentals.status', 'nominal_in', 'nominal_out', 'diskon', 'a.rental_id', 'ongkir',
-                'rentals.created_at', 'rentals.no_inv',  'rentals.tgl_inv', 'rentals.date_pays', 'rentals.total_invoice',
+                'rentals.created_at', 'rentals.no_inv', 'rentals.tgl_inv', 'rentals.date_pays', 'rentals.total_invoice',
             )
             ->orderBy('rentals.created_at', 'asc')
             ->get();
@@ -194,8 +197,8 @@ class ReportController extends Controller
         // Calculate totals
         $totaldiskon = $report->sum('diskon');
         $totalin = $report->sum('nominal_in');
-        $totalincome = $report->sum(function($item) {
-            return $item->nominal_in - $item->diskon ;
+        $totalincome = $report->sum(function ($item) {
+            return $item->nominal_in - $item->diskon;
         });
         $totaloutside = $report->sum('nominal_out');
         $cicilan = Debts::with(['rental.cust', 'rental.item', 'bank'])
@@ -213,8 +216,8 @@ class ReportController extends Controller
 
         $uangmasuk = $cicilan->sum('pay_debts');
         $sisa = $cicilan->groupBy('id')->map(function ($group) {
-            return $group->sum(function ($item){
-                 return $item->rental->total_invoice + $item->rental->ppn - $item->rental->nominal_in;
+            return $group->sum(function ($item) {
+                return $item->rental->total_invoice + $item->rental->ppn - $item->rental->nominal_in - $item->rental->diskon;
             });
         });
         $diskon = $cicilan->sum(function ($item) {
@@ -248,3 +251,4 @@ class ReportController extends Controller
         ]));
     }
 }
+

@@ -134,8 +134,14 @@
                                 {{formatRupiah($datas->pay_debts)}}
                             </td>
                             <td>
-                                {{formatRupiah($sisa[$datas->id])}}
+                                @if(optional($datas->rental)->nominal_out !== null)
+                                    {{ formatRupiah($datas->rental->nominal_out) }}
+                                @else
+                                    {{ formatRupiah($sisa[$datas->id] ?? 0) }}
+                                @endif
+
                             </td>
+
                             <td>
                                 @if($datas->bank_id)
                                     {{$datas->bank->name}}
