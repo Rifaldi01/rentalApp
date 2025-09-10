@@ -13,7 +13,7 @@
                        href="{{route('admin.rental.create')}}"
                        class="btn btn-dnd bx bx-plus float-end me-3 mt-3 shadow">
                     </a>
-                    
+
                 </div>
             </div>
         </div>
@@ -23,6 +23,7 @@
                     <thead>
                     <tr>
                         <th width="2%" class="text-center">No</th>
+                        <th>No Invoice</th>
                         <th>Name</th>
                         <th>Item</th>
                         <th>No Seri</th>
@@ -43,6 +44,7 @@
                         @foreach($rental as $key => $data)
                             <td>{{$key +1}}</td>
                             <td>{{$data->cust->name}}</td>
+                            <td>{{$data->no_inv}}</td>
                             <td>
                                 @php
                                     $itemIds = json_decode($data->item_id);
@@ -188,7 +190,7 @@
         document.querySelectorAll('form button[type="submit"]').forEach(function(button) {
             button.addEventListener('click', function(event) {
                 event.preventDefault(); // Mencegah form dikirimkan langsung
-                
+
                 const form = this.closest('form'); // Ambil form terdekat
 
                 Swal.fire({
