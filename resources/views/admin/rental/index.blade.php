@@ -43,8 +43,8 @@
                     <tr>
                         @foreach($rental as $key => $data)
                             <td>{{$key +1}}</td>
-                            <td>{{$data->cust->name}}</td>
                             <td>{{$data->no_inv}}</td>
+                            <td>{{$data->cust->name}}</td>
                             <td>
                                 @php
                                     $itemIds = json_decode($data->item_id);

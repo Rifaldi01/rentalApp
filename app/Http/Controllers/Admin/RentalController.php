@@ -48,13 +48,13 @@ class RentalController extends Controller
             ->select(
                 'rentals.id', 'rentals.customer_id', 'rentals.item_id', 'rentals.name_company',
                 'rentals.addres_company', 'rentals.phone_company', 'rentals.no_po', 'rentals.date_start',
-                'rentals.date_end', 'rentals.status', 'a.rental_id', 'rentals.nominal_in', 'rentals.nominal_out', 'rentals.diskon', 'rentals.total_invoice',
+                'rentals.date_end', 'rentals.status', 'a.rental_id', 'rentals.nominal_in', 'rentals.nominal_out', 'rentals.no_inv', 'rentals.diskon', 'rentals.total_invoice',
                 DB::raw('GROUP_CONCAT(b.name) as access')
             )
             ->groupBy(
                 'rentals.id', 'rentals.customer_id', 'rentals.item_id', 'rentals.name_company',
                 'rentals.addres_company', 'rentals.phone_company', 'rentals.no_po', 'rentals.date_start',
-                'rentals.date_end', 'rentals.status', 'a.rental_id',  'rentals.nominal_in', 'rentals.nominal_out', 'rentals.diskon', 'rentals.total_invoice',
+                'rentals.date_end', 'rentals.status', 'a.rental_id', 'rentals.nominal_in', 'rentals.nominal_out', 'rentals.no_inv', 'rentals.diskon', 'rentals.total_invoice',
             )
             ->where('status', 1)
             ->get();
@@ -293,21 +293,21 @@ class RentalController extends Controller
             if ($debt) {
                 // Jika sudah ada, update data hutang
                 $debt->update([
-                    'bank_id'    => $request->input('bank_id'),
-                    'pay_debts'  => $rental->nominal_in,
-                    'penerima'   => $request->input('penerima'),
-                    'date_pay'   => $request->input('date_pay'),
-                    'description'=> $request->input('description'),
+                    'bank_id' => $request->input('bank_id'),
+                    'pay_debts' => $rental->nominal_in,
+                    'penerima' => $request->input('penerima'),
+                    'date_pay' => $request->input('date_pay'),
+                    'description' => $request->input('description'),
                 ]);
             } else {
                 // Jika belum ada, buat data baru
                 Debts::create([
-                    'rental_id'  => $rental->id,
-                    'bank_id'    => $request->input('bank_id'),
-                    'pay_debts'  => $rental->nominal_in,
-                    'penerima'   => $request->input('penerima'),
-                    'date_pay'   => $request->input('date_pay'),
-                    'description'=> $request->input('description'),
+                    'rental_id' => $rental->id,
+                    'bank_id' => $request->input('bank_id'),
+                    'pay_debts' => $rental->nominal_in,
+                    'penerima' => $request->input('penerima'),
+                    'date_pay' => $request->input('date_pay'),
+                    'description' => $request->input('description'),
                 ]);
             }
         }
@@ -318,44 +318,44 @@ class RentalController extends Controller
 
 
     public function finis($id)
-{
-    // Temukan objek rental berdasarkan ID
-    $rental = Rental::findOrFail($id);
-    $rental->status = 0;
-    $rental->save();
+    {
+        // Temukan objek rental berdasarkan ID
+        $rental = Rental::findOrFail($id);
+        $rental->status = 0;
+        $rental->save();
 
-    // Ambil ID item dari rental
-    $itemIds = json_decode($rental->item_id, true) ?? []; // Jika item_id disimpan dalam format JSON
+        // Ambil ID item dari rental
+        $itemIds = json_decode($rental->item_id, true) ?? []; // Jika item_id disimpan dalam format JSON
 
-    // Update status item menjadi 0
-    foreach ($itemIds as $itemId) {
-        $item = Item::find($itemId);
-        if ($item) {
-            if ($item->status != 3 && $item->status != 1) { // Cek jika status bukan 3 atau 1
-                $item->status = 0; // Ubah status menjadi 0
-                $item->save();
+        // Update status item menjadi 0
+        foreach ($itemIds as $itemId) {
+            $item = Item::find($itemId);
+            if ($item) {
+                if ($item->status != 3 && $item->status != 1) { // Cek jika status bukan 3 atau 1
+                    $item->status = 0; // Ubah status menjadi 0
+                    $item->save();
+                }
             }
         }
-    }
 
-    // Update status aksesori dan kembalikan stok
-    $accessoriesCategories = AccessoriesCategory::where('rental_id', $rental->id)->get();
-    foreach ($accessoriesCategories as $accessoriesCategory) {
-        // Update status_acces di tabel pivot
-        AccessoriesCategory::where('rental_id', $rental->id)
-            ->where('accessories_id', $accessoriesCategory->accessories_id)
-            ->update(['status_acces' => 0]);
+        // Update status aksesori dan kembalikan stok
+        $accessoriesCategories = AccessoriesCategory::where('rental_id', $rental->id)->get();
+        foreach ($accessoriesCategories as $accessoriesCategory) {
+            // Update status_acces di tabel pivot
+            AccessoriesCategory::where('rental_id', $rental->id)
+                ->where('accessories_id', $accessoriesCategory->accessories_id)
+                ->update(['status_acces' => 0]);
 
-        // Kembalikan stok aksesori
-        $accessory = Accessories::find($accessoriesCategory->accessories_id);
-        if ($accessory) {
-            $accessory->stok += $accessoriesCategory->accessories_quantity;
-            $accessory->save();
+            // Kembalikan stok aksesori
+            $accessory = Accessories::find($accessoriesCategory->accessories_id);
+            if ($accessory) {
+                $accessory->stok += $accessoriesCategory->accessories_quantity;
+                $accessory->save();
+            }
         }
-    }
 
-    return redirect()->back()->with('success', 'Rental Finished');
-}
+        return redirect()->back()->with('success', 'Rental Finished');
+    }
 
 
     public function problem($id)
@@ -366,6 +366,7 @@ class RentalController extends Controller
         Alert::warning('Warning', 'The Rental Has Problem');
         return redirect()->back();
     }
+
     public function hsty()
     {
 
@@ -373,7 +374,7 @@ class RentalController extends Controller
             ->leftjoin('accessories as b', 'a.accessories_id', '=', 'b.id')
             ->select(
                 'rentals.id', 'rentals.customer_id', 'rentals.item_id', 'rentals.name_company',
-                'rentals.addres_company', 'rentals.phone_company', 'rentals.no_po','rentals.date_start', 'date_pays',
+                'rentals.addres_company', 'rentals.phone_company', 'rentals.no_po', 'rentals.date_start', 'date_pays',
                 'rentals.date_end', 'rentals.status', 'a.rental_id', 'nominal_in', 'nominal_out', 'diskon', 'ongkir',
                 'rentals.image', 'rentals.created_at', 'no_inv',
                 DB::raw('GROUP_CONCAT(b.name) as access')
@@ -387,7 +388,9 @@ class RentalController extends Controller
             ->get();
         return view('admin.rental.history', compact('rental'));
     }
-    public  function tanggalBuat(Request $request, $id){
+
+    public function tanggalBuat(Request $request, $id)
+    {
         $rental = Rental::findOrFail($id);
         $rental->created_at = $request->input('created_at');
         $rental->save();
@@ -417,6 +420,7 @@ class RentalController extends Controller
 
         return response()->json(['success' => false]);
     }
+
     public function downloadImages($id)
     {
         $rental = Rental::findOrFail($id);
