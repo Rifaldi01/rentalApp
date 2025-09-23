@@ -72,11 +72,11 @@
                                                 @csrf
                                                 <div class="modal-body">
                                                     <label class="col-form-label">Date Pembuatan</label>
-                                                    <input type="text" class="form-control datepicker" name="nominal_in" value="{{ $data->rental->created_at ?? '' }}">
+                                                    <input type="text" class="form-control datepicker" name="created_at" value="{{ $data->rental->created_at ?? '' }}">
                                                     <label class="col-form-label">Date Start</label>
-                                                    <input type="text" class="form-control datepicker" name="nominal_in" value="{{ $data->rental->date_start ?? '' }}">
+                                                    <input type="text" class="form-control datepicker" name="date_start" value="{{ $data->rental->date_start ?? '' }}">
                                                     <label class="col-form-label">Date End</label>
-                                                    <input type="text" class="form-control datepicker" name="nominal_in" value="{{ $data->rental->date_end ?? '' }}">
+                                                    <input type="text" class="form-control datepicker" name="date_end" value="{{ $data->rental->date_end ?? '' }}">
                                                     <label class="col-form-label">Nominal In</label>
                                                     <input type="number" class="form-control" name="nominal_in" value="{{ $data->rental->nominal_in ?? '' }}">
                                                     <label class="col-form-label">Nominal Out</label>
