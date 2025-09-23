@@ -25,7 +25,7 @@ class ProblemController extends Controller
             ->select(
                 'rentals.id', 'rentals.customer_id', 'rentals.item_id', 'rentals.name_company',
                 'rentals.addres_company', 'rentals.phone_company', 'rentals.no_po','rentals.date_start',
-                'rentals.date_end', 'rentals.status', 'a.rental_id', 'rentals.created_at',
+                'rentals.date_end', 'rentals.status', 'a.rental_id', 'rentals.created_at', 'rentals.no_inv',
                 \DB::raw('GROUP_CONCAT(b.name) as access'),
                 'problems.id', 'problems.descript', 'problems.rental_id', 'rentals.nominal_in', 'rentals.nominal_out', 'rentals.diskon', 'rentals.total_invoice',
             )
@@ -33,7 +33,7 @@ class ProblemController extends Controller
                 'rentals.id', 'rentals.customer_id', 'rentals.item_id', 'rentals.name_company',
                 'rentals.addres_company', 'rentals.phone_company', 'rentals.no_po', 'rentals.date_start',
                 'rentals.date_end', 'rentals.status', 'a.rental_id', 'problems.id', 'problems.descript', 'problems.rental_id','rentals.created_at',
-                'rentals.nominal_in', 'rentals.nominal_out', 'rentals.diskon', 'rentals.total_invoice',
+                'rentals.nominal_in', 'rentals.nominal_out', 'rentals.diskon', 'rentals.total_invoice', 'rentals.no_inv',
             )
             ->where('problems.status', 0)
             ->get();
@@ -96,7 +96,7 @@ class ProblemController extends Controller
                     }
                 }
             }
-        
+
             // Update status aksesori dan kembalikan stok
             $accessoriesCategories = AccessoriesCategory::where('rental_id', $rental->id)->get();
             foreach ($accessoriesCategories as $accessoriesCategory) {
@@ -104,7 +104,7 @@ class ProblemController extends Controller
                 AccessoriesCategory::where('rental_id', $rental->id)
                     ->where('accessories_id', $accessoriesCategory->accessories_id)
                     ->update(['status_acces' => 0]);
-        
+
                 // Kembalikan stok aksesori
                 $accessory = Accessories::find($accessoriesCategory->accessories_id);
                 if ($accessory) {

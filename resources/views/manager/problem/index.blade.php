@@ -10,6 +10,7 @@
                     <thead>
                     <tr>
                         <th width="2%">No</th>
+                        <th>INV</th>
                         <th>Name</th>
                         <th>Item</th>
                         <th>Accessories</th>
@@ -23,6 +24,7 @@
                     @foreach($rental as $key => $data)
                         <tr id="rentalRow{{ $data->id }}">
                             <td>{{ $key + 1 }}</td>
+                            <td>{{ $data->rental->no_inv ?? 'N/A' }}</td>
                             <td>{{ $data->rental->cust->name ?? 'N/A' }}</td>
                             <td>
                                 @php
