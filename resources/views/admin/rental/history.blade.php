@@ -16,6 +16,7 @@
                     <thead>
                     <tr>
                         <th width="2%">No</th>
+                        <th>Invoice</th>
                         <th>Name</th>
                         <th>Item</th>
                         <th>No Seri</th>
@@ -30,6 +31,7 @@
                     <tr>
                         @foreach($rental as $key => $data)
                             <td>{{$key +1}}</td>
+                            <td>{{$data->no_inv}}</td>
                             <td>{{$data->cust->name}}</td>
                             <td>
                             @php

@@ -48,7 +48,7 @@
                                             <h5 class="modal-title">Edit Accessories</h5>
                                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                         </div>
-                                        <form action="{{ route('admin.acces.update', $data['id']) }}" method="POST">
+                                        <form action="{{ route('manager.acces.update', $data['id']) }}" method="POST">
                                             @csrf
                                             @method('PUT')
                                             <div class="modal-body">

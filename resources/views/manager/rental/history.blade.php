@@ -16,6 +16,7 @@
                     <thead>
                     <tr>
                         <th width="2%">No</th>
+                        <th>Invoice</th>
                         <th>Name</th>
                         <th>Item</th>
                         <th>No Seri</th>
@@ -30,6 +31,7 @@
                     <tr>
                         @foreach($rental as $key => $data)
                         <td>{{$key +1}}</td>
+                            <td>{{$data->no_inv}}</td>
                             <td>{{$data->cust->name}}</td>
                             <td>
                                 @php
@@ -94,7 +96,7 @@
                                                 data-bs-toggle="tooltip" data-bs-placement="top"
                                                 title="Finished">
 
-                                        </button>   
+                                        </button>
                                     </form>
                                 <a href="{{route('manager.rental.edit', $data->id)}}"
                                    class="btn btn-warning lni lni-pencil me-1"
@@ -256,7 +258,7 @@
                                                             </div>
                                                         </div>
                                                     @else
-                                                        
+
                                                     @endif
 
                                                 </div>
@@ -272,8 +274,8 @@
                                         </div>
                                     </div>
                                 </div>
-                                
-                                
+
+
                                 @elseif($data->status == 0)
                                 <a href="{{route('manager.rental.destroy', $data->id)}}" data-confirm-delete="true"
                                         type="submit" class=" bx bx-trash btn btn-sm btn-danger"
@@ -440,7 +442,7 @@
                                                             </div>
                                                         </div>
                                                     @else
-                                                        
+
                                                     @endif
                                                 </div>
                                             </div>
@@ -455,8 +457,8 @@
                                         </div>
                                     </div>
                                 </div>
-                                
-                                    
+
+
                                 @elseif($data->status == 2)
                                 <form action="{{ route('manager.rental.finis', $data->id) }}" method="POST">
                                         @csrf
@@ -465,10 +467,10 @@
                                                 data-bs-toggle="tooltip" data-bs-placement="top"
                                                 title="Finished">
 
-                                        </button>   
+                                        </button>
                                     </form>
                                 @endif
-                               
+
                             </td>
                     </tr>
                     @endforeach
