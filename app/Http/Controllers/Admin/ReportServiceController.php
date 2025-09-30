@@ -16,7 +16,7 @@ class ReportServiceController extends Controller
         $currentYear = now()->year;
 
         // Filter data berdasarkan tahun saat ini
-        $report = DebtServic::with('service')
+        $report = DebtServic::with('service.cust')
             ->whereYear('date_pay', $currentYear)
             ->orderBy('date_pay', 'asc')
             ->get();
@@ -69,7 +69,7 @@ class ReportServiceController extends Controller
         ]);
         $start_date = Carbon::parse(request()->start_date)->toDateTimeString();
         $end_date = Carbon::parse(request()->end_date)->toDateTimeString();
-        $report = DebtServic::with('service', 'bank')
+        $report = DebtServic::with('service.cust', 'bank')
             ->whereBetween('date_pay', [$start_date, $end_date])
             ->orderBy('date_pay')
             ->get();

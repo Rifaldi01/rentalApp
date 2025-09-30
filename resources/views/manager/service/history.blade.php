@@ -38,7 +38,13 @@
                         @foreach($history as $key => $data) @endforeach
                         <tr>
                             <td>{{$key +1}}</td>
-                            <td>{{$data->name}}</td>
+                            <td>
+                                @if($data->name)
+                                    {{$data->name}}
+                                @else
+                                    {{$data->cust->name}}
+                                @endif
+                            </td>
                             <td>{{$data->phone}}</td>
                             <td>{{$data->item}}</td>
                             <td>{{$data->no_seri}}</td>

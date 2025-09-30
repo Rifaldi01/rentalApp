@@ -28,6 +28,8 @@
                         <th>WhatsApp</th>
                         <th>Phone</th>
                         <th>address</th>
+                        <th>Point Rental</th>
+                        <th>Point Service</th>
                         <th class="text-center" width="4%">Identity</th>
                         <th class="text-center" width="9%">Action</th>
                     </tr>
@@ -47,10 +49,24 @@
                                 @if($data->phn)
                                     {{$data->phn}}
                                 @else
-                                   -
+                                    -
                                 @endif
                             </td>
                             <td>{{Str::limit($data->addres, 26, '...')}}</td>
+                            <td class="text-center">
+                                @if($data->point_rental)
+                                    {{$data->point_rental}}
+                                @else
+                                    0
+                                @endif
+                            </td>
+                            <td class="text-center">
+                                @if($data->point_service)
+                                    {{$data->point_service}}
+                                @else
+                                    0
+                                @endif
+                            </td>
                             <td class="text-center">
                                 <button data-bs-toggle="modal" data-bs-target="#exampleExtraLargeModal{{$data->id}}"
                                         class="btn btn-dnd btn-sm lni lni-eye" title="view">
@@ -65,7 +81,8 @@
                                                         aria-label="Close"></button>
                                             </div>
                                             <div class="modal-body">
-                                                <img src="{{asset('images/identity/'.$data->image)}}" style="width:100%" alt="">
+                                                <img src="{{asset('images/identity/'.$data->image)}}" style="width:100%"
+                                                     alt="">
                                                 <table class="mt-3 bg-secondary">
                                                     <tr>
                                                         <th class="text-white"><p>Address : </p></th>
@@ -96,7 +113,6 @@
                     </tr>
                     @endforeach
                     </tbody>
-                    </tfoot>
                 </table>
             </div>
         </div>

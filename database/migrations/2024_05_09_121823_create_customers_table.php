@@ -19,6 +19,8 @@ return new class extends Migration
             $table->string('phn')->unique()->nullable();
             $table->string('addres');
             $table->longText('image');
+            $table->integer('point_rental')->default(0);
+            $table->integer('point_service')->default(0);
             $table->timestamps();
         });
     }

@@ -11,6 +11,6 @@ class Maintenance extends Model
     protected $guarded = [];
      public function item()
      {
-         return $this->belongsTo(Item::class, 'item_id', 'id');
+         return $this->belongsTo(Item::class, 'item_id', 'id')->withTrashed();
      }
 }

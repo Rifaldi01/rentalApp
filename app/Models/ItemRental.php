@@ -11,9 +11,9 @@ class ItemRental extends Model
     protected $guarded = [];
 
     public function rental(){
-        return $this->belongsTo(Rental::class);
+        return $this->belongsTo(Rental::class)->withTrashed();
     }
     public function items(){
-        return $this->belongsTo(Item::class);
+        return $this->belongsTo(Item::class)->withTrashed();
     }
 }

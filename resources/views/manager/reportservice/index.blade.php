@@ -86,7 +86,13 @@
                         <tr>
                             <td data-index="{{ $key +1 }}">{{$key +1}}</td>
                             <td>{{ optional($data->service)->no_inv }}</td>
-                            <td>{{ optional($data->service)->name }}</td>
+                            <td>
+                                @if($data->service_id && $data->service->name)
+                                    {{$data->service->name}}
+                                @else
+                                    {{$data->service->cust->name}}
+                                @endif
+                            </td>
                             <td>@foreach(explode(',', optional($data->service)->item) as $item)
                                     <li>{{ trim($item) }}</li>
                                 @endforeach

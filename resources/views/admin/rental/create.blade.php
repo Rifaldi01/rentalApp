@@ -10,7 +10,9 @@
                 @endisset
                 <div class="col-md-6">
                     <label for="input6" class="form-label"><i class="text-danger">*</i> No. INV</label>
-                    <input type="text" class="form-control @error('no_inv') is-invalid @enderror" value="{{isset($rental) ? $rental->no_inv : old('no_inv')}}" name="no_inv" placeholder="INV/DND/***/**">
+                    <input type="text" class="form-control @error('no_inv') is-invalid @enderror"
+                           value="{{isset($rental) ? $rental->no_inv : old('no_inv')}}" name="no_inv"
+                           placeholder="INV/DND/***/**">
                     @error('no_inv')
                     <span class="invalid-feedback" role="alert">
                         <strong>{{ $message }}</strong>
@@ -30,7 +32,8 @@
                 </div>
                 <div class="col-md-3">
                     <label for="input6" class="form-label "> Tanggal Pembayaran</label>
-                    <input type="text" value="{{ isset($rental) && $rental->debt->isNotEmpty() ? $rental->debt->first()->date_pay : old('date_pay') }}"
+                    <input type="text"
+                           value="{{ isset($rental) && $rental->debt->isNotEmpty() ? $rental->debt->first()->date_pay : old('date_pay') }}"
                            class="form-control datepicker" name="date_pay">
                     @error('date_pay')
                     <span class="invalid-feedback" role="alert">
@@ -97,11 +100,16 @@
                     </div>
                     @enderror
                 </div>
-
+                <div class="">
+                    <label for="input" class="form-label">Keterangan Item</label>
+                    <textarea class="form-control"
+                              name="keterangan_item">{{isset($rental) ? $rental->keterangan_item : old('keterangan_item')}}</textarea>
+                </div>
                 <div id="dynamic-fields">
                     <div class="col-md-12">
                         <button class="btn btn-dnd float-end add-field me-4 mb-2" type="button" id="add-field"
-                                data-bs-toggle="tooltip" data-bs-placement="top" title="Add Accessories">Tambah Access <i
+                                data-bs-toggle="tooltip" data-bs-placement="top" title="Add Accessories">Tambah Access
+                            <i
                                 class="bx bx-plus"></i></button>
                     </div>
                     @if(isset($rental) && $rental->accessoriescategory->isNotEmpty())
@@ -149,9 +157,15 @@
                         </div>
                     @endif
                 </div>
+                <div class="">
+                    <label for="input" class="form-label">Keterangan Accessories</label>
+                    <textarea class="form-control"
+                              name="keterangan_acces">{{isset($rental) ? $rental->keteranganacces : old('keterangan_acces')}}</textarea>
+                </div>
                 <div class="col-md-3">
                     <label for="input" class="form-label"><i class="text-danger">*</i> Total Invoce</label>
-                    <input type="text" value="{{isset($rental) ? ($rental->total_invoice) : 0}} {{ old('total_invoice') }}"
+                    <input type="text"
+                           value="{{isset($rental) ? ($rental->total_invoice) : 0}} {{ old('total_invoice') }}"
                            class="form-control @error('total_invoice') is-invalid @enderror" name="total_invoice"
                            placeholder="0">
                     @error('total_invoice')
@@ -186,6 +200,11 @@
                     <input type="number" value="{{isset($rental) ? $rental->ppn :0 }}{{old('ppn')}}"
                            class="form-control" name="ppn">
                 </div>
+                <div class="col-md-3">
+                    <label for="input" class="form-label">FEE</label>
+                    <input type="number" value="{{isset($rental) ? $rental->fee :0 }}{{old('fee')}}"
+                           class="form-control" name="fee">
+                </div>
 
                 <div class="col-md-12">
                     <label for="input4" class="form-label">Bank</label>
@@ -197,13 +216,16 @@
                 </div>
                 <div class="col-md-12">
                     <label for="input" class="form-label">Penerima</label>
-                    <input type="text" value="{{ isset($rental) && $rental->debt->isNotEmpty() ? $rental->debt->first()->penerima : old('penerima') }}"
+                    <input type="text"
+                           value="{{ isset($rental) && $rental->debt->isNotEmpty() ? $rental->debt->first()->penerima : old('penerima') }}"
                            class="form-control" name="penerima">
                 </div>
                 <div class="col-md-12">
                     <label for="input4" class="form-label">Keterangan Bayar</label>
-                    <textarea type="text" name="description" class="form-control @error('description') is-invalid @enderror"
-                              id="input4" placeholder="Maukan Pembayran">{{isset($rental) && $rental->debt->isNotEmpty() ? $rental->debt->first()->description : old('description')}}</textarea>
+                    <textarea type="text" name="description"
+                              class="form-control @error('description') is-invalid @enderror"
+                              id="input4"
+                              placeholder="Maukan Pembayran">{{isset($rental) && $rental->debt->isNotEmpty() ? $rental->debt->first()->description : old('description')}}</textarea>
                     @error('date_pays')
                     <span class="invalid-feedback" role="alert">
                         <strong>{{ $message }}</strong>
@@ -365,11 +387,11 @@
     <script>
         $(document).ready(function () {
             // Handle form submission and check for validation errors
-            $('#submitBtn').click(function(e) {
+            $('#submitBtn').click(function (e) {
                 e.preventDefault(); // Prevent default form submission
 
                 var errors = [];
-                $('#myForm input, #myForm select, #myForm textarea').each(function() {
+                $('#myForm input, #myForm select, #myForm textarea').each(function () {
                     if ($(this).prop('required') && !$(this).val()) {
                         errors.push($(this).prev('label').text().replace('*', '') + ' is required.');
                     }

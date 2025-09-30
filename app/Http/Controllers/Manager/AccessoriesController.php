@@ -41,14 +41,15 @@ class AccessoriesController extends Controller
         $accessoriesData[] = [
             'id' => $accessory->id,
             'name' => $accessory->name,
+            'stok_all' => $accessory->stok_all,
             'stok' => $stok,
             'rentedQty' => $rentedQty,
             'stokAll' => $stokAll
         ];
     }
-
+        $rental = AccessoriesCategory::where('status_acces', 1)->with(['accessory', 'rental.cust'])->get();
     // Kirim data ke view
-    return view('manager.accessories.index', compact('accessoriesData'));
+    return view('manager.accessories.index', compact(['accessoriesData', 'rental']));
     }
 
     /**

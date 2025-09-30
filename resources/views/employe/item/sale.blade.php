@@ -30,7 +30,8 @@
                                 <a href="{{route('superadmin.item.show', $data->id)}}"
                                    class="text-dark">{{$data->name}}</a>
                             </td>
-                            <td>{{$data->cat->name}}-{{$data->no_seri}}</td>
+                            <td>{{ optional($data->cat)->name }} - {{ $data->no_seri }}
+                            </td>
                             <td class="text-center">
                                 @if($data->image)
                                     <button data-bs-toggle="modal" data-bs-target="#exampleModal{{$data->id}}"

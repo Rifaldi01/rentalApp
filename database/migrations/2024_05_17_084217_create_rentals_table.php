@@ -26,12 +26,15 @@ return new class extends Migration
             $table->bigInteger('nominal_in');
             $table->bigInteger('nominal_out')->nullable();
             $table->bigInteger('diskon')->nullable();
+            $table->bigInteger('fee')->nullable();
             $table->bigInteger('ongkir')->nullable();
             $table->string('date_pays')->nullable();
             $table->date('date_start');
             $table->date('date_end');
             $table->longText('image');
             $table->integer('status')->default(0);
+            $table->string('keterangan_item')->nullable();
+            $table->string('keterangan_acces')->nullable();
             $table->timestamps();
         });
     }

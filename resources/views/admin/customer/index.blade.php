@@ -28,6 +28,8 @@
                         <th>WhatsApp</th>
                         <th>Phone</th>
                         <th>address</th>
+                        <th>Point Rental</th>
+                        <th>Point Service</th>
                         <th class="text-center" width="4%">Identity</th>
                         <th class="text-center" width="9%">Action</th>
                     </tr>
@@ -37,7 +39,7 @@
                         @foreach($customer as $key => $data)
                             <td>{{$key +1}}</td>
                             <td>
-                                <a href="{{route('admin.customer.show', $data->id)}}" class="text-dark">
+                                <a href="{{route('manager.customer.show', $data->id)}}" class="text-dark">
                                     {{$data->name}}
                                 </a>
                             </td>
@@ -47,55 +49,63 @@
                                 @if($data->phn)
                                     {{$data->phn}}
                                 @else
-                                   -
+                                    -
                                 @endif
                             </td>
                             <td>{{Str::limit($data->addres, 26, '...')}}</td>
                             <td class="text-center">
-                                    <button data-bs-toggle="modal" data-bs-target="#exampleModal{{$data->id}}"
-                                            class="btn btn-dnd btn-sm lni lni-eye" title="view">
-                                    </button>
-                                    <div class="modal fade" id="exampleModal{{$data->id}}" tabindex="-1"
-                                        aria-labelledby="exampleModalLabel" aria-hidden="true">
-                                        <div class="modal-dialog">
-                                            <div class="modal-content">
-                                                <div class="modal-header">
-                                                    <h5 class="modal-title" id="exampleModalLabel">Images</h5>
-                                                    <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                                            aria-label="Close"></button>
-                                                </div>
-                                                <div class="modal-body">
-                                                    @php
-                                                        $images = json_decode($data->image);
-                                                    @endphp
-                                                    @if($images && count($images) > 0)
-                                                        <div class="d-flex flex-wrap">
-                                                            @foreach($images as $image)
-                                                                <div class="p-2">
-                                                                    <img src="{{ asset('images/identity/'. $image) }}" alt="" class="img-fluid img-thumbnail">
-                                                                </div>
-                                                            @endforeach
-                                                        </div>
-                                                    @else
-                                                        <span class="text-danger">Images Not Found!</span>
-                                                    @endif
-                                                </div>
-                                                <div class="modal-footer">
-                                                    <a href="{{ route('admin.customer.downloadImages', $data->id) }}" class="btn btn-info px-5">
-                                                        <i class="bx bx-cloud-download"></i> Download All
-                                                    </a>
-                                                </div>
+                                @if($data->point_rental)
+                                    {{$data->point_rental}}
+                                @else
+                                    0
+                                @endif
+                            </td>
+                            <td class="text-center">
+                                @if($data->point_service)
+                                    {{$data->point_service}}
+                                @else
+                                    0
+                                @endif
+                            </td>
+                            <td class="text-center">
+                                <button data-bs-toggle="modal" data-bs-target="#exampleExtraLargeModal{{$data->id}}"
+                                        class="btn btn-dnd btn-sm lni lni-eye" title="view">
+                                </button>
+                                <div class="modal fade" id="exampleExtraLargeModal{{$data->id}}" tabindex="-1"
+                                     aria-labelledby="exampleExtraLargeModal" aria-hidden="true">
+                                    <div class="modal-dialog modal-xl">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title" id="exampleModalLabel">Image</h5>
+                                                <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                        aria-label="Close"></button>
+                                            </div>
+                                            <div class="modal-body">
+                                                <img src="{{asset('images/identity/'.$data->image)}}" style="width:100%"
+                                                     alt="">
+                                                <table class="mt-3 bg-secondary">
+                                                    <tr>
+                                                        <th class="text-white"><p>Address : </p></th>
+                                                        <td class="text-white"><p>{{$data->addres}}</p></td>
+                                                    </tr>
+                                                </table>
+                                            </div>
+                                            <div class="modal-footer">
+                                                <a href="{{asset('images/identity/'.$data->image)}}"
+                                                   class="btn btn-info px-5" download>
+                                                    <i class="bx bx-cloud-download"></i>Download Image</a>
                                             </div>
                                         </div>
                                     </div>
+                                </div>
                             </td>
                             <td>
-                                <a href="{{route('admin.customer.destroy', $data->id)}}" data-confirm-delete="true"
+                                <a href="{{route('manager.customer.destroy', $data->id)}}" data-confirm-delete="true"
                                    type="submit" class=" bx bx-trash btn btn-sm btn-danger"
                                    data-bs-toggle="tooltip"
                                    data-bs-placement="top" title="Hapus">
                                 </a>
-                                <a href="{{route('admin.customer.edit', $data->id)}}"
+                                <a href="{{route('manager.customer.edit', $data->id)}}"
                                    class="btn btn-sm btn-warning bx bx-edit "
                                    data-bs-toggle="tooltip" data-bs-placement="top" title="Edit">
                                 </a>

@@ -69,7 +69,7 @@
                                 </div>
                             </td>
                             <td class="text-center">
-                                <form action="{{ route('mainten.item', $data->id) }}" method="POST">
+                                <form action="{{ route('employe.mainten.item', $data->id) }}" method="POST">
                                     @csrf
                                     <button onclick="return confirm('Maintenance Finis?');" type="submit" class="me-1 btn btn-success btn-sm bx bx-check" data-bs-toggle="tooltip" data-bs-placement="top"
                                             title="Finished"></button>

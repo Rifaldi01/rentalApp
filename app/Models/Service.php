@@ -13,4 +13,8 @@ class Service extends Model
     public function debtService(){
         return $this->hasMany(DebtServic::class, 'service_id', 'id');
     }
+    public function cust()
+    {
+        return $this->belongsTo(Customer::class, 'customer_id', "id")->withTrashed();
+    }
 }

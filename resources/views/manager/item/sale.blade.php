@@ -31,7 +31,7 @@
                             <td>
                                 {{$data->item->name}}
                             </td>
-                            <td>{{$data->item->cat->name}}-{{$data->item->no_seri}}</td>
+                            <td>{{ optional($data->cat)->name }} - {{ $data->no_seri }}</td>
                             <td class="text-center">
                                 @if($data->image)
                                     <button data-bs-toggle="modal" data-bs-target="#exampleModal{{$data->id}}"

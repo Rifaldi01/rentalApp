@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Bank;
+use App\Models\Customer;
 use App\Models\Debts;
 use App\Models\DebtServic;
 use App\Models\Service;
@@ -22,7 +23,7 @@ class ServiceController extends Controller
         $title = 'Delete Item!';
         $text = "Are you sure you want to delete?";
         confirmDelete($title, $text);
-        $service = Service::where('status', 0)
+        $service = Service::with('cust')->where('status', 0)
         ->orWhere('nominal_out', '!=', 0)
         ->get();
         $bank = Bank::all();
@@ -36,18 +37,21 @@ class ServiceController extends Controller
     {
         $bank = Bank::pluck('name', 'id')->toArray();
         $debt = DebtServic::all();
+        $cust = Customer::pluck('name', 'id')->toArray();
         $service = null; // default null untuk mode create
 
         $inject = [
             'url' => route('admin.service.store'),
             'bank' => $bank,
             'debt' => $debt,
-            'service' => $service
+            'service' => $service,
+            'cust' => $cust,
         ];
 
         if ($id) {
             $service = Service::whereId($id)->first();
             $inject['url'] = route('admin.service.update', $id);
+            $inject['cust'] = $cust;
             $inject['service'] = $service;
         }
 
@@ -132,7 +136,7 @@ class ServiceController extends Controller
     private function save(Request $request, $id = null)
     {
         $validate = $request->validate([
-            'name'          => 'required',
+            'customer_id'   => 'required',
             'item'          => 'required',
             'no_seri'       => 'required',
             'date_service'  => 'required',
@@ -147,7 +151,7 @@ class ServiceController extends Controller
             'tgl_inv'       => 'required',
             'total_invoice' => 'required|numeric',
         ],[
-            'name.required'          => 'Nama Pelanggan Wajib Diisi',
+            'customer_id.required'   => 'Nama Pelanggan Wajib Diisi',
             'item.required'          => 'Item Wajib Diisi',
             'no_seri.required'       => 'No Seri Wajib Diisi',
             'date_service.required'  => 'Tanggal Service Wajib Diisi',
@@ -156,15 +160,17 @@ class ServiceController extends Controller
             'nominal_in.numeric'     => 'Uang masuk Harus Berupa Angka',
             'nominal_out.numeric'    => 'Sisa Pembayaran Harus Berupa Angka',
             'diskon.numeric'         => 'Diskon Harus Berupa Angka',
-            'biaya_ganti.numeric'    => 'Ongkir Harus Berupa Angka',
+            'biaya_ganti.numeric'    => 'Biaya Ganti Harus Berupa Angka',
             'ongkir.numeric'         => 'Ongkir Harus Berupa Angka',
             'type.required'          => 'Type Wajib Diisi',
             'no_inv.required'        => 'No Invoice Wajib Diisi',
             'tgl_inv.required'       => 'Tanggal Invoice Wajib Diisi',
             'total_invoice.required' => 'Total Invoice Wajib Diisi',
         ]);
+
+        // simpan service
         $service = Service::firstOrNew(['id' => $id]);
-        $service->name          = $request->input('name');
+        $service->customer_id   = $request->input('customer_id');
         $service->phone         = $request->input('phone');
         $service->item          = $request->input('item');
         $service->no_seri       = $request->input('no_seri');
@@ -183,7 +189,8 @@ class ServiceController extends Controller
         $service->ppn           = $request->input('ppn');
         $service->save();
 
-        $debts = DebtServic::create([
+        // simpan ke debt service
+        DebtServic::create([
             'service_id' => $service->id,
             'bank_id'    => $request->input('bank_id'),
             'pay_debts'  => $service->nominal_in,
@@ -191,6 +198,25 @@ class ServiceController extends Controller
             'date_pay'   => $request->input('date_pay'),
             'description'=> $request->input('description'),
         ]);
+
+        // === Hitung & update poin customer ===
+        $points = 0;
+
+        if (
+            $service->total_invoice >= 100000 &&
+            (int)$service->fee === 0 &&
+            (int)$service->diskon === 0
+        ) {
+            $points = intdiv($service->total_invoice, 100000);
+        }
+
+        if ($points > 0) {
+            $customer = Customer::find($service->customer_id);
+            if ($customer) {
+                $customer->point_service = (int)($customer->point_service ?? 0) + $points;
+                $customer->save();
+            }
+        }
 
         return redirect()->route('admin.service.index')->withSuccess('Upload Data Success');
     }

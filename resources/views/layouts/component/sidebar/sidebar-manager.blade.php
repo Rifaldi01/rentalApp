@@ -32,6 +32,9 @@
                     <a href="{{route('manager.rental.hsty')}}"><i class='bx bx-history'></i>History Rental</a>
                 </li>
                 <li>
+                    <a href="{{route('manager.rental.divisi')}}"><i class='lni lni-apartment'></i>Rental Divisi</a>
+                </li>
+                <li>
                     <a href="{{route('manager.rental.problems')}}"><i class='lni lni-warning'></i>Problem</a>
                 </li>
             </ul>

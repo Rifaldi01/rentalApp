@@ -63,7 +63,13 @@
                             <tr>
                                 <td>{{$key +1}}</td>
                                 <td>{{$data->no_inv}}</td>
-                                <td>{{$data->name}}</td>
+                                <td>
+                                    @if($data->name)
+                                        {{$data->name}}
+                                    @else
+                                        {{$data->cust->name}}
+                                    @endif
+                                </td>
                                 <td>@foreach(explode(',', $data->item) as $item)
                                         <li>{{ trim($item) }}</li>
                                     @endforeach
@@ -120,7 +126,13 @@
                                                                 </tr>
                                                                 <tr>
                                                                     <th colspan="2" width="10%">Pelanggan</th>
-                                                                    <td colspan="2" class="">{{$data->name}}</td>
+                                                                    <td colspan="2" class="">
+                                                                        @if($data->name)
+                                                                            {{$data->name}}
+                                                                        @else
+                                                                            {{$data->cust->name}}
+                                                                        @endif
+                                                                    </td>
                                                                 </tr>
                                                                 <tr>
                                                                     <th class="text-center bg-primary" colspan="4">
@@ -524,7 +536,13 @@
                                                                     </tr>
                                                                     <tr>
                                                                         <th colspan="2" width="10%">Pelanggan</th>
-                                                                        <td colspan="2" class="">{{$data->name}}</td>
+                                                                        <td colspan="2" class="">
+                                                                            @if($data->name)
+                                                                                {{$data->name}}
+                                                                            @else
+                                                                                {{$data->cust->name}}
+                                                                            @endif
+                                                                        </td>
                                                                     </tr>
                                                                     <tr>
                                                                         <th class="text-center bg-primary" colspan="4">

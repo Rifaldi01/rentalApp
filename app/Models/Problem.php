@@ -12,6 +12,6 @@ class Problem extends Model
 
     public function rental()
     {
-        return $this->belongsTo(Rental::class, 'rental_id', 'id');
+        return $this->belongsTo(Rental::class, 'rental_id', 'id')->withTrashed();
     }
 }

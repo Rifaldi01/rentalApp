@@ -10,14 +10,26 @@
                 @endisset
 
                 {{-- Nama Pelanggan --}}
-                <div class="col-md-6">
-                    <label class="form-label"><i class="text-danger">*</i> Nama Pelanggan</label>
-                    <input type="text"
-                           value="{{ isset($service) ? $service->name : old('name') }}"
-                           class="form-control @error('name') is-invalid @enderror"
-                           name="name" placeholder="Enter Name Customer">
-                    @error('name') <span class="invalid-feedback">{{ $message }}</span> @enderror
-                </div>
+                @if(isset($service))
+                    <div class="col-md-6">
+                        <label for="input1" class="form-label"><i class="text-danger">*</i> Name Customer</label>
+                        {{ html()->select('customer_id', $cust, isset($service) ? $service->customer_id : null )->class('form-control')->id('single-select-field')->placeholder("--Select Customer--") }}
+                    </div>
+                @else
+                    <div class="col-md-6">
+                        <label for="input1" class="form-label"><i class="text-danger">*</i> Name Customer</label>
+                        {{ html()->select('customer_id', $cust, isset($service) ? $service->customer_id : old('customer_id'))
+                            ->class(['form-control', 'is-invalid' => $errors->has('customer_id')])
+                            ->id('single-select-field')
+                            ->placeholder("--Select Customer--")
+                        }}
+                        @error('customer_id')
+                        <div class="invalid-feedback">
+                            {{ $message }}
+                        </div>
+                        @enderror
+                    </div>
+                @endif
 
                 {{-- Tanggal Invoice --}}
                 <div class="col-md-3">

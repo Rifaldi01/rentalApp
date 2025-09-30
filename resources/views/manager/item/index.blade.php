@@ -1,5 +1,4 @@
 @extends('layouts.master')
-
 @section('content')
     <div class="card">
         <div class="card-head">
@@ -63,7 +62,7 @@
                                 <td class="text-center">
                                     @if($data->status == 2 && isset($rentalMap[$data->id]))
                                         @foreach($rentalMap[$data->id] as $rental)
-                                            {{ formatId($rental['date_start']) }} 
+                                            {{ formatId($rental['date_start']) }}
                                             <div class="text-center">s.d</div>
                                             {{ formatId($rental['date_end']) }}
                                         @endforeach

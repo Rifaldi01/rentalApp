@@ -19,13 +19,24 @@ class CustomerController extends Controller
      */
     public function index()
     {
-        $cust = Customer::latest()->paginate();
+        // cek apakah hari ini 15 Januari
+        if (now()->isSameDay(now()->setDate(now()->year, 1, 15))) {
+            Customer::query()->update([
+                'point_rental' => 0,
+                'point_service' => 0,
+            ]);
+        }
+
         $title = 'Delete Data!';
         $text = "Are you sure you want to delete?";
         confirmDelete($title, $text);
+
+        // ambil data customer terbaru dengan pagination
         $customer = Customer::all();
-        return view('admin.customer.index', compact('customer', ));
+
+        return view('admin.customer.index', compact('customer'));
     }
+
 
     /**
      * Show the form for creating a new resource.

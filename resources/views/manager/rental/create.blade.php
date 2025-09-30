@@ -38,7 +38,7 @@
                     </span>
                     @enderror
                 </div>
-                
+
                 @if(isset($rental))
                     <div class="col-md-12">
                         <label for="input1" class="form-label"><i class="text-danger">*</i> Name Customer</label>
@@ -97,7 +97,10 @@
                     </div>
                     @enderror
                 </div>
-
+                <div class="">
+                    <label for="input" class="form-label">Keterangan Item</label>
+                    <textarea class="form-control" name="keterangan_item">{{isset($rental) ? $rental->keterangan_item : old('keterangan_item')}}</textarea>
+                </div>
                 <div id="dynamic-fields">
                     <div class="col-md-12">
                         <button class="btn btn-dnd float-end add-field me-4 mb-2" type="button" id="add-field"
@@ -149,9 +152,13 @@
                         </div>
                     @endif
                 </div>
+                <div class="">
+                    <label for="input" class="form-label">Keterangan Accessories</label>
+                    <textarea class="form-control" name="keterangan_acces">{{isset($rental) ? $rental->keteranganacces : old('keterangan_acces')}}</textarea>
+                </div>
                 <div class="col-md-3">
                     <label for="input" class="form-label"><i class="text-danger">*</i> Total Invoce</label>
-                    <input type="text" value="{{isset($rental) ? ($rental->total_invoice) : null}} {{ old('total_invoice') }}"
+                    <input type="text" value="{{isset($rental) ? ($rental->total_invoice) : 0}} {{ old('total_invoice') }}"
                            class="form-control @error('total_invoice') is-invalid @enderror" name="total_invoice"
                            placeholder="0">
                     @error('total_invoice')
@@ -162,7 +169,7 @@
                 </div>
                 <div class="col-md-3">
                     <label for="input" class="form-label"><i class="text-danger">*</i> Pembayaran</label>
-                    <input type="text" value="{{isset($rental) ? ($rental->nominal_in) : null}} {{ old('nominal_in') }}"
+                    <input type="text" value="{{isset($rental) ? ($rental->nominal_in) : 0}} {{ old('nominal_in') }}"
                            class="form-control @error('nominal_in') is-invalid @enderror" name="nominal_in"
                            placeholder="0">
                     @error('nominal_in')
@@ -178,13 +185,23 @@
                 </div>
                 <div class="col-md-3">
                     <label for="input" class="form-label">Fee/Discount</label>
-                    <input type="number" value="{{isset($rental) ? $rental->diskon : old('diskon')}}"
+                    <input type="number" value="{{isset($rental) ? $rental->diskon :0 }}{{old('diskon')}}"
                            class="form-control" name="diskon">
                 </div>
-                
+                <div class="col-md-3">
+                    <label for="input" class="form-label">PPN</label>
+                    <input type="number" value="{{isset($rental) ? $rental->ppn :0 }}{{old('ppn')}}"
+                           class="form-control" name="ppn">
+                </div>
+                <div class="col-md-3">
+                    <label for="input" class="form-label">FEE</label>
+                    <input type="number" value="{{isset($rental) ? $rental->fee :0 }}{{old('fee')}}"
+                           class="form-control" name="fee">
+                </div>
+
                 <div class="col-md-12">
                     <label for="input4" class="form-label">Bank</label>
-                    {{ html()->select('bank_id', $bank, isset($rental) && $rental->debt->isNotEmpty() ? $rental->debt->first()->bank_id : old('date_pay'))
+                    {{ html()->select('bank_id', $bank, isset($rental) && $rental->debt->isNotEmpty() ? $rental->debt->first()->bank_id : old('bank_id'))
                             ->class(['form-control', 'is-invalid' => $errors->has('bank_id')])
                             ->id('bank-select')
                             ->placeholder("--Select Bank--")
@@ -192,14 +209,13 @@
                 </div>
                 <div class="col-md-12">
                     <label for="input" class="form-label">Penerima</label>
-                    <input type="text" value="{{ isset($rental) && $rental->debt->isNotEmpty() ? $rental->debt->first()->penerima : old('date_pay') }}"
+                    <input type="text" value="{{ isset($rental) && $rental->debt->isNotEmpty() ? $rental->debt->first()->penerima : old('penerima') }}"
                            class="form-control" name="penerima">
                 </div>
                 <div class="col-md-12">
                     <label for="input4" class="form-label">Keterangan Bayar</label>
-                    <textarea type="text" name="date_pays" class="form-control @error('date_pays') is-invalid @enderror"
-                              id="input4" placeholder="Maukan Pembayran">{{isset($rental)?$rental->date_pays : null}}{{ old('date_pays') }}
-                    </textarea>
+                    <textarea type="text" name="description" class="form-control @error('description') is-invalid @enderror"
+                              id="input4" placeholder="Maukan Pembayran">{{isset($rental) && $rental->debt->isNotEmpty() ? $rental->debt->first()->description : old('description')}}</textarea>
                     @error('date_pays')
                     <span class="invalid-feedback" role="alert">
                         <strong>{{ $message }}</strong>

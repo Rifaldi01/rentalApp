@@ -32,6 +32,9 @@
                     <a href="{{route('admin.rental.index')}}"><i class='bx bx-list-ul'></i>List Rental</a>
                 </li>
                 <li>
+                    <a href="{{route('admin.rental.divisi')}}"><i class='lni lni-apartment'></i>Rental Divisi</a>
+                </li>
+                <li>
                     <a href="{{route('admin.rental.history')}}"><i class='bx bx-history'></i>History Rental</a>
                 </li>
                 <li>

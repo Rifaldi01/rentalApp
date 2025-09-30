@@ -54,7 +54,7 @@ class RentalController extends Controller
                 'rentals.addres_company', 'rentals.phone_company', 'rentals.no_po', 'rentals.date_start',
                 'rentals.date_end', 'rentals.status', 'a.rental_id', 'rentals.nominal_in', 'rentals.nominal_out', 'rentals.no_inv', 'rentals.diskon', 'rentals.total_invoice',
             )
-            ->where('status', 1)
+            ->orderBy('rentals.created_at', 'DESC')
             ->get();
         foreach ($rental as $data) {
             $dateStart = Carbon::parse($data->date_start);
@@ -164,13 +164,11 @@ class RentalController extends Controller
             'item_id' => 'required|array',
             'customer_id' => 'required|exists:customers,id',
             'date_start' => 'required|date',
-            // 'image' => $id ? 'nullable' : 'required|array',
-            // 'image.*' => $id ? 'nullable' : 'image',
             'nominal_in' => 'required|numeric',
             'no_inv' => 'required',
             'total_invoice' => 'required',
             'date_end' => $id ? 'nullable' : 'required|date|after_or_equal:start_date',
-        ],[
+        ], [
             'item_id.required' => 'Item Wajib diisi',
             'customer_id.required' => 'Customer Wajib diisi',
             'nominal_in.required' => 'Nominal In Wajib diisi',
@@ -189,8 +187,14 @@ class RentalController extends Controller
         $rental = Rental::firstOrNew(['id' => $id]);
         $isEdit = $rental->exists; // Cek apakah ini proses edit
 
+        // === simpan nilai lama untuk poin ===
+        $previousCustomerId = $rental->exists ? $rental->customer_id : null;
+        $oldNominal  = $rental->exists ? (int) $rental->nominal_in : 0;
+        $oldDiskon   = $rental->exists ? (float) $rental->diskon : 0;
+        $oldFee      = $rental->exists ? (float) $rental->fee : 0;
+
         // Jika sedang mengedit, ambil data jumlah aksesori sebelumnya
-        $previousAccessoriesData = []; // Array untuk menyimpan data aksesori sebelumnya
+        $previousAccessoriesData = [];
         if ($isEdit) {
             $previousAccessories = AccessoriesCategory::where('rental_id', $rental->id)->get();
             foreach ($previousAccessories as $previousAccessory) {
@@ -229,19 +233,21 @@ class RentalController extends Controller
         $rental->nominal_out = $request->input('nominal_out') ?? 0;
         $rental->diskon = $request->input('diskon') ?? 0;
         $rental->date_pays = $request->input('date_pays');
+        $rental->ppn = $request->input('ppn');
         $rental->no_inv = $request->input('no_inv');
         $rental->total_invoice = $request->input('total_invoice');
         $rental->tgl_inv = $request->input('tgl_inv');
+        $rental->fee = $request->input('fee');
+        $rental->keterangan_item = $request->input('keterangan_item');
+        $rental->keterangan_acces = $request->input('keterangan_acces');
         $rental->created_at = Carbon::now();
         $rental->status = 1;
 
         // Proses gambar jika ada
         if ($request->hasFile('image')) {
             $newImages = [];
-
             foreach ($request->file('image') as $file) {
                 $file_name = md5(now()->timestamp . $file->getClientOriginalName()) . '.jpg';
-
                 try {
                     $img = ImageManagerStatic::make($file);
                     $img->resize(null, 600, function ($constraint) {
@@ -253,7 +259,6 @@ class RentalController extends Controller
                     return back()->withErrors(['image' => 'Error processing the image: ' . $e->getMessage()])->withInput();
                 }
             }
-
             $existingImages = json_decode($rental->image, true) ?? [];
             $rental->image = json_encode(array_merge($existingImages, $newImages));
         }
@@ -265,7 +270,6 @@ class RentalController extends Controller
         foreach ($accessories as $index => $accessoryId) {
             $quantity = isset($quantities[$index]) ? $quantities[$index] : 0;
             $accessory = Accessories::find($accessoryId);
-
             if ($accessory) {
                 $previousQuantity = $previousAccessoriesData[$accessoryId] ?? 0;
                 $stockChange = $previousQuantity - $quantity;
@@ -304,17 +308,68 @@ class RentalController extends Controller
                 $item->save();
             }
         }
-        $debts = Debts::firstOrNew([
-            'rental_id'  => $rental->id,
-            'bank_id'    => $request->input('bank_id'),
-            'pay_debts'  => $rental->nominal_in,
-            'penerima'   => $request->input('penerima'),
-            'date_pay'   => $request->input('date_pay'),
-            'description'=> $request->input('description'),
-        ]);
 
-        Alert::success('Success', 'Rental has been saved!');
-        return redirect()->route('manager.rental.index');
+        // **Perbaikan di bagian Debts**
+        if ($rental->nominal_in > 0) {
+            $debt = Debts::where('rental_id', $rental->id)->first();
+            if ($debt) {
+                $debt->update([
+                    'bank_id' => $request->input('bank_id'),
+                    'pay_debts' => $rental->nominal_in,
+                    'penerima' => $request->input('penerima'),
+                    'date_pay' => $request->input('date_pay'),
+                    'description' => $request->input('description'),
+                ]);
+            } else {
+                Debts::create([
+                    'rental_id' => $rental->id,
+                    'bank_id' => $request->input('bank_id'),
+                    'pay_debts' => $rental->nominal_in,
+                    'penerima' => $request->input('penerima'),
+                    'date_pay' => $request->input('date_pay'),
+                    'description' => $request->input('description'),
+                ]);
+            }
+        }
+
+        // === Hitung & update poin customer ===
+        $fee = (float) ($rental->fee ?? 0);
+        $diskon = (float) ($rental->diskon ?? 0);
+
+        // poin lama (hanya jika edit dan syarat fee/diskon sebelumnya terpenuhi)
+        $previousPoints = 0;
+        if ($isEdit && $oldNominal >= 100000 && $oldFee == 0 && $oldDiskon == 0) {
+            $previousPoints = intdiv($oldNominal, 100000);
+        }
+
+        // poin baru (hanya jika syarat fee/diskon terpenuhi)
+        $newPoints = 0;
+        if ((int)$rental->nominal_in >= 100000 && $fee == 0 && $diskon == 0) {
+            $newPoints = intdiv((int)$rental->nominal_in, 100000);
+        }
+
+        // selisih poin
+        $pointsDiff = $newPoints - $previousPoints;
+
+        // kalau customer berubah, kurangi poin dari customer lama
+        if ($isEdit && $previousCustomerId && $previousCustomerId != $rental->customer_id && $previousPoints > 0) {
+            $oldCustomer = Customer::find($previousCustomerId);
+            if ($oldCustomer) {
+                $oldCustomer->point_rental = max(0, (int)($oldCustomer->point_rental ?? 0) - $previousPoints);
+                $oldCustomer->save();
+            }
+        }
+
+        // update poin ke customer sekarang
+        if ($pointsDiff !== 0) {
+            $customer = Customer::find($rental->customer_id);
+            if ($customer) {
+                $customer->point_rental = max(0, (int)($customer->point_rental ?? 0) + $pointsDiff);
+                $customer->save();
+            }
+        }
+
+        return redirect()->route('manager.rental.index')->withSuccess('Rental has been saved!');
     }
 
 
@@ -412,5 +467,70 @@ class RentalController extends Controller
 
         return response()->json(['success' => false]);
     }
+    public function divisi()
+    {
+        $title = 'Delete Rental?';
+        $text = "Are you sure you want to delete?";
+        confirmDelete($title, $text);
 
+        $rental = Rental::leftJoin('customers as c', 'rentals.customer_id', '=', 'c.id')
+            ->leftJoin('accessories_categories as a', 'a.rental_id', '=', 'rentals.id')
+            ->leftJoin('accessories as b', 'a.accessories_id', '=', 'b.id')
+            ->select(
+                'rentals.id',
+                'rentals.customer_id',
+                'c.name as customer_name',
+                'rentals.item_id',
+                'rentals.name_company',
+                'rentals.addres_company',
+                'rentals.phone_company',
+                'rentals.no_po',
+                'rentals.date_start',
+                'rentals.date_end',
+                'rentals.status',
+                'a.rental_id',
+                'rentals.nominal_in',
+                'rentals.nominal_out',
+                'rentals.no_inv',
+                'rentals.diskon',
+                'rentals.total_invoice',
+                DB::raw('GROUP_CONCAT(b.name) as access')
+            )
+            ->whereIn('c.name', [
+                'Adhijasa',
+                'Darwis Internasiol Survey',
+                'Satelit Surveying Official',
+                'Dhyas Survey Official'
+            ])
+            ->groupBy(
+                'rentals.id',
+                'rentals.customer_id',
+                'c.name',
+                'rentals.item_id',
+                'rentals.name_company',
+                'rentals.addres_company',
+                'rentals.phone_company',
+                'rentals.no_po',
+                'rentals.date_start',
+                'rentals.date_end',
+                'rentals.status',
+                'a.rental_id',
+                'rentals.nominal_in',
+                'rentals.nominal_out',
+                'rentals.no_inv',
+                'rentals.diskon',
+                'rentals.total_invoice',
+            )
+            ->orderBy('rentals.created_at', 'DESC')
+            ->get();
+
+        foreach ($rental as $data) {
+            $dateStart = Carbon::parse($data->date_start);
+            $dateEnd = Carbon::parse($data->date_end);
+            $daysDifference = $dateStart->diffInDays($dateEnd);
+            $data->days_difference = $daysDifference;
+        }
+
+        return view('manager.rental.divisi', compact('rental'));
+    }
 }

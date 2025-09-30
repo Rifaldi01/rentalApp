@@ -33,6 +33,7 @@ Route::group(['middleware' => ['auth:web', 'role:manager'], 'prefix' => 'manager
     Route::get('/pembayaran/filter', [PembayaranController::class, 'filter'])->name('manager.pembayaran.filter');
     Route::get('/pembayaran/filter', [PembayaranController::class, 'filter'])->name('manager.pembayaran.filter');
     Route::put('/pembayaran/edit/{id}', [PembayaranController::class, 'update'])->name('manager.update.totalinv');
+    Route::get('pinjaman/divisi', [RentalController::class, 'divisi'])->name('manager.rental.divisi');
     //rental end
 
     //problem
