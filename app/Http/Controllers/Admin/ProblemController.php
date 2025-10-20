@@ -19,7 +19,7 @@ class ProblemController extends Controller
         $title = 'Problem Finished';
         $text = "Are you sure you Problem Finished";
         confirmDelete($title, $text);
-        $rental = Problem::leftjoin('rentals', 'problems.rental_id', '=', 'rentals.id')
+        $rentals = Problem::leftjoin('rentals', 'problems.rental_id', '=', 'rentals.id')
             ->leftjoin('accessories_categories as a', 'a.rental_id', '=', 'rentals.id')
             ->leftjoin('accessories as b', 'a.accessories_id', '=', 'b.id')
             ->select(
@@ -27,17 +27,18 @@ class ProblemController extends Controller
                 'rentals.addres_company', 'rentals.phone_company', 'rentals.no_po','rentals.date_start',
                 'rentals.date_end', 'rentals.status', 'rentals.no_inv', 'rentals.image', 'a.rental_id', 'rentals.nominal_in', 'rentals.nominal_out', 'rentals.diskon', 'rentals.total_invoice',
                 \DB::raw('GROUP_CONCAT(b.name) as access'),
-                'problems.id', 'problems.descript', 'problems.rental_id'
+                'problems.id', 'problems.descript', 'problems.rental_id', 'problems.status'
             )
             ->groupBy(
                 'rentals.id', 'rentals.customer_id', 'rentals.item_id', 'rentals.name_company',
                 'rentals.addres_company', 'rentals.phone_company', 'rentals.no_po', 'rentals.date_start',
-                'rentals.date_end', 'rentals.status', 'a.rental_id', 'problems.id', 'rentals.no_inv', 'rentals.image', 'problems.descript', 'problems.rental_id', 'rentals.nominal_in', 'rentals.nominal_out', 'rentals.diskon', 'rentals.total_invoice',
+                'rentals.date_end', 'rentals.status', 'a.rental_id', 'problems.id', 'rentals.no_inv', 'rentals.image',
+                'problems.descript', 'problems.rental_id', 'rentals.nominal_in', 'rentals.nominal_out', 'rentals.diskon', 'rentals.total_invoice', 'problems.status'
             )
-            ->where('problems.status', 0)
+            ->where('problems.status', '!=', 1)
             ->get();
 //       return $rental;
-        return view('admin.problem.index', compact('rental'));
+        return view('admin.problem.index', compact('rentals'));
     }
 
     public function store(Request $request)
@@ -67,10 +68,11 @@ class ProblemController extends Controller
         return back();
     }
 
-    public function returned($id)
+    public function returned(Request $request, $id)
     {
         $destroy = Problem::find($id);
-        $destroy->status = 0;
+        $destroy->status = 3;
+        $destroy->descript = $request->input('descript');
         $destroy->save();
 
         $rental = Rental::findOrFail($destroy->rental_id);

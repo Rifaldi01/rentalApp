@@ -19,8 +19,10 @@ use App\Http\Controllers\Admin\ReportServiceController;
 use App\Models\Service;
 
 Route::group(['middleware' => ['auth:web', 'role:admin'], 'prefix' => 'admin'], function () {
-    Route::get('/', [DashboardController::class, 'index']);
-    Route::get('/dashboard', [DashboardController::class, 'index']);
+    Route::get('/dashboard', [DashboardController::class, 'index'])->name('admin.dashboard');
+    Route::get('/', function () {
+        return redirect()->route('admin.dashboard');
+    });
 
     //rental start
     Route::resource('/rental', RentalController::class)->names('admin.rental');
@@ -71,6 +73,7 @@ Route::group(['middleware' => ['auth:web', 'role:admin'], 'prefix' => 'admin'], 
 
     //accessories
     Route::resource('/accessories', AccessoriesController::class)->names('admin.acces');
+    Route::get('accessories-sale/', [AccessoriesController::class, 'sale'])->name('admin.access.sale');
     //accessories end
 
     //service

@@ -14,12 +14,14 @@ use App\Http\Controllers\Manager\ReportProblemController;
 use App\Http\Controllers\Manager\ReportMaintenaceController;
 use App\Http\Controllers\Manager\ServiceController;
 use App\Http\Controllers\Manager\PembayaranController;
+use App\Http\Controllers\Manager\DivisiController;
 
 
 Route::group(['middleware' => ['auth:web', 'role:manager'], 'prefix' => 'manager'], function () {
-    Route::get('/dashboard', [DashboardController::class, 'index']);
-    Route::get('/', [DashboardController::class, 'index']);
-
+    Route::get('/dashboard', [DashboardController::class, 'index'])->name('manager.dashboard');
+    Route::get('/', function () {
+        return redirect()->route('manager.dashboard');
+    });
     //rental
     Route::resource('/rental',RentalController::class)->names('manager.rental');
     Route::get('/hsty/rental',[RentalController::class, 'hsty'])->name('manager.rental.hsty');
@@ -61,6 +63,8 @@ Route::group(['middleware' => ['auth:web', 'role:manager'], 'prefix' => 'manager
     //accessories
     Route::resource('/accessories', AccessoriesController::class)->names('manager.acces');
     Route::get('accessories-kosong/', [AccessoriesController::class, 'accesKosong'])->name('manager.acces.kosong');
+    Route::put('/acces-tambah/{id}', [AccessoriesController::class, 'tambah'])->name('manager.acces.tambah');
+
     //accessories end
 
     //report
@@ -82,4 +86,6 @@ Route::group(['middleware' => ['auth:web', 'role:manager'], 'prefix' => 'manager
     Route::delete('/debts/delete/{id}', [PembayaranController::class, 'destroy'])->name('manager.debts.hapus');
     Route::delete('/rent/delete/{id}', [PembayaranController::class, 'destroyRental'])->name('manager.rent.hapus');
     //end report
+
+    Route::resource('divisi', DivisiController::class)->names('manager.divisi');
 });

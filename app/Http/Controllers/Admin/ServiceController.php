@@ -203,11 +203,11 @@ class ServiceController extends Controller
         $points = 0;
 
         if (
-            $service->total_invoice >= 100000 &&
+            $service->total_invoice >= 1000000 &&
             (int)$service->fee === 0 &&
             (int)$service->diskon === 0
         ) {
-            $points = intdiv($service->total_invoice, 100000);
+            $points = intdiv($service->total_invoice, 1000000);
         }
 
         if ($points > 0) {

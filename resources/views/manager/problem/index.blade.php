@@ -21,7 +21,7 @@
                     </tr>
                     </thead>
                     <tbody>
-                    @foreach($rental as $key => $data)
+                    @foreach($rentals as $key => $data)
                         <tr id="rentalRow{{ $data->id }}">
                             <td>{{ $key + 1 }}</td>
                             <td>{{ $data->rental->no_inv ?? 'N/A' }}</td>
@@ -56,41 +56,6 @@
                                 <span class="badge bg-danger">Problem</span>
                             </td>
                             <td>
-                                <button class="btn btn-success lni lni-checkmark float-end finish-button"
-                                        data-bs-toggle="modal" data-bs-target="#exampleVerticallycenteredModal{{ $data->id }}"
-                                        title="Finished" id="finishButton{{ $data->id }}" style="display: none;">
-                                </button>
-
-                                <div class="modal fade" id="exampleVerticallycenteredModal{{ $data->id }}" tabindex="-1" aria-hidden="true">
-                                    <div class="modal-dialog modal-dialog-centered">
-                                        <div class="modal-content">
-                                            <div class="modal-header">
-                                                <h5 class="modal-title">Pelunasan</h5>
-                                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                            </div>
-                                            <form action="{{ route('manager.problem.finis', $data->id) }}" method="POST">
-                                                @csrf
-                                                <div class="modal-body">
-                                                    <label class="col-form-label">Date Pembuatan</label>
-                                                    <input type="text" class="form-control datepicker" name="created_at" value="{{ $data->rental->created_at ?? '' }}">
-                                                    <label class="col-form-label">Date Start</label>
-                                                    <input type="text" class="form-control datepicker" name="date_start" value="{{ $data->rental->date_start ?? '' }}">
-                                                    <label class="col-form-label">Date End</label>
-                                                    <input type="text" class="form-control datepicker" name="date_end" value="{{ $data->rental->date_end ?? '' }}">
-                                                    <label class="col-form-label">Nominal In</label>
-                                                    <input type="number" class="form-control" name="nominal_in" value="{{ $data->rental->nominal_in ?? '' }}">
-                                                    <label class="col-form-label">Nominal Out</label>
-                                                    <input type="number" class="form-control" name="nominal_out" value="{{ $data->rental->nominal_out ?? '' }}">
-                                                </div>
-                                                <div class="modal-footer">
-                                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                                                    <button type="submit" class="btn btn-primary">Save<i class="bx bx-save"></i></button>
-                                                </div>
-                                            </form>
-                                        </div>
-                                    </div>
-                                </div>
-
                                 <button class="btn btn-dnd lni lni-eye float-end me-1" data-bs-toggle="modal"
                                         data-bs-target="#exampleLargeModal{{ $data->id }}" title="Detail"></button>
 
@@ -142,12 +107,6 @@
                                    class="btn btn-success lni lni-whatsapp float-end me-1" data-bs-toggle="tooltip" data-bs-placement="top" title="Chat Customer">
                                 </a>
 
-                                <form action="{{ route('manager.problem.returned', $data->id) }}" method="POST" class="return-form" id="returnForm{{ $data->id }}">
-                                    @csrf
-                                    <button type="submit" class="btn btn-warning lni lni-package float-end me-1 return-button"
-                                            id="returnButton{{ $data->id }}" title="Item Returned">
-                                    </button>
-                                </form>
                             </td>
                         </tr>
                     @endforeach

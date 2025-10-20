@@ -108,6 +108,13 @@
             </a>
         </li>
         <li>
+            <a href="{{route('admin.access.sale')}}">
+                <div class="parent-icon"><i class='bx bx-dollar'></i>
+                </div>
+                <div class="menu-title">Accessories Sale</div>
+            </a>
+        </li>
+        <li>
             <a href="{{route('admin.mainten.index')}}">
                 <div class="parent-icon"><i class='bx bx-shield-quarter'></i>
                 </div>

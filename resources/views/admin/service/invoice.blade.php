@@ -13,13 +13,13 @@
                     <table>
                         <tr>
                             <td rowspan="4" style="border: none; width: 120px; vertical-align: middle;">
-                                <img src="{{ asset('images/logo/' . $data->divisi->logo) }}"
+                                <img src="{{asset('images/logodnd.png')}}"
                                      class="print-img"
                                      alt="dnd logo"
                                      style="width: 100%; height: 100px; object-fit: contain;">
                             </td>
                             <td style="border: none; padding-left: 15px; white-space: nowrap;">
-                                <strong style="font-size: 12px;">{{$data->divisi->alamat}}</strong>
+                                <strong style="font-size: 12px;">Komplek Sukamenak Indah Blok R N0.11</strong>
                             </td>
                         </tr>
                         <tr>
@@ -29,12 +29,12 @@
                         </tr>
                         <tr>
                             <td style="border: none; padding-left: 15px; white-space: nowrap;">
-                                <strong style="font-size: 12px;">Phone: {{$data->divisi->phone}}</strong>
+                                <strong style="font-size: 12px;">Phone: 0821-2990-5005</strong>
                             </td>
                         </tr>
                         <tr>
                             <td style="border: none; padding-left: 15px; white-space: nowrap;">
-                                <strong style="font-size: 12px;">Email: {{$data->divisi->email}}</strong>
+                                <strong style="font-size: 12px;">Email:  dndsurvey90@gmail.com</strong>
                             </td>
                         </tr>
                     </table>
@@ -57,46 +57,22 @@
                             <td width="13%" class="text-start">No Invoice</td>
                             <td width="2%" class="text-center">:</td>
                             <td>
-                                <strong>{{ $data->invoice }}</strong>
+                                <strong>{{ $data->no_inv }}</strong>
                             </td>
                         </tr>
                         <tr>
                             <td>
-                                <strong>{{ optional($data->customer)->name ?? '-' }}</strong> <br>
-                                <strong>{{ optional($data->customer)->company ?? '-' }}</strong>
-                            </td>
-                            <td width="10%" class="text-start">No PO</td>
-                            <td width="2%" class="text-center">:</td>
-                            <td>
-                                @if($data->no_po)
-                                    <strong>{{$data->no_po}}</strong>
-                                @else
-                                    -
-                                @endif
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>
-                                @php
-                                    $words = explode(' ', optional($data->customer)->addres ?? '-');
-                                    $chunks = array_chunk($words, 8);
-                                @endphp
-
-                                <strong>
-                                    @foreach ($chunks as $line)
-                                        {{ implode(' ', $line) }}<br>
-                                    @endforeach
-                                </strong>
-
+                                <strong>{{ optional($data->cust)->name ?? '-' }}</strong> <br>
+                                <strong>{{ optional($data->cust)->addres ?? '-' }}</strong>
                             </td>
                             <td width="10%" class="text-start">Tanggal</td>
                             <td width="2%" class="text-center">:</td>
                             <td><strong>{{ \Carbon\Carbon::parse($data->created_at)->translatedFormat('j F Y') }}
                                 </strong></td>
                         </tr>
+
                         <tr>
-                            <td>
-                            </td>
+                            <td></td>
                             <td class="text-start">No. Rekening</td>
                             <td width="1%" class="text-end">:</td>
                             <td width="20%"><strong>{{optional($data->customer)->divisi->no_rek ?? '-'}}</strong></td>
@@ -112,34 +88,35 @@
                             </th>
                         </tr>
                         <tr>
-                            <th width="1%">No</th>
-                            <th>Product</th>
-                            <th>Price</th>
-                            <th class="text-center">Qty</th>
-                            <th>Subtotal</th>
+                            <th class="text-center" width="1%" style="border-left-width:1px;">No</th>
+                            <th class="text-center">Nama Barang</th>
+                            <th class="text-center">No Seri</th>
+                            <th class="text-center">Type</th>
                         </tr>
                         </thead>
                         <tbody>
-                        @foreach($data->itemSales as $key => $item)
-                            <tr>
-                                <td width="1%" class="text-center">{{ $key + 1 }}</td>
-                                <td>{{ $item->name }}</td>
-                                <td class="text-right">{{ formatRupiah($item->price) }}</td>
-                                <td class="text-center">1</td>
-                                <td class="text-right">{{ formatRupiah($item->price) }}</td>
-                            </tr>
+                        @foreach(explode(',', $data->no_seri) as $key => $no_seri)
                         @endforeach
-                        @foreach($data->accessoriesSales as $key => $accessories)
+                        @foreach(explode(',', $data->type) as $key => $type)
+                        @endforeach
+                        @foreach(explode(',', $data->item) as $key => $item)
                             <tr>
                                 <td>{{ $key + 1 }}</td>
-                                <td>
-                                    {{ $accessories->accessories ? $accessories->accessories->name : 'Aksesori tidak ditemukan' }}
-                                </td>
-                                <td class="text-right">
-                                    {{ $accessories->qty > 0 ? formatRupiah($accessories->subtotal / $accessories->qty) : 'Rp0' }}
-                                </td>
-                                <td class="text-center">{{ $accessories->qty }}</td>
-                                <td class="text-right">{{ formatRupiah($accessories->subtotal) }}</td>
+                                <td>{{ trim($item) }}</td>
+                                <td>{{ trim($no_seri) }}</td> {{-- gunakan $data->no_seri --}}
+                                <td>{{ trim($type) }}</td>
+                            </tr>
+                        @endforeach
+
+                        <tr>
+                            <th colspan="5" class="text-center ">
+                                <strong>Jenis Service</strong>
+                            </th>
+                        </tr>
+                        @foreach(explode(',', $data->jenis_service) as $key => $jenis_service)
+                            <tr>
+                                <td>{{$key +1}}</td>
+                                <td colspan="4">{{ trim($jenis_service) }}</td>
                             </tr>
                         @endforeach
                         </tbody>
@@ -168,14 +145,14 @@
                                 <div class="d-flex justify-content-end">
                                     <div class="me-2">
                                         <table class="table table-bordered">
-                                            @if($data->nominal_in < $data->pay)
+                                            @if($data->nominal_in < $data->total_invoice)
                                                 <tr>
                                                     <td colspan="4" style="font-size: 10px"><strong>DIBAYAR</strong></td>
                                                     <td class="text-end" style="font-size: 10px">{{ formatRupiah($data->nominal_in) }}</td>
                                                 </tr>
                                                 <tr>
                                                     <td colspan="4" style="font-size: 10px"><strong>TAGIHAN</strong></td>
-                                                    <td class="text-end" style="font-size: 10px">{{ formatRupiah($data->pay - $data->nominal_in) }}</td>
+                                                    <td class="text-end" style="font-size: 10px">{{ formatRupiah($data->nominal_out) }}</td>
                                                 </tr>
                                             @endif
                                         </table>
@@ -184,19 +161,15 @@
                                         <table class="table table-bordered">
                                             <tr>
                                                 <td colspan="4" style="font-size: 10px"><strong>SUBTOTAL</strong></td>
-                                                <td class="text-end" style="font-size: 10px">{{ formatRupiah($data->total_price) }}</td>
+                                                <td class="text-end" style="font-size: 10px">{{ formatRupiah($data->total_invoice) }}</td>
                                             </tr>
                                             <tr>
-                                                <td colspan="4" style="font-size: 10px"><strong>PPN</strong></td>
-                                                <td class="text-end" style="font-size: 10px">{{ formatRupiah($data->ppn) }}</td>
+                                                <td colspan="4" style="font-size: 10px"><strong>BIAYA GANTI</strong></td>
+                                                <td class="text-end" style="font-size: 10px">{{ formatRupiah($data->biaya_ganti) }}</td>
                                             </tr>
                                             <tr>
                                                 <td colspan="4" style="font-size: 10px"><strong>PPH</strong></td>
                                                 <td class="text-end" style="font-size: 10px">{{ formatRupiah($data->pph) }}</td>
-                                            </tr>
-                                            <tr>
-                                                <td colspan="4" style="font-size: 10px"><strong>ONGKIR</strong></td>
-                                                <td class="text-end" style="font-size: 10px">{{ formatRupiah($data->ongkir) }}</td>
                                             </tr>
                                             <tr>
                                                 <td colspan="4" style="font-size: 10px"><strong>DISCOUNT</strong></td>
@@ -204,7 +177,7 @@
                                             </tr>
                                             <tr>
                                                 <td colspan="4" style="font-size: 10px"><strong>GRAND TOTAL</strong></td>
-                                                <td class="text-end" style="font-size: 10px">{{ formatRupiah($data->pay) }}</td>
+                                                <td class="text-end" style="font-size: 10px">{{ formatRupiah($data->total_invoice + $data->ppn - $data->diskon) }}</td>
                                             </tr>
                                         </table>
                                     </div>

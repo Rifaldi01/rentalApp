@@ -72,11 +72,9 @@
                     </tr>
                     @endforeach
                     </tbody>
-                    </tfoot>
                 </table>
             </div>
         </di>
-    </div>
     </div>
     <div class="modal fade" id="exampleVerticallycenteredModal" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">

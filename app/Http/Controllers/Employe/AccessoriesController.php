@@ -12,42 +12,51 @@ class AccessoriesController extends Controller
 {
     public function index()
     {
-        $cust = Accessories::latest()->paginate();
-        $title = 'Delete Data!';
-        $text = "Are you sure you want to delete?";
-        confirmDelete($title, $text);
-        $acces = Accessories::where('stok', '>', 0)->get();
-
-        // Buat array untuk menyimpan data stok dan quantity per accessories
+        $acces = Accessories::all();
         $accessoriesData = [];
 
-        // Loop melalui setiap accessories
         foreach ($acces as $accessory) {
-            // Stok awal
             $stok = $accessory->stok;
 
-            // Total quantity yang sedang dirental untuk accessories ini
+            // Jumlah accessories yang sedang disewa (status_acces = 1)
             $rentedQty = AccessoriesCategory::where('accessories_id', $accessory->id)
                 ->where('status_acces', 1)
                 ->sum('accessories_quantity');
 
-            // Total stok + quantity yang sedang dirental
-            $stokAll = $stok + $rentedQty;
+            // Jumlah accessories yang sedang maintenance (status = 0)
+            $maintenanceQty = \DB::table('maintenance_accessories')
+                ->where('accessories_id', $accessory->id)
+                ->where('status', 0)
+                ->sum('qty');
 
-            // Simpan data ke dalam array
+            // Jumlah accessories yang sedang dipinjam oleh divisi (status = 1)
+            $borrowedQty = \DB::table('rental_divisi_details')
+                ->where('accessories_id', $accessory->id)
+                ->where('status', 0)
+                ->sum('qty');
+
+            // Hitung total stok (stok tersedia + yang disewa + yang maintenance + yang dipinjam)
+            $stokAll = $stok + $rentedQty + $maintenanceQty + $borrowedQty;
+
             $accessoriesData[] = [
                 'id' => $accessory->id,
                 'name' => $accessory->name,
-                'stok_all' => $accessory->stok_all,
+                'stok_all' => $accessory->stok_all, // gunakan hasil perhitungan stok total
                 'stok' => $stok,
                 'rentedQty' => $rentedQty,
-                'stokAll' => $stokAll
+                'maintenanceQty' => $maintenanceQty,
+                'borrowedQty' => $borrowedQty,
             ];
         }
-        $rental = AccessoriesCategory::where('status_acces', 1)->with(['accessory', 'rental.cust'])->get();
-        // Kirim data ke view
-        return view('employe.accessories.index', compact(['accessoriesData', 'rental']));
+
+        // Ambil data rental accessories yang sedang aktif
+        $rentals = AccessoriesCategory::where('status_acces', 1)
+            ->with('accessory', 'rental.cust')
+            ->get();
+
+        return view('employe.accessories.index', compact('accessoriesData', 'rentals'));
     }
+
     public function store(Request $request)
     {
         $request->validate([
@@ -67,6 +76,26 @@ class AccessoriesController extends Controller
         $post = Accessories::find($id);
         $post->update($request->all());
         Alert::success('Success', 'Edit Accessories Success');
+        return back();
+    }
+    public function tambah(Request $request, string $id)
+    {
+        // ✅ Validasi input
+        $request->validate([
+            'stok' => 'required|numeric|min:1',
+        ]);
+
+        // ✅ Ambil data accessories
+        $accessory = Accessories::findOrFail($id);
+
+        // ✅ Tambahkan stok dan stok_all
+        $accessory->stok += $request->stok;
+        $accessory->stok_all += $request->stok;
+
+        // ✅ Simpan perubahan
+        $accessory->save();
+
+        Alert::success('Success', 'Stok Accessories berhasil diperbarui');
         return back();
     }
 

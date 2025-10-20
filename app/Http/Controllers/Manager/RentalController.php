@@ -28,12 +28,12 @@ class RentalController extends Controller
             ->where('status', 1)
             ->get();
 
-        foreach ($overdueRentals as $rental) {
-            $rental->status = 2;
-            $rental->save();
+        foreach ($overdueRentals as $rentals) {
+            $rentals->status = 2;
+            $rentals->save();
 
             Problem::create([
-                'rental_id' => $rental->id,
+                'rental_id' => $rentals->id,
                 'descript' => 'Masa tenggang sudah berakhir tapi barang belum dikembalikan',
             ]);
         }
@@ -41,7 +41,7 @@ class RentalController extends Controller
         $title = 'Delet Rental?';
         $text = "Are you sure you want to delete?";
         confirmDelete($title, $text);
-        $rental = Rental::leftjoin('accessories_categories as a', 'a.rental_id', '=', 'rentals.id')
+        $rentals = Rental::leftjoin('accessories_categories as a', 'a.rental_id', '=', 'rentals.id')
             ->leftjoin('accessories as b', 'a.accessories_id', '=', 'b.id')
             ->select(
                 'rentals.id', 'rentals.customer_id', 'rentals.item_id', 'rentals.name_company',
@@ -56,13 +56,13 @@ class RentalController extends Controller
             )
             ->orderBy('rentals.created_at', 'DESC')
             ->get();
-        foreach ($rental as $data) {
+        foreach ($rentals as $data) {
             $dateStart = Carbon::parse($data->date_start);
             $dateEnd = Carbon::parse($data->date_end);
             $daysDifference = $dateStart->diffInDays($dateEnd);
             $data->days_difference = $daysDifference;
         }
-        return view('manager.rental.index', compact('rental'));
+        return view('manager.rental.index', compact('rentals'));
     }
 
     /**

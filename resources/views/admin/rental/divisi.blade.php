@@ -5,53 +5,49 @@
             <div class="row">
                 <div class="col-6">
                     <div class="container mt-3">
-                        <h4 class="text-uppercase">Peminjaman Divisi</h4>
+                        <h4 class="text-uppercase">Pinjaman Divisi</h4>
                     </div>
-                </div>
-                <div class="col-6">
-                    <a data-bs-toggle="tooltip" data-bs-placement="top" title="Add rental"
-                       href="{{route('admin.rental.create')}}"
-                       class="btn btn-dnd bx bx-plus float-end me-3 mt-3 shadow">
-                    </a>
-
                 </div>
             </div>
         </div>
         <div class="card-body">
             <div class="table-responsive">
-                <table id="list2" class="table table-striped table-bordered fs-7 small-text" style="width:100%">
+                <table id="aktif" class="table table-striped table-bordered fs-7 small-text" style="width:100%">
                     <thead>
                     <tr>
                         <th width="2%" class="text-center">No</th>
-                        <th>No Invoice</th>
-                        <th>Divisi</th>
-                        <th>Start Date</th>
-                        <th>End Date</th>
-                        <th class="text-center">Total Day</th>
-                        <th class="text-center" width="7%">Print</th>
-                        <th class="text-center" width="10%">Action</th>
+                        <th>Kode Pinjaman</th>
+                        <th>Nama Divisi</th>
+                        <th>Deskripsi</th>
+                        <th>Tanggal Peminjaman</th>
+                        <th>Status</th>
+                        <th>Print</th>
+                        <th>Action</th>
                     </tr>
                     </thead>
                     <tbody>
                     <tr>
-                        @foreach($rental as $key => $data)
+                        @foreach($rentalDivisi as $key => $data)
                             <td>{{$key +1}}</td>
-                            <td>{{$data->no_inv}}</td>
-                            <td>{{$data->cust->name}}</td>
+                            <td>{{$data->kode_pinjaman}}</td>
+                            <td>{{$data->divisi->name}}</td>
                             <td>
-                                {{formatId($data->date_start)}}
+                                {{$data->description}}
                             </td>
-                            <td>
-                                {{formatId($data->date_end)}}
+                            <td>{{formatId($data->created_at)}}</td>
+                            <td class="text-center">
+                                @if($data->status == 1)
+                                    <span class="badge bg-success">Finished</span>
+                                @elseif($data->status == 0)
+                                    <span class="badge bg-secondary">Dipinjam</span>
+                                @endif
                             </td>
-                            <td class="text-center">{{$data->days_difference}} Day</td>
                             <td>
                                 <button class="btn btn-dnd lni lni-files btn-sm" data-bs-toggle="modal"
                                         data-bs-target="#exampleExtraLargeModal{{$data->id}}" data-bs-tool="tooltip"
                                         data-bs-placement="top" title="Print Surat Jalan">
                                 </button>
-                                @include('admin.rental.surat-jalan')
-
+                                @include('employe.rentalDivisi.surat-jalan')
                             </td>
                             <td>
                                 <form action="{{ route('admin.rental.finis', $data->id) }}" method="POST">

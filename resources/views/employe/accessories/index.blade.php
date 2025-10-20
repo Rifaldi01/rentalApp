@@ -25,6 +25,8 @@
                         <th>Stok All</th>
                         <th>Stok Available</th>
                         <th>Rental</th>
+                        <th>Rental Divisi</th>
+                        <th>Maintenance</th>
                         <th class="text-center" width="9%">Action</th>
                     </tr>
                     </thead>
@@ -36,38 +38,89 @@
                             <td>{{ $data['stok_all'] }}</td>
                             <td>{{ $data['stok'] }}</td>
                             <td>{{ $data['rentedQty'] }}</td>
+                            <td>{{ $data['borrowedQty'] }}</td>
+                            <td>{{ $data['maintenanceQty'] }}</td>
                             <td>
-                                <a href="{{ route('admin.acces.destroy', $data['id']) }}" data-confirm-delete="true" class="btn btn-danger btn-sm bx bx-trash" data-bs-toggle="tooltip" data-bs-placement="top" title="Delete"></a>
-                                <button data-bs-toggle="modal" data-bs-target="#exampleVerticallycenteredModal{{ $data['id'] }}" class="btn btn-warning btn-sm float-end bx bx-edit ms-2" data-bs-placement="top" title="Edit"></button>
+                                <a href="{{ route('admin.acces.destroy', $data['id']) }}" data-confirm-delete="true"
+                                   class="btn btn-danger btn-sm bx bx-trash" data-bs-toggle="tooltip"
+                                   data-bs-placement="top" title="Delete"></a>
 
-                                <!-- Edit Modal -->
-                                <div class="modal fade" id="exampleVerticallycenteredModal{{ $data['id'] }}" tabindex="-1" aria-hidden="true">
+                                <button data-bs-toggle="modal"
+                                        data-bs-target="#exampleVerticallycenteredModal{{ $data['id'] }}"
+                                        class="btn btn-warning btn-sm float-end bx bx-edit ms-2" data-bs-placement="top"
+                                        title="Edit"></button>
+                                <div class="modal fade" id="exampleVerticallycenteredModal{{ $data['id'] }}"
+                                     tabindex="-1" aria-hidden="true">
                                     <div class="modal-dialog modal-dialog-centered">
                                         <div class="modal-content">
                                             <div class="modal-header">
                                                 <h5 class="modal-title">Edit Accessories</h5>
-                                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                        aria-label="Close"></button>
                                             </div>
-                                            <form action="{{ route('employe.acces.store', $data['id']) }}" method="POST">
+                                            <form action="{{ route('employe.acces.update', $data['id']) }}"
+                                                  method="POST">
                                                 @csrf
                                                 @method('PUT')
                                                 <div class="modal-body">
                                                     <label class="col-form-label">Name Accessories</label>
-                                                    <input value="{{ $data['name'] }}" type="text" name="name" class="form-control" placeholder="Enter Accessories">
+                                                    <input value="{{ $data['name'] }}" type="text" name="name"
+                                                           class="form-control" placeholder="Enter Accessories">
                                                     <label class="col-form-label mt-2">Stok All</label>
-                                                    <input type="number" value="{{ $data['stok_all'] }}" name="stok_all" class="form-control" placeholder="">
+                                                    <input type="number" value="{{ $data['stok_all'] }}" name="stok_all"
+                                                           class="form-control" placeholder="">
                                                     <label class="col-form-label mt-2">Stok Available</label>
-                                                    <input type="number" value="{{ $data['stok'] }}" name="stok" class="form-control" placeholder="">
+                                                    <input type="number" value="{{ $data['stok'] }}" name="stok"
+                                                           class="form-control" placeholder="">
                                                 </div>
                                                 <div class="modal-footer">
-                                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                                                    <button type="submit" class="btn btn-primary">Save<i class="bx bx-save"></i></button>
+                                                    <button type="button" class="btn btn-secondary"
+                                                            data-bs-dismiss="modal">Close
+                                                    </button>
+                                                    <button type="submit" class="btn btn-primary">Save<i
+                                                            class="bx bx-save"></i></button>
                                                 </div>
                                             </form>
                                         </div>
                                     </div>
                                 </div>
-                                <!-- End of Edit Modal -->
+
+                                <button data-bs-toggle="modal"
+                                        data-bs-target="#tambahstok{{ $data['id'] }}"
+                                        class="btn btn-dnd btn-sm float-end bx bx-edit ms-2" data-bs-placement="top"
+                                        title="Edit"></button>
+                                <div class="modal fade" id="tambahstok{{ $data['id'] }}"
+                                     tabindex="-1" aria-hidden="true">
+                                    <div class="modal-dialog modal-dialog-centered">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title">Edit Accessories</h5>
+                                                <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                        aria-label="Close"></button>
+                                            </div>
+                                            <form action="{{ route('employe.acces.tambah', $data['id']) }}"
+                                                  method="POST">
+                                                @csrf
+                                                @method('PUT')
+                                                <div class="modal-body">
+                                                    <label class="col-form-label">Name Accessories</label>
+                                                    <input value="{{ $data['name'] }}" type="text" name="name"
+                                                           class="form-control" placeholder="Enter Accessories" readonly>
+                                                    <label class="col-form-label mt-2">qty</label>
+                                                    <input type="number" value="0" name="stok"
+                                                           class="form-control" placeholder="">
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button type="button" class="btn btn-secondary"
+                                                            data-bs-dismiss="modal">Close
+                                                    </button>
+                                                    <button type="submit" class="btn btn-primary">Save<i
+                                                            class="bx bx-save"></i></button>
+                                                </div>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
                             </td>
                         </tr>
                     @endforeach
@@ -106,7 +159,7 @@
                     </tr>
                     </thead>
                     <tbody>
-                    @foreach($rental as $key => $data)
+                    @foreach($rentals as $key => $data)
                         <tr>
                             <td data-index="{{ $key + 1 }}">{{ $key + 1 }}</td>
                             <td>
@@ -179,7 +232,8 @@
                 </table>
             </div>
         </div>
-    </div>    <div class="modal fade" id="exampleVerticallycenteredModal" tabindex="-1" aria-hidden="true">
+    </div>
+    <div class="modal fade" id="exampleVerticallycenteredModal" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
                 <div class="modal-header">
@@ -198,7 +252,8 @@
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                        <button type="submit" class="btn btn-primary" id="submitBtn">Save<i class="bx bx-save"></i></button>
+                        <button type="submit" class="btn btn-primary" id="submitBtn">Save<i class="bx bx-save"></i>
+                        </button>
                     </div>
                 </form>
             </div>
@@ -211,8 +266,8 @@
 @endpush
 @push('js')
     <script>
-        $(document).ready(function() {
-            $('#submitBtn').click(function() {
+        $(document).ready(function () {
+            $('#submitBtn').click(function () {
                 // Disable button dan ubah teksnya
                 $(this).prop('disabled', true).text('Loading...');
 
@@ -222,7 +277,7 @@
         });
     </script>
     <script>
-        $(document).ready(function() {
+        $(document).ready(function () {
             var table = $('#accessories').DataTable({
                 lengthChange: false,
                 buttons: [{
@@ -230,7 +285,7 @@
                     exportOptions: {
                         columns: [0, 1, 2, 3, 4]
                     },
-                    customize: function(doc) {
+                    customize: function (doc) {
                         doc.content[1].alignment = 'center';
                     }
                 }, {
@@ -238,7 +293,7 @@
                     exportOptions: {
                         columns: [0, 1, 2, 3, 4]
                     },
-                    customize: function(win) {
+                    customize: function (win) {
                         $(win.document.body).find('table').addClass('table-center');
                     }
                 }]
@@ -247,20 +302,20 @@
             table.buttons().container()
                 .appendTo('#accessories_wrapper .col-md-6:eq(0)');
         });
-        $(document).ready(function() {
+        $(document).ready(function () {
             var table = $('#accessories').DataTable();
 
             // Mengurutkan ulang nomor saat tabel diurutkan atau difilter
-            table.on('order.dt search.dt', function() {
+            table.on('order.dt search.dt', function () {
                 let i = 1;
-                table.cells(null, 0, { search: 'applied', order: 'applied' }).every(function(cell) {
+                table.cells(null, 0, {search: 'applied', order: 'applied'}).every(function (cell) {
                     this.data(i++);
                 });
             }).draw();
         });
     </script>
     <script>
-        $(document).ready(function() {
+        $(document).ready(function () {
             var table = $('#accessoriesRental').DataTable({
                 lengthChange: false,
                 buttons: [{
@@ -268,7 +323,7 @@
                     exportOptions: {
                         columns: [0, 1, 2, 3, 4]
                     },
-                    customize: function(doc) {
+                    customize: function (doc) {
                         doc.content[1].alignment = 'center';
                     }
                 }, {
@@ -276,7 +331,7 @@
                     exportOptions: {
                         columns: [0, 1, 2, 3, 4]
                     },
-                    customize: function(win) {
+                    customize: function (win) {
                         $(win.document.body).find('table').addClass('table-center');
                     }
                 }]
@@ -285,13 +340,13 @@
             table.buttons().container()
                 .appendTo('#accessoriesRental_wrapper .col-md-6:eq(0)');
         });
-        $(document).ready(function() {
+        $(document).ready(function () {
             var table = $('#accessoriesRental').DataTable();
 
             // Mengurutkan ulang nomor saat tabel diurutkan atau difilter
-            table.on('order.dt search.dt', function() {
+            table.on('order.dt search.dt', function () {
                 let i = 1;
-                table.cells(null, 0, { search: 'applied', order: 'applied' }).every(function(cell) {
+                table.cells(null, 0, {search: 'applied', order: 'applied'}).every(function (cell) {
                     this.data(i++);
                 });
             }).draw();

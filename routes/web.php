@@ -1,19 +1,27 @@
 <?php
 
+use App\Http\Controllers\RentalDivisiController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Employe\DashboardController;
 use App\Http\Controllers\EditController;
 use App\Http\Controllers\Employe\ItemController;
 use App\Http\Controllers\Employe\AccessoriesController;
 use App\Http\Controllers\Employe\MaintenanceController;
+use App\Http\Controllers\Employe\RentalController;
+use App\Http\Controllers\Employe\AccessoriesMaintenace;
+use App\Http\Controllers\AccessoriesSaleController;
 
+Route::get('/', function () {
+    return redirect()->route('login');
+});
 Auth::routes([
     'register' => false
 ]);
-Route::group(['middleware' => ['auth:web']], function () {
-    Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
-    Route::get('/', [DashboardController::class, 'index']);
-    Route::get('/dashboard', [DashboardController::class, 'index']);
+Route::group(['middleware' => ['auth:web', 'role:employe'], 'prefix' => 'employe'], function () {
+    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+    Route::get('/', function () {
+        return redirect()->route('dashboard');
+    });
     Route::resource('/profile/edit', EditController::class)->names('profile.edit');
 
     Route::get('item', [ItemController::class, 'index'])->name('employe.index');
@@ -31,7 +39,29 @@ Route::group(['middleware' => ['auth:web']], function () {
     Route::post('/sale/', [ItemController::class, 'storesale'])->name('employe.item.sale');
     Route::post('/accessories/store', [AccessoriesController::class, 'store'])->name('employe.acces.store');
     Route::put('/accessories/{id}', [AccessoriesController::class, 'update'])->name('employe.acces.update');
+    Route::put('/acces-tambah/{id}', [AccessoriesController::class, 'tambah'])->name('employe.acces.tambah');
     Route::get('/maintenance', [MaintenanceController::class, 'index'])->name('employe.mainten');
+
+    Route::get('/rental', [RentalController::class, 'index'])->name('employe.rental');
+    Route::post('/rental/{id}', [RentalController::class, 'approveRental'])->name('employe.rental.approve');
+
+
+
+
 });
+
+Route::group(['middleware' => ['auth:web', 'role:employe|manager'], 'prefix' => 'employe'], function () {
+    Route::get('maintenace-acces/', [AccessoriesMaintenace::class, 'index'])->name('employe.mainten.access');
+    Route::post('maintenace-acces/', [AccessoriesMaintenace::class, 'accesStore'])->name('employ.maintenace.accesStore');
+    Route::post('maintenace-acces/finis/{id}', [AccessoriesMaintenace::class, 'finis'])->name('employe.maintenace.finis');
+
+    Route::resource('rental-divisi', RentalDivisiController::class)->names('employe.rentaldivisi');
+    Route::post('rental-divisi/finis/{id}', [RentalDivisiController::class, 'finis'])->name('employe.rentaldivisi.finis');
+
+    Route::resource('accessories-sale/', AccessoriesSaleController::class)->names('employe.accesSale');
+    Route::post('rental-finis/{id}', [RentalController::class, 'kembali'])->name('employe.rental.kemabli');
+
+});
+
 
 

@@ -8,11 +8,11 @@
                         <h4 class="text-uppercase">List accesories</h4>
                     </div>
                 </div>
-                <div class="col-6">
-                    <button type="button" class="btn btn-dnd float-end me-3 mt-3 btn-sm shadow" data-bs-toggle="modal"
-                            data-bs-target="#exampleVerticallycenteredModal"><i class="bx bx-plus"></i>
-                    </button>
-                </div>
+{{--                <div class="col-6">--}}
+{{--                    <button type="button" class="btn btn-dnd float-end me-3 mt-3 btn-sm shadow" data-bs-toggle="modal"--}}
+{{--                            data-bs-target="#exampleVerticallycenteredModal"><i class="bx bx-plus"></i>--}}
+{{--                    </button>--}}
+{{--                </div>--}}
             </div>
         </div>
         <div class="card-body">
@@ -25,6 +25,8 @@
                         <th>Stok All</th>
                         <th>Stok Available</th>
                         <th>Rental</th>
+                        <th>Rental Divisi</th>
+                        <th>Maintenance</th>
 {{--                        <th class="text-center" width="9%">Action</th>--}}
                     </tr>
                 </thead>
@@ -33,9 +35,11 @@
                     <tr>
                         <td data-index="{{ $key + 1 }}">{{ $key + 1 }}</td>
                         <td>{{ $data['name'] }}</td>
-                        <td>{{ $data['stokAll'] }}</td>
+                        <td>{{ $data['stok_all'] }}</td>
                         <td>{{ $data['stok'] }}</td>
                         <td>{{ $data['rentedQty'] }}</td>
+                        <td>{{ $data['borrowedQty'] }}</td>
+                        <td>{{ $data['maintenanceQty'] }}</td>
 {{--                        <td>--}}
 {{--                            <a href="{{ route('admin.acces.destroy', $data['id']) }}" data-confirm-delete="true" class="btn btn-danger btn-sm bx bx-trash" data-bs-toggle="tooltip" data-bs-placement="top" title="Delete"></a>--}}
 {{--                            <button data-bs-toggle="modal" data-bs-target="#exampleVerticallycenteredModal{{ $data['id'] }}" class="btn btn-warning btn-sm float-end bx bx-edit ms-2" data-bs-placement="top" title="Edit"></button>--}}
@@ -83,9 +87,7 @@
                     </div>
                 </div>
                 <div class="col-6">
-                    <button type="button" class="btn btn-dnd float-end me-3 mt-3 btn-sm shadow" data-bs-toggle="modal"
-                            data-bs-target="#exampleVerticallycenteredModal"><i class="bx bx-plus"></i>
-                    </button>
+
                 </div>
             </div>
         </div>
@@ -104,7 +106,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach($rental as $key => $data)
+                    @foreach($rentals as $key => $data)
                     <tr>
                         <td data-index="{{ $key + 1 }}">{{ $key + 1 }}</td>
                         <td>

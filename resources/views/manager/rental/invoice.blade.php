@@ -72,8 +72,7 @@
                         </tr>
 
                         <tr>
-                            <td>
-                            </td>
+                            <td>Periode : <strong>{{formatId($data->date_start)}} - {{formatId($data->date_end)}}</strong></td>
                             <td class="text-start">No. Rekening</td>
                             <td width="1%" class="text-end">:</td>
                             <td width="20%"><strong>{{optional($data->customer)->divisi->no_rek ?? '-'}}</strong></td>
@@ -84,7 +83,7 @@
                     <table class="table table-bordered">
                         <thead>
                         <tr>
-                            <th colspan="5" class="text-center bg-dnd" style="font-size: 13px; background-color: #ff8400;">
+                            <th colspan="6" class="text-center bg-dnd" style="font-size: 13px; background-color: #ff8400;">
                                 <strong>INVOICE</strong>
                             </th>
                         </tr>
@@ -93,32 +92,45 @@
                             <th>Product</th>
                             <th class="text-center">Qty</th>
                             <th>No Seri</th>
+                            <th>Total Hari</th>
+                            <th>Harga</th>
                         </tr>
                         </thead>
                         <tbody>
                         @php
                             $itemIds = json_decode($data->item_id);
                             $no = 1;
+
+                            // Hitung jumlah total baris dari item + accessories
+                            $itemCount = is_array($itemIds) ? count($itemIds) : 0;
+                            $accesCount = $data->accessoriescategory->count();
+                            $totalRowspan = $itemCount + $accesCount;
                         @endphp
 
-                        @if(is_array($itemIds))
-                            @foreach($itemIds as $itemId)
-                                @php
-                                    $item = \App\Models\Item::find($itemId);
-                                @endphp
+                        {{-- Loop item --}}
+                        @if(is_array($itemIds) && $itemCount > 0)
+                            @foreach($itemIds as $key => $itemId)
+                                @php $item = \App\Models\Item::find($itemId); @endphp
                                 <tr>
                                     <td class="text-center">{{ $no++ }}</td>
                                     <td>{{ $item ? $item->name : 'Item not found' }}</td>
                                     <td>1</td>
                                     <td>{{ $item ? $item->no_seri : 'Item not found' }}</td>
+
+                                    {{-- Hanya tampilkan rowspan di baris pertama --}}
+                                    @if($loop->first)
+                                        <td rowspan="{{ $totalRowspan }}" class="text-center align-middle">
+                                            {{$data->days_difference}} Hari
+                                        </td>
+                                        <td rowspan="{{ $totalRowspan }}" class="text-center align-middle">
+                                            Rp {{ formatRupiah($data->total_invoice) }}
+                                        </td>
+                                    @endif
                                 </tr>
                             @endforeach
-                        @else
-                            <tr>
-                                <td colspan="4" class="text-center">{{ $itemIds }}</td>
-                            </tr>
                         @endif
 
+                        {{-- Loop accessories --}}
                         @foreach($data->accessoriescategory as $asdf)
                             <tr>
                                 <td class="text-center">{{ $no++ }}</td>
@@ -127,8 +139,26 @@
                                 <td>Aksesoris</td>
                             </tr>
                         @endforeach
+                        @if(!empty($data->keterangan_item) || !empty($data->keterangan_acces))
+                            <tr>
+                                <th colspan="6" class="text-center"><strong>Keterangan</strong></th>
+                            </tr>
+                            <tr>
+                                <td colspan="6">
+                                    @if(!empty($data->keterangan_item))
+                                        <li>{{ $data->keterangan_item }}</li>
+                                    @endif
+
+                                    @if(!empty($data->keterangan_acces))
+                                        <li>{{ $data->keterangan_acces }}</li>
+                                    @endif
+                                </td>
+                            </tr>
+                        @endif
+
                         </tbody>
                     </table>
+
                     <div class="mb-lg-5">
                         <div class="print-row">
                             <!-- Kolom kiri (Notes) -->

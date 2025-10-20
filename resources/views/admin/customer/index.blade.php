@@ -13,6 +13,10 @@
                         <a href="{{route('admin.customer.create')}}" class="btn btn-dnd float-end me-3 btn-sm">
                             <i class="bx bx-plus"></i>
                         </a>
+                        <button type="button" class="btn btn-success btn-sm float-end me-1" data-bs-toggle="modal"
+                                data-bs-target="#exampleModal" data-bs-tool="tooltip"
+                                data-bs-placement="top" title="Import Data Excel"><i class="bx bx-file"></i>
+                        </button>
                     </div>
                 </div>
             </div>

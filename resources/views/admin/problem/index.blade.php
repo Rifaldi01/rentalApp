@@ -14,22 +14,19 @@
                         <th>Name</th>
                         <th>Item</th>
                         <th>Accessories</th>
-                        <th>Total <br>Inv</th>
-                        <th width="">Ung <br>Masuk</th>
-                        <th>Sisa <br>Bayar</th>
-                        <th>Fee /<br>Discount</th>
                         <th>Start Date</th>
                         <th>End Date</th>
+                        <th>Keterangan</th>
                         <th class="text-center">Status</th>
-                        <th class="text-center" width="18%">Action</th>
+                        <th class="text-center" >Action</th>
                     </tr>
                     </thead>
                     <tbody>
-                    @foreach($rental as $key => $data)
+                    @foreach($rentals as $key => $data)
                         <tr id="rentalRow{{ $data->id }}">
                             <td>{{ $key + 1 }}</td>
                             <td>{{ $data->rental->no_inv ?? 'N/A' }}</td>
-                            <td>{{ $data->rental->cust->name ?? 'N/A' }}</td>
+                            <td>{{ Str::limit($data->rental->cust->name, 19) ?? 'N/A' }}</td>
                             <td>
                                 @php
                                     $itemIds = json_decode($data->item_id);
@@ -54,44 +51,66 @@
                                     <li>No accessories</li>
                                 @endif
                             </td>
-                            <td>
-                                @if($data->total_invoice)
-                                    {{formatRupiah($data->total_invoice)}}
-                                @else
-                                    Rp. 0
-                                @endif
-                            </td>
-                            <td>{{formatRupiah($data->nominal_in)}}</td>
-                            <td>{{formatRupiah($data->nominal_out)}}</td>
-                            <td>{{formatRupiah($data->diskon)}}</td>
                             <td>{{ formatId($data->date_start) }}</td>
                             <td>{{ formatId($data->date_end) }}</td>
+                            <td><i style="color: red"> {{Str::limit($data->descript, 30)}}</i></td>
                             <td class="text-center">
                                 <span class="badge bg-danger">Problem</span>
                             </td>
                             <td>
-                                <button class="btn btn-success lni lni-checkmark float-end finish-button"
-                                        data-bs-toggle="modal" data-bs-target="#exampleVerticallycenteredModal{{ $data->id }}"
-                                        title="Finished" id="finishButton{{ $data->id }}" style="display: none;">
-                                </button>
+                                @if($data->status == 0)
+                                    <button class="btn btn-warning lni lni-package float-end me-1"
+                                            data-bs-toggle="modal" data-bs-target="#kembali{{ $data->id }}"
+                                            title="Returned">
+                                    </button>
 
-                                <div class="modal fade" id="exampleVerticallycenteredModal{{ $data->id }}" tabindex="-1" aria-hidden="true">
-                                    <div class="modal-dialog modal-dialog-centered">
-                                        <div class="modal-content">
-                                            <div class="modal-header">
-                                                <h5 class="modal-title text-center">Apakah Masalah Selesai?</h5>
-                                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                            </div>
-                                            <form action="{{ route('admin.problem.finis', $data->id) }}" method="POST">
-                                                @csrf
-                                                <div class="modal-footer">
-                                                    <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Batal</button>
-                                                    <button type="submit" class="btn btn-primary">Ya</button>
+                                    <div class="modal fade" id="kembali{{ $data->id }}" tabindex="-1" aria-hidden="true">
+                                        <div class="modal-dialog modal-dialog-centered">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h5 class="modal-title text-center">Apakah Sudah Dikembalikan?</h5>
+                                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                                 </div>
-                                            </form>
+                                                <form action="{{ route('admin.problem.returned', $data->id) }}" method="POST">
+                                                    @csrf
+                                                    <div class="container">
+                                                        <div class="mt-2 mb-2">
+                                                            <label class="form-label">Keterangan</label>
+                                                            <textarea name="descript" class="form-control" cols="15" rows="">{{$data->descript}}</textarea>
+                                                        </div>
+                                                    </div>
+                                                    <div class="modal-footer">
+                                                        <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Batal</button>
+                                                        <button type="submit" class="btn btn-primary">Ya</button>
+                                                    </div>
+                                                </form>
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
+                                @elseif($data->status == 3)
+                                    <button class="btn btn-success lni lni-checkmark float-end finish-button"
+                                            data-bs-toggle="modal" data-bs-target="#exampleVerticallycenteredModal{{ $data->id }}"
+                                            title="Finished">
+                                    </button>
+
+                                    <div class="modal fade" id="exampleVerticallycenteredModal{{ $data->id }}" tabindex="-1" aria-hidden="true">
+                                        <div class="modal-dialog modal-dialog-centered">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h5 class="modal-title text-center">Apakah Masalah Selesai?</h5>
+                                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                </div>
+                                                <form action="{{ route('admin.problem.finis', $data->id) }}" method="POST">
+                                                    @csrf
+                                                    <div class="modal-footer">
+                                                        <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Batal</button>
+                                                        <button type="submit" class="btn btn-primary">Ya</button>
+                                                    </div>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </div>
+                                @endif
 
                                 <button class="btn btn-dnd lni lni-eye float-end me-1" data-bs-toggle="modal"
                                         data-bs-target="#exampleLargeModal{{ $data->id }}" title="Detail"></button>
@@ -143,13 +162,6 @@
                                 <a href="https://api.whatsapp.com/send?phone=62{{ $data->rental->cust->phone ?? '' }}&text=Halo%20Customer%20yth,%20ada%20masalah%20dalam%20peminjaman%20anda%20segera%20konfirmasi%20kepada%20kami%20untuk%20menyelesaikan%20masalah%20tersebut"
                                    class="btn btn-success lni lni-whatsapp float-end me-1" data-bs-toggle="tooltip" data-bs-placement="top" title="Chat Customer">
                                 </a>
-
-                                <form action="{{ route('admin.problem.returned', $data->id) }}" method="POST" class="return-form" id="returnForm{{ $data->id }}">
-                                    @csrf
-                                    <button type="submit" class="btn btn-warning lni lni-package float-end me-1 return-button"
-                                            id="returnButton{{ $data->id }}" title="Item Returned">
-                                    </button>
-                                </form>
                             </td>
                         </tr>
                     @endforeach
@@ -167,31 +179,5 @@
 @push('js')
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
     <script>
-        $(".datepicker").flatpickr();
-
-        document.addEventListener('DOMContentLoaded', function () {
-            // Memeriksa localStorage untuk status tombol "Returned"
-            document.querySelectorAll('.return-button').forEach(function (button) {
-                const rentalId = button.id.replace('returnButton', '');
-
-                // Cek jika tombol "Returned" sudah diklik sebelumnya
-                if (localStorage.getItem('returned_' + rentalId) === 'true') {
-                    button.style.display = 'none'; // Sembunyikan tombol "Returned"
-                    document.getElementById('finishButton' + rentalId).style.display = 'inline-block'; // Tampilkan tombol "Finished"
-                }
-            });
-
-            // Menangani event submit pada form
-            document.querySelectorAll('.return-form').forEach(function (form) {
-                form.addEventListener('submit', function (event) {
-                    event.preventDefault(); // Mencegah pengiriman form
-                    const rentalId = this.id.replace('returnForm', '');
-                    localStorage.setItem('returned_' + rentalId, 'true'); // Simpan status di localStorage
-                    document.getElementById('returnButton' + rentalId).style.display = 'none'; // Sembunyikan tombol "Returned"
-                    document.getElementById('finishButton' + rentalId).style.display = 'inline-block'; // Tampilkan tombol "Finished"
-                    this.submit(); // Kirim form
-                });
-            });
-        });
     </script>
 @endpush

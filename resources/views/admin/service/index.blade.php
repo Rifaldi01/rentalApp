@@ -45,15 +45,13 @@
                             <th width="2%">No</th>
                             <th>Invoice</th>
                             <th>Pelanggan</th>
-                            <th>Nama Alat</th>
-                            <th>No Seri</th>
-                            <th>Type</th>
                             <th>Total Inv</th>
                             <th>Biaya Ganti</th>
                             <th>PPN</th>
                             <th>Uang Masuk</th>
                             <th>Sisa Bayar</th>
                             <th>Tgl Servis</th>
+                            <th>Print</th>
                             <th>Status</th>
                             <th>Aksi</th>
                         </tr>
@@ -70,19 +68,6 @@
                                         {{$data->cust->name}}
                                     @endif
                                 </td>
-                                <td>@foreach(explode(',', $data->item) as $item)
-                                        <li>{{ trim($item) }}</li>
-                                    @endforeach
-                                </td>
-                                <td>@foreach(explode(',', $data->no_seri) as $no_seri)
-                                        <li>{{ trim($no_seri) }}</li>
-                                    @endforeach
-                                </td>
-                                <td>
-                                    @foreach(explode(',', $data->type) as $type)
-                                        <li>{{ trim($type) }} </li>
-                                    @endforeach
-                                </td>
                                 <td>{{formatRupiah($data->total_invoice)}}</td>
                                 <td>{{formatRupiah($data->biaya_ganti)}}</td>
                                 <td>{{formatRupiah($data->ppn)}}</td>
@@ -95,6 +80,19 @@
                                     @endif
                                 </td>
                                 <td>{{formatId($data->date_service)}}</td>
+                                <td>
+                                    <button class="btn btn-dnd lni lni-files btn-sm" data-bs-toggle="modal"
+                                            data-bs-target="#exampleExtraLargeModal{{$data->id}}" data-bs-tool="tooltip"
+                                            data-bs-placement="top" title="Print Surat Jalan">
+                                    </button>
+                                    @include('admin.service.surat-jalan')
+                                    <button type="button" class="btn btn-primary lni lni-empty-file btn-sm"
+                                            data-bs-toggle="modal" id="btn-print{{$data->id}}"
+                                            data-bs-target="#exampleLargeModal{{$data->id}}" data-bs-tool="tooltip"
+                                            data-bs-placement="top" title="Print Invoice">
+                                    </button>
+                                    @include('admin.service.invoice')
+                                </td>
                                 <td>
                                     @if($data->status == 0)
                                         <span class="badge bg-success">Service</span>

@@ -12,13 +12,15 @@
                     <table>
                         <tr>
                             <td rowspan="4" style="border: none; width: 120px; vertical-align: middle;">
-                                <img src="{{ asset('images/logo/' . $data->divisi->logo) }}"
+                                <img src="{{asset('images/logodnd.png')}}"
                                      class="print-img"
                                      alt="dnd logo"
                                      style="width: 100%; height: 100px; object-fit: contain;">
                             </td>
                             <td style="border: none; padding-left: 15px; white-space: nowrap;">
-                                <strong style="font-size: 12px;">{{$data->divisi->alamat}}</strong>
+                                <strong style="font-size: 12px;">
+                                    Komplek Sukamenak Indah Blok R N0.11
+                                </strong>
                             </td>
                         </tr>
                         <tr>
@@ -28,12 +30,12 @@
                         </tr>
                         <tr>
                             <td style="border: none; padding-left: 15px; white-space: nowrap;">
-                                <strong style="font-size: 12px;">Phone: {{$data->divisi->phone}}</strong>
+                                <strong style="font-size: 12px;">Phone: 0821-2990-5005</strong>
                             </td>
                         </tr>
                         <tr>
                             <td style="border: none; padding-left: 15px; white-space: nowrap;">
-                                <strong style="font-size: 12px;">Email: {{$data->divisi->email}}</strong>
+                                <strong style="font-size: 12px;">Email:  dndsurvey90@gmail.com</strong>
                             </td>
                         </tr>
                     </table>
@@ -51,7 +53,7 @@
                     {{--                    </div>--}}
                     <hr style="border: 3px solid #000">
                     <div class="mb-3" style="font-size: 12px">
-                        <strong>Bandung,</strong> {{tanggal($data->created_at)}}
+                        <strong>Bandung,</strong> {{formatId($data->created_at)}}
                     </div>
                     <div class="table-responsive mb-4">
                         <table class="" style="width:100%">
@@ -64,7 +66,7 @@
                             <tr>
                                 <th width="4%">Kepada</th>
                                 <th width="1%">:</th>
-                                <th>{{optional($data->customer)->name ?? '-'}}</th>
+                                <th>{{optional($data->cust)->name ?? '-'}}</th>
                                 <th width="1%">No</th>
                                 <th width="1%" class="text-end">:</th>
                                 <th width="1%" class="text-end"
@@ -76,7 +78,7 @@
                                 <th></th>
                                 <th width="1%" class="text-end">Perihal</th>
                                 <th width="1%" class="text-end">:</th>
-                                <th width="1%" style="border-right-width:0;">Penjualan</th>
+                                <th width="1%" style="border-right-width:0;">Rental</th>
                             </tr>
                             </thead>
                             <tbody>
@@ -89,34 +91,26 @@
                             <tr>
                                 <th class="text-center" width="1%" style="border-left-width:1px;">No</th>
                                 <th class="text-center">Nama Barang</th>
-                                <th class="text-center">Jumlah</th>
                                 <th class="text-center">No Seri</th>
+                                <th class="text-center">Type</th>
                             </tr>
                             </thead>
                             <tbody>
-                            @foreach($data->itemSales as $key => $item)
-                                <tr>
-                                    <td width="1%" class="text-center"
-                                        style="border-left-width:1px;">{{ $key + 1 }}</td>
-                                    <td>{{ $item->name }}</td>
-                                    <td class="text-center">1</td>
-                                    <td class="text-right">{{ $item->no_seri }}</td>
-                                </tr>
+                            @foreach(explode(',', $data->no_seri) as $key => $no_seri)
                             @endforeach
-                            @foreach($data->accessoriesSales as $key => $accessories)
+                            @foreach(explode(',', $data->type) as $key => $type)
+                            @endforeach
+                            @foreach(explode(',', $data->item) as $key => $item)
                                 <tr>
-                                    <td style="border-left-width:1px;">{{ $key + 1 }}</td>
-
-                                    {{-- Hindari error jika relasi accessories tidak ditemukan --}}
-                                    <td>{{ optional($accessories->accessories)->name ?? 'Aksesori tidak ditemukan' }}</td>
-
-                                    <td class="text-center">{{ $accessories->qty }}</td>
-
-                                    <td class="text-right">-</td>
+                                    <td>{{ $key + 1 }}</td>
+                                    <td>{{ trim($item) }}</td>
+                                    <td>{{ trim($no_seri) }}</td> {{-- gunakan $data->no_seri --}}
+                                    <td>{{ trim($type) }}</td>
                                 </tr>
                             @endforeach
                             </tbody>
                         </table>
+
                     </div>
                     <div class="mt-2">
                         <table width="100%">

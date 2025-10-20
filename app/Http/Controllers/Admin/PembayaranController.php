@@ -14,50 +14,43 @@ class PembayaranController extends Controller
 {
     public function index()
     {
-        $rental = Rental::where('nominal_out', '!=', '0')->get();
+        $rentals = Rental::where('nominal_out', '!=', '0')->get();
         $bank = Bank::all();
-        $totalseharusnya = $rental->groupBy('id')->map(function ($group) {
-            return $group->sum(function ($item){
-                return $item->nominal_in + $item->nominal_out;
-            });
+
+        $totalseharusnya = $rentals->groupBy('id')->map(function ($group) {
+            return $group->sum(fn($item) => $item->nominal_in + $item->nominal_out);
         });
-        $total = $rental->groupBy('id')->map(function ($group) {
-            return $group->sum(function ($item){
-                return $item->total_invoice - $item->diskon + $item->ppn;
-            });
+
+        $total = $rentals->groupBy('id')->map(function ($group) {
+            return $group->sum(fn($item) => $item->total_invoice - $item->diskon + $item->ppn);
         });
+
         $currentYear = now()->year;
-        $debt = Debts::whereYear('date_pay', $currentYear)->get();
-        $hutang = $rental->sum('nominal_out');
-        $diskon = $debt->sum(function ($item) {
-            return $item->rental->diskon;
-        });
-        $sisabayar = $debt->sum(function ($item) {
-            return $item->rental->nominal_out;
-        });
-        $totalbersih = $debt->sum(function ($item) {
-            return $item->pay_debts - $item->rental->diskon;
-        });
+
+        // Hanya ambil debt yang punya rental valid
+        $debt = Debts::whereYear('date_pay', $currentYear)
+            ->whereHas('rental')
+            ->with('rental')
+            ->get();
+
+        $hutang = $rentals->sum('nominal_out');
+
+        $diskon = $debt->sum(fn($item) => $item->rentals->diskon ?? 0);
+        $sisabayar = $debt->sum(fn($item) => $item->rentals->nominal_out ?? 0);
+        $totalbersih = $debt->sum(fn($item) => $item->pay_debts - ($item->rentals->diskon ?? 0));
+
         $totals = $debt->groupBy('id')->map(function ($group) {
-            return $group->sum(function ($item){
-                return $item->pay_debts - $item->rental->diskon;
-            });
+            return $group->sum(fn($item) => $item->pay_debts - ($item->rentals->diskon ?? 0));
         });
+
         $uangmasuk = $debt->sum('pay_debts');
-        return view('admin.pembayaran.index', compact([
-            'totalbersih',
-            'sisabayar',
-            'diskon',
-            'rental',
-            'bank',
-            'totalseharusnya',
-            'total',
-            'debt',
-            'hutang',
-            'uangmasuk',
-            'totals',
-        ]));
+
+        return view('admin.pembayaran.index', compact(
+            'totalbersih', 'sisabayar', 'diskon', 'rentals', 'bank',
+            'totalseharusnya', 'total', 'debt', 'hutang', 'uangmasuk', 'totals'
+        ));
     }
+
     public function bayar(Request $request, $id)
     {
         $validator = Validator::make($request->all(), [

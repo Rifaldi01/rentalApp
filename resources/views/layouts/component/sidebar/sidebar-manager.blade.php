@@ -32,7 +32,7 @@
                     <a href="{{route('manager.rental.hsty')}}"><i class='bx bx-history'></i>History Rental</a>
                 </li>
                 <li>
-                    <a href="{{route('manager.rental.divisi')}}"><i class='lni lni-apartment'></i>Rental Divisi</a>
+                    <a href="{{route('employe.rentaldivisi.index')}}"><i class='lni lni-apartment'></i>Rental Divisi</a>
                 </li>
                 <li>
                     <a href="{{route('manager.rental.problems')}}"><i class='lni lni-warning'></i>Problem</a>
@@ -59,6 +59,13 @@
                 <li><a href="{{route('manager.customer.index')}}"><i class='lni lni-users'></i>List Customers</a>
                 </li>
             </ul>
+        </li>
+        <li>
+            <a href="{{route('manager.divisi.index')}}">
+                <div class="parent-icon"><i class='lni lni-apartment'></i>
+                </div>
+                <div class="menu-title">Divisi</div>
+            </a>
         </li>
         <li>
             <a href="javascript:;" class="has-arrow">
@@ -113,11 +120,24 @@
             </a>
         </li>
         <li>
-            <a href="{{route('manager.mainten.index')}}">
+            <a href="{{route('employe.accesSale.index')}}">
+                <div class="parent-icon"><i class='bx bx-dollar'></i>
+                </div>
+                <div class="menu-title">Accessories Sale</div>
+            </a>
+        </li>
+        <li>
+            <a href="javascript:;" class="has-arrow">
                 <div class="parent-icon"><i class='bx bx-shield-quarter'></i>
                 </div>
                 <div class="menu-title">Maintenance</div>
             </a>
+            <ul>
+                <li>
+                    <a href="{{route('manager.mainten.index')}}"><i class="bx bx-box"></i> Item</a>
+                    <a href="{{route('employe.mainten.access')}}"><i class="bx bx-collection"></i> Accessories</a>
+                </li>
+            </ul>
         </li>
         <li class="menu-label">Managemen</li>
         <li>

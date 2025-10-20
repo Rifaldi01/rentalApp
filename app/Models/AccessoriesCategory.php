@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class AccessoriesCategory extends Model
 {
     use HasFactory, SoftDeletes;
+    protected $guarded = [];
     public $timestamps = false;
     protected $table = 'accessories_categories';
 

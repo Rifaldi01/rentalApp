@@ -33,13 +33,13 @@
                         <th>End Date</th>
                         <th class="text-center">Total Day</th>
                         <th class="text-center">Status</th>
-                        <th class="text-center" width="7%">Print</th>
+                        <th class="text-center" width="8%">Print</th>
                         <th class="text-center" width="10%">Action</th>
                     </tr>
                     </thead>
                     <tbody>
                     <tr>
-                        @foreach($rental as $key => $data)
+                        @foreach($rentals as $key => $data)
                             @if($data->status == 1)
                                 <td>{{$key +1}}</td>
                                 <td>{{$data->no_inv}}</td>
@@ -76,6 +76,11 @@
                                             data-bs-placement="top" title="Print Surat Jalan">
                                     </button>
                                     @include('manager.rental.surat-jalan')
+                                    <button class="btn btn-warning lni lni-files btn-sm" data-bs-toggle="modal"
+                                            data-bs-target="#penyewaan{{$data->id}}" data-bs-tool="tooltip"
+                                            data-bs-placement="top" title="Print Surat Penyewa">
+                                    </button>
+                                    @include('admin.rental.penyewaan')
                                     <button type="button" class="btn btn-primary lni lni-empty-file btn-sm"
                                             data-bs-toggle="modal" id="btn-print{{$data->id}}"
                                             data-bs-target="#exampleLargeModal{{$data->id}}" data-bs-tool="tooltip"

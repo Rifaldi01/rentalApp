@@ -28,7 +28,7 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach ($rental as $key => $data)
+                        @foreach ($rentals as $key => $data)
                             <tr>
                                 <td data-index="{{ $key + 1 }}">{{ $key + 1 }}</td>
                                 <td>{{ $data->no_inv }}</td>

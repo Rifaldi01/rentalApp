@@ -9,12 +9,12 @@
                         <h4 class="text-uppercase">List Items</h4>
                     </div>
                 </div>
-                <div class="col-6">
-                    <a data-bs-toggle="tooltip" data-bs-placement="top" title="Add Item"
-                       href="{{ route('admin.item.create') }}" class="btn btn-dnd float-end me-3 mt-3 btn-sm shadow">
-                        <i class="bx bx-plus"></i>
-                    </a>
-                </div>
+{{--                <div class="col-6">--}}
+{{--                    <a data-bs-toggle="tooltip" data-bs-placement="top" title="Add Item"--}}
+{{--                       href="{{ route('admin.item.create') }}" class="btn btn-dnd float-end me-3 mt-3 btn-sm shadow">--}}
+{{--                        <i class="bx bx-plus"></i>--}}
+{{--                    </a>--}}
+{{--                </div>--}}
             </div>
         </div>
         <div class="card-body">
@@ -29,7 +29,7 @@
                         <th class="text-center">Customer</th>
                         <th class="text-center">Periode</th>
                         <th class="text-center">Image</th>
-                        <th class="text-center" width="15%">Action</th>
+                        <th class="text-center" width="5%">Action</th>
                     </tr>
                     </thead>
                     <tbody>
@@ -110,88 +110,88 @@
                                     <span class="text-danger">Empty</span>
                                 @endif
                             </td>
-                            <td>
+                            <td class="text-center">
 
-                                <a href="{{ route('admin.item.destroy', $data->id) }}" data-confirm-delete="true"
-                                   class="btn btn-danger btn-sm bx bx-trash float-end" data-bs-toggle="tooltip"
-                                   data-bs-placement="top" title="Delete">
-                                </a>
-                                <a href="{{ route('admin.item.edit', $data->id) }}"
-                                   class="btn btn-sm btn-dnd bx bx-edit float-end me-1"
-                                   data-bs-toggle="tooltip" data-bs-placement="top" title="Edit">
-                                </a>
-                                <button data-bs-toggle="modal"
-                                        data-bs-target="#exampleVerticallycenteredModal{{ $data->id }}"
-                                        class="btn btn-success btn-sm float-end bx bx-shield-quarter me-1"
-                                        data-bs-placement="top" title="Maintenance">
-                                </button>
-                                <div class="modal fade" id="exampleVerticallycenteredModal{{ $data->id }}" tabindex="-1"
-                                     aria-hidden="true">
-                                    <div class="modal-dialog modal-dialog-centered">
-                                        <div class="modal-content">
-                                            <div class="modal-header">
-                                                <h5 class="modal-title">Description Maintenance</h5>
-                                                <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                                        aria-label="Close"></button>
-                                            </div>
-                                            <form action="{{ route('admin.mainten.store') }}" method="POST">
-                                                @csrf
-                                                <div class="modal-body">
-                                                    <input value="{{ $data->id }}" type="hidden" name="item_id"
-                                                           class="form-control">
-                                                    <label class="col-form-label">Description</label>
-                                                    <textarea name="descript" class="form-control"
-                                                              placeholder="Enter Description"></textarea>
-                                                </div>
-                                                <div class="modal-footer">
-                                                    <button type="button" class="btn btn-secondary"
-                                                            data-bs-dismiss="modal">Close
-                                                    </button>
-                                                    <button type="submit" class="btn btn-primary">Save<i
-                                                            class="bx bx-save"></i></button>
-                                                </div>
-                                            </form>
-                                        </div>
-                                    </div>
-                                </div>
-                                <button data-bs-toggle="modal" data-bs-target="#exampleLargeModal{{ $data->id }}"
-                                        class="btn btn-warning btn-sm bx bx-dollar float-end me-1" title="view">
-                                </button>
-                                <div class="modal fade" id="exampleLargeModal{{ $data->id }}" tabindex="-1"
-                                     aria-hidden="true">
-                                    <div class="modal-dialog modal-lg">
-                                        <div class="modal-content">
-                                            <div class="modal-header">
-                                                <h5 class="modal-title">Description Sale</h5>
-                                                <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                                        aria-label="Close"></button>
-                                            </div>
-                                            <div class="modal-body">
-                                                <form action="{{ route('admin.item.sale') }}" method="POST">
-                                                    @csrf
-                                                    <div class="modal-body">
-                                                        <input value="{{ $data->id }}" type="hidden" name="item_id"
-                                                               class="form-control">
-                                                        <label class="col-form-label">Description</label>
-                                                        <textarea name="descript" class="form-control"
-                                                                  placeholder="Enter Description"></textarea>
-                                                    </div>
-                                                    <div class="modal-footer">
-                                                        <button type="button" class="btn btn-secondary"
-                                                                data-bs-dismiss="modal">Close
-                                                        </button>
-                                                        <button type="submit" class="btn btn-primary">Save<i
-                                                                class="bx bx-save"></i></button>
-                                                    </div>
-                                                </form>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
+{{--                                <a href="{{ route('admin.item.destroy', $data->id) }}" data-confirm-delete="true"--}}
+{{--                                   class="btn btn-danger btn-sm bx bx-trash float-end" data-bs-toggle="tooltip"--}}
+{{--                                   data-bs-placement="top" title="Delete">--}}
+{{--                                </a>--}}
+{{--                                <a href="{{ route('admin.item.edit', $data->id) }}"--}}
+{{--                                   class="btn btn-sm btn-dnd bx bx-edit float-end me-1"--}}
+{{--                                   data-bs-toggle="tooltip" data-bs-placement="top" title="Edit">--}}
+{{--                                </a>--}}
+{{--                                <button data-bs-toggle="modal"--}}
+{{--                                        data-bs-target="#exampleVerticallycenteredModal{{ $data->id }}"--}}
+{{--                                        class="btn btn-success btn-sm float-end bx bx-shield-quarter me-1"--}}
+{{--                                        data-bs-placement="top" title="Maintenance">--}}
+{{--                                </button>--}}
+{{--                                <div class="modal fade" id="exampleVerticallycenteredModal{{ $data->id }}" tabindex="-1"--}}
+{{--                                     aria-hidden="true">--}}
+{{--                                    <div class="modal-dialog modal-dialog-centered">--}}
+{{--                                        <div class="modal-content">--}}
+{{--                                            <div class="modal-header">--}}
+{{--                                                <h5 class="modal-title">Description Maintenance</h5>--}}
+{{--                                                <button type="button" class="btn-close" data-bs-dismiss="modal"--}}
+{{--                                                        aria-label="Close"></button>--}}
+{{--                                            </div>--}}
+{{--                                            <form action="{{ route('admin.mainten.store') }}" method="POST">--}}
+{{--                                                @csrf--}}
+{{--                                                <div class="modal-body">--}}
+{{--                                                    <input value="{{ $data->id }}" type="hidden" name="item_id"--}}
+{{--                                                           class="form-control">--}}
+{{--                                                    <label class="col-form-label">Description</label>--}}
+{{--                                                    <textarea name="descript" class="form-control"--}}
+{{--                                                              placeholder="Enter Description"></textarea>--}}
+{{--                                                </div>--}}
+{{--                                                <div class="modal-footer">--}}
+{{--                                                    <button type="button" class="btn btn-secondary"--}}
+{{--                                                            data-bs-dismiss="modal">Close--}}
+{{--                                                    </button>--}}
+{{--                                                    <button type="submit" class="btn btn-primary">Save<i--}}
+{{--                                                            class="bx bx-save"></i></button>--}}
+{{--                                                </div>--}}
+{{--                                            </form>--}}
+{{--                                        </div>--}}
+{{--                                    </div>--}}
+{{--                                </div>--}}
+{{--                                <button data-bs-toggle="modal" data-bs-target="#exampleLargeModal{{ $data->id }}"--}}
+{{--                                        class="btn btn-warning btn-sm bx bx-dollar float-end me-1" title="view">--}}
+{{--                                </button>--}}
+{{--                                <div class="modal fade" id="exampleLargeModal{{ $data->id }}" tabindex="-1"--}}
+{{--                                     aria-hidden="true">--}}
+{{--                                    <div class="modal-dialog modal-lg">--}}
+{{--                                        <div class="modal-content">--}}
+{{--                                            <div class="modal-header">--}}
+{{--                                                <h5 class="modal-title">Description Sale</h5>--}}
+{{--                                                <button type="button" class="btn-close" data-bs-dismiss="modal"--}}
+{{--                                                        aria-label="Close"></button>--}}
+{{--                                            </div>--}}
+{{--                                            <div class="modal-body">--}}
+{{--                                                <form action="{{ route('admin.item.sale') }}" method="POST">--}}
+{{--                                                    @csrf--}}
+{{--                                                    <div class="modal-body">--}}
+{{--                                                        <input value="{{ $data->id }}" type="hidden" name="item_id"--}}
+{{--                                                               class="form-control">--}}
+{{--                                                        <label class="col-form-label">Description</label>--}}
+{{--                                                        <textarea name="descript" class="form-control"--}}
+{{--                                                                  placeholder="Enter Description"></textarea>--}}
+{{--                                                    </div>--}}
+{{--                                                    <div class="modal-footer">--}}
+{{--                                                        <button type="button" class="btn btn-secondary"--}}
+{{--                                                                data-bs-dismiss="modal">Close--}}
+{{--                                                        </button>--}}
+{{--                                                        <button type="submit" class="btn btn-primary">Save<i--}}
+{{--                                                                class="bx bx-save"></i></button>--}}
+{{--                                                    </div>--}}
+{{--                                                </form>--}}
+{{--                                            </div>--}}
+{{--                                        </div>--}}
+{{--                                    </div>--}}
+{{--                                </div>--}}
                                 <form action="{{ route('admin.item.rentItm', $data->id) }}" method="POST">
                                     @csrf
                                     <button type="submit"
-                                            class="konfir btn btn-secondary btn-sm bx bx-history float-end" data-bs-toggle="tooltip"
+                                            class="konfir btn btn-secondary btn-sm bx bx-history" data-bs-toggle="tooltip"
                                             data-bs-placement="top" title="Rental">
 
                                     </button>

@@ -66,19 +66,19 @@
                             <tr>
                                 <th width="4%">Kepada</th>
                                 <th width="1%">:</th>
-                                <th>{{optional($data->customer)->name ?? '-'}}</th>
+                                <th>{{optional($data->cust)->name ?? '-'}}</th>
                                 <th width="1%">No</th>
                                 <th width="1%" class="text-end">:</th>
                                 <th width="1%" class="text-end"
                                     style="border-right-width:0;">{{ $data->invoice }}</th>
                             </tr>
                             <tr>
-                                <th></th>
-                                <th></th>
-                                <th></th>
+                                <th>Periode</th>
+                                <th>:</th>
+                                <th>{{formatId($data->date_start)}} - {{formatId($data->date_end)}}</th>
                                 <th width="1%" class="text-end">Perihal</th>
                                 <th width="1%" class="text-end">:</th>
-                                <th width="1%" style="border-right-width:0;">Penjualan</th>
+                                <th width="1%" style="border-right-width:0;">Rental</th>
                             </tr>
                             </thead>
                             <tbody>

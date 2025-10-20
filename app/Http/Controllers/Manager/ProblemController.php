@@ -15,11 +15,10 @@ class ProblemController extends Controller
 {
     public function index()
     {
-        $problem = Problem::latest()->paginate();
         $title = 'Problem Finished';
         $text = "Are you sure you Problem Finished";
         confirmDelete($title, $text);
-        $rental = Problem::leftjoin('rentals', 'problems.rental_id', '=', 'rentals.id')
+        $rentals = Problem::leftjoin('rentals', 'problems.rental_id', '=', 'rentals.id')
             ->leftjoin('accessories_categories as a', 'a.rental_id', '=', 'rentals.id')
             ->leftjoin('accessories as b', 'a.accessories_id', '=', 'b.id')
             ->select(
@@ -38,7 +37,7 @@ class ProblemController extends Controller
             ->where('problems.status', 0)
             ->get();
 //       return $rental;
-        return view('manager.problem.index', compact('rental'));
+        return view('manager.problem.index', compact('rentals'));
     }
 
     public function store(Request $request)

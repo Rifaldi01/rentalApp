@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Models\RentalDivisi;
 use ZipArchive;
 use Carbon\Carbon;
 use App\Models\Bank;
@@ -30,12 +31,12 @@ class RentalController extends Controller
             ->where('status', 1)
             ->get();
 
-        foreach ($overdueRentals as $rental) {
-            $rental->status = 2;
-            $rental->save();
+        foreach ($overdueRentals as $rentals) {
+            $rentals->status = 2;
+            $rentals->save();
 
             Problem::create([
-                'rental_id' => $rental->id,
+                'rental_id' => $rentals->id,
                 'descript' => 'Masa tenggang sudah berakhir tapi barang belum dikembalikan',
             ]);
         }
@@ -43,7 +44,7 @@ class RentalController extends Controller
         $title = 'Delet Rental?';
         $text = "Are you sure you want to delete?";
         confirmDelete($title, $text);
-        $rental = Rental::leftjoin('accessories_categories as a', 'a.rental_id', '=', 'rentals.id')
+        $rentals = Rental::leftjoin('accessories_categories as a', 'a.rental_id', '=', 'rentals.id')
             ->leftjoin('accessories as b', 'a.accessories_id', '=', 'b.id')
             ->select(
                 'rentals.id', 'rentals.customer_id', 'rentals.item_id', 'rentals.name_company',
@@ -62,18 +63,19 @@ class RentalController extends Controller
             )
             ->orderBy('rentals.created_at', 'DESC')
             ->get();
-        foreach ($rental as $data) {
+        foreach ($rentals as $data) {
             $dateStart = Carbon::parse($data->date_start);
             $dateEnd = Carbon::parse($data->date_end);
             $daysDifference = $dateStart->diffInDays($dateEnd);
             $data->days_difference = $daysDifference;
         }
-        return view('admin.rental.index', compact('rental'));
+        return view('admin.rental.index', compact('rentals'));
     }
 
     /**
      * Show the form for creating a new resource.
      */
+
     public function create($id = null)
     {
         $cust = Customer::pluck('name', 'id')->toArray();
@@ -81,6 +83,10 @@ class RentalController extends Controller
         $acces = Accessories::all();
         $bank = Bank::pluck('name', 'id')->toArray();
         $debt = Debts::all();
+
+        // Ambil semua rental_id yang punya problem
+        $problemCustomers = Problem::pluck('rental_id')->toArray();
+
         $inject = [
             'url' => route('admin.rental.store'),
             'cust' => $cust,
@@ -88,23 +94,28 @@ class RentalController extends Controller
             'acces' => $acces,
             'bank' => $bank,
             'debt' => $debt,
+            'problemCustomers' => $problemCustomers,
         ];
 
         if ($id) {
-            $rental = Rental::findOrFail($id);
+            $rentals = Rental::findOrFail($id);
             $item = Item::where('status', '!=', 3)->get();
+
             $inject = [
                 'url' => route('admin.rental.update', $id),
-                'rental' => $rental,
+                'rentals' => $rentals,
                 'cust' => $cust,
                 'item' => $item,
                 'acces' => $acces,
                 'bank' => $bank,
                 'debt' => $debt,
+                'problemCustomers' => $problemCustomers,
             ];
         }
+
         return view('admin.rental.create', $inject);
     }
+
 
     /**
      * Store a newly created resource in storage.
@@ -232,7 +243,7 @@ class RentalController extends Controller
         $rental->keterangan_item   = $request->input('keterangan_item');
         $rental->keterangan_acces  = $request->input('keterangan_acces');
         $rental->created_at        = Carbon::now();
-        $rental->status            = 1;
+        $rental->status            = 3;
 
         // Proses gambar jika ada
         if ($request->hasFile('image')) {
@@ -329,14 +340,14 @@ class RentalController extends Controller
 
         // poin lama (berdasarkan data lama)
         $previousPoints = 0;
-        if ($isEdit && $oldInvoice >= 100000 && $oldFee == 0 && $oldDiskon == 0) {
-            $previousPoints = intdiv($oldInvoice, 100000);
+        if ($isEdit && $oldInvoice >= 4000000 && $oldFee == 0 && $oldDiskon == 0) {
+            $previousPoints = intdiv($oldInvoice, 4000000);
         }
 
         // poin baru (berdasarkan data baru)
         $newPoints = 0;
-        if ((int)$rental->total_invoice >= 100000 && $fee == 0 && $diskon == 0) {
-            $newPoints = intdiv((int)$rental->total_invoice, 100000);
+        if ((int)$rental->total_invoice >= 4000000 && $fee == 0 && $diskon == 0) {
+            $newPoints = intdiv((int)$rental->total_invoice, 4000000);
         }
 
         // --- saat CREATE ---
@@ -376,7 +387,7 @@ class RentalController extends Controller
     {
         // Temukan objek rental berdasarkan ID
         $rental = Rental::findOrFail($id);
-        $rental->status = 0;
+        $rental->status = 4;
         $rental->save();
 
         // Ambil ID item dari rental
@@ -425,7 +436,7 @@ class RentalController extends Controller
     public function hsty()
     {
 
-        $rental = Rental::leftjoin('accessories_categories as a', 'a.rental_id', '=', 'rentals.id')
+        $rentals = Rental::leftjoin('accessories_categories as a', 'a.rental_id', '=', 'rentals.id')
             ->leftjoin('accessories as b', 'a.accessories_id', '=', 'b.id')
             ->select(
                 'rentals.id', 'rentals.customer_id', 'rentals.item_id', 'rentals.name_company',
@@ -443,7 +454,7 @@ class RentalController extends Controller
                 'rentals.keterangan_acces', 'rentals.fee'
             )
             ->get();
-        return view('admin.rental.history', compact('rental'));
+        return view('admin.rental.history', compact('rentals'));
     }
 
     public function tanggalBuat(Request $request, $id)
@@ -517,69 +528,8 @@ class RentalController extends Controller
     }
     public function divisi()
     {
-        $title = 'Delete Rental?';
-        $text = "Are you sure you want to delete?";
-        confirmDelete($title, $text);
-
-        $rental = Rental::leftJoin('customers as c', 'rentals.customer_id', '=', 'c.id')
-            ->leftJoin('accessories_categories as a', 'a.rental_id', '=', 'rentals.id')
-            ->leftJoin('accessories as b', 'a.accessories_id', '=', 'b.id')
-            ->select(
-                'rentals.id',
-                'rentals.customer_id',
-                'c.name as customer_name',
-                'rentals.item_id',
-                'rentals.name_company',
-                'rentals.addres_company',
-                'rentals.phone_company',
-                'rentals.no_po',
-                'rentals.date_start',
-                'rentals.date_end',
-                'rentals.status',
-                'a.rental_id',
-                'rentals.nominal_in',
-                'rentals.nominal_out',
-                'rentals.no_inv',
-                'rentals.diskon',
-                'rentals.total_invoice',
-                DB::raw('GROUP_CONCAT(b.name) as access')
-            )
-            ->whereIn('c.name', [
-                'Adhijasa',
-                'Darwis Internasiol Survey',
-                'Satelit Surveying Official',
-                'Dhyas Survey Official'
-            ])
-            ->groupBy(
-                'rentals.id',
-                'rentals.customer_id',
-                'c.name',
-                'rentals.item_id',
-                'rentals.name_company',
-                'rentals.addres_company',
-                'rentals.phone_company',
-                'rentals.no_po',
-                'rentals.date_start',
-                'rentals.date_end',
-                'rentals.status',
-                'a.rental_id',
-                'rentals.nominal_in',
-                'rentals.nominal_out',
-                'rentals.no_inv',
-                'rentals.diskon',
-                'rentals.total_invoice',
-            )
-            ->orderBy('rentals.created_at', 'DESC')
-            ->get();
-
-        foreach ($rental as $data) {
-            $dateStart = Carbon::parse($data->date_start);
-            $dateEnd = Carbon::parse($data->date_end);
-            $daysDifference = $dateStart->diffInDays($dateEnd);
-            $data->days_difference = $daysDifference;
-        }
-
-        return view('admin.rental.divisi', compact('rental'));
+        $rentalDivisi = RentalDivisi::all();
+        return view('admin.rental.divisi', compact('rentalDivisi'));
     }
 
 }
