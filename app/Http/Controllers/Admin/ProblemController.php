@@ -61,7 +61,7 @@ class ProblemController extends Controller
         $destroy->save();
 
         $rental = Rental::findOrFail($destroy->rental_id);
-        $rental->status = 0;
+        $rental->status = 4;
         $rental->save();
 
         Alert::success('Success', 'Problem has been finished');
