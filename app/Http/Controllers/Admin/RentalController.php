@@ -390,35 +390,35 @@ class RentalController extends Controller
         $rental->status = 4;
         $rental->save();
 
-        // Ambil ID item dari rental
-        $itemIds = json_decode($rental->item_id, true) ?? []; // Jika item_id disimpan dalam format JSON
-
-        // Update status item menjadi 0
-        foreach ($itemIds as $itemId) {
-            $item = Item::find($itemId);
-            if ($item) {
-                if ($item->status != 3 && $item->status != 1) { // Cek jika status bukan 3 atau 1
-                    $item->status = 0; // Ubah status menjadi 0
-                    $item->save();
-                }
-            }
-        }
-
-        // Update status aksesori dan kembalikan stok
-        $accessoriesCategories = AccessoriesCategory::where('rental_id', $rental->id)->get();
-        foreach ($accessoriesCategories as $accessoriesCategory) {
-            // Update status_acces di tabel pivot
-            AccessoriesCategory::where('rental_id', $rental->id)
-                ->where('accessories_id', $accessoriesCategory->accessories_id)
-                ->update(['status_acces' => 0]);
-
-            // Kembalikan stok aksesori
-            $accessory = Accessories::find($accessoriesCategory->accessories_id);
-            if ($accessory) {
-                $accessory->stok += $accessoriesCategory->accessories_quantity;
-                $accessory->save();
-            }
-        }
+//        // Ambil ID item dari rental
+//        $itemIds = json_decode($rental->item_id, true) ?? []; // Jika item_id disimpan dalam format JSON
+//
+//        // Update status item menjadi 0
+//        foreach ($itemIds as $itemId) {
+//            $item = Item::find($itemId);
+//            if ($item) {
+//                if ($item->status != 3 && $item->status != 1) { // Cek jika status bukan 3 atau 1
+//                    $item->status = 0; // Ubah status menjadi 0
+//                    $item->save();
+//                }
+//            }
+//        }
+//
+//        // Update status aksesori dan kembalikan stok
+//        $accessoriesCategories = AccessoriesCategory::where('rental_id', $rental->id)->get();
+//        foreach ($accessoriesCategories as $accessoriesCategory) {
+//            // Update status_acces di tabel pivot
+//            AccessoriesCategory::where('rental_id', $rental->id)
+//                ->where('accessories_id', $accessoriesCategory->accessories_id)
+//                ->update(['status_acces' => 0]);
+//
+//            // Kembalikan stok aksesori
+//            $accessory = Accessories::find($accessoriesCategory->accessories_id);
+//            if ($accessory) {
+//                $accessory->stok += $accessoriesCategory->accessories_quantity;
+//                $accessory->save();
+//            }
+//        }
 
         return redirect()->back()->with('success', 'Rental Finished');
     }

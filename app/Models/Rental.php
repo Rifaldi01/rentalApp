@@ -34,6 +34,12 @@ class Rental extends Model
     {
         return $this->hasMany(Debts::class, 'rental_id', 'id');
     }
+    // app/Models/Rental.php
+    public function problems()
+    {
+        return $this->hasMany(Problem::class, 'rental_id');
+    }
+
 
 
 }

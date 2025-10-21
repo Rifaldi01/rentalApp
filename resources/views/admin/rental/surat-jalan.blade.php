@@ -123,7 +123,7 @@
                                 <tr>
                                     <td class="text-center">{{ $no++ }}</td>
                                     <td>{{ $asdf->accessory ? $asdf->accessory->name : 'Not Found' }}</td>
-                                    <td>{{ $asdf->accessories_quantity }}</td>
+                                    <td>{{ $asdf->accessories_quantity + $asdf->kembali}}</td>
                                     <td>Aksesoris</td>
                                 </tr>
                             @endforeach

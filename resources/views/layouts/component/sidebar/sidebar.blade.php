@@ -29,7 +29,7 @@
                     @else
                     @endif
                 </div>
-            </a
+            </a>
         <li>
 
             <a href="{{route('employe.rentaldivisi.index')}}">

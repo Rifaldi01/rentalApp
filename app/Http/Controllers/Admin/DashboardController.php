@@ -23,7 +23,7 @@ class DashboardController extends Controller
             ->groupBy('cat_id')
             ->get();
         $history = Rental::count();
-        $rental = Rental::where('status', 1)->count();
+        $rentalss = Rental::where('status', 1)->count();
         $problem = Rental::where('status', 2)->count();
         $maintenance = Item::where('cat_id', 1)->where('status', 1)->count();
         $item = Item::where('status', '!=', 3)->count();
@@ -57,7 +57,7 @@ class DashboardController extends Controller
         $threeDaysLater = $today->copy()->addDays(3);
         $jumlah = Rental::where('date_end', '<=', $threeDaysLater)->where('status', 1)->count();
         return view('admin.index', compact(
-            'rental',
+            'rentalss',
             'history',
             'problem',
             'maintenance',

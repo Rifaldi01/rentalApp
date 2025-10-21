@@ -124,7 +124,7 @@
                             @endif
                         </td>
                         <td>
-                            {{$data->accessories_quantity}}
+                            {{$data->accessories_quantity + $data->kembali}}
                         </td>
                         <td>
                             @if($data->rental_id && $data->rental)

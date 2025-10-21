@@ -12,10 +12,12 @@ use Illuminate\Support\Facades\DB;
 
 class RentalController extends Controller
 {
-    public function index(){
-        $rentals = Rental::all();
-        return view('employe.rental.index',  compact('rentals'));
+    public function index()
+    {
+        $rentals = Rental::with('problems')->get();
+        return view('employe.rental.index', compact('rentals'));
     }
+
     public function approveRental($id)
     {
         DB::beginTransaction();
@@ -42,25 +44,50 @@ class RentalController extends Controller
     /**
      * Menolak rental oleh gudang (jika tidak disetujui).
      */
-    public function reject($id)
+    public function finis($id)
     {
-        $rental = Rental::findOrFail($id);
-        if ($rental->status != 3) {
-            return redirect()->back()->withErrors(['message' => 'Rental ini sudah diproses atau tidak valid untuk ditolak.']);
-        }
-
-        $rental->status = 5; // 5 = Ditolak Gudang
-        $rental->approved_by = auth()->id();
-        $rental->approved_at = now();
-        $rental->save();
-
-        return redirect()->route('admin.rental.approval.index')->withSuccess('Rental telah ditolak oleh gudang.');
-    }
-    public function kembali($id){
         $rental = Rental::findOrFail($id);
         $rental->status = 0;
         $rental->save();
-        return back()->with('success', 'Rental telah dikembalikan.');
+
+        return back()->withSuccess('Barang Telah Kembali Semua');
     }
+    public function kembali(Request $request, $id)
+    {
+        // ✅ 1. Proses Item (ubah status)
+        if ($request->has('items')) {
+            foreach ($request->items as $data) {
+                $item = Item::find($data['id']);
+                if ($item && isset($data['status'])) {
+                    $item->status = $data['status'];
+                    $item->save();
+                }
+            }
+        }
+
+        // ✅ 2. Proses Accessories (tambah kembali, kurangi quantity, tambah stok)
+        if ($request->has('accessories')) {
+            foreach ($request->accessories as $data) {
+                $jumlahKembali = (int)($data['kembali'] ?? 0);
+                if ($jumlahKembali <= 0) continue;
+
+                $accesCat = AccessoriesCategory::find($data['id']);
+                if (!$accesCat) continue;
+
+                $accesCat->kembali = ($accesCat->kembali ?? 0) + $jumlahKembali;
+                $accesCat->accessories_quantity = max(0, $accesCat->accessories_quantity - $jumlahKembali);
+                $accesCat->save();
+
+                $acces = Accessories::find($accesCat->accessories_id);
+                if ($acces) {
+                    $acces->stok = ($acces->stok ?? 0) + $jumlahKembali;
+                    $acces->save();
+                }
+            }
+        }
+
+        return back()->with('success', 'Data pengembalian berhasil diperbarui.');
+    }
+
 
 }

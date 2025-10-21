@@ -8,7 +8,7 @@
                         <div class="d-flex align-items-center">
                             <div>
                                 <p class="mb-0 text-secondary">Rental Active</p>
-                                <h4 class="my-1 text-info">{{$rental}}</h4>
+                                <h4 class="my-1 text-info">{{$rentalss}}</h4>
                             </div>
                             <div class="widgets-icons-2 rounded-circle bg-gradient-blues text-white ms-auto"><i
                                     class='lni lni-timer'></i>

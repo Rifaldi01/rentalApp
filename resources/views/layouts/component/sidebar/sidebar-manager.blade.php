@@ -61,12 +61,32 @@
             </ul>
         </li>
         <li>
-            <a href="{{route('manager.divisi.index')}}">
-                <div class="parent-icon"><i class='lni lni-apartment'></i>
+            <a href="javascript:;" class="has-arrow">
+                <div class="parent-icon"><i class="lni lni-apartment"></i>
                 </div>
                 <div class="menu-title">Divisi</div>
             </a>
+            <ul>
+                <li><a href="{{route('manager.divisi.index')}}"><i class='bx bx-circle'></i>Register
+                        Divisi</a>
+                </li>
+                <li><a href="{{route('employe.rentaldivisi.index')}}"><i class='bx bx-circle'></i>Rental Divisi</a>
+                </li>
+            </ul>
         </li>
+        <li>
+
+            <a href="{{route('employe.rental')}}">
+                <div class="parent-icon"><i class='bx bx-history'></i>
+                </div>
+                <div class="menu-title">konfirmasi Rental
+                    @if($rental > 0)
+                        <span class="badge bg-danger">{{$rental}}</span>
+                    @else
+                    @endif
+                </div>
+            </a>
+        <li>
         <li>
             <a href="javascript:;" class="has-arrow">
                 <div class="parent-icon"><i class='bx bx-cog'></i>

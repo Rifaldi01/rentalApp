@@ -167,6 +167,7 @@
                     </table>
 
                     <table class="identitastable">
+
                         <tr>
                             <th class="alatth">Keterangan (Merk/Type/Unit)</th>
                             <th class="alatth">Keterangan (Unit)</th>
@@ -208,7 +209,25 @@
 
                         </tr>
                     </table>
+                    @if(!empty($data->keterangan_item) || !empty($data->keterangan_acces))
+                    <table class="penyewatable">
+                            <tr>
+                                <th  class="syaratth"><strong>Keterangan Penukaran</strong></th>
+                            </tr>
+                            <tr>
+                                <td class="syarattd">
+                                    @if(!empty($data->keterangan_item))
+                                        <li>{{ $data->keterangan_item }}</li>
+                                    @endif
 
+                                    @if(!empty($data->keterangan_acces))
+                                        <li>{{ $data->keterangan_acces }}</li>
+                                    @endif
+                                </td>
+                            </tr>
+
+                    </table>
+                    @endif
                     <table class="penyewatable">
                         <tr>
                             <th class="syaratth">Lama Sewa</th>

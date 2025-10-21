@@ -58,7 +58,6 @@
                                 <span class="badge bg-danger">Problem</span>
                             </td>
                             <td>
-                                @if($data->status == 0)
                                     <button class="btn btn-warning lni lni-package float-end me-1"
                                             data-bs-toggle="modal" data-bs-target="#kembali{{ $data->id }}"
                                             title="Returned">
@@ -87,7 +86,7 @@
                                             </div>
                                         </div>
                                     </div>
-                                @elseif($data->status == 3)
+
                                     <button class="btn btn-success lni lni-checkmark float-end finish-button"
                                             data-bs-toggle="modal" data-bs-target="#exampleVerticallycenteredModal{{ $data->id }}"
                                             title="Finished">
@@ -110,7 +109,6 @@
                                             </div>
                                         </div>
                                     </div>
-                                @endif
 
                                 <button class="btn btn-dnd lni lni-eye float-end me-1" data-bs-toggle="modal"
                                         data-bs-target="#exampleLargeModal{{ $data->id }}" title="Detail"></button>
