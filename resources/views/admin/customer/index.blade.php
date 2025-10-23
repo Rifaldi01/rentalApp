@@ -104,12 +104,12 @@
                                 </div>
                             </td>
                             <td>
-                                <a href="{{route('manager.customer.destroy', $data->id)}}" data-confirm-delete="true"
+                                <a href="{{route('admin.customer.destroy', $data->id)}}" data-confirm-delete="true"
                                    type="submit" class=" bx bx-trash btn btn-sm btn-danger"
                                    data-bs-toggle="tooltip"
                                    data-bs-placement="top" title="Hapus">
                                 </a>
-                                <a href="{{route('manager.customer.edit', $data->id)}}"
+                                <a href="{{route('admin.customer.edit', $data->id)}}"
                                    class="btn btn-sm btn-warning bx bx-edit "
                                    data-bs-toggle="tooltip" data-bs-placement="top" title="Edit">
                                 </a>

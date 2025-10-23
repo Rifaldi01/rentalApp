@@ -65,7 +65,7 @@ class RentalController extends Controller
             }
         }
 
-        // ✅ 2. Proses Accessories (tambah kembali, kurangi quantity, tambah stok)
+        // ✅ 2. Proses Accessories (kembalikan stok dan ubah status)
         if ($request->has('accessories')) {
             foreach ($request->accessories as $data) {
                 $jumlahKembali = (int)($data['kembali'] ?? 0);
@@ -74,10 +74,18 @@ class RentalController extends Controller
                 $accesCat = AccessoriesCategory::find($data['id']);
                 if (!$accesCat) continue;
 
+                // Update jumlah kembali dan quantity
                 $accesCat->kembali = ($accesCat->kembali ?? 0) + $jumlahKembali;
                 $accesCat->accessories_quantity = max(0, $accesCat->accessories_quantity - $jumlahKembali);
+
+                // ✅ Jika accessories_quantity sudah 0, ubah status_acces menjadi 0 (selesai)
+                if ($accesCat->accessories_quantity == 0) {
+                    $accesCat->status_acces = 0;
+                }
+
                 $accesCat->save();
 
+                // Tambah stok ke tabel accessories
                 $acces = Accessories::find($accesCat->accessories_id);
                 if ($acces) {
                     $acces->stok = ($acces->stok ?? 0) + $jumlahKembali;
@@ -88,6 +96,7 @@ class RentalController extends Controller
 
         return back()->with('success', 'Data pengembalian berhasil diperbarui.');
     }
+
 
 
 }
