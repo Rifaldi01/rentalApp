@@ -170,7 +170,7 @@
                                                                             <td>{{ $item ? $item->name : 'Item not found' }}</td>
                                                                             <td class="text-center">-</td>
                                                                             <td class="text-center">
-                                                                                @if($item && $item->status == 1)
+                                                                                @if($item && $item->status == 2)
                                                                                     {{-- Jika status masih 1 (belum selesai), tampilkan checkbox --}}
                                                                                     <input type="hidden"
                                                                                            name="items[{{ $index }}][id]"
