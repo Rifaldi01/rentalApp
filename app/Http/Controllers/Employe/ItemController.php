@@ -90,7 +90,7 @@ class ItemController extends Controller
         $item = Item::findOrFail($id);
 
         // Mengambil data rental dan menggabungkan dengan accessories
-        $rental = Rental::leftJoin('accessories_categories as a', 'a.rental_id', '=', 'rentals.id')
+        $rentals = Rental::leftJoin('accessories_categories as a', 'a.rental_id', '=', 'rentals.id')
             ->leftJoin('accessories as b', 'a.accessories_id', '=', 'b.id')
             ->select(
                 'rentals.id', 'rentals.customer_id', 'rentals.item_id', 'rentals.name_company',
@@ -106,7 +106,7 @@ class ItemController extends Controller
             ->get();
 
         // Format item_id sebagai JSON array dan hitung selisih hari
-        foreach ($rental as $data) {
+        foreach ($rentals as $data) {
             $dateStart = Carbon::parse($data->date_start);
             $dateEnd = Carbon::parse($data->date_end);
             $daysDifference = $dateStart->diffInDays($dateEnd);
@@ -116,7 +116,7 @@ class ItemController extends Controller
             $data->item_id = json_encode(explode(',', $data->item_id));
         }
 
-        return view('employe.item.show', compact('item', 'rental'));
+        return view('employe.item.show', compact('item', 'rentals'));
     }
 
     /**
