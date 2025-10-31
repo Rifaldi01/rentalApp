@@ -39,7 +39,7 @@ class ServiceController extends Controller
         $service = null; // default null untuk mode create
 
         $inject = [
-            'url' => route('admin.service.store'),
+            'url' => route('manager.service.store'),
             'bank' => $bank,
             'debt' => $debt,
             'service' => $service,
@@ -48,7 +48,7 @@ class ServiceController extends Controller
 
         if ($id) {
             $service = Service::whereId($id)->first();
-            $inject['url'] = route('admin.service.update', $id);
+            $inject['url'] = route('manager.service.update', $id);
             $inject['cust'] = $cust;
             $inject['service'] = $service;
         }
