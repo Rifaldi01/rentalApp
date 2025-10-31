@@ -11,7 +11,7 @@
                     </div>
                     <div class="col-md-6">
                         <a data-bs-toggle="tooltip" data-bs-placement="top" title="Add Service"
-                           href="{{route('admin.service.create')}}"
+                           href="{{route('manager.service.create')}}"
                            class="btn btn-dnd float-end me-3 mt-3 btn-sm shadow"><i
                                 class="bx bx-plus"></i>
                         </a>
@@ -30,7 +30,7 @@
                     </div>
                     <div class="col-md-6">
                         <a data-bs-toggle="tooltip" data-bs-placement="top" title="Add Service"
-                           href="{{route('admin.service.create')}}"
+                           href="{{route('manager.service.create')}}"
                            class="btn btn-dnd float-end me-3 mt-3 btn-sm shadow"><i
                                 class="bx bx-plus"></i>
                         </a>
@@ -268,7 +268,7 @@
                                                                     data-bs-dismiss="modal"
                                                                     aria-label="Close"></button>
                                                         </div>
-                                                        <form action="{{route('admin.service.update', $data->id)}}"
+                                                        <form action="{{route('manager.service.update', $data->id)}}"
                                                               method="POST">
                                                             @csrf
                                                             @method('PUT')
@@ -313,7 +313,7 @@
                                                                     data-bs-dismiss="modal"
                                                                     aria-label="Close"></button>
                                                         </div>
-                                                        <form action="{{route('admin.service.bayar', $data->id)}}"
+                                                        <form action="{{route('manager.service.bayar', $data->id)}}"
                                                               method="POST" id="myForm">
                                                             @csrf
                                                             @method('PUT')
@@ -453,7 +453,7 @@
                                                     </div>
                                                 </div>
                                             </div>
-                                            <form action="{{ route('admin.service.finis', $data->id) }}" method="POST">
+                                            <form action="{{ route('manager.service.finis', $data->id) }}" method="POST">
                                                 @csrf
                                                 <button type="submit"
                                                         class="btn-sm btn btn-success lni lni-checkmark btn-finish mt-1"
@@ -478,7 +478,7 @@
                                                                     data-bs-dismiss="modal"
                                                                     aria-label="Close"></button>
                                                         </div>
-                                                        <form action="{{route('admin.service.invoice', $data->id)}}"
+                                                        <form action="{{route('manager.service.invoice', $data->id)}}"
                                                               method="POST">
                                                             @csrf
                                                             @method('PUT')
@@ -676,7 +676,7 @@
                                                                     data-bs-dismiss="modal"
                                                                     aria-label="Close"></button>
                                                         </div>
-                                                        <form action="{{route('admin.service.bayar', $data->id)}}"
+                                                        <form action="{{route('manager.service.bayar', $data->id)}}"
                                                               method="POST" id="myForm">
                                                             @csrf
                                                             @method('PUT')
@@ -832,7 +832,7 @@
                                                                     data-bs-dismiss="modal"
                                                                     aria-label="Close"></button>
                                                         </div>
-                                                        <form action="{{route('admin.service.invoices', $data->id)}}"
+                                                        <form action="{{route('manager.service.invoices', $data->id)}}"
                                                               method="POST">
                                                             @csrf
                                                             @method('PUT')

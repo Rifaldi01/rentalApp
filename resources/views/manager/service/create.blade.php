@@ -31,6 +31,14 @@
                     {{-- Jika customer_id null, tampilkan input name --}}
                     @if(is_null($service->customer_id))
                         <div class="col-md-6">
+                            <label for="input1" class="form-label"><i class="text-danger">*</i> Name Customer</label>
+                            {{ html()->select('customer_id', $cust, $service->customer_id)
+                                ->class('form-control')
+                                ->id('single-select-field')
+                                ->placeholder("--Select Customer--")
+                            }}
+                        </div>
+                        <div class="col-md-6">
                             <label for="name" class="form-label"><i class="text-danger">*</i> Name Customer</label>
                             <input type="text"
                                    name="name"
