@@ -29,7 +29,7 @@
                     </thead>
                     <tbody>
                     <tr>
-                        @foreach($rental as $key => $data)
+                        @foreach($rentals as $key => $data)
                         <td>{{$key +1}}</td>
                             <td>{{$data->no_inv}}</td>
                             <td>{{$data->cust->name}}</td>

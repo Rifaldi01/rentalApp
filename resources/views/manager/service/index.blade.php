@@ -103,6 +103,9 @@
                                     @endif
                                 </td>
                                 <td>
+                                    <a href="{{route('manager.service.edit', $data->id)}}" class="btn btn-primary lni lni-pencil btn-sm"
+                                            data-bs-tool="tooltip" data-bs-placement="top" title="Detail"
+                                            ></a>
                                     @if($data->status == 0)
                                         <button class="btn btn-warning lni lni-eye btn-sm" data-bs-toggle="modal"
                                                 data-bs-tool="tooltip" data-bs-placement="top" title="Detail"

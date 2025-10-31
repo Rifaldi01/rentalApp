@@ -196,7 +196,7 @@
                 <div class="col-md-12">
                     <div class="d-md-flex d-grid align-items-center gap-3">
                         <button type="submit" class="btn btn-primary px-4" id="submitBtn">Submit</button>
-                        <a href="{{ route('admin.service.index') }}" class="btn btn-warning">Back</a>
+                        <a href="{{ route('manager.service.index') }}" class="btn btn-warning">Back</a>
                     </div>
                 </div>
             </form>
