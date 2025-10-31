@@ -137,6 +137,15 @@ class ServiceController extends Controller
             'total_invoice.required' => 'Total Invoice Wajib Diisi',
         ]);
 
+        // Ambil data service lama jika mode edit
+        $oldTotal = 0;
+        if ($id) {
+            $oldService = Service::find($id);
+            if ($oldService) {
+                $oldTotal = (int) $oldService->total_invoice;
+            }
+        }
+
         // simpan service
         $service = Service::firstOrNew(['id' => $id]);
         $service->customer_id   = $request->input('customer_id');
@@ -158,25 +167,34 @@ class ServiceController extends Controller
         $service->ppn           = $request->input('ppn');
         $service->save();
 
-        // simpan ke debt service
-        DebtServic::create([
-            'service_id' => $service->id,
-            'bank_id'    => $request->input('bank_id'),
-            'pay_debts'  => $service->nominal_in,
-            'penerima'   => $request->input('penerima'),
-            'date_pay'   => $request->input('date_pay'),
-            'description'=> $request->input('description'),
-        ]);
+        // simpan ke debt service (hanya saat create baru)
+        if (!$id) {
+            DebtServic::create([
+                'service_id' => $service->id,
+                'bank_id'    => $request->input('bank_id'),
+                'pay_debts'  => $service->nominal_in,
+                'penerima'   => $request->input('penerima'),
+                'date_pay'   => $request->input('date_pay'),
+                'description'=> $request->input('description'),
+            ]);
+        }
 
         // === Hitung & update poin customer ===
         $points = 0;
+        $newTotal = (int) $service->total_invoice;
 
-        if (
-            $service->total_invoice >= 100000 &&
-            (int)$service->fee === 0 &&
-            (int)$service->diskon === 0
-        ) {
-            $points = intdiv($service->total_invoice, 100000);
+        // Jika create baru
+        if (!$id) {
+            if ($newTotal >= 100000 && (int)$service->fee === 0 && (int)$service->diskon === 0) {
+                $points = intdiv($newTotal, 100000);
+            }
+        }
+        // Jika update dan total bertambah
+        else if ($newTotal > $oldTotal) {
+            $selisih = $newTotal - $oldTotal;
+            if ($selisih >= 100000 && (int)$service->fee === 0 && (int)$service->diskon === 0) {
+                $points = intdiv($selisih, 100000);
+            }
         }
 
         if ($points > 0) {
@@ -189,6 +207,7 @@ class ServiceController extends Controller
 
         return redirect()->route('manager.service.index')->withSuccess('Upload Data Success');
     }
+
 
 
     public function finis(Request $request, string $id)

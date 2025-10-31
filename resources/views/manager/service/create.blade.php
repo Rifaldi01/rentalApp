@@ -10,15 +10,11 @@
                 @endisset
 
                 {{-- Nama Pelanggan --}}
-                @if(isset($service))
+                {{-- Kondisi CREATE --}}
+                @if(!isset($service))
                     <div class="col-md-6">
                         <label for="input1" class="form-label"><i class="text-danger">*</i> Name Customer</label>
-                        {{ html()->select('customer_id', $cust, isset($service) ? $service->customer_id : null )->class('form-control')->id('single-select-field')->placeholder("--Select Customer--") }}
-                    </div>
-                @else
-                    <div class="col-md-6">
-                        <label for="input1" class="form-label"><i class="text-danger">*</i> Name Customer</label>
-                        {{ html()->select('customer_id', $cust, isset($service) ? $service->customer_id : old('customer_id'))
+                        {{ html()->select('customer_id', $cust, old('customer_id'))
                             ->class(['form-control', 'is-invalid' => $errors->has('customer_id')])
                             ->id('single-select-field')
                             ->placeholder("--Select Customer--")
@@ -29,6 +25,45 @@
                         </div>
                         @enderror
                     </div>
+
+                    {{-- Kondisi EDIT --}}
+                @else
+                    {{-- Jika customer_id null, tampilkan input name --}}
+                    @if(is_null($service->customer_id))
+                        <div class="col-md-6">
+                            <label for="name" class="form-label"><i class="text-danger">*</i> Name Customer</label>
+                            <input type="text"
+                                   name="name"
+                                   value="{{ $service->name ?? old('name') }}"
+                                   class="form-control @error('name') is-invalid @enderror"
+                                   placeholder="Masukkan Nama Customer">
+                            @error('name')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
+
+                        {{-- Jika name null dan customer_id ada, tampilkan select customer --}}
+                    @elseif(is_null($service->name) && !is_null($service->customer_id))
+                        <div class="col-md-6">
+                            <label for="input1" class="form-label"><i class="text-danger">*</i> Name Customer</label>
+                            {{ html()->select('customer_id', $cust, $service->customer_id)
+                                ->class('form-control')
+                                ->id('single-select-field')
+                                ->placeholder("--Select Customer--")
+                            }}
+                        </div>
+
+                        {{-- Jika keduanya ada, tetap tampilkan select customer --}}
+                    @else
+                        <div class="col-md-6">
+                            <label for="input1" class="form-label"><i class="text-danger">*</i> Name Customer</label>
+                            {{ html()->select('customer_id', $cust, $service->customer_id)
+                                ->class('form-control')
+                                ->id('single-select-field')
+                                ->placeholder("--Select Customer--")
+                            }}
+                        </div>
+                    @endif
                 @endif
 
                 {{-- Tanggal Invoice --}}
@@ -55,7 +90,8 @@
                 <div class="col-md-6">
                     <label class="form-label"><i class="text-danger">*</i> Item</label>
                     <textarea class="form-control @error('item') is-invalid @enderror"
-                              name="item" placeholder="Enter Item">{{ isset($service) ? $service->item : old('item') }}</textarea>
+                              name="item"
+                              placeholder="Enter Item">{{ isset($service) ? $service->item : old('item') }}</textarea>
                     @error('item') <span class="invalid-feedback">{{ $message }}</span> @enderror
                 </div>
 
@@ -63,7 +99,8 @@
                 <div class="col-md-3">
                     <label class="form-label"><i class="text-danger">*</i> Type</label>
                     <textarea class="form-control @error('type') is-invalid @enderror"
-                              name="type" placeholder="Enter Type">{{ isset($service) ? $service->type : old('type') }}</textarea>
+                              name="type"
+                              placeholder="Enter Type">{{ isset($service) ? $service->type : old('type') }}</textarea>
                     @error('type') <span class="invalid-feedback">{{ $message }}</span> @enderror
                 </div>
 
@@ -71,7 +108,8 @@
                 <div class="col-md-3">
                     <label class="form-label"><i class="text-danger">*</i> No Seri</label>
                     <textarea class="form-control @error('no_seri') is-invalid @enderror"
-                              name="no_seri" placeholder="Enter No Seri">{{ isset($service) ? $service->no_seri : old('no_seri') }}</textarea>
+                              name="no_seri"
+                              placeholder="Enter No Seri">{{ isset($service) ? $service->no_seri : old('no_seri') }}</textarea>
                     @error('no_seri') <span class="invalid-feedback">{{ $message }}</span> @enderror
                 </div>
 
@@ -79,7 +117,8 @@
                 <div class="col-md-12">
                     <label class="form-label"><i class="text-danger">*</i> Jenis Service</label>
                     <textarea class="form-control @error('jenis_service') is-invalid @enderror"
-                              name="jenis_service" placeholder="Enter Jenis Service">{{ isset($service) ? $service->jenis_service : old('jenis_service') }}</textarea>
+                              name="jenis_service"
+                              placeholder="Enter Jenis Service">{{ isset($service) ? $service->jenis_service : old('jenis_service') }}</textarea>
                     @error('jenis_service') <span class="invalid-feedback">{{ $message }}</span> @enderror
                 </div>
 
@@ -188,7 +227,8 @@
                 <div class="col-md-12">
                     <label>Keterangan Ganti</label>
                     <textarea class="form-control @error('descript') is-invalid @enderror"
-                              name="descript" placeholder="Enter Descript">{{ isset($service) ? $service->descript : old('descript') }}</textarea>
+                              name="descript"
+                              placeholder="Enter Descript">{{ isset($service) ? $service->descript : old('descript') }}</textarea>
                     @error('descript') <span class="invalid-feedback">{{ $message }}</span> @enderror
                 </div>
 
@@ -210,8 +250,8 @@
 @push('js')
     <script src="{{URL::to('assets/js/flatpickr.min.js')}}"></script>
     <script>
-        $(document).ready(function() {
-            $('#submitBtn').click(function() {
+        $(document).ready(function () {
+            $('#submitBtn').click(function () {
                 // Disable button dan ubah teksnya
                 $(this).prop('disabled', true).text('Loading...');
 
