@@ -85,11 +85,11 @@ class RentalController extends Controller
         ];
 
         if ($id) {
-            $rental = Rental::findOrFail($id);
+            $rentals = Rental::findOrFail($id);
             $item = Item::where('status', '!=', 3)->get();
             $inject = [
                 'url' => route('manager.rental.update', $id),
-                'rental' => $rental,
+                'rental' => $rentals,
                 'cust' => $cust,
                 'item' => $item,
                 'acces' => $acces,
