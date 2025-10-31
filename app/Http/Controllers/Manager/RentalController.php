@@ -89,7 +89,7 @@ class RentalController extends Controller
             $item = Item::where('status', '!=', 3)->get();
             $inject = [
                 'url' => route('manager.rental.update', $id),
-                'rental' => $rentals,
+                'rentals' => $rentals,
                 'cust' => $cust,
                 'item' => $item,
                 'acces' => $acces,
