@@ -149,6 +149,7 @@ class ServiceController extends Controller
         // simpan service
         $service = Service::firstOrNew(['id' => $id]);
         $service->customer_id   = $request->input('customer_id');
+        $service->name          = $request->input('name');
         $service->phone         = $request->input('phone');
         $service->item          = $request->input('item');
         $service->no_seri       = $request->input('no_seri');
