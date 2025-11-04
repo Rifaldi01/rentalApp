@@ -27,9 +27,9 @@
                     </tr>
                     </thead>
                     <tbody>
-                    @foreach($rental as $key => $data)
-                        
-                        
+                    @foreach($rentals as $key => $data)
+
+
                             <tr>
                                 <td data-index="{{ $key + 1 }}">{{$key +1}}</td>
                                 <td>{{$data->no_inv}}</td>
@@ -228,7 +228,7 @@
                                     </a>
                                 </td>
                             </tr>
-                        
+
                     @endforeach
                     <tfoot>
                         <tr>
@@ -245,7 +245,7 @@
                             <td><h5>:</h5></td>
                             <td><h5 class="ms-3">{{formatRupiah($hutang)}},-</h5></td>
                         </tr>
-                        
+
                     </table>
             </div>
         </div>
@@ -306,7 +306,7 @@
                     </thead>
                     <tbody>
                     @foreach($debt as $key => $data)
-                        
+
                             <tr>
                                 <td class="text-center">{{$key+1}}</td>
                                 <td>{{formatId($data->rental->tgl_inv)}}</td>
@@ -480,7 +480,7 @@
                             <td><h5>:</h5></td>
                             <td><h5 class="ms-3">{{formatRupiah($sisabayar)}},-</h5></td>
                         </tr>
-                        
+
                     </table>
             </div>
         </div>
@@ -527,7 +527,7 @@
         $(document).ready(function () {
             var table = $('#excel').DataTable({
                 lengthChange: false,
-                paginate: false,    
+                paginate: false,
                 buttons: [
                 {
                     extend: 'excel',
@@ -570,7 +570,7 @@
             }).draw();
         });
     </script>
-    
+
     <script>
        $(document).ready(function () {
             var table = $('#transaction').DataTable({
@@ -588,18 +588,18 @@
                         },
                         exportOptions: {
                             columns: ':visible',
-                            footer: true, 
+                            footer: true,
                             format: {
                                 body: function (data) {
                                     if (data === null || data === undefined) {
-                                        return ''; 
+                                        return '';
                                     }
                                     return String(data)
-                                        .replace(/\./g, '')  
-                                        .replace(/<li>/g, '') 
-                                        .replace(/<\/li>/g, '\n') 
-                                        .replace(/<br\s*\/?>/g, '\n') 
-                                        .replace(/<\/?[^>]+(>|$)/g, ''); 
+                                        .replace(/\./g, '')
+                                        .replace(/<li>/g, '')
+                                        .replace(/<\/li>/g, '\n')
+                                        .replace(/<br\s*\/?>/g, '\n')
+                                        .replace(/<\/?[^>]+(>|$)/g, '');
                                 },
                             }
                         },
@@ -847,7 +847,7 @@
             var id = $(this).attr('id').split('_')[1]; // Ambil ID dinamis
             toggleValidation(id);
         });
-        
+
         }
     </script>
 
