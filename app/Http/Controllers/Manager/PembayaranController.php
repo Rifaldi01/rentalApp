@@ -18,21 +18,21 @@ class PembayaranController extends Controller
         $title = 'Yakin Menghapus Pembayarn?';
         $text = "Pembayaran Akan Dihapus Secara Permanen!";
         confirmDelete($title, $text);
-        $rentals = Rental::where('nominal_out', '!=', '0')->get();
+        $rental = Rental::where('nominal_out', '!=', '0')->get();
         $bank = Bank::all();
-        $totalseharusnya = $rentals->groupBy('id')->map(function ($group) {
+        $totalseharusnya = $rental->groupBy('id')->map(function ($group) {
             return $group->sum(function ($item){
                 return $item->nominal_in + $item->nominal_out;
             });
         });
-        $total = $rentals->groupBy('id')->map(function ($group) {
+        $total = $rental->groupBy('id')->map(function ($group) {
             return $group->sum(function ($item){
                 return $item->nominal_in + $item->nominal_out - $item->diskon;
             });
         });
         $currentYear = now()->year;
         $debt = Debts::whereYear('date_pay', $currentYear)->get();
-        $hutang = $rentals->sum('nominal_out');
+        $hutang = $rental->sum('nominal_out');
         $diskon = $debt->sum(function ($item) {
             return $item->rental->diskon;
         });
@@ -52,7 +52,7 @@ class PembayaranController extends Controller
             'totalbersih',
             'sisabayar',
             'diskon',
-            'rentals',
+            'rental',
             'bank',
             'totalseharusnya',
             'total',
@@ -79,14 +79,14 @@ class PembayaranController extends Controller
         $pay_debts = str_replace(['Rp.', '.', ' '], '', $request->input('pay_debts'));
 
         // Update nominal_in dan nominal_out di tabel rentals
-        $rentals = Rental::findOrFail($id);
+        $rental = Rental::findOrFail($id);
 
         // Kurangi nominal_out dengan pay_debts yang baru
-        $rentals->nominal_out = $rentals->nominal_out - $pay_debts;
+        $rental->nominal_out = $rental->nominal_out - $pay_debts;
 
         // Set nominal_in yang baru
-        $rentals->nominal_in = $nominal_in;
-        $rentals->save();
+        $rental->nominal_in = $nominal_in;
+        $rental->save();
 
         // Simpan data ke tabel debts
         $debts = Debts::create([
@@ -122,19 +122,19 @@ class PembayaranController extends Controller
         ->get();;
 
         // Calculate totals
-        $rentals = Rental::where('nominal_out', '!=', '0')->get();
+        $rental = Rental::where('nominal_out', '!=', '0')->get();
         $bank = Bank::all();
-        $totalseharusnya = $rentals->groupBy('id')->map(function ($group) {
+        $totalseharusnya = $rental->groupBy('id')->map(function ($group) {
             return $group->sum(function ($item){
                 return $item->nominal_in + $item->nominal_out;
             });
         });
-        $total = $rentals->groupBy('id')->map(function ($group) {
+        $total = $rental->groupBy('id')->map(function ($group) {
             return $group->sum(function ($item){
                 return $item->nominal_in + $item->nominal_out - $item->diskon;
             });
         });
-        $hutang = $rentals->sum('nominal_out');
+        $hutang = $rental->sum('nominal_out');
         $diskon = $debt->sum(function ($item) {
             return $item->rental->diskon;
         });
@@ -154,7 +154,7 @@ class PembayaranController extends Controller
             'totalbersih',
             'sisabayar',
             'diskon',
-            'rentals',
+            'rental',
             'bank',
             'totalseharusnya',
             'total',
