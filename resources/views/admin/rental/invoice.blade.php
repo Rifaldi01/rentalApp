@@ -75,7 +75,7 @@
                             <td>Periode : <strong>{{formatId($data->date_start)}} - {{formatId($data->date_end)}}</strong></td>
                             <td class="text-start">No. Rekening</td>
                             <td width="1%" class="text-end">:</td>
-                            <td width="20%"><strong>{{optional($data->customer)->divisi->no_rek ?? '-'}}</strong></td>
+                            <td width="20%"><strong>8105898874 - RIKA ROSITA, BCA</strong></td>
                         </tr>
                     </table>
                     <hr>
