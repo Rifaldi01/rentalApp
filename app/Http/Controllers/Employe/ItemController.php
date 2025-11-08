@@ -5,12 +5,14 @@ namespace App\Http\Controllers\Employe;
 use App\Http\Controllers\Controller;
 use App\Models\Category;
 use App\Models\Item;
+use App\Models\ItemIn;
 use App\Models\ItemSale;
 use App\Models\Rental;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Intervention\Image\ImageemployeStatic;
+use Intervention\Image\ImageManagerStatic;
 use RealRashid\SweetAlert\Facades\Alert;
 
 class ItemController extends Controller
@@ -149,49 +151,62 @@ class ItemController extends Controller
     {
         // Validasi input
         $validate = $request->validate([
-            'name'   => 'required',
-            'cat_id' => 'required',
-            'no_seri' => 'required',
-
+            'name'     => 'required',
+            'cat_id'   => 'required',
+            'no_seri'  => 'required',
+            'description' => 'nullable' // jika ingin input manual
         ]);
 
         // Temukan atau buat item baru
-        $item = Item::updateOrCreate(['id' => $id], [
-            'cat_id'  => $request->input('cat_id'),
-            'name'    => $request->input('name'),
-            'no_seri' => $request->input('no_seri')
-        ]);
+        $item = Item::updateOrCreate(
+            ['id' => $id],
+            [
+                'cat_id'  => $request->input('cat_id'),
+                'name'    => $request->input('name'),
+                'no_seri' => $request->input('no_seri'),
+            ]
+        );
 
         // Penanganan gambar
         if ($request->hasFile('image')) {
             $newImages = [];
 
-            // Handle new images
             foreach ($request->file('image') as $file) {
                 $file_name = md5(now()->timestamp . $file->getClientOriginalName()) . '.jpg';
 
                 try {
-                    $img = ImageemployeStatic::make($file);
+                    $img = ImageManagerStatic::make($file);
                     $img->resize(null, 600, function ($constraint) {
                         $constraint->aspectRatio();
                     });
                     $img->save(public_path("images/item/{$file_name}"), 80, 'jpg');
                     $newImages[] = $file_name;
                 } catch (\Exception $e) {
-                    return back()->withErrors(['image' => 'Error processing the image: ' . $e->getMessage()])->withInput();
+                    return back()
+                        ->withErrors(['image' => 'Error processing the image: ' . $e->getMessage()])
+                        ->withInput();
                 }
             }
 
-            // Combine old images with new ones
             $existingImages = json_decode($item->image, true) ?? [];
             $item->image = json_encode(array_merge($existingImages, $newImages));
         }
 
-        // Simpan item
+        // Simpan data item
         $item->save();
 
-        // Berikan notifikasi sukses dan redirect
-        return redirect()->route('employe.item.index')->withSuccess('Upload Data Success');
+        // Jika item baru dibuat, tambahkan ke tabel item_ins
+        if ($id === null) {
+            ItemIn::create([
+                'item_id'     => $item->id,
+                'description' => $request->input('description', null),
+            ]);
+        }
+
+        // Notifikasi sukses
+        return redirect()
+            ->route('employe.item.index')
+            ->withSuccess('Upload Data Success');
     }
     public function mainten($id)
     {
@@ -251,5 +266,10 @@ class ItemController extends Controller
         }
 
         return response()->json(['success' => false]);
+    }
+    public function itemin()
+    {
+        $ins =  ItemIn::with('item')->get();
+        return view('employe.item.itemin', compact('ins'));
     }
 }

@@ -24,16 +24,12 @@ Route::group(['middleware' => ['auth:web', 'role:employe'], 'prefix' => 'employe
     });
     Route::resource('/profile/edit', EditController::class)->names('profile.edit');
 
-    Route::get('item', [ItemController::class, 'index'])->name('employe.index');
-    Route::get('/item/create', [ItemController::class, 'create'])->name('employe.item.create');
-    Route::post('/item', [ItemController::class, 'store'])->name('employe.item.store');
-    Route::get('/item/{id}', [ItemController::class, 'show'])->name('employe.item.show');
-    Route::get('/item/{id}/edit', [ItemController::class, 'edit'])->name('employe.item.edit');
-    Route::put('/item/{id}', [ItemController::class, 'update'])->name('employe.item.update');
-    Route::delete('/item/{id}', [ItemController::class, 'destroy'])->name('employe.item.destroy');
+    Route::resource('item', ItemController::class)->names('employe.item');
     Route::get('/items/sale', [ItemController::class, 'sale'])->name('employe.sale');
     Route::post('/maintenance/{id}/item', [MaintenanceController::class, 'destroy'])->name('employe.mainten.item');
+    Route::post('/item/deleteimage', [ItemController::class, 'deleteImage'])->name('employe.item.deleteImage');
     Route::post('/maintenance/', [MaintenanceController::class, 'store'])->name('employe.mainten.store');
+    Route::get('riwayat/item/', [ItemController::class, 'itemin'])->name('employe.item.itemin');
 
     Route::get('/accessories', [AccessoriesController::class, 'index'])->name('employe.acces');
     Route::post('/sale/', [ItemController::class, 'storesale'])->name('employe.item.sale');
@@ -41,6 +37,7 @@ Route::group(['middleware' => ['auth:web', 'role:employe'], 'prefix' => 'employe
     Route::put('/accessories/{id}', [AccessoriesController::class, 'update'])->name('employe.acces.update');
     Route::put('/acces-tambah/{id}', [AccessoriesController::class, 'tambah'])->name('employe.acces.tambah');
     Route::get('/maintenance', [MaintenanceController::class, 'index'])->name('employe.mainten');
+    Route::get('riwayat/accessories/', [AccessoriesController::class,'accesin'])->name('employe.accessories.accesin');
 
 });
 

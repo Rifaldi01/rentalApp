@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Employe;
 use App\Http\Controllers\Controller;
 use App\Models\Accessories;
 use App\Models\AccessoriesCategory;
+use App\Models\AccessoriesIn;
 use Illuminate\Http\Request;
 use RealRashid\SweetAlert\Facades\Alert;
 
@@ -60,14 +61,27 @@ class AccessoriesController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'name' => 'required|max:255',
-            'stok' => 'required|numeric',
-            'stok_all' => 'required|numeric',
+            'name'      => 'required|max:255',
+            'stok'      => 'required|numeric',
+            'stok_all'  => 'required|numeric',
         ]);
-        Accessories::create($request->all());
-        Alert::success('Success', 'Add Accessories Success');
-        return back();
+
+        // Simpan ke tabel accessories
+        $accessory = Accessories::create([
+            'name'      => $request->name,
+            'stok'      => $request->stok,
+            'stok_all'  => $request->stok_all,
+        ]);
+        // Simpan juga ke tabel accessories_ins
+       AccessoriesIn::create([
+            'accessories_id' => $accessory->id,
+            'qty'            => $request->stok_all, // jumlah awal dari stok
+            'description'    => $request->description ?? null, // opsional
+            'created_at'    => $request->created_at ?? now(), // opsional
+        ]);
+        return back()->with('success', 'Accessories has been added');
     }
+
     public function update(Request $request, string $id)
     {
         $request->validate([
@@ -91,12 +105,22 @@ class AccessoriesController extends Controller
         // ✅ Tambahkan stok dan stok_all
         $accessory->stok += $request->stok;
         $accessory->stok_all += $request->stok;
-
-        // ✅ Simpan perubahan
         $accessory->save();
 
-        Alert::success('Success', 'Stok Accessories berhasil diperbarui');
-        return back();
+        // ✅ Simpan riwayat ke tabel accessories_ins
+        AccessoriesIn::create([
+            'accessories_id' => $accessory->id,
+            'qty'            => $request->stok,
+            'description'    => $request->description ?? null, // opsional
+        ]);
+
+        return back()->with('Success', 'Stok Accessories berhasil ditambah');
     }
+    public function accesin()
+    {
+        $ins = AccessoriesIn::with('accessories')->get();
+        return view('employe.accessories.accesin', compact('ins'));
+    }
+
 
 }

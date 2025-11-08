@@ -22,5 +22,9 @@ class Item extends Model
     {
         return $this->hasMany(Rental::class, 'item_id');
     }
+    public function itemIn()
+    {
+        return $this->hasOne(ItemIn::class, 'item_id');
+    }
 
 }

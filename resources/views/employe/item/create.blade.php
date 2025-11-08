@@ -55,6 +55,10 @@
                     <input type="text" name="no_seri" class="form-control" placeholder="Enter No Seri" value="{{isset($item) ? $item->no_seri : null}}">
                 </div>
                 <div class="mt-3 mb-2">
+                    <label class="col-form-label">Description</label>
+                    <textarea name="description" class="form-control" placeholder="Enter Description">{{isset($item) ? $item->itemIn->description : null}}</textarea>
+                </div>
+                <div class="mt-3 mb-2">
                     <label class="col-form-label">Image</label>
                     @if (isset($item) && $item->image)
                         <div class="mt-3">
@@ -76,9 +80,9 @@
                 <div class="mt-3">
                     <button type="submit" class="btn btn-dnd float-end" id="submitBtn">Save<i class="bx bx-save"></i> </button>
                     @if(isset($item))
-                        <a href="{{route('admin.item.index')}}" class="btn btn-warning float-end me-2"><i class="bx bx-undo"></i>Back</a>
+                        <a href="{{route('employe.item.index')}}" class="btn btn-warning float-end me-2"><i class="bx bx-undo"></i>Back</a>
                     @else
-                        <a href="{{route('admin.item.index')}}" class="btn btn-warning float-end me-2"><i class="bx bx-list-ul"></i>List Item</a>
+                        <a href="{{route('employe.item.index')}}" class="btn btn-warning float-end me-2"><i class="bx bx-list-ul"></i>List Item</a>
                     @endif
                 </div>
             </form>
@@ -87,10 +91,10 @@
 @endsection
 
 @push('head')
-    
+
 @endpush
 @push('js')
-    
+
 <script>
         $(document).ready(function() {
             $('#submitBtn').click(function() {
@@ -115,7 +119,7 @@
                 }).then((result) => {
                     if (result.isConfirmed) {
                         $.ajax({
-                            url: '{{ route('admin.item.deleteImage') }}',
+                            url: '{{ route('employe.item.deleteImage') }}',
                             method: 'POST',
                             data: {
                                 _token: '{{ csrf_token() }}',

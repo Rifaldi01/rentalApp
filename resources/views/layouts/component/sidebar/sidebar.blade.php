@@ -40,7 +40,7 @@
         </li>
         <li class="menu-label">Items</li>
         <li>
-            <a href="{{route('employe.index')}}">
+            <a href="{{route('employe.item.index')}}">
                 <div class="parent-icon">
                     <i class='bx bx-box'></i>
                 </div>
@@ -54,6 +54,21 @@
                 </div>
                 <div class="menu-title">Accessories</div>
             </a>
+        </li>
+        <li>
+            <a href="javascript:;" class="has-arrow">
+                <div class="parent-icon"><i class='bx bx-history'></i>
+                </div>
+                <div class="menu-title">Riwayat Barang</div>
+            </a>
+            <ul>
+                <li>
+                    <a href="{{route('employe.item.itemin')}}"><i class='lni lni-timer'></i>Item</a>
+                </li>
+                <li>
+                    <a href="{{route('employe.accessories.accesin')}}"><i class='bx bx-list-ul'></i>Accessories</a>
+                </li>
+            </ul>
         </li>
         <li>
             <a href="{{route('employe.sale')}}">

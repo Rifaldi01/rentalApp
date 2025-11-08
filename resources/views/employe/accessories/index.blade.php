@@ -15,7 +15,7 @@
                 </div>
             </div>
         </div>
-        <di class="card-body">
+        <div class="card-body">
             <div class="table-responsive">
                 <table id="accessories" class="table table-striped table-bordered" style="width:100%">
                     <thead>
@@ -103,12 +103,16 @@
                                                 @csrf
                                                 @method('PUT')
                                                 <div class="modal-body">
+                                                    <label class="col-form-label">Tanggal</label>
+                                                    <input type="text" name="created_at" id="" class="form-control datepicker" placeholder="Masukan Tanggal">
                                                     <label class="col-form-label">Name Accessories</label>
                                                     <input value="{{ $data['name'] }}" type="text" name="name"
                                                            class="form-control" placeholder="Enter Accessories" readonly>
                                                     <label class="col-form-label mt-2">qty</label>
                                                     <input type="number" value="0" name="stok"
                                                            class="form-control" placeholder="">
+                                                    <label class="col-form-label mt-2">Keterangan</label>
+                                                    <textarea name="description" class="form-control" id="" cols="30" rows="5"></textarea>
                                                 </div>
                                                 <div class="modal-footer">
                                                     <button type="button" class="btn btn-secondary"
@@ -127,7 +131,7 @@
                     </tbody>
                 </table>
             </div>
-        </di>
+        </div>
     </div>
     <div class="card">
         <div class="card-head">
@@ -243,12 +247,16 @@
                 <form action="{{route('employe.acces.store')}}" method="POST" id="myForm">
                     @csrf
                     <div class="modal-body">
+                        <label class="col-form-label">Tanggal</label>
+                        <input type="text" name="created_at" id="" class="form-control datepicker" placeholder="Enter Accessories">
                         <label class="col-form-label">Name Accesories</label>
                         <input type="text" name="name" id="" class="form-control" placeholder="Enter Accessories">
                         <label class="col-form-label mt-2">Stok All</label>
                         <input type="number" name="stok_all" id="" class="form-control" placeholder="">
                         <label class="col-form-label mt-2">Stok Available</label>
                         <input type="number" name="stok" id="" class="form-control" placeholder="">
+                        <label class="col-form-label mt-2">Keterangan</label>
+                        <textarea name="description" class="form-control" id="" cols="10" rows="5"></textarea>
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
@@ -265,91 +273,105 @@
 
 @endpush
 @push('js')
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+
     <script>
-        $(document).ready(function () {
-            $('#submitBtn').click(function () {
-                // Disable button dan ubah teksnya
-                $(this).prop('disabled', true).text('Loading...');
+        // Helper: inisialisasi single flatpickr jika belum ada
+        function initFlatpickrOn(el, options = {}) {
+            if (!el) return;
+            // flatpickr menyimpan instance di property _flatpickr pada elemen DOM
+            if (!el._flatpickr) {
+                flatpickr(el, options);
+            }
+        }
 
-                // Kirim form secara manual
-                $('#myForm').submit();
-            });
-        });
-    </script>
-    <script>
         $(document).ready(function () {
-            var table = $('#accessories').DataTable({
-                lengthChange: false,
-                buttons: [{
-                    extend: 'pdf',
-                    exportOptions: {
-                        columns: [0, 1, 2, 3, 4]
-                    },
-                    customize: function (doc) {
-                        doc.content[1].alignment = 'center';
-                    }
-                }, {
-                    extend: 'print',
-                    exportOptions: {
-                        columns: [0, 1, 2, 3, 4]
-                    },
-                    customize: function (win) {
-                        $(win.document.body).find('table').addClass('table-center');
-                    }
-                }]
-            });
-
-            table.buttons().container()
-                .appendTo('#accessories_wrapper .col-md-6:eq(0)');
-        });
-        $(document).ready(function () {
-            var table = $('#accessories').DataTable();
-
-            // Mengurutkan ulang nomor saat tabel diurutkan atau difilter
-            table.on('order.dt search.dt', function () {
-                let i = 1;
-                table.cells(null, 0, {search: 'applied', order: 'applied'}).every(function (cell) {
-                    this.data(i++);
+            // 1) Inisialisasi datepicker untuk elemen yang sudah ada di DOM
+            document.querySelectorAll('.datepicker').forEach(function(input) {
+                initFlatpickrOn(input, {
+                    // default options — sesuaikan bila perlu
+                    dateFormat: "Y-m-d",
+                    allowInput: true
                 });
-            }).draw();
-        });
-    </script>
-    <script>
-        $(document).ready(function () {
-            var table = $('#accessoriesRental').DataTable({
-                lengthChange: false,
-                buttons: [{
-                    extend: 'pdf',
-                    exportOptions: {
-                        columns: [0, 1, 2, 3, 4]
-                    },
-                    customize: function (doc) {
-                        doc.content[1].alignment = 'center';
-                    }
-                }, {
-                    extend: 'print',
-                    exportOptions: {
-                        columns: [0, 1, 2, 3, 4]
-                    },
-                    customize: function (win) {
-                        $(win.document.body).find('table').addClass('table-center');
-                    }
-                }]
             });
 
-            table.buttons().container()
-                .appendTo('#accessoriesRental_wrapper .col-md-6:eq(0)');
-        });
-        $(document).ready(function () {
-            var table = $('#accessoriesRental').DataTable();
-
-            // Mengurutkan ulang nomor saat tabel diurutkan atau difilter
-            table.on('order.dt search.dt', function () {
-                let i = 1;
-                table.cells(null, 0, {search: 'applied', order: 'applied'}).every(function (cell) {
-                    this.data(i++);
+            // 2) Pastikan datepicker di dalam modal di-inisialisasi saat modal muncul
+            // Ini menangani modal yang mengandung input datepicker yang mungkin belum di-inisialisasi
+            $(document).on('shown.bs.modal', '.modal', function () {
+                // inisialisasi hanya untuk elemen datepicker di dalam modal yang sedang dibuka
+                $(this).find('.datepicker').each(function () {
+                    initFlatpickrOn(this, {
+                        dateFormat: "Y-m-d",
+                        allowInput: true
+                    });
                 });
-            }).draw();
+            });
+
+            // 3) Tombol submit di modal (hindari double submit)
+            $(document).on('click', '#submitBtn', function (e) {
+                var $btn = $(this);
+                $btn.prop('disabled', true).text('Loading...');
+                // Jika button ada di dalam form, submit form terdekat
+                var $form = $btn.closest('form');
+                if ($form.length) {
+                    $form.submit();
+                } else {
+                    // fallback: submit form dengan id myForm jika ada
+                    $('#myForm').submit();
+                }
+            });
+
+            // 4) DataTables: init once per table (hindari inisialisasi ganda)
+            if (! $.fn.DataTable.isDataTable('#accessories')) {
+                var table1 = $('#accessories').DataTable({
+                    lengthChange: false,
+                    buttons: [{
+                        extend: 'pdf',
+                        exportOptions: { columns: [0,1,2,3,4] },
+                        customize: function (doc) { doc.content[1].alignment = 'center'; }
+                    }, {
+                        extend: 'print',
+                        exportOptions: { columns: [0,1,2,3,4] },
+                        customize: function (win) { $(win.document.body).find('table').addClass('table-center'); }
+                    }]
+                });
+                table1.buttons().container().appendTo('#accessories_wrapper .col-md-6:eq(0)');
+
+                // update index column saat order/search
+                table1.on('order.dt search.dt', function () {
+                    let i = 1;
+                    table1.cells(null, 0, {search: 'applied', order: 'applied'}).every(function (cell) {
+                        this.data(i++);
+                    });
+                }).draw();
+            }
+
+            if (! $.fn.DataTable.isDataTable('#accessoriesRental')) {
+                var table2 = $('#accessoriesRental').DataTable({
+                    lengthChange: false,
+                    buttons: [{
+                        extend: 'pdf',
+                        exportOptions: { columns: [0,1,2,3,4] },
+                        customize: function (doc) { doc.content[1].alignment = 'center'; }
+                    }, {
+                        extend: 'print',
+                        exportOptions: { columns: [0,1,2,3,4] },
+                        customize: function (win) { $(win.document.body).find('table').addClass('table-center'); }
+                    }]
+                });
+                table2.buttons().container().appendTo('#accessoriesRental_wrapper .col-md-6:eq(0)');
+
+                table2.on('order.dt search.dt', function () {
+                    let i = 1;
+                    table2.cells(null, 0, {search: 'applied', order: 'applied'}).every(function (cell) {
+                        this.data(i++);
+                    });
+                }).draw();
+            }
+
+            // 5) Init flatpickr untuk inputs yang mungkin dibuat/dinamis di runtime
+            // (opsional) jika kamu menambahkan input datepicker secara dinamis, panggil initFlatpickrOn(el) setelah menambahkan.
         });
     </script>
 @endpush
