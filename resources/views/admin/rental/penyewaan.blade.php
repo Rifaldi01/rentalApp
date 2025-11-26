@@ -71,7 +71,7 @@
                             <td class="identitastd" width="40%">{{$data->cust->name}}</td>
                             <td class="identitastd" style="border-left: 0.5px solid #aaa; padding: 6px" width="5%">Perusahaan</td>
                             <td class="identitastd" width="1%">:</td>
-                            <td class="identitastd" style="border-right: 0.5px solid #aaa">{{$data->name_comapny}}</td>
+                            <td class="identitastd" style="border-right: 0.5px solid #aaa">{{$data->name_company}}</td>
                         </tr>
                         <tr>
                             <td class="identitastd" style="border-left: 0.5px solid #aaa; padding: 6px; vertical-align: middle;" width="5%">
@@ -118,27 +118,21 @@
 
                     <table class="checkbox-grid penyewatable">
                         <tr>
-                            <th colspan="4" class="alatth">Alat yang Disewa</th>
+                            <th colspan="2" class="alatth">Alat yang Disewa</th>
                         </tr>
                         <tr>
                             <td class="alattd" style="border-left: 0.5px solid #aaa; padding: 6px; vertical-align: top;"><input
                                     type="checkbox"> Total Station
                             </td>
                             <td class="alattd" style="border-right: 0.5px solid #aaa; "><input type="checkbox"> Echosounder</td>
-                            <td class="alattd" style="padding: 6px; vertical-align: top;"><input type="checkbox"> Prisma AK</td>
-                            <td class="alattd" style="border-right: 0.5px solid #aaa;"><input type="checkbox">
-                                Tribrach
-                            </td>
+
                         </tr>
                         <tr>
                             <td class="alattd" style="border-left: 0.5px solid #aaa; padding: 6px; vertical-align: top;"><input
                                     type="checkbox"> Thedolite
                             </td>
                             <td class="alattd" style="border-right: 0.5px solid #aaa; "><input type="checkbox"> GPS Handheld</td>
-                            <td class="alattd" style="padding: 6px; vertical-align: top;"><input type="checkbox"> Prisma ADS</td>
-                            <td class="alattd" style="border-right: 0.5px solid #aaa;"><input type="checkbox">
-                                Rambu Ukur
-                            </td>
+
                         </tr>
                         <tr>
                             <td class="alattd" style="border-left: 0.5px solid #aaa; padding: 6px; vertical-align: top;"><input
@@ -147,10 +141,6 @@
                             <td class="alattd" style="border-right: 0.5px solid #aaa; "><input type="checkbox">
                                 GPS RTK
                             </td>
-                            <td class="alattd" style="padding: 6px; vertical-align: top;"><input type="checkbox"> Pole/Stik</td>
-                            <td class="alattd" style="border-right: 0.5px solid #aaa;"><input type="checkbox">
-                                ..............................
-                            </td>
                         </tr>
                         <tr>
                             <td class="alattd" style="border-left: 0.5px solid #aaa; padding: 6px; vertical-align: top;"><input
@@ -158,10 +148,6 @@
                             </td>
                             <td class="alattd" style="border-right: 0.5px solid #aaa; "><input type="checkbox">
                                 Controller
-                            </td>
-                            <td class="alattd" style="padding: 6px; vertical-align: top;"><input type="checkbox"> Tripod</td>
-                            <td class="alattd" style="border-right: 0.5px solid #aaa;"><input type="checkbox">
-                                ..............................
                             </td>
                         </tr>
                     </table>
