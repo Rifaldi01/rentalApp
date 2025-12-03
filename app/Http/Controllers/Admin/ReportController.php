@@ -73,7 +73,7 @@ class ReportController extends Controller
             return $item->rental->nominal_out;
         });
         $totalbersih = $cicilan->sum(function ($item) {
-            return $item->pay_debts - $item->rental->diskon - $item->rental->ppn;
+            return $item->pay_debts - $item->rental->diskon - $item->rental->ppn - $item->rental->fee;
         });
 
         // return $debt;
@@ -120,6 +120,7 @@ class ReportController extends Controller
 
         // Calculate totals
         $totaldiskon = $report->sum('diskon');
+        $totalfee = $report->sum('fee');
         $totalin = $report->sum('nominal_in');
         $totalincome = $report->sum(function ($item) {
             return $item->nominal_in - $item->diskon;
@@ -148,14 +149,14 @@ class ReportController extends Controller
             return $item->rental->nominal_out;
         });
         $totalbersih = $cicilan->sum(function ($item) {
-            return $item->pay_debts - $item->rental->diskon;
+            return $item->pay_debts - $item->rental->diskon - $item->rental->ppn - $item->rental->fee;
         });
         $totalppn = $cicilan->sum(function ($item) {
             return $item->rental->ppn;
         });
 
         // return $debt;
-        return view('admin.report.index', compact('totalppn', 'sisabayar', 'totalbersih', 'diskon', 'sisa', 'totalin', 'report', 'totaldiskon', 'totalincome', 'totaloutside', 'cicilan', 'total', 'uangmasuk'));
+        return view('admin.report.index', compact('totalppn', 'sisabayar', 'totalfee', 'totalbersih', 'diskon', 'sisa', 'totalin', 'report', 'totaldiskon', 'totalincome', 'totaloutside', 'cicilan', 'total', 'uangmasuk'));
     }
 
     public function filtercicilan(Request $request)
@@ -229,7 +230,7 @@ class ReportController extends Controller
             return $item->rental->nominal_out;
         });
         $totalbersih = $cicilan->sum(function ($item) {
-            return $item->pay_debts - $item->rental->diskon - $item->rental->ppn;
+            return $item->pay_debts - $item->rental->diskon - $item->rental->ppn - $item->rental->fee;
         });
         $totalppn = $cicilan->sum(function ($item) {
             return $item->rental->ppn;

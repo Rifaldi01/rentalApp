@@ -77,7 +77,7 @@ class ReportController extends Controller
         });
 
         $totalbersih = $cicilan->sum(function ($item) {
-            return $item->pay_debts - (optional($item->rental)->diskon ?? 0) - $item->rental->ppn;
+            return $item->pay_debts - (optional($item->rental)->diskon ?? 0) - $item->rental->ppn - $item->rental->fee;
         });
 
         return view('manager.report.index', compact(
@@ -155,11 +155,11 @@ class ReportController extends Controller
                 return optional($item->rental)->nominal_out;
             });
             $totalbersih = $cicilan->sum(function ($item) {
-                return $item->pay_debts - (optional($item->rental)->diskon ?? 0);
+                return $item->pay_debts - (optional($item->rental)->diskon ?? 0)- $item->rental->ppn - $item->rental->fee;
             });
 
         // return $debt;
-        return view('manager.report.index', compact('sisabayar','totalbersih','diskon','sisa','totalin', 'report', 'totaldiskon', 'totalincome', 'totaloutside', 'cicilan', 'total', 'uangmasuk'));
+        return view('manager.report.index', compact('sisabayar','totalbersih', 'totalfee', 'diskon','sisa','totalin', 'report', 'totaldiskon', 'totalincome', 'totaloutside', 'cicilan', 'total', 'uangmasuk'));
     }
     public function filtercicilan(Request $request){
         $request->validate([
@@ -230,7 +230,7 @@ class ReportController extends Controller
             return optional($item->rental)->nominal_out ?? 0;
         });
         $totalbersih = $cicilan->sum(function ($item) {
-            return $item->pay_debts - (optional($item->rental)->diskon ?? 0);
+            return $item->pay_debts - (optional($item->rental)->diskon ?? 0) - $item->rental->ppn - $item->rental->fee;
         });
 
     // return $debt;
