@@ -226,6 +226,26 @@
                         <td>-</td>
                         <td>-</td>
                         <td>-</td>
+                        <th class="border" > <strong>Total Fee</strong></th>
+                        <th class="border" >{{formatRupiah($totalfee)}},-</th>
+                    </tr>
+                    <tr>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
                         <th class="border" > <strong>Total Bersih</strong></th>
                         <th class="border" >{{formatRupiah($totalbersih)}},-</th>
                     </tr>
