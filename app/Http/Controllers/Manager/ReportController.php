@@ -38,6 +38,7 @@ class ReportController extends Controller
             ->get();
 
         // Perhitungan total
+        $totalfee = $report->sum('fee');
         $totaldiskon = $report->sum('diskon');
         $totalin = $report->sum('nominal_in');
 
@@ -76,12 +77,12 @@ class ReportController extends Controller
         });
 
         $totalbersih = $cicilan->sum(function ($item) {
-            return $item->pay_debts - (optional($item->rental)->diskon ?? 0);
+            return $item->pay_debts - (optional($item->rental)->diskon ?? 0) - $item->rental->ppn;
         });
 
         return view('manager.report.index', compact(
             'sisabayar', 'totalbersih', 'diskon', 'sisa',
-            'totalin', 'report', 'totaldiskon', 'totalincome',
+            'totalin', 'totalfee', 'report', 'totaldiskon', 'totalincome',
             'totaloutside', 'cicilan', 'total', 'uangmasuk'
         ));
     }
@@ -126,6 +127,7 @@ class ReportController extends Controller
 
         // Calculate totals
         $totaldiskon = $report->sum('diskon');
+        $totalfee = $report->sum('fee');
         $totalin = $report->sum('nominal_in');
         $totalincome = $report->sum(function($item) {
             return $item->nominal_in - $item->diskon ;
@@ -197,6 +199,7 @@ class ReportController extends Controller
 
         // Calculate totals
         $totaldiskon = $report->sum('diskon');
+        $totalfee = $report->sum('fee');
         $totalin = $report->sum('nominal_in');
         $totalincome = $report->sum(function($item) {
             return $item->nominal_in - $item->diskon ;
@@ -233,6 +236,7 @@ class ReportController extends Controller
     // return $debt;
         return view('manager.report.index', compact([
             'sisabayar',
+            'totalfee',
             'totalbersih',
             'diskon',
             'sisa',
