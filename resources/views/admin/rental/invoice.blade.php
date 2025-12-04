@@ -113,9 +113,9 @@
                                 @php $item = \App\Models\Item::find($itemId); @endphp
                                 <tr>
                                     <td class="text-center">{{ $no++ }}</td>
-                                    <td>{{ $item ? $item->cat->name : 'Item not found' }}-{{ $item ? $item->name : 'Item not found' }}</td>
+                                    <td>{{ $item ? $item->name : 'Item not found' }}</td>
                                     <td>Item</td>
-                                    <td>{{ $item ? $item->no_seri : 'Item not found' }}</td>
+                                    <td>{{ $item ? $item->cat->name : 'Item not found' }}-{{ $item ? $item->no_seri : 'Item not found' }}</td>
                                     <td>1</td>
 
                                     {{-- Hanya tampilkan rowspan di baris pertama --}}
