@@ -90,10 +90,9 @@
                         <tr>
                             <th width="1%">No</th>
                             <th>Product</th>
-                            <th class="text-center">Qty</th>
+                            <th>Ket.</th>
                             <th>No Seri</th>
-                            <th>Total Hari</th>
-                            <th>Harga</th>
+                            <th class="text-center">Qty</th>
                         </tr>
                         </thead>
                         <tbody>
@@ -114,31 +113,17 @@
                                 <tr>
                                     <td class="text-center">{{ $no++ }}</td>
                                     <td>{{ $item ? $item->name : 'Item not found' }}</td>
-                                    <td>1</td>
+                                    <td>Item</td>
                                     <td>{{ $item ? $item->no_seri : 'Item not found' }}</td>
+                                    <td>1</td>
 
                                     {{-- Hanya tampilkan rowspan di baris pertama --}}
-                                    @if($loop->first)
-                                        <td rowspan="{{ $totalRowspan }}" class="text-center align-middle">
-                                            {{$data->days_difference}} Hari
-                                        </td>
-                                        <td rowspan="{{ $totalRowspan }}" class="text-center align-middle">
-                                            Rp {{ formatRupiah($data->total_invoice) }}
-                                        </td>
-                                    @endif
+
                                 </tr>
                             @endforeach
                         @endif
 
                         {{-- Loop accessories --}}
-                        @foreach($data->accessoriescategory as $asdf)
-                            <tr>
-                                <td class="text-center">{{ $no++ }}</td>
-                                <td>{{ $asdf->accessory ? $asdf->accessory->name : 'Not Found' }}</td>
-                                <td>{{ $asdf->accessories_quantity + $asdf->kembali }}</td>
-                                <td>Aksesoris</td>
-                            </tr>
-                        @endforeach
                         @if(!empty($data->keterangan_item) || !empty($data->keterangan_acces))
                             <tr>
                                 <th colspan="6" class="text-center"><strong>Keterangan</strong></th>
