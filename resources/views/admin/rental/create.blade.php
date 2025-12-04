@@ -9,10 +9,10 @@
                     @method('PUT')
                 @endisset
                 <div class="col-md-6">
-                    <label for="input6" class="form-label"><i class="text-danger">*</i> No. INV</label>
+                    <label for="input6" class="form-label"> No. INV</label>
                     <input type="text" class="form-control @error('no_inv') is-invalid @enderror"
                            value="{{isset($rentals) ? $rentals->no_inv : old('no_inv')}}" name="no_inv"
-                           placeholder="INV/DND/***/**">
+                           placeholder="Isi Jika INV Custom">
                     @error('no_inv')
                     <span class="invalid-feedback" role="alert">
                         <strong>{{ $message }}</strong>

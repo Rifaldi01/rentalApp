@@ -216,6 +216,34 @@ class RentalController extends Controller
                 }
             }
         }
+        $currentYear = date('Y');
+        $currentMonthNumber = str_pad(date('n'), 2, '0', STR_PAD_LEFT);
+
+// Ambil invoice terakhir dalam tahun yang sama dan divisi yang sama, abaikan bulan
+        $lastInvoice = Rental::whereYear('created_at', $currentYear)
+            ->where('no_inv', 'like', "INV/DND/%/%/$currentYear")
+            ->orderByDesc('id')
+            ->first();
+
+        if ($lastInvoice) {
+
+            // Regex: Ambil nomor urut (4 digit) setelah INV/DND/
+            $pattern = "/^INV\/DND\/(\d{4})\/\d{2}\/$currentYear$/";
+
+            if (preg_match($pattern, $lastInvoice->no_inv, $matches)) {
+                $lastNumber = (int) $matches[1];
+            } else {
+                $lastNumber = 0;
+            }
+
+        } else {
+            $lastNumber = 0;
+        }
+
+
+// Tambah nomor urut dan buat format invoice baru
+        $nextNumber = str_pad($lastNumber + 1, 4, '0', STR_PAD_LEFT);
+        $invoiceNumber = "INV/DND/{$nextNumber}/{$currentMonthNumber}/{$currentYear}";
 
         // Simpan item_id sebelumnya untuk update status item
         $previousItemIds = json_decode($rental->item_id, true) ?? [];
@@ -234,7 +262,7 @@ class RentalController extends Controller
         $rental->diskon = $request->input('diskon') ?? 0;
         $rental->date_pays = $request->input('date_pays');
         $rental->ppn = $request->input('ppn');
-        $rental->no_inv = $request->input('no_inv');
+        $rental->no_inv            = $request->input('no_inv') ?? $invoiceNumber;
         $rental->total_invoice = $request->input('total_invoice');
         $rental->tgl_inv = $request->input('tgl_inv');
         $rental->fee = $request->input('fee');
