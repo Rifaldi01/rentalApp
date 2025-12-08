@@ -106,7 +106,21 @@
                                     <a href="{{route('manager.service.edit', $data->id)}}" class="btn btn-primary lni lni-pencil btn-sm"
                                             data-bs-tool="tooltip" data-bs-placement="top" title="Detail"
                                             ></a>
-                                    @if($data->status == 0)
+                                    <button type="button"
+                                            class="btn btn-danger lni lni-trash btn-sm"
+                                            onclick="confirmDelete({{ $data->id }})"
+                                            title="Hapus">
+                                    </button>
+
+                                    <form id="delete-form-{{ $data->id }}"
+                                          action="{{ route('manager.service.destroy', $data->id) }}"
+                                          method="POST"
+                                          style="display: none;">
+                                        @csrf
+                                        @method('DELETE')
+                                    </form>
+
+                                @if($data->status == 0)
                                         <button class="btn btn-warning lni lni-eye btn-sm" data-bs-toggle="modal"
                                                 data-bs-tool="tooltip" data-bs-placement="top" title="Detail"
                                                 data-bs-target="#exampleLargeModal{{$data->id}}"></button>
@@ -1003,5 +1017,24 @@
         });
 
         }
+
+        //delete
+         function confirmDelete(id) {
+             Swal.fire({
+                 title: "Yakin ingin menghapus?",
+                 text: "Data yang dihapus tidak dapat dikembalikan.",
+                 icon: "warning",
+                 showCancelButton: true,
+                 confirmButtonColor: "#d33",
+                 cancelButtonColor: "#6c757d",
+                 confirmButtonText: "Ya, hapus",
+                 cancelButtonText: "Batal"
+             }).then((result) => {
+                 if (result.isConfirmed) {
+                     document.getElementById("delete-form-" + id).submit();
+                 }
+             });
+         }
+
     </script>
 @endpush
