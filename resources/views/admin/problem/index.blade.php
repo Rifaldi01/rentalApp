@@ -17,6 +17,7 @@
                         <th>Start Date</th>
                         <th>End Date</th>
                         <th>Keterangan</th>
+                        <th>Print</th>
                         <th class="text-center">Status</th>
                         <th class="text-center" >Action</th>
                     </tr>
@@ -54,6 +55,24 @@
                             <td>{{ formatId($data->date_start) }}</td>
                             <td>{{ formatId($data->date_end) }}</td>
                             <td><i style="color: red"> {{Str::limit($data->descript, 30)}}</i></td>
+                            <td>
+                                <button class="btn btn-dnd lni lni-files btn-sm" data-bs-toggle="modal"
+                                        data-bs-target="#exampleExtraLargeModal{{$data->id}}" data-bs-tool="tooltip"
+                                        data-bs-placement="top" title="Print Surat Jalan">
+                                </button>
+                                @include('admin.problem.surat-jalan')
+                                <button class="btn btn-warning lni lni-files btn-sm" data-bs-toggle="modal"
+                                        data-bs-target="#penyewaan{{$data->id}}" data-bs-tool="tooltip"
+                                        data-bs-placement="top" title="Print Surat Penyewa">
+                                </button>
+                                @include('admin.problem.penyewaan')
+                                <button type="button" class="btn btn-primary lni lni-empty-file btn-sm"
+                                        data-bs-toggle="modal" id="btn-print{{$data->id}}"
+                                        data-bs-target="#exampleLargeModal{{$data->id}}" data-bs-tool="tooltip"
+                                        data-bs-placement="top" title="Print Invoice">
+                                </button>
+                                @include('admin.problem.invoice')
+                            </td>
                             <td class="text-center">
                                 <span class="badge bg-danger">Problem</span>
                             </td>

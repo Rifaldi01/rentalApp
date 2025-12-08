@@ -179,6 +179,7 @@
                         <th>Start Date</th>
                         <th>End Date</th>
                         <th class="text-center">Total Day</th>
+                        <th class="text-center">Action</th>
                         <th class="text-center">Status</th>
                     </tr>
                     </thead>
@@ -206,6 +207,12 @@
                                 {{formatId($data->date_end)}}
                             </td>
                             <td class="text-center">{{$data->days_difference}} Day</td>
+                            <td class="text-center">
+                                <a href="{{route('admin.rental.edit', $data->id)}}"
+                                   class="btn-sm btn btn-warning lni lni-pencil mt-1 me-1"
+                                   data-bs-toggle="tooltip" data-bs-placement="top" title="Edit">
+                                </a>
+                            </td>
                             <td class="text-center">
                                 <span class="badge bg-warning">Waiting</span>
                             </td>

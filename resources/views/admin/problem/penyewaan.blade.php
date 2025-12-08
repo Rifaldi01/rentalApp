@@ -28,7 +28,6 @@
                                 <td class="text-center"
                                     style="border: none; padding-left: 15px; white-space: nowrap; border-right:0.5px solid #aaa; border-left:0.5px solid #aaa; border-bottom:0.5px solid #aaa;">
                                     <strong style="font-size: 12px;">Tanggal/Bulan/Tahun</strong>
-                                    <br>
                                 </td>
                             </tr>
                             <tr>
@@ -36,16 +35,15 @@
                                     <strong style="font-size: 12px;">Sukamenak, Margahayu, Kabupaten Bandung
                                         40227</strong>
                                 </td>
-                                <td class="text-center" style="border: none; padding-left: 15px; white-space: nowrap; border-bottom:0.5px solid #aaa; border-right:0.5px solid #aaa; border-left:0.5px solid #aaa;"
+                                <td style="border: none; padding-left: 15px; white-space: nowrap; border-bottom:0.5px solid #aaa; border-right:0.5px solid #aaa; border-left:0.5px solid #aaa;"
                                     rowspan="3">
-                                    <strong style="font-size: 12px;">{{formatId($data->tgl_inv)}}</strong>
+                                    <strong style="font-size: 12px;"></strong>
                                 </td>
                             </tr>
                             <tr>
                                 <td style="padding: 6px; vertical-align: top; padding-left: 15px; white-space: nowrap;">
                                     <strong style="font-size: 12px;">Phone: 0821-2990-5005</strong>
                                 </td>
-
                             </tr>
                             <tr>
                                 <td style="padding: 6px; vertical-align: top; padding-left: 15px; white-space: nowrap; border-bottom:0.5px solid #aaa;">
@@ -70,7 +68,7 @@
                                 Penyewa
                             </td>
                             <td class="identitastd" style="vertical-align: middle" width="1%">:</td>
-                            <td class="identitastd" width="40%">{{$data->cust->name}}</td>
+                            <td class="identitastd" width="40%">{{$data->rental->cust->name}}</td>
                             <td class="identitastd" style="border-left: 0.5px solid #aaa; padding: 6px" width="5%">Perusahaan</td>
                             <td class="identitastd" width="1%">:</td>
                             <td class="identitastd" style="border-right: 0.5px solid #aaa">{{$data->name_company}}</td>
@@ -80,7 +78,7 @@
                                 Alamat
                             </td>
                             <td class="identitastd" style="vertical-align: middle" width="1%">:</td>
-                            <td class="identitastd" width="40%">{{$data->cust->addres}}</td>
+                            <td class="identitastd" width="40%">{{$data->rental->cust->addres}}</td>
                             <td class="identitastd" style="border-left: 0.5px solid #aaa; padding: 6px" width="5%">Alamat </td>
                             <td class="identitastd" width="1%">:</td>
                             <td class="identitastd" style="border-right: 0.5px solid #aaa">{{$data->addres_company}}</td>
@@ -90,7 +88,7 @@
                                 Identitas
                             </td>
                             <td class="identitastd" style="vertical-align: middle" width="1%">:</td>
-                            <td class="identitastd" width="40%">{{$data->cust->no_identity}}</td>
+                            <td class="identitastd" width="40%">{{$data->rental->cust->no_identity}}</td>
                             <td class="identitastd" style="border-left: 0.5px solid #aaa; padding: 6px" width="5%">No. Telp.</td>
                             <td class="identitastd" width="1%">:</td>
                             <td class="identitastd" style="border-right: 0.5px solid #aaa">{{$data->phone_company}}</td>
@@ -100,7 +98,7 @@
                                 width="5%">No. Telp
                             </td>
                             <td class="identitastd" style="vertical-align: middle; border-bottom: 0.5px solid #aaa" width="1%">:</td>
-                            <td class="identitastd" style="border-bottom: 0.5px solid #aaa;" width="40%">{{$data->cust->phone}}</td>
+                            <td class="identitastd" style="border-bottom: 0.5px solid #aaa;" width="40%">{{$data->rental->cust->phone}}</td>
                             <td class="identitastd" style="border-left: 0.5px solid #aaa; padding: 6px; border-bottom: 0.5px solid #aaa"
                                 width="5%">No. PO
                             </td>
@@ -186,7 +184,7 @@
                             </td>
                             <td class="alattd">
                                 <ul class="multi-column-list">
-                                    @foreach($data->accessoriescategory as $asdf)
+                                    @foreach($data->rental->accessoriescategory as $asdf)
                                         <li>
                                             {{ $asdf->accessory ? $asdf->accessory->name : 'Not Found' }}
                                             ({{ $asdf->accessories_quantity }})

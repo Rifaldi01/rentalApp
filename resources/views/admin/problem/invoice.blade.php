@@ -57,107 +57,107 @@
                             <td width="13%" class="text-start">No Invoice</td>
                             <td width="2%" class="text-center">:</td>
                             <td>
-                                <strong>{{ $data->no_inv }}</strong>
+                                <strong>{{ $data->rental->no_inv }}</strong>
                             </td>
                         </tr>
                         <tr>
                             <td>
-                                @if($data->customer_id)
-                                    <strong>{{ $data->cust->name }}</strong><br>
-                                    <strong>{{ $data->cust->addres }}</strong>
-                                @else
-                                    <strong>{{ $data->name }}</strong>
-                                @endif
-
+                                <strong>{{ optional($data->rental->cust)->name ?? '-' }}</strong> <br>
+                                <strong>{{ optional($data->rental->cust)->addres ?? '-' }}</strong>
                             </td>
                             <td width="10%" class="text-start">Tanggal</td>
                             <td width="2%" class="text-center">:</td>
-                            <td><strong>{{ \Carbon\Carbon::parse($data->tgl_inv)->translatedFormat('j F Y') }}
+                            <td><strong>{{ \Carbon\Carbon::parse($data->rental->tgl_inv)->translatedFormat('j F Y') }}
                                 </strong></td>
                         </tr>
 
                         <tr>
                             <td></td>
-                            <td class="text-start"></td>
-                            <td width="1%" class="text-end"></td>
-                            <td width="20%">
-{{--                                <strong>{{optional($data->customer)->divisi->no_rek ?? '-'}}</strong>--}}
-                            </td>
+                            <td class="text-start">No. PO</td>
+                            <td width="1%" class="text-end">:</td>
+                            <td width="20%"><strong>{{$data->rental->no_po}}</strong></td>
                         </tr>
                     </table>
                     <hr>
                     <!-- Tabel detail item -->
-                    @php
-                        $items   = array_filter(array_map('trim', explode(',', $data->item)));
-                        $types   = array_filter(array_map('trim', explode(',', $data->type)));
-                        $noSeris = array_filter(array_map('trim', explode(',', $data->no_seri)));
-
-                        // Cari jumlah data terbanyak
-                        $jumlahData = max(count($items), count($types), count($noSeris));
-
-                        // Samakan panjang array
-                        $items   = array_pad($items, $jumlahData, '');
-                        $types   = array_pad($types, $jumlahData, '');
-                        $noSeris = array_pad($noSeris, $jumlahData, '');
-
-                        // Colspan dinamis
-                        $coldata = $jumlahData;
-                    @endphp
-
-
                     <table class="table table-bordered">
                         <thead>
                         <tr>
-                            <th colspan="6" class="text-center bg-dnd" style="font-size: 13px; background-color: #fbd4b3;">
+                            <th colspan="6" class="text-center bg-dnd" style="font-size: 13px; background-color: #fbd4b3">
                                 <strong>INVOICE</strong>
                             </th>
                         </tr>
                         <tr>
-                            <th class="text-center" width="1%" style="border-left-width:1px;">No</th>
-                            <th>Jenis Layanan</th>
-                            <th class="text-center">Nama Barang</th>
-                            <th class="text-center">Merk/Type</th>
-                            <th class="text-center">No Seri</th>
+                            <th width="1%">No</th>
+                            <th>Product</th>
+                            <th>Ket.</th>
+                            <th>No Seri</th>
+                            <th class="text-center">Qty</th>
                             <th class="text-center">Harga</th>
                         </tr>
                         </thead>
-
                         <tbody>
-                        @foreach($items as $key => $item)
+                        @php
+                            $itemIds = json_decode($data->rental->item_id);
+                            $no = 1;
+
+                            // Hitung jumlah baris item
+                            $itemCount = is_array($itemIds) ? count($itemIds) : 0;
+
+                            // Hitung jumlah baris accessories
+                            $accesCount = $data->accessoriescategory?->count() ?? 0;
+
+                            // Total baris
+                            $totalRowspan = $itemCount + $accesCount;
+                        @endphp
+
+
+                        {{-- Loop item --}}
+                        @if(is_array($itemIds) && $itemCount > 0)
+                            @foreach($itemIds as $key => $itemId)
+                                @php $item = \App\Models\Item::find($itemId); @endphp
+                                <tr>
+                                    <td class="text-center">{{ $no++ }}</td>
+                                    <td>{{ $item ? $item->name : 'Item not found' }}</td>
+                                    <td>Item</td>
+                                    <td>{{ $item ? $item->cat->name : 'Item not found' }}-{{ $item ? $item->no_seri : 'Item not found' }}</td>
+                                    <td>1</td>
+
+                                    {{-- Hanya tampilkan rowspan di baris pertama --}}
+                                    @if($loop->first)
+                                        <td rowspan="{{ $totalRowspan }}" class="text-center align-middle">
+                                            Rp {{ formatRupiah($data->total_invoice) }}
+                                        </td>
+                                    @endif
+                                </tr>
+                            @endforeach
+                        @endif
+
+                        {{-- Loop accessories --}}
+                        @if(!empty($data->keterangan_item) || !empty($data->keterangan_acces))
                             <tr>
-
-                                {{-- Kolom nomor --}}
-                                <td>{{ $key + 1 }}</td>
-
-                                {{-- Jenis Layanan hanya muncul di baris pertama --}}
-                                @if($key == 0)
-                                    <td rowspan="{{ $coldata }}" class="text-center align-middle">{{ $data->jenis_service }}</td>
-                                @endif
-
-                                {{-- Kolom Nama Barang --}}
-                                <td>{{ $item }}</td>
-
-                                {{-- Kolom Type --}}
-                                <td>{{ $types[$key] }}</td>
-
-                                {{-- Kolom No Seri --}}
-                                <td>{{ $noSeris[$key] }}</td>
-
-                                {{-- Harga juga hanya muncul di baris pertama --}}
-                                @if($key == 0)
-                                    <td rowspan="{{ $coldata }}" class="text-center align-middle">{{ formatRupiah($data->total_invoice) }}</td>
-                                @endif
-
+                                <th colspan="6" class="text-center"><strong>Keterangan</strong></th>
                             </tr>
-                        @endforeach
+                            <tr>
+                                <td colspan="6">
+                                    @if(!empty($data->keterangan_item))
+                                        <li>{{ $data->keterangan_item }}</li>
+                                    @endif
 
+                                    @if(!empty($data->keterangan_acces))
+                                        <li>{{ $data->keterangan_acces }}</li>
+                                    @endif
+                                </td>
+                            </tr>
+                        @endif
+
+                        </tbody>
                     </table>
-
                     <table class="table">
                         <thead>
                         <tr>
                             <td colspan="2" class="text-center bg-dnd" style="font-size: 12px; background-color: #fbd4b3">
-                                Tanggal Service {{formatId($data->date_start)}}
+                                Periode Sewa Tanggal {{formatId($data->rental->date_start)}} - {{formatId($data->rental->date_end)}}
                         </tr>
                         <tr>
                             <td class="text-center " style="font-size: 10px; "></td>
@@ -165,7 +165,7 @@
                         </tr>
                         <tr>
                             <td class="text-end bg-dnd" style="font-size: 10px; background-color: #fbd4b3">Sub Total : Rp.</td>
-                            <td class="text-end bg-dnd" width="10%" style="font-size: 10px; background-color: #fbd4b3">{{ formatRupiah($data->total_invoice) }}</td>
+                            <td class="text-end bg-dnd" width="10%" style="font-size: 10px; background-color: #fbd4b3">{{ formatRupiah($data->rental->total_invoice) }}</td>
                         </tr>
                         <tr>
                             <td class="" style="font-size: 10px; ">
@@ -173,8 +173,8 @@
                             </td>
                         </tr>
                         <tr>
-                            <td class="text-end bg-dnd" style="font-size: 10px; background-color: #fbd4b3">Biaya Ganti : Rp.</td>
-                            <td class="text-end bg-dnd" width="10%" style="font-size: 10px; background-color: #fbd4b3">{{ formatRupiah($data->biaya_ganti) }}</td>
+                            <td class="text-end bg-dnd" style="font-size: 10px; background-color: #fbd4b3">Diskon : Rp.</td>
+                            <td class="text-end bg-dnd" width="10%" style="font-size: 10px; background-color: #fbd4b3">{{ formatRupiah($data->rental->diskon) }}</td>
                         </tr>
                         <tr>
                             <td class="" style="font-size: 10px; "></td>
@@ -182,15 +182,7 @@
                         </tr>
                         <tr>
                             <td class="text-end bg-dnd" style="font-size: 10px; background-color: #fbd4b3;">PPN : Rp.</td>
-                            <td class="text-end bg-dnd" width="10%" style="font-size: 10px; background-color: #fbd4b3;">{{ formatRupiah($data->ppn) }}</td>
-                        </tr>
-                        <tr>
-                            <td class="" style="font-size: 10px;"></td>
-                            <td class="" style="font-size: 10px;"></td>
-                        </tr>
-                        <tr>
-                            <td class="text-end bg-dnd" style="font-size: 10px; background-color: #fbd4b3;">Diskon : Rp.</td>
-                            <td class="text-end bg-dnd" width="10%" style="font-size: 10px; background-color: #fbd4b3;">{{ formatRupiah($data->diskon) }}</td>
+                            <td class="text-end bg-dnd" width="10%" style="font-size: 10px; background-color: #fbd4b3;">{{ formatRupiah($data->rental->ppn) }}</td>
                         </tr>
                         <tr>
                             <td class="" style="font-size: 10px;"></td>
@@ -198,7 +190,7 @@
                         </tr>
                         <tr>
                             <td class="text-end bg-dnd" style="font-size: 10px; background-color: #fbd4b3;">Ongkir : Rp.</td>
-                            <td class="text-end bg-dnd" width="10%" style="font-size: 10px; background-color: #fbd4b3;">{{ formatRupiah($data->ongkir) }}</td>
+                            <td class="text-end bg-dnd" width="10%" style="font-size: 10px; background-color: #fbd4b3;">{{ formatRupiah($data->rental->ongkir) }}</td>
                         </tr>
                         <tr>
                             <td class="" style="font-size: 10px;"></td>
@@ -206,7 +198,7 @@
                         </tr>
                         <tr>
                             <td class="text-end bg-dnd" style="font-size: 10px; background-color: #fbd4b3">DP : Rp.</td>
-                            <td class="text-end bg-dnd" width="10%" style="font-size: 10px; background-color: #fbd4b3">{{ formatRupiah($data->nominal_in) }}</td>
+                            <td class="text-end bg-dnd" width="10%" style="font-size: 10px; background-color: #fbd4b3">{{ formatRupiah($data->rental->nominal_in) }}</td>
                         </tr>
                         <tr>
                             <td class="" style="font-size: 10px;"></td>
@@ -214,18 +206,20 @@
                         </tr>
                         <tr>
                             <td class="text-end bg-dnd" style="font-size: 10px; background-color: #fbd4b3;">Total : Rp.</td>
-                            <td class="text-end bg-dnd" width="10%" style="font-size: 10px; background-color: #fbd4b3;">{{ formatRupiah($data->total_invoice + $data->ppn - $data->diskon) }}</td>
+                            <td class="text-end bg-dnd" width="10%" style="font-size: 10px; background-color: #fbd4b3;">{{ formatRupiah($data->rental->total_invoice + $data->rental->ppn - $data->rental->diskon) }}</td>
                         </tr>
                         </thead>
                     </table>
-                    <div class="mb-lg-5">
-{{--                        <div class="print-row">--}}
-{{--                            <!-- Kolom kiri (Notes) -->--}}
-{{--                            --}}
 
-{{--                            <!-- Kolom kanan (Informasi pembayaran) -->--}}
+                    <div class="mb-lg-5">
+                        <div class="print-row">
+                            <!-- Kolom kiri (Notes) -->
+
+
+                            <!-- Kolom kanan (Informasi pembayaran) -->
 {{--                            <div class="print-col no-break">--}}
-{{--                                <div class="d-flex justify-content-end">--}}
+{{--                                <div class="d-flex justify-content-start">--}}
+
 {{--                                    <div>--}}
 {{--                                        <table class="table table-bordered">--}}
 {{--                                            <tr>--}}
@@ -233,12 +227,16 @@
 {{--                                                <td class="text-end" style="font-size: 10px">{{ formatRupiah($data->total_invoice) }}</td>--}}
 {{--                                            </tr>--}}
 {{--                                            <tr>--}}
-{{--                                                <td colspan="4" style="font-size: 10px"><strong>BIAYA GANTI</strong></td>--}}
-{{--                                                <td class="text-end" style="font-size: 10px">{{ formatRupiah($data->biaya_ganti) }}</td>--}}
+{{--                                                <td colspan="4" style="font-size: 10px"><strong>PPN</strong></td>--}}
+{{--                                                <td class="text-end" style="font-size: 10px">{{ formatRupiah($data->ppn) }}</td>--}}
 {{--                                            </tr>--}}
 {{--                                            <tr>--}}
 {{--                                                <td colspan="4" style="font-size: 10px"><strong>PPH</strong></td>--}}
 {{--                                                <td class="text-end" style="font-size: 10px">{{ formatRupiah($data->pph) }}</td>--}}
+{{--                                            </tr>--}}
+{{--                                            <tr>--}}
+{{--                                                <td colspan="4" style="font-size: 10px"><strong>ONGKIR</strong></td>--}}
+{{--                                                <td class="text-end" style="font-size: 10px">{{ formatRupiah($data->ongkir) }}</td>--}}
 {{--                                            </tr>--}}
 {{--                                            <tr>--}}
 {{--                                                <td colspan="4" style="font-size: 10px"><strong>DISCOUNT</strong></td>--}}
@@ -250,9 +248,23 @@
 {{--                                            </tr>--}}
 {{--                                        </table>--}}
 {{--                                    </div>--}}
+{{--                                    <div class="ms-2">--}}
+{{--                                        <table class="table table-bordered">--}}
+{{--                                            @if($data->nominal_in < $data->total_invoice)--}}
+{{--                                                <tr>--}}
+{{--                                                    <td colspan="4" style="font-size: 10px"><strong>DIBAYAR</strong></td>--}}
+{{--                                                    <td class="text-end" style="font-size: 10px">{{ formatRupiah($data->nominal_in) }}</td>--}}
+{{--                                                </tr>--}}
+{{--                                                <tr>--}}
+{{--                                                    <td colspan="4" style="font-size: 10px"><strong>TAGIHAN</strong></td>--}}
+{{--                                                    <td class="text-end" style="font-size: 10px">{{ formatRupiah($data->nominal_out) }}</td>--}}
+{{--                                                </tr>--}}
+{{--                                            @endif--}}
+{{--                                        </table>--}}
+{{--                                    </div>--}}
 {{--                                </div>--}}
 {{--                            </div>--}}
-{{--                        </div>--}}
+                        </div>
                         <div class="print-col no-break">
                             <table class="table">
                                 <tr>
@@ -284,36 +296,36 @@
                                 <td style="border: none;"></td>
                                 <td style="border: none;"><img src="{{asset('images/ttd.jpeg')}}" alt="" width="180px"></td>
                             </tr>
-                            {{--                            <tr>--}}
-                            {{--                                <td style="border: none;"></td>--}}
-                            {{--                                <td style="border: none;"></td>--}}
-                            {{--                                <td style="border: none;"></td>--}}
-                            {{--                                <td style="border: none;"></td>--}}
-                            {{--                            </tr>--}}
-                            {{--                            <tr>--}}
-                            {{--                                <td style="border: none;"></td>--}}
-                            {{--                                <td style="border: none;"></td>--}}
-                            {{--                                <td style="border: none;"></td>--}}
-                            {{--                                <td style="border: none;"></td>--}}
-                            {{--                            </tr>--}}
-                            {{--                            <tr>--}}
-                            {{--                                <td style="border: none;"></td>--}}
-                            {{--                                <td style="border: none;"></td>--}}
-                            {{--                                <td style="border: none;"></td>--}}
-                            {{--                                <td style="border: none;"></td>--}}
-                            {{--                            </tr>--}}
-                            {{--                            <tr>--}}
-                            {{--                                <td style="border: none;"></td>--}}
-                            {{--                                <td style="border: none;"></td>--}}
-                            {{--                                <td style="border: none;"></td>--}}
-                            {{--                                <td style="border: none;"></td>--}}
-                            {{--                            </tr>--}}
-                            {{--                            <tr>--}}
-                            {{--                                <td style="border: none;"></td>--}}
-                            {{--                                <td style="border: none;"></td>--}}
-                            {{--                                <td style="border: none;"></td>--}}
-                            {{--                                <td style="border: none;"></td>--}}
-                            {{--                            </tr>--}}
+{{--                            <tr>--}}
+{{--                                <td style="border: none;"></td>--}}
+{{--                                <td style="border: none;"></td>--}}
+{{--                                <td style="border: none;"></td>--}}
+{{--                                <td style="border: none;"></td>--}}
+{{--                            </tr>--}}
+{{--                            <tr>--}}
+{{--                                <td style="border: none;"></td>--}}
+{{--                                <td style="border: none;"></td>--}}
+{{--                                <td style="border: none;"></td>--}}
+{{--                                <td style="border: none;"></td>--}}
+{{--                            </tr>--}}
+{{--                            <tr>--}}
+{{--                                <td style="border: none;"></td>--}}
+{{--                                <td style="border: none;"></td>--}}
+{{--                                <td style="border: none;"></td>--}}
+{{--                                <td style="border: none;"></td>--}}
+{{--                            </tr>--}}
+{{--                            <tr>--}}
+{{--                                <td style="border: none;"></td>--}}
+{{--                                <td style="border: none;"></td>--}}
+{{--                                <td style="border: none;"></td>--}}
+{{--                                <td style="border: none;"></td>--}}
+{{--                            </tr>--}}
+{{--                            <tr>--}}
+{{--                                <td style="border: none;"></td>--}}
+{{--                                <td style="border: none;"></td>--}}
+{{--                                <td style="border: none;"></td>--}}
+{{--                                <td style="border: none;"></td>--}}
+{{--                            </tr>--}}
 
                             <tr>
                                 <td style="border: none;"></td>
