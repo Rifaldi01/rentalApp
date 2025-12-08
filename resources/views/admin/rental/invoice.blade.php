@@ -267,12 +267,11 @@
                                 </tr>
                                 <tr>
                                     <td style="border-left: 0.5px solid #dee2e6; border-right: 0.5px solid #dee2e6;" width="30%">
-                                        1. Jika Dokumen ini hilang, diubah, dan minta dibuatkan
-                                        <br>kembali, konsumen akan dikenakan biaya admin sebesar Rp.300.000,-
+                                        1. No. Rekening : 8105898874 - RIKA ROSITA, BCA
                                         <br>
-                                        No. Rekening : 8105898874 - RIKA ROSITA, BCA
+                                        2. Jika Dokumen ini hilang, diubah, dan minta dibuatkan kembali, konsumen akan dikenakan biaya admin sebesar Rp.300.000,-
                                         <br>
-                                        2. Invoice bukan pembayaran yang sah apabila kwitansi tidak terlampir
+                                        3. Invoice bukan pembayaran yang sah apabila kwitansi tidak terlampir
                                     </td>
                                 </tr>
                             </table>
