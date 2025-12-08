@@ -290,38 +290,39 @@
                                 <td style="border: none;"></td>
                                 <td style="border: none;"></td>
                                 <td style="border: none;"></td>
-                                <td style="border: none;"></td>
+                                <td style="border: none;"><img src="{{asset('images/ttd.jpeg')}}" alt="" width="180px"></td>
                             </tr>
-                            <tr>
-                                <td style="border: none;"></td>
-                                <td style="border: none;"></td>
-                                <td style="border: none;"></td>
-                                <td style="border: none;"></td>
-                            </tr>
-                            <tr>
-                                <td style="border: none;"></td>
-                                <td style="border: none;"></td>
-                                <td style="border: none;"></td>
-                                <td style="border: none;"></td>
-                            </tr>
-                            <tr>
-                                <td style="border: none;"></td>
-                                <td style="border: none;"></td>
-                                <td style="border: none;"></td>
-                                <td style="border: none;"></td>
-                            </tr>
-                            <tr>
-                                <td style="border: none;"></td>
-                                <td style="border: none;"></td>
-                                <td style="border: none;"></td>
-                                <td style="border: none;"></td>
-                            </tr>
-                            <tr>
-                                <td style="border: none;"></td>
-                                <td style="border: none;"></td>
-                                <td style="border: none;"></td>
-                                <td style="border: none;"></td>
-                            </tr>
+{{--                            <tr>--}}
+{{--                                <td style="border: none;"></td>--}}
+{{--                                <td style="border: none;"></td>--}}
+{{--                                <td style="border: none;"></td>--}}
+{{--                                <td style="border: none;"></td>--}}
+{{--                            </tr>--}}
+{{--                            <tr>--}}
+{{--                                <td style="border: none;"></td>--}}
+{{--                                <td style="border: none;"></td>--}}
+{{--                                <td style="border: none;"></td>--}}
+{{--                                <td style="border: none;"></td>--}}
+{{--                            </tr>--}}
+{{--                            <tr>--}}
+{{--                                <td style="border: none;"></td>--}}
+{{--                                <td style="border: none;"></td>--}}
+{{--                                <td style="border: none;"></td>--}}
+{{--                                <td style="border: none;"></td>--}}
+{{--                            </tr>--}}
+{{--                            <tr>--}}
+{{--                                <td style="border: none;"></td>--}}
+{{--                                <td style="border: none;"></td>--}}
+{{--                                <td style="border: none;"></td>--}}
+{{--                                <td style="border: none;"></td>--}}
+{{--                            </tr>--}}
+{{--                            <tr>--}}
+{{--                                <td style="border: none;"></td>--}}
+{{--                                <td style="border: none;"></td>--}}
+{{--                                <td style="border: none;"></td>--}}
+{{--                                <td style="border: none;"></td>--}}
+{{--                            </tr>--}}
+
                             <tr>
                                 <td style="border: none;"></td>
                                 <td style="border: none;"></td>
