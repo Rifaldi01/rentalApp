@@ -67,7 +67,7 @@
                             </td>
                             <td width="10%" class="text-start">Tanggal</td>
                             <td width="2%" class="text-center">:</td>
-                            <td><strong>{{ \Carbon\Carbon::parse($data->created_at)->translatedFormat('j F Y') }}
+                            <td><strong>{{ \Carbon\Carbon::parse($data->tgl_inv)->translatedFormat('j F Y') }}
                                 </strong></td>
                         </tr>
 

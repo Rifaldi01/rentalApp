@@ -22,7 +22,7 @@ class ReportController extends Controller
                 'rentals.id', 'rentals.customer_id', 'rentals.item_id', 'rentals.name_company',
                 'rentals.addres_company', 'rentals.phone_company', 'rentals.no_po', 'rentals.date_start',
                 'rentals.date_end', 'rentals.status', 'nominal_in', 'nominal_out', 'diskon', 'ongkir',
-                'a.rental_id', 'rentals.created_at', 'rentals.no_inv', 'rentals.date_pays', 'rentals.tgl_inv', 'rentals.total_invoice',
+                'a.rental_id', 'rentals.created_at', 'rentals.no_inv', 'rentals.date_pays', 'rentals.tgl_inv', 'rentals.total_invoice', 'tgl_inv',
                 DB::raw('GROUP_CONCAT(DISTINCT b.name) as access'),
                 DB::raw('nominal_in - diskon as total'),
                 DB::raw('(nominal_in + nominal_out) as total_nominal')
@@ -31,7 +31,7 @@ class ReportController extends Controller
                 'rentals.id', 'rentals.customer_id', 'rentals.item_id', 'rentals.name_company',
                 'rentals.addres_company', 'rentals.phone_company', 'rentals.no_po', 'rentals.date_start',
                 'rentals.date_end', 'rentals.status', 'nominal_in', 'nominal_out', 'diskon', 'ongkir',
-                'a.rental_id', 'rentals.created_at', 'rentals.no_inv', 'rentals.date_pays', 'rentals.tgl_inv', 'rentals.total_invoice',
+                'a.rental_id', 'rentals.created_at', 'rentals.no_inv', 'rentals.date_pays', 'rentals.tgl_inv', 'rentals.total_invoice', 'tgl_inv',
             )
             ->orderBy('rentals.created_at', 'asc')
             ->get();
@@ -103,13 +103,13 @@ class ReportController extends Controller
                 'rentals.id', 'rentals.customer_id', 'rentals.item_id', 'rentals.name_company',
                 'rentals.addres_company', 'rentals.phone_company', 'rentals.no_po', 'rentals.date_start',
                 'rentals.date_end', 'rentals.status', 'nominal_in', 'nominal_out', 'diskon', 'a.rental_id', 'ongkir', 'rentals.created_at',
-                'rentals.no_inv', 'rentals.tgl_inv', 'rentals.date_pays', 'rentals.total_invoice',
+                'rentals.no_inv', 'rentals.tgl_inv', 'rentals.date_pays', 'rentals.total_invoice', 'tgl_inv',
                 DB::raw('GROUP_CONCAT(DISTINCT b.name) as access'), // Diedit: Menambahkan DISTINCT untuk menghindari duplikasi nama accessories
                 DB::raw('nominal_in - diskon  as total'),
                 DB::raw('(nominal_in + nominal_out) as total_nominal')
             )
             ->groupBy(
-                'rentals.id', 'rentals.customer_id', 'rentals.item_id', 'rentals.name_company',
+                'rentals.id', 'rentals.customer_id', 'rentals.item_id', 'rentals.name_company', 'tgl_inv',
                 'rentals.addres_company', 'rentals.phone_company', 'rentals.no_po', 'rentals.date_start',
                 'rentals.date_end', 'rentals.status', 'nominal_in', 'nominal_out', 'diskon', 'a.rental_id', 'ongkir',
                 'rentals.created_at', 'rentals.no_inv', 'rentals.tgl_inv', 'rentals.date_pays', 'rentals.total_invoice',
@@ -182,7 +182,7 @@ class ReportController extends Controller
                 'rentals.id', 'rentals.customer_id', 'rentals.item_id', 'rentals.name_company',
                 'rentals.addres_company', 'rentals.phone_company', 'rentals.no_po', 'rentals.date_start',
                 'rentals.date_end', 'rentals.status', 'nominal_in', 'nominal_out', 'diskon', 'a.rental_id', 'ongkir', 'rentals.created_at',
-                'rentals.no_inv', 'rentals.tgl_inv', 'rentals.date_pays', 'rentals.total_invoice',
+                'rentals.no_inv', 'rentals.tgl_inv', 'rentals.date_pays', 'rentals.total_invoice', 'tgl_inv',
                 DB::raw('GROUP_CONCAT(DISTINCT b.name) as access'), // Diedit: Menambahkan DISTINCT untuk menghindari duplikasi nama accessories
                 DB::raw('nominal_in - diskon  as total'),
                 DB::raw('(nominal_in + nominal_out) as total_nominal')
@@ -192,6 +192,7 @@ class ReportController extends Controller
                 'rentals.addres_company', 'rentals.phone_company', 'rentals.no_po', 'rentals.date_start',
                 'rentals.date_end', 'rentals.status', 'nominal_in', 'nominal_out', 'diskon', 'a.rental_id', 'ongkir',
                 'rentals.created_at', 'rentals.no_inv', 'rentals.tgl_inv', 'rentals.date_pays', 'rentals.total_invoice',
+                'tgl_inv',
             )
             ->orderBy('rentals.created_at', 'asc')
             ->get();
