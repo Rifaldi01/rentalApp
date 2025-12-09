@@ -147,29 +147,42 @@ class ServiceController extends Controller
             'biaya_ganti'   => 'numeric',
             'ongkir'        => 'numeric',
             'type'          => 'required',
-            'no_inv'        => 'required',
-            'tgl_inv'       => 'required',
             'total_invoice' => 'required|numeric',
-        ],[
-            'customer_id.required'   => 'Nama Pelanggan Wajib Diisi',
-            'item.required'          => 'Item Wajib Diisi',
-            'no_seri.required'       => 'No Seri Wajib Diisi',
-            'date_service.required'  => 'Tanggal Service Wajib Diisi',
-            'jenis_service.required' => 'Jenis Service Wajib Diisi',
-            'nominal_in.required'    => 'Uang Masuk Wajib Diisi',
-            'nominal_in.numeric'     => 'Uang masuk Harus Berupa Angka',
-            'nominal_out.numeric'    => 'Sisa Pembayaran Harus Berupa Angka',
-            'diskon.numeric'         => 'Diskon Harus Berupa Angka',
-            'biaya_ganti.numeric'    => 'Biaya Ganti Harus Berupa Angka',
-            'ongkir.numeric'         => 'Ongkir Harus Berupa Angka',
-            'type.required'          => 'Type Wajib Diisi',
-            'no_inv.required'        => 'No Invoice Wajib Diisi',
-            'tgl_inv.required'       => 'Tanggal Invoice Wajib Diisi',
-            'total_invoice.required' => 'Total Invoice Wajib Diisi',
+            'tgl_inv'       => 'required',
         ]);
 
-        // simpan service
         $service = Service::firstOrNew(['id' => $id]);
+
+        /*
+        |--------------------------------------------------------------------------
+        | 1. Generate Invoice Otomatis
+        |--------------------------------------------------------------------------
+        */
+        $currentYear  = date('Y');
+        $currentMonth = str_pad(date('n'), 2, '0', STR_PAD_LEFT);
+
+        $lastInvoice = Service::whereYear('created_at', $currentYear)
+            ->where('no_inv', 'like', "INV/DND-Serv/%/%/$currentYear")
+            ->orderByDesc('id')
+            ->first();
+
+        if ($lastInvoice) {
+            $pattern = "/^INV\/DND-Serv\/(\d{4})\/\d{2}\/$currentYear$/";
+            $lastNumber = preg_match($pattern, $lastInvoice->no_inv, $matches)
+                ? (int) $matches[1]
+                : 0;
+        } else {
+            $lastNumber = 0;
+        }
+
+        $nextNumber = str_pad($lastNumber + 1, 4, '0', STR_PAD_LEFT);
+        $invoiceNumber = "INV/DND-Serv/{$nextNumber}/{$currentMonth}/{$currentYear}";
+
+        /*
+        |--------------------------------------------------------------------------
+        | 2. Simpan Data Service
+        |--------------------------------------------------------------------------
+        */
         $service->customer_id   = $request->input('customer_id');
         $service->phone         = $request->input('phone');
         $service->item          = $request->input('item');
@@ -183,13 +196,22 @@ class ServiceController extends Controller
         $service->ongkir        = $request->input('ongkir');
         $service->date_service  = $request->input('date_service');
         $service->jenis_service = $request->input('jenis_service');
-        $service->no_inv        = $request->input('no_inv');
         $service->total_invoice = $request->input('total_invoice');
         $service->tgl_inv       = $request->input('tgl_inv');
         $service->ppn           = $request->input('ppn');
+
+        // Jika no_inv tidak diisi → generate otomatis
+        $service->no_inv = $request->filled('no_inv')
+            ? $request->input('no_inv')
+            : $invoiceNumber;
+
         $service->save();
 
-        // simpan ke debt service
+        /*
+        |--------------------------------------------------------------------------
+        | 3. Simpan Ke Debt Service
+        |--------------------------------------------------------------------------
+        */
         DebtServic::create([
             'service_id' => $service->id,
             'bank_id'    => $request->input('bank_id'),
@@ -199,9 +221,12 @@ class ServiceController extends Controller
             'description'=> $request->input('description'),
         ]);
 
-        // === Hitung & update poin customer ===
+        /*
+        |--------------------------------------------------------------------------
+        | 4. Hitung Poin Customer (tidak berubah)
+        |--------------------------------------------------------------------------
+        */
         $points = 0;
-
         if (
             $service->total_invoice >= 1000000 &&
             (int)$service->fee === 0 &&
@@ -220,6 +245,7 @@ class ServiceController extends Controller
 
         return redirect()->route('admin.service.index')->withSuccess('Upload Data Success');
     }
+
     public function bayar(Request $request, $id)
     {
         $validator = Validator::make($request->all(), [

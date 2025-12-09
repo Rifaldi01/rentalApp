@@ -218,7 +218,7 @@
                            class="form-control" name="nominal_out">
                 </div>
                 <div class="col-md-3">
-                    <label for="input" class="form-label">Fee/Discount</label>
+                    <label for="input" class="form-label">Discount</label>
                     <input type="number" value="{{isset($rentals) ? $rentals->diskon :0 }}{{old('diskon')}}"
                            class="form-control" name="diskon">
                 </div>

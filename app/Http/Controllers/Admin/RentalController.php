@@ -470,7 +470,7 @@ class RentalController extends Controller
                 'rentals.addres_company', 'rentals.phone_company', 'rentals.no_po', 'rentals.date_start', 'date_pays',
                 'rentals.date_end', 'rentals.status', 'a.rental_id', 'nominal_in', 'nominal_out', 'diskon', 'ongkir',
                 'rentals.image', 'rentals.created_at', 'no_inv', 'rentals.deleted_at', 'rentals.keterangan_item',
-                'rentals.keterangan_acces', 'rentals.fee',
+                'rentals.keterangan_acces', 'rentals.fee', 'rentals.tgl_inv',
                 DB::raw('GROUP_CONCAT(b.name) as access')
             )
             ->groupBy(
@@ -478,7 +478,7 @@ class RentalController extends Controller
                 'rentals.addres_company', 'rentals.phone_company', 'rentals.no_po', 'rentals.date_start', 'date_pays',
                 'rentals.date_end', 'rentals.status', 'a.rental_id', 'nominal_in', 'nominal_out', 'diskon', 'ongkir',
                 'rentals.image', 'rentals.created_at', 'no_inv', 'rentals.deleted_at', 'rentals.keterangan_item',
-                'rentals.keterangan_acces', 'rentals.fee'
+                'rentals.keterangan_acces', 'rentals.fee', 'rentals.tgl_inv',
             )
             ->get();
         return view('admin.rental.history', compact('rentals'));

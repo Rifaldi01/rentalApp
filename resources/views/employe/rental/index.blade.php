@@ -45,6 +45,11 @@
                                             data-bs-placement="top" title="Print Surat Jalan">
                                     </button>
                                     @include('admin.rental.surat-jalan')
+                                    <button class="btn btn-warning lni lni-files btn-sm" data-bs-toggle="modal"
+                                            data-bs-target="#penyewaan{{$data->id}}" data-bs-tool="tooltip"
+                                            data-bs-placement="top" title="Print Surat Penyewa">
+                                    </button>
+                                    @include('admin.rental.penyewaan')
                                 </td>
                                 <td>
                                     <form action="{{ route('employe.rental.approve', $data->id) }}" method="POST">

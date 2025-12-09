@@ -96,7 +96,28 @@ class RentalController extends Controller
 
         return back()->with('success', 'Data pengembalian berhasil diperbarui.');
     }
+    public function hsty()
+    {
 
-
+        $rentals = Rental::leftjoin('accessories_categories as a', 'a.rental_id', '=', 'rentals.id')
+            ->leftjoin('accessories as b', 'a.accessories_id', '=', 'b.id')
+            ->select(
+                'rentals.id', 'rentals.customer_id', 'rentals.item_id', 'rentals.name_company',
+                'rentals.addres_company', 'rentals.phone_company', 'rentals.no_po', 'rentals.date_start', 'date_pays',
+                'rentals.date_end', 'rentals.status', 'a.rental_id', 'nominal_in', 'nominal_out', 'diskon', 'ongkir',
+                'rentals.image', 'rentals.created_at', 'no_inv', 'rentals.deleted_at', 'rentals.keterangan_item',
+                'rentals.keterangan_acces', 'rentals.fee', 'rentals.tgl_inv',
+                DB::raw('GROUP_CONCAT(b.name) as access')
+            )
+            ->groupBy(
+                'rentals.id', 'rentals.customer_id', 'rentals.item_id', 'rentals.name_company',
+                'rentals.addres_company', 'rentals.phone_company', 'rentals.no_po', 'rentals.date_start', 'date_pays',
+                'rentals.date_end', 'rentals.status', 'a.rental_id', 'nominal_in', 'nominal_out', 'diskon', 'ongkir',
+                'rentals.image', 'rentals.created_at', 'no_inv', 'rentals.deleted_at', 'rentals.keterangan_item',
+                'rentals.keterangan_acces', 'rentals.fee', 'rentals.tgl_inv',
+            )
+            ->get();
+        return view('employe.rental.history', compact('rentals'));
+    }
 
 }

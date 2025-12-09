@@ -30,6 +30,8 @@ Route::group(['middleware' => ['auth:web', 'role:employe'], 'prefix' => 'employe
     Route::post('/item/deleteimage', [ItemController::class, 'deleteImage'])->name('employe.item.deleteImage');
     Route::post('/maintenance/', [MaintenanceController::class, 'store'])->name('employe.mainten.store');
     Route::get('riwayat/item/', [ItemController::class, 'itemin'])->name('employe.item.itemin');
+    Route::get('/hsty/rental', [RentalController::class, 'hsty'])->name('employe.rental.history');
+
 
     Route::get('/accessories', [AccessoriesController::class, 'index'])->name('employe.acces');
     Route::post('/sale/', [ItemController::class, 'storesale'])->name('employe.item.sale');
