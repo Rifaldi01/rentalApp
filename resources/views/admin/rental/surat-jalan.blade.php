@@ -86,7 +86,7 @@
                         </table>
                     </div>
                     <div class="table-responsive">
-                        <table class="table table-bordered">
+                        <table class="table table-bordered border-pdf">
                             <thead>
                             <tr>
                                 <th class="text-center" width="1%" style="border-left-width:1px;">No</th>
@@ -169,6 +169,13 @@
                 <button type="button" class="btn btn-primary" onclick="printSuratJalan('prinsurat{{$data->id}}')">
                     Print
                 </button>
+                <button type="button"
+                        class="btn btn-primary"
+                        onclick="downloadSuratJalan('prinsurat{{ $data->id }}')">
+                    Download PDF
+                </button>
+
+
             </div>
         </div>
     </div>
@@ -226,9 +233,24 @@
             padding: 15mm;
             font-size: 12px;
         }
+        .border-pdf,
+        .border-pdf th,
+        .border-pdf td{
+            border-top-width:1px;
+            border-bottom-width:1px;
+            border-right-width:1px;
+            border-left-width:1px;
+        }
     </style>
 @endpush
 @push('js')
+    <!-- DOMPurify wajib -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/dompurify/2.3.10/purify.min.js"></script>
+
+    <!-- jsPDF -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+
     <script>
         function printSuratJalan(modalId) {
             var printContents = document.getElementById(modalId).innerHTML;
@@ -240,4 +262,25 @@
             location.reload(); // Reload untuk mengembalikan tampilan asli
         }
     </script>
+    <script>
+        async function downloadSuratJalan(modalId) {
+            const { jsPDF } = window.jspdf;
+
+            const content = document.getElementById(modalId).innerHTML;
+
+            const pdf = new jsPDF('p', 'pt', 'a4');
+
+            await pdf.html(content, {
+                callback: function (pdf) {
+                    pdf.save("surat_jalan.pdf");
+                },
+                x: 10,
+                y: 10,
+                width: 575,
+                windowWidth: 1200
+            });
+        }
+    </script>
+
+
 @endpush
