@@ -31,6 +31,7 @@
                     <thead>
                     <tr>
                         <th width="2%">No</th>
+                        <th>Tgl Invoice</th>
                         <th>Invoice</th>
                         <th>Name</th>
                         <th>Item</th>
@@ -47,6 +48,7 @@
                     <tr>
                         @foreach($rentals as $key => $data)
                             <td>{{$key +1}}</td>
+                            <td>{{formatId($data->tgl_inv)}}</td>
                             <td>{{$data->no_inv}}</td>
                             <td>{{$data->cust->name}}</td>
                             <td>
