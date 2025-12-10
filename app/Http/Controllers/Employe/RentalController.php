@@ -99,6 +99,15 @@ class RentalController extends Controller
     public function hsty()
     {
 
+        // Tahun dipilih user (jika ada)
+        $tahun = $request->tahun ?? date('Y');
+
+        // List tahun untuk dropdown
+        $listTahun = Rental::selectRaw('YEAR(tgl_inv) as thn')
+            ->groupBy('thn')
+            ->orderBy('thn', 'DESC')
+            ->get();
+
         $rentals = Rental::leftjoin('accessories_categories as a', 'a.rental_id', '=', 'rentals.id')
             ->leftjoin('accessories as b', 'a.accessories_id', '=', 'b.id')
             ->select(
@@ -106,18 +115,19 @@ class RentalController extends Controller
                 'rentals.addres_company', 'rentals.phone_company', 'rentals.no_po', 'rentals.date_start', 'date_pays',
                 'rentals.date_end', 'rentals.status', 'a.rental_id', 'nominal_in', 'nominal_out', 'diskon', 'ongkir',
                 'rentals.image', 'rentals.created_at', 'no_inv', 'rentals.deleted_at', 'rentals.keterangan_item',
-                'rentals.keterangan_acces', 'rentals.fee', 'rentals.tgl_inv',
+                'rentals.keterangan_acces', 'rentals.fee', 'rentals.tgl_inv', 'fee',
                 DB::raw('GROUP_CONCAT(b.name) as access')
             )
+            ->whereYear('rentals.created_at', $tahun) // FILTER TAHUN
             ->groupBy(
                 'rentals.id', 'rentals.customer_id', 'rentals.item_id', 'rentals.name_company',
                 'rentals.addres_company', 'rentals.phone_company', 'rentals.no_po', 'rentals.date_start', 'date_pays',
                 'rentals.date_end', 'rentals.status', 'a.rental_id', 'nominal_in', 'nominal_out', 'diskon', 'ongkir',
                 'rentals.image', 'rentals.created_at', 'no_inv', 'rentals.deleted_at', 'rentals.keterangan_item',
-                'rentals.keterangan_acces', 'rentals.fee', 'rentals.tgl_inv',
+                'rentals.keterangan_acces', 'rentals.fee', 'rentals.tgl_inv', 'fee',
             )
             ->get();
-        return view('employe.rental.history', compact('rentals'));
+        return view('employe.rental.history', compact('rentals','listTahun', 'tahun'));
     }
 
 }

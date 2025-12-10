@@ -8,6 +8,21 @@
                         <h4 class="text-uppercase">List History</h4>
                     </div>
                 </div>
+                <div class="col-6">
+                    <div class="me-2">
+                        <form method="GET" action="{{ route('employe.rental.history') }}" class="float-end mt-3">
+                            <select name="tahun" class="form-control" style="width: 200px" onchange="this.form.submit()">
+                                <option value="">-- Pilih Tahun --</option>
+
+                                @foreach($listTahun as $th)
+                                    <option value="{{ $th->thn }}" {{ $tahun == $th->thn ? 'selected' : '' }}>
+                                        {{ $th->thn }}
+                                    </option>
+                                @endforeach
+                            </select>
+                        </form>
+                    </div>
+                </div>
             </div>
         </div>
         <div class="card-body">

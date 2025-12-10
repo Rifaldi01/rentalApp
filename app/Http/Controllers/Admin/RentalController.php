@@ -460,8 +460,16 @@ class RentalController extends Controller
         return redirect()->back();
     }
 
-    public function hsty()
+    public function hsty(Request $request)
     {
+        // Tahun dipilih user (jika ada)
+        $tahun = $request->tahun ?? date('Y');
+
+        // List tahun untuk dropdown
+        $listTahun = Rental::selectRaw('YEAR(tgl_inv) as thn')
+            ->groupBy('thn')
+            ->orderBy('thn', 'DESC')
+            ->get();
 
         $rentals = Rental::leftjoin('accessories_categories as a', 'a.rental_id', '=', 'rentals.id')
             ->leftjoin('accessories as b', 'a.accessories_id', '=', 'b.id')
@@ -473,6 +481,7 @@ class RentalController extends Controller
                 'rentals.keterangan_acces', 'rentals.fee', 'rentals.tgl_inv', 'fee',
                 DB::raw('GROUP_CONCAT(b.name) as access')
             )
+            ->whereYear('rentals.created_at', $tahun) // FILTER TAHUN
             ->groupBy(
                 'rentals.id', 'rentals.customer_id', 'rentals.item_id', 'rentals.name_company',
                 'rentals.addres_company', 'rentals.phone_company', 'rentals.no_po', 'rentals.date_start', 'date_pays',
@@ -481,8 +490,10 @@ class RentalController extends Controller
                 'rentals.keterangan_acces', 'rentals.fee', 'rentals.tgl_inv', 'fee',
             )
             ->get();
-        return view('admin.rental.history', compact('rentals'));
+
+        return view('admin.rental.history', compact('rentals', 'listTahun', 'tahun'));
     }
+
 
     public function tanggalBuat(Request $request, $id)
     {

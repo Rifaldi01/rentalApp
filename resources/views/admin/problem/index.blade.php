@@ -77,6 +77,10 @@
                                 <span class="badge bg-danger">Problem</span>
                             </td>
                             <td>
+                                <a href="{{route('admin.rental.edit', $data->rental_id)}}"
+                                   class="btn-sm btn btn-warning lni lni-pencil mt-1 me-1"
+                                   data-bs-toggle="tooltip" data-bs-placement="top" title="Edit">
+                                </a>
                                     <button class="btn btn-warning lni lni-package float-end me-1"
                                             data-bs-toggle="modal" data-bs-target="#kembali{{ $data->id }}"
                                             title="Returned">
