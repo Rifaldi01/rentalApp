@@ -31,12 +31,20 @@
                 </div>
             </a>
         <li>
-
-            <a href="{{route('employe.rentaldivisi.index')}}">
-                <div class="parent-icon"><i class='lni lni-apartment'></i>
+        <li>
+            <a href="{{route('employe.rental.history')}}">
+                <div class="parent-icon">
+                    <i class='bx bx-history'></i></div>
+                <div class="menu-title">
+                    History Rental
                 </div>
-                <div class="menu-title">Rental Divisi</div>
             </a>
+        </li>
+        <a href="{{route('employe.rentaldivisi.index')}}">
+            <div class="parent-icon"><i class='lni lni-apartment'></i>
+            </div>
+            <div class="menu-title">Rental Divisi</div>
+        </a>
         </li>
         <li class="menu-label">Items</li>
         <li>
