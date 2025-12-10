@@ -10,7 +10,7 @@
                 </div>
             </div>
         </div>
-        <di class="card-body">
+        <div class="card-body">
             <div class="table-responsive">
                 <table id="example" class="table table-striped table-bordered" style="width:100%">
                     <thead>
@@ -57,7 +57,8 @@
                                         @php
                                             $item = \App\Models\Item::find($itemId);
                                         @endphp
-                                        <li>{{ $item ? $item->cat->name : null }}-{{ $item ? $item->no_seri : 'Item not found' }}</li>
+                                        <li>{{ $item ? $item->cat->name : null }}
+                                            -{{ $item ? $item->no_seri : 'Item not found' }}</li>
                                     @endforeach
                                 @else
                                     {{ $itemIds }}
@@ -117,7 +118,9 @@
                                                 @csrf
                                                 <div class="modal-body">
                                                     <label class="col-form-label">Tanggal</label>
-                                                    <input type="text" value="{{$data->created_at}}" name="created_at" class="form-control datepicker" id="input6" placeholder="Pembuatan">
+                                                    <input type="text" value="{{$data->created_at}}" name="created_at"
+                                                           class="form-control datepicker" id="input6"
+                                                           placeholder="Pembuatan">
                                                 </div>
                                                 <div class="modal-footer">
                                                     <button type="button" class="btn btn-secondary"
@@ -147,12 +150,19 @@
                                                 <div class="table-responsive">
                                                     <table id="" class="table table-bordered">
                                                         <tr>
-                                                            <th width="5%"><div class="float-start">Name</div></th>
-                                                            <td><div class="float-start">{{$data->cust->name}}</div></td>
+                                                            <th width="5%">
+                                                                <div class="float-start">Name</div>
+                                                            </th>
+                                                            <td>
+                                                                <div class="float-start">{{$data->cust->name}}</div>
+                                                            </td>
                                                         </tr>
                                                         <tr>
-                                                            <th><div class="float-start">Item</div></th>
-                                                            <td><div class="float-start">
+                                                            <th>
+                                                                <div class="float-start">Item</div>
+                                                            </th>
+                                                            <td>
+                                                                <div class="float-start">
                                                                     @php
                                                                         $itemIds = json_decode($data->item_id);
                                                                     @endphp
@@ -166,11 +176,15 @@
                                                                     @else
                                                                         {{ $itemIds }}
                                                                     @endif
-                                                                </div></td>
+                                                                </div>
+                                                            </td>
                                                         </tr>
                                                         <tr>
-                                                            <th><div class="float-start">No Seri</div></th>
-                                                            <td><div class="float-start">
+                                                            <th>
+                                                                <div class="float-start">No Seri</div>
+                                                            </th>
+                                                            <td>
+                                                                <div class="float-start">
                                                                     @php
                                                                         $itemIds = json_decode($data->item_id);
                                                                     @endphp
@@ -184,49 +198,93 @@
                                                                     @else
                                                                         {{ $itemIds }}
                                                                     @endif
-                                                                </div></td>
+                                                                </div>
+                                                            </td>
                                                         </tr>
                                                         <tr>
-                                                            <th><div class="float-start">Start Date</div></th>
-                                                            <td><div class="float-start"> {{dateId($data->date_start)}}</div></td>
+                                                            <th>
+                                                                <div class="float-start">Start Date</div>
+                                                            </th>
+                                                            <td>
+                                                                <div
+                                                                    class="float-start"> {{dateId($data->date_start)}}</div>
+                                                            </td>
                                                         </tr>
                                                         <tr>
-                                                            <th><div class="float-start">End date</div></th>
-                                                            <td><div class="float-start"> {{dateId($data->date_end)}}</div></td>
+                                                            <th>
+                                                                <div class="float-start">End date</div>
+                                                            </th>
+                                                            <td>
+                                                                <div
+                                                                    class="float-start"> {{dateId($data->date_end)}}</div>
+                                                            </td>
                                                         </tr>
                                                         <tr>
-                                                            <th><div class="float-start">Phone</div></th>
-                                                            <td><div class="float-start">(+62){{$data->cust->phone}}</div></td>
+                                                            <th>
+                                                                <div class="float-start">Phone</div>
+                                                            </th>
+                                                            <td>
+                                                                <div class="float-start">
+                                                                    (+62){{$data->cust->phone}}</div>
+                                                            </td>
                                                         </tr>
                                                         <tr>
-                                                            <th><div class="float-start">Nominal In</div></th>
-                                                            <td><div class="float-start">{{formatRupiah($data->nominal_in)}}</div></td>
+                                                            <th>
+                                                                <div class="float-start">Nominal In</div>
+                                                            </th>
+                                                            <td>
+                                                                <div
+                                                                    class="float-start">{{formatRupiah($data->nominal_in)}}</div>
+                                                            </td>
                                                         </tr>
                                                         <tr>
-                                                            <th><div class="float-start">Nominal outsid</div></th>
-                                                            <td><div class="float-start">{{formatRupiah($data->nominal_out)}}</div></td>
+                                                            <th>
+                                                                <div class="float-start">Nominal outsid</div>
+                                                            </th>
+                                                            <td>
+                                                                <div
+                                                                    class="float-start">{{formatRupiah($data->nominal_out)}}</div>
+                                                            </td>
                                                         </tr>
                                                         <tr>
-                                                            <th><div class="float-start">Discount</div></th>
-                                                            <td><div class="float-start">{{formatRupiah($data->diskon)}}</div></td>
+                                                            <th>
+                                                                <div class="float-start">Discount</div>
+                                                            </th>
+                                                            <td>
+                                                                <div
+                                                                    class="float-start">{{formatRupiah($data->diskon)}}</div>
+                                                            </td>
                                                         </tr>
                                                         <tr>
-                                                            <th><div class="float-start">Ongkir</div></th>
-                                                            <td><div class="float-start">{{formatRupiah($data->ongkir)}}</div></td>
+                                                            <th>
+                                                                <div class="float-start">Ongkir</div>
+                                                            </th>
+                                                            <td>
+                                                                <div
+                                                                    class="float-start">{{formatRupiah($data->ongkir)}}</div>
+                                                            </td>
                                                         </tr>
                                                         <tr>
-                                                            <th><div class="float-start">Ket. Bayar</div></th>
-                                                            <td><div class="float-start">{{$data->date_pay}}</div></td>
+                                                            <th>
+                                                                <div class="float-start">Ket. Bayar</div>
+                                                            </th>
+                                                            <td>
+                                                                <div class="float-start">{{$data->date_pay}}</div>
+                                                            </td>
                                                         </tr>
                                                         <tr>
-                                                            <th><div class="float-start">Status</div></th>
+                                                            <th>
+                                                                <div class="float-start">Status</div>
+                                                            </th>
                                                             <td>
                                                                 @if($data->status == 0)
                                                                     <span class="badge bg-secondary float-start">Finished</span>
                                                                 @elseif($data->status == 1)
-                                                                    <span class="badge bg-success float-start">Rental</span>
+                                                                    <span
+                                                                        class="badge bg-success float-start">Rental</span>
                                                                 @else
-                                                                    <span class="badge bg-danger float-start">Problem</span>
+                                                                    <span
+                                                                        class="badge bg-danger float-start">Problem</span>
                                                                 @endif
                                                             </td>
                                                         </tr>
@@ -254,20 +312,39 @@
                                                                 <th colspan="2" class="bg-primary">Data Company</th>
                                                             </tr>
                                                             <tr>
-                                                                <th width="10%"><div class="float-start">Name Company</div></th>
-                                                                <td><div class="float-start">{{$data->name_company}}</div></td>
+                                                                <th width="10%">
+                                                                    <div class="float-start">Name Company</div>
+                                                                </th>
+                                                                <td>
+                                                                    <div
+                                                                        class="float-start">{{$data->name_company}}</div>
+                                                                </td>
                                                             </tr>
                                                             <tr>
-                                                                <th><div class="float-start">Adderess Company</div></th>
-                                                                <td><div class="float-start">{{$data->adders_company}}</div></td>
+                                                                <th>
+                                                                    <div class="float-start">Adderess Company</div>
+                                                                </th>
+                                                                <td>
+                                                                    <div
+                                                                        class="float-start">{{$data->adders_company}}</div>
+                                                                </td>
                                                             </tr>
                                                             <tr>
-                                                                <th><div class="float-start">Phone Company</div></th>
-                                                                <td><div class="float-start">{{$data->phone_company}}</div></td>
+                                                                <th>
+                                                                    <div class="float-start">Phone Company</div>
+                                                                </th>
+                                                                <td>
+                                                                    <div
+                                                                        class="float-start">{{$data->phone_company}}</div>
+                                                                </td>
                                                             </tr>
                                                             <tr>
-                                                                <th><div class="float-start">No PO</div></th>
-                                                                <td><div class="float-start">{{$data->no_po}}</div></td>
+                                                                <th>
+                                                                    <div class="float-start">No PO</div>
+                                                                </th>
+                                                                <td>
+                                                                    <div class="float-start">{{$data->no_po}}</div>
+                                                                </td>
                                                             </tr>
                                                         </table>
                                                         @php
@@ -280,7 +357,10 @@
                                                                     @foreach($images as $image)
                                                                         <div class="col-sm-4">
                                                                             <div class="p-2">
-                                                                                <img src="{{ asset('images/rental/'. $image) }}" alt="" class="img-fluid img-thumbnail">
+                                                                                <img
+                                                                                    src="{{ asset('images/rental/'. $image) }}"
+                                                                                    alt=""
+                                                                                    class="img-fluid img-thumbnail">
                                                                             </div>
                                                                         </div>
                                                                     @endforeach
@@ -292,25 +372,27 @@
                                                     </div>
                                                 </div>
                                                 <div class="modal-footer">
-                                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                                                    <button type="button" class="btn btn-secondary"
+                                                            data-bs-dismiss="modal">
                                                         Close
                                                     </button>
-                                                    <a href="{{ route('admin.rental.downloadImages', $data->id) }}" class="btn btn-info px-5">
+                                                    <a href="{{ route('admin.rental.downloadImages', $data->id) }}"
+                                                       class="btn btn-info px-5">
                                                         <i class="bx bx-cloud-download"></i> Image All
                                                     </a>
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
+                                </div>
                             </td>
+
                     </tr>
                     @endforeach
                     </tbody>
-                    </tfoot>
                 </table>
             </div>
-        </di>
-    </div>
+        </div>
     </div>
 @endsection
 @push('head')

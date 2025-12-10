@@ -21,7 +21,7 @@ class ReportController extends Controller
             ->select(
                 'rentals.id', 'rentals.customer_id', 'rentals.item_id', 'rentals.name_company',
                 'rentals.addres_company', 'rentals.phone_company', 'rentals.no_po', 'rentals.date_start',
-                'rentals.date_end', 'rentals.status', 'nominal_in', 'nominal_out', 'diskon', 'ongkir',
+                'rentals.date_end', 'rentals.status', 'nominal_in', 'nominal_out', 'diskon', 'ongkir', 'fee',
                 'a.rental_id', 'rentals.created_at', 'rentals.no_inv', 'rentals.date_pays', 'rentals.tgl_inv', 'rentals.total_invoice', 'tgl_inv',
                 DB::raw('GROUP_CONCAT(DISTINCT b.name) as access'),
                 DB::raw('nominal_in - diskon as total'),
@@ -30,7 +30,7 @@ class ReportController extends Controller
             ->groupBy(
                 'rentals.id', 'rentals.customer_id', 'rentals.item_id', 'rentals.name_company',
                 'rentals.addres_company', 'rentals.phone_company', 'rentals.no_po', 'rentals.date_start',
-                'rentals.date_end', 'rentals.status', 'nominal_in', 'nominal_out', 'diskon', 'ongkir',
+                'rentals.date_end', 'rentals.status', 'nominal_in', 'nominal_out', 'diskon', 'ongkir', 'fee',
                 'a.rental_id', 'rentals.created_at', 'rentals.no_inv', 'rentals.date_pays', 'rentals.tgl_inv', 'rentals.total_invoice', 'tgl_inv',
             )
             ->orderBy('rentals.created_at', 'asc')
@@ -41,7 +41,7 @@ class ReportController extends Controller
         // Perhitungan total
         $totaldiskon = $report->sum('diskon');
         $totalin = $report->sum('nominal_in');
-        $totalfee = $report->sum('feee');
+        $totalfee = $report->sum('fee');
         $totalincome = $report->sum(function ($item) {
             return $item->nominal_in - $item->diskon;
         });
@@ -101,7 +101,7 @@ class ReportController extends Controller
             ->leftjoin('accessories as b', 'a.accessories_id', '=', 'b.id')
             ->select(
                 'rentals.id', 'rentals.customer_id', 'rentals.item_id', 'rentals.name_company',
-                'rentals.addres_company', 'rentals.phone_company', 'rentals.no_po', 'rentals.date_start',
+                'rentals.addres_company', 'rentals.phone_company', 'rentals.no_po', 'rentals.date_start', 'fee',
                 'rentals.date_end', 'rentals.status', 'nominal_in', 'nominal_out', 'diskon', 'a.rental_id', 'ongkir', 'rentals.created_at',
                 'rentals.no_inv', 'rentals.tgl_inv', 'rentals.date_pays', 'rentals.total_invoice', 'tgl_inv',
                 DB::raw('GROUP_CONCAT(DISTINCT b.name) as access'), // Diedit: Menambahkan DISTINCT untuk menghindari duplikasi nama accessories
@@ -110,7 +110,7 @@ class ReportController extends Controller
             )
             ->groupBy(
                 'rentals.id', 'rentals.customer_id', 'rentals.item_id', 'rentals.name_company', 'tgl_inv',
-                'rentals.addres_company', 'rentals.phone_company', 'rentals.no_po', 'rentals.date_start',
+                'rentals.addres_company', 'rentals.phone_company', 'rentals.no_po', 'rentals.date_start', 'fee',
                 'rentals.date_end', 'rentals.status', 'nominal_in', 'nominal_out', 'diskon', 'a.rental_id', 'ongkir',
                 'rentals.created_at', 'rentals.no_inv', 'rentals.tgl_inv', 'rentals.date_pays', 'rentals.total_invoice',
             )
@@ -182,14 +182,14 @@ class ReportController extends Controller
                 'rentals.id', 'rentals.customer_id', 'rentals.item_id', 'rentals.name_company',
                 'rentals.addres_company', 'rentals.phone_company', 'rentals.no_po', 'rentals.date_start',
                 'rentals.date_end', 'rentals.status', 'nominal_in', 'nominal_out', 'diskon', 'a.rental_id', 'ongkir', 'rentals.created_at',
-                'rentals.no_inv', 'rentals.tgl_inv', 'rentals.date_pays', 'rentals.total_invoice', 'tgl_inv',
+                'rentals.no_inv', 'rentals.tgl_inv', 'rentals.date_pays', 'rentals.total_invoice', 'tgl_inv', 'fee',
                 DB::raw('GROUP_CONCAT(DISTINCT b.name) as access'), // Diedit: Menambahkan DISTINCT untuk menghindari duplikasi nama accessories
                 DB::raw('nominal_in - diskon  as total'),
                 DB::raw('(nominal_in + nominal_out) as total_nominal')
             )
             ->groupBy(
                 'rentals.id', 'rentals.customer_id', 'rentals.item_id', 'rentals.name_company',
-                'rentals.addres_company', 'rentals.phone_company', 'rentals.no_po', 'rentals.date_start',
+                'rentals.addres_company', 'rentals.phone_company', 'rentals.no_po', 'rentals.date_start', 'fee',
                 'rentals.date_end', 'rentals.status', 'nominal_in', 'nominal_out', 'diskon', 'a.rental_id', 'ongkir',
                 'rentals.created_at', 'rentals.no_inv', 'rentals.tgl_inv', 'rentals.date_pays', 'rentals.total_invoice',
                 'tgl_inv',
@@ -199,7 +199,7 @@ class ReportController extends Controller
 
         // Calculate totals
         $totaldiskon = $report->sum('diskon');
-        $totalfee = $report->sum('feee');
+        $totalfee = $report->sum('fee');
         $totalin = $report->sum('nominal_in');
         $totalincome = $report->sum(function ($item) {
             return $item->nominal_in - $item->diskon;

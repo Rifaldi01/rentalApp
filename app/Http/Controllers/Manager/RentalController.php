@@ -45,13 +45,13 @@ class RentalController extends Controller
             ->leftjoin('accessories as b', 'a.accessories_id', '=', 'b.id')
             ->select(
                 'rentals.id', 'rentals.customer_id', 'rentals.item_id', 'rentals.name_company',
-                'rentals.addres_company', 'rentals.phone_company', 'rentals.no_po', 'rentals.date_start', 'tgl_inv',
+                'rentals.addres_company', 'rentals.phone_company', 'rentals.no_po', 'rentals.date_start', 'tgl_inv', 'fee',
                 'rentals.date_end', 'rentals.status', 'a.rental_id', 'rentals.nominal_in', 'rentals.nominal_out', 'rentals.no_inv', 'rentals.diskon', 'rentals.total_invoice',
                 DB::raw('GROUP_CONCAT(b.name) as access')
             )
             ->groupBy(
                 'rentals.id', 'rentals.customer_id', 'rentals.item_id', 'rentals.name_company',
-                'rentals.addres_company', 'rentals.phone_company', 'rentals.no_po', 'rentals.date_start', 'tgl_inv',
+                'rentals.addres_company', 'rentals.phone_company', 'rentals.no_po', 'rentals.date_start', 'tgl_inv', 'fee',
                 'rentals.date_end', 'rentals.status', 'a.rental_id', 'rentals.nominal_in', 'rentals.nominal_out', 'rentals.no_inv', 'rentals.diskon', 'rentals.total_invoice',
             )
             ->orderBy('rentals.created_at', 'DESC')
@@ -459,13 +459,13 @@ class RentalController extends Controller
         $rentals = Rental::leftjoin('accessories_categories as a', 'a.rental_id', '=', 'rentals.id')
             ->leftjoin('accessories as b', 'a.accessories_id', '=', 'b.id')
             ->select(
-                'rentals.id', 'rentals.customer_id', 'rentals.item_id', 'rentals.name_company',
+                'rentals.id', 'rentals.customer_id', 'rentals.item_id', 'rentals.name_company', 'fee',
                 'rentals.addres_company', 'rentals.phone_company', 'rentals.no_po','rentals.date_start', 'rentals.tgl_inv',
                 'rentals.date_end', 'rentals.status', 'a.rental_id', 'nominal_in', 'nominal_out', 'diskon', 'ongkir', 'rentals.image', 'rentals.no_inv',
                 DB::raw('GROUP_CONCAT(b.name) as access')
             )
             ->groupBy(
-                'rentals.id', 'rentals.customer_id', 'rentals.item_id', 'rentals.name_company',
+                'rentals.id', 'rentals.customer_id', 'rentals.item_id', 'rentals.name_company', 'fee',
                 'rentals.addres_company', 'rentals.phone_company', 'rentals.no_po', 'rentals.date_start', 'rentals.tgl_inv',
                 'rentals.date_end', 'rentals.status', 'a.rental_id', 'nominal_in', 'nominal_out', 'diskon', 'ongkir', 'rentals.image', 'rentals.no_inv',
             )

@@ -168,6 +168,15 @@
                             </td>
                         </tr>
                         <tr>
+                            <td class="text-end bg-dnd" style="font-size: 10px; background-color: #fbd4b3">Fee : Rp.</td>
+                            <td class="text-end bg-dnd" width="10%" style="font-size: 10px; background-color: #fbd4b3">{{ formatRupiah($data->fee) }}</td>
+                        </tr>
+                        <tr>
+                            <td class="" style="font-size: 10px; ">
+                            <td class="" style="font-size: 10px; ">
+                            </td>
+                        </tr>
+                        <tr>
                             <td class="text-end bg-dnd" style="font-size: 10px; background-color: #fbd4b3">Diskon : Rp.</td>
                             <td class="text-end bg-dnd" width="10%" style="font-size: 10px; background-color: #fbd4b3">{{ formatRupiah($data->diskon) }}</td>
                         </tr>
@@ -201,7 +210,7 @@
                         </tr>
                         <tr>
                             <td class="text-end bg-dnd" style="font-size: 10px; background-color: #fbd4b3;">Total : Rp.</td>
-                            <td class="text-end bg-dnd" width="10%" style="font-size: 10px; background-color: #fbd4b3;">{{ formatRupiah($data->total_invoice + $data->ppn - $data->diskon) }}</td>
+                            <td class="text-end bg-dnd" width="10%" style="font-size: 10px; background-color: #fbd4b3;">{{ formatRupiah($data->total_invoice + $data->ppn - $data->diskon - $data->fee) }}</td>
                         </tr>
                         </thead>
                     </table>

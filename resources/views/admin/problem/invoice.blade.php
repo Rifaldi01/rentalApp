@@ -89,8 +89,8 @@
                         </tr>
                         <tr>
                             <th width="1%">No</th>
-                            <th>Product</th>
-                            <th>Ket.</th>
+                            <th>Nama Barang</th>
+                            <th>Merk/Type</th>
                             <th>No Seri</th>
                             <th class="text-center">Qty</th>
                             <th class="text-center">Harga</th>
@@ -118,9 +118,9 @@
                                 @php $item = \App\Models\Item::find($itemId); @endphp
                                 <tr>
                                     <td class="text-center">{{ $no++ }}</td>
+                                    <td>{{ $item ? $item->cat->name : 'Item not found' }}</td>
                                     <td>{{ $item ? $item->name : 'Item not found' }}</td>
-                                    <td>Item</td>
-                                    <td>{{ $item ? $item->cat->name : 'Item not found' }}-{{ $item ? $item->no_seri : 'Item not found' }}</td>
+                                    <td>{{ $item ? $item->no_seri : 'Item not found' }}</td>
                                     <td>1</td>
 
                                     {{-- Hanya tampilkan rowspan di baris pertama --}}
@@ -173,6 +173,15 @@
                             </td>
                         </tr>
                         <tr>
+                            <td class="text-end bg-dnd" style="font-size: 10px; background-color: #fbd4b3">Fee : Rp.</td>
+                            <td class="text-end bg-dnd" width="10%" style="font-size: 10px; background-color: #fbd4b3">{{ formatRupiah($data->rental->fee) }}</td>
+                        </tr>
+                        <tr>
+                            <td class="" style="font-size: 10px; ">
+                            <td class="" style="font-size: 10px; ">
+                            </td>
+                        </tr>
+                        <tr>
                             <td class="text-end bg-dnd" style="font-size: 10px; background-color: #fbd4b3">Diskon : Rp.</td>
                             <td class="text-end bg-dnd" width="10%" style="font-size: 10px; background-color: #fbd4b3">{{ formatRupiah($data->rental->diskon) }}</td>
                         </tr>
@@ -206,7 +215,7 @@
                         </tr>
                         <tr>
                             <td class="text-end bg-dnd" style="font-size: 10px; background-color: #fbd4b3;">Total : Rp.</td>
-                            <td class="text-end bg-dnd" width="10%" style="font-size: 10px; background-color: #fbd4b3;">{{ formatRupiah($data->rental->total_invoice + $data->rental->ppn - $data->rental->diskon) }}</td>
+                            <td class="text-end bg-dnd" width="10%" style="font-size: 10px; background-color: #fbd4b3;">{{ formatRupiah($data->rental->total_invoice + $data->rental->ppn - $data->rental->diskon - $data->rental->fee) }}</td>
                         </tr>
                         </thead>
                     </table>

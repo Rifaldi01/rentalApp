@@ -1,6 +1,6 @@
 @extends('layouts.master')
 @section('content')
-<div class="card">
+    <div class="card">
         <div class="card-body">
             <div class="col">
                 <div class="row">
@@ -59,203 +59,250 @@
             <div class="table-responsive">
                 <table id="table-report-cicilan" class="table table-striped table-bordered" style="width:100%">
                     <thead>
-                        <tr>
-                            <th width="2%">No</th>
-                            <th>Tgl Inv</th>
-                            <th>Invoice</th>
-                            <th>Tgl Bayar</th>
-                            <th>Pelanggan</th>
-                            <th>Item</th>
-                            <th>No Seri</th>
-                            <th>Tgl Mulai</th>
-                            <th>Tgl Selesai</th>
-                            <th>Total <br>Inv</th>
-                            <th>ppn</th>
-                            <th>Fee /<br>Discount</th>
-                            <th>Total</th>
-                            <th width="">Ung <br>Masuk</th>
-                            <th>Sisa <br>Bayar</th>
-                            <th>Ket. (Nama Bank)</th>
-                            <th>Penerima</th>
-                            <th class="text-center">Status</th>
-                        </tr>
+                    <tr>
+                        <th width="2%">No</th>
+                        <th>Tgl Inv</th>
+                        <th>Invoice</th>
+                        <th>Tgl Bayar</th>
+                        <th>Pelanggan</th>
+                        <th>Item</th>
+                        <th>No Seri</th>
+                        <th>Tgl Mulai</th>
+                        <th>Tgl Selesai</th>
+                        <th>Total <br>Inv</th>
+                        <th>PPN</th>
+                        <th>Fee</th>
+                        <th>Discount</th>
+                        <th>Total</th>
+                        <th width="">Ung <br>Masuk</th>
+                        <th>Sisa <br>Bayar</th>
+                        <th>Ket. (Nama Bank)</th>
+                        <th>Penerima</th>
+                        <th class="text-center">Status</th>
+                    </tr>
                     </thead>
                     <tbody>
-                        @foreach($cicilan as $key => $datas)
-                            <tr>
-                                <td class="text-center">{{$key +1}}</td>
-                                <td>{{$datas->rental->tgl_inv ?? null}}</td>
-                                <td>{{$datas->rental->no_inv ?? null}}</td>
-                                <td>{{formatId($datas->date_pay)}}</td>
-                                <td>{{$datas->rental->cust->name ?? null}}</td>
-                                <td>
-                                    @php
-                                        $itemIds = json_decode($datas->rental->item_id ?? null);
-                                    @endphp
-                                    @if(is_array($itemIds))
-                                        @foreach($itemIds as $itemId)
-                                            @php
-                                                $item = \App\Models\Item::find($itemId);
-                                            @endphp
-                                            <li>{{ $item ? $item->name : 'Item not found' }}</li>
-                                        @endforeach
-                                    @else
-                                        {{ $itemIds }}
-                                    @endif
-                                </td>
-                                <td>
-                                    @php
-                                        $itemIds = json_decode($datas->rental->item_id ?? null);
-                                    @endphp
-                                    @if(is_array($itemIds))
-                                        @foreach($itemIds as $itemId)
-                                            @php
-                                                $item = \App\Models\Item::find($itemId);
-                                            @endphp
-                                            <li>{{ $item ? $item->no_seri : 'Item not found' }}</li>
-                                        @endforeach
-                                    @else
-                                        {{ $itemIds }}
-                                    @endif
-                                </td>
-                                <td>{{formatId($datas->rental->date_start ?? null)}}</td>
-                                <td>{{formatId($datas->rental->date_end ?? null)}}</td>
-                                <td>
-                                    @if($datas->rental->total_invoice ?? null)
-                                        {{formatRupiah($datas->rental->total_invoice ?? null)}}
-                                    @else
-                                        0
-                                    @endif
-                                </td>
-                                <td>{{formatRupiah($datas->rental->ppn ?? null)}}</td>
-                                <td>{{formatRupiah($datas->rental->diskon ?? null)}}</td>
-                                <td>{{formatRupiah($total[$datas->id])}}</td>
-                                <td>
-                                    {{formatRupiah($datas->pay_debts)}}
-                                </td>
-                                <td>
-                                    {{formatRupiah($sisa[$datas->id])}}
-                                </td>
-                                <td>
+                    @foreach($cicilan as $key => $datas)
+                        <tr>
+                            <td class="text-center">{{$key +1}}</td>
+                            <td>{{$datas->rental->tgl_inv}}</td>
+                            <td>{{$datas->rental->no_inv}}</td>
+                            <td>{{formatId($datas->date_pay)}}</td>
+                            <td>{{$datas->rental->cust->name}}</td>
+                            <td>
+                                @php
+                                    $itemIds = json_decode($datas->rental->item_id);
+                                @endphp
+                                @if(is_array($itemIds))
+                                    @foreach($itemIds as $itemId)
+                                        @php
+                                            $item = \App\Models\Item::find($itemId);
+                                        @endphp
+                                        <li>{{ $item ? $item->name : 'Item not found' }}</li>
+                                    @endforeach
+                                @else
+                                    {{ $itemIds }}
+                                @endif
+                            </td>
+                            <td>
+                                @php
+                                    $itemIds = json_decode($datas->rental->item_id);
+                                @endphp
+                                @if(is_array($itemIds))
+                                    @foreach($itemIds as $itemId)
+                                        @php
+                                            $item = \App\Models\Item::find($itemId);
+                                        @endphp
+                                        <li>{{ $item ? $item->no_seri : 'Item not found' }}</li>
+                                    @endforeach
+                                @else
+                                    {{ $itemIds }}
+                                @endif
+                            </td>
+                            <td>{{formatId($datas->rental->date_start)}}</td>
+                            <td>{{formatId($datas->rental->date_end)}}</td>
+                            <td>
+                                @if($datas->rental->total_invoice)
+                                    {{formatRupiah($datas->rental->total_invoice)}}
+                                @else
+                                    0
+                                @endif
+                            </td>
+                            <td>{{formatRupiah($datas->rental->ppn)}}</td>
+                            <td>{{formatRupiah($datas->rental->fee)}}</td>
+                            <td>{{formatRupiah($datas->rental->diskon)}}</td>
+                            <td>{{formatRupiah($total[$datas->id])}}</td>
+                            <td>
+                                {{formatRupiah($datas->pay_debts)}}
+                            </td>
+                            <td>
+                                @if(optional($datas->rental)->nominal_out !== null)
+                                    {{ formatRupiah($datas->rental->nominal_out) }}
+                                @else
+                                    {{ formatRupiah($sisa[$datas->id] ?? 0) }}
+                                @endif
+
+                            </td>
+
+                            <td>
                                 @if($datas->bank_id)
                                     {{$datas->bank->name}}
                                 @else
                                     {{$datas->description}}
                                 @endif
-                                </td>
-                                <td>
-                                    @if($datas->penerima)
+                            </td>
+                            <td>
+                                @if($datas->penerima)
                                     {{$datas->penerima}}
-                                    @else
-                                        -
-                                    @endif
-                                </td>
-                                <td class="text-center">
-                                    @php $status = optional($datas->rental)->status; @endphp
-
-                                    @if($status === 1)
-                                        <span class="badge bg-success">Rent</span>
-                                    @elseif($status === 0)
-                                        <span class="badge bg-secondary">Finished</span>
-                                    @elseif($status === 2)
-                                        <span class="badge bg-danger">Problem</span>
-                                    @endif
-
-                                </td>
-                            </tr>
-                        @endforeach
+                                @else
+                                    -
+                                @endif
+                            </td>
+                            <td class="text-center">
+                                @if($datas->rental->status == 1)
+                                    <span class="badge bg-success">Rent</span>
+                                @elseif($datas->rental->status == 0)
+                                    <span class="badge bg-secondary">Finished</span>
+                                @elseif($datas->rental->status == 2)
+                                    <span class="badge bg-danger">Problem</span>
+                                @endif
+                            </td>
+                        </tr>
+                    @endforeach
                     </tbody>
                     <tfoot>
-                        <tr>
-                            <td>-</td>
-                            <td>-</td>
-                            <td>-</td>
-                            <td>-</td>
-                            <td>-</td>
-                            <td>-</td>
-                            <td>-</td>
-                            <td>-</td>
-                            <td>-</td>
-                            <td>-</td>
-                            <td>-</td>
-                            <td>-</td>
-                            <td>-</td>
-                            <td>-</td>
-                            <td>-</td>
-                            <th class="border" > <strong>Total Uang Masuk</strong></th>
-                            <th class="border" >{{formatRupiah($uangmasuk)}},-</th>
-                        </tr>
-                        <tr>
-                            <td>-</td>
-                            <td>-</td>
-                            <td>-</td>
-                            <td>-</td>
-                            <td>-</td>
-                            <td>-</td>
-                            <td>-</td>
-                            <td>-</td>
-                            <td>-</td>
-                            <td>-</td>
-                            <td>-</td>
-                            <td>-</td>
-                            <td>-</td>
-                            <td>-</td>
-                            <td>-</td>
-                            <th class="border" > <strong>Total Diskon</strong></th>
-                            <th class="border" >{{formatRupiah($diskon)}},-</th>
-                        </tr>
-                        <tr>
-                            <td>-</td>
-                            <td>-</td>
-                            <td>-</td>
-                            <td>-</td>
-                            <td>-</td>
-                            <td>-</td>
-                            <td>-</td>
-                            <td>-</td>
-                            <td>-</td>
-                            <td>-</td>
-                            <td>-</td>
-                            <td>-</td>
-                            <td>-</td>
-                            <td>-</td>
-                            <td>-</td>
-                            <td>-</td>
-                            <th class="border" > <strong>Total Fee</strong></th>
-                            <th class="border" >{{formatRupiah($totalfee)}},-</th>
-                        </tr>
-                        <tr>
-                            <td>-</td>
-                            <td>-</td>
-                            <td>-</td>
-                            <td>-</td>
-                            <td>-</td>
-                            <td>-</td>
-                            <td>-</td>
-                            <td>-</td>
-                            <td>-</td>
-                            <td>-</td>
-                            <td>-</td>
-                            <td>-</td>
-                            <td>-</td>
-                            <td>-</td>
-                            <td>-</td>
-                            <th class="border" > <strong>Total Bersih</strong></th>
-                            <th class="border" >{{formatRupiah($totalbersih)}},-</th>
-                        </tr>
-
+                    <tr>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <th class="border" > <strong>Total Uang Masuk</strong></th>
+                        <th class="border" >{{formatRupiah($uangmasuk)}},-</th>
+                    </tr>
+                    <tr>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <th class="border" > <strong>Total Diskon</strong></th>
+                        <th class="border" >{{formatRupiah($diskon)}},-</th>
+                    </tr>
+                    <tr>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <th class="border" > <strong>Total Fee</strong></th>
+                        <th class="border" >{{formatRupiah($totalfee)}},-</th>
+                    </tr>
+                    <tr>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <th class="border" > <strong>Total Bersih</strong></th>
+                        <th class="border" >{{formatRupiah($totalbersih)}},-</th>
+                    </tr>
+                    <tr>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <th class="border" > <strong>Total Sisa Bayar</strong></th>
+                        <th class="border" >{{formatRupiah($sisabayar)}},-</th>
+                    </tr>
+                    <tr>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <th class="border" > <strong>Total PPN</strong></th>
+                        <th class="border" >{{formatRupiah($totalppn)}},-</th>
+                    </tr>
                     </tfoot>
                 </table>
             </div>
             <div class="card-footer">
-                    <table>
-                        <tr>
-                            <th> <h5 class="mb-0 text-uppercase">Total Uang Masuk</h5></th>
-                            <td><h5>:</h5></td>
-                            <td><h5 class="ms-3">{{formatRupiah($uangmasuk)}},-</h5></td>
-                        </tr>
+                <table>
+                    <tr>
+                        <th> <h5 class="mb-0 text-uppercase">Total Uang Masuk</h5></th>
+                        <td><h5>:</h5></td>
+                        <td><h5 class="ms-3">{{formatRupiah($uangmasuk)}},-</h5></td>
+                    </tr>
 
-                    </table>
+                </table>
             </div>
         </div>
     </div>
@@ -338,7 +385,7 @@
                     </tr>
                     </thead>
                     <tbody>
-                        @foreach ($report as $key => $data)
+                    @foreach ($report as $key => $data)
                         <tr>
                             <td>{{$key +1}}</td>
                             <td>
@@ -346,19 +393,19 @@
                             </td>
                             <td>{{$data->no_inv}}</td>
                             <td>{{$data->cust->name}}</td>
-                                <td>@php
-                                        $itemIds = json_decode($data->item_id);
-                                    @endphp
-                                    @if(is_array($itemIds))
-                                        @foreach($itemIds as $itemId)
-                                            @php
-                                                $item = \App\Models\Item::find($itemId);
-                                            @endphp
-                                            {{ $item ? $item->name : 'Item not found' }}<br>
-                                        @endforeach
-                                    @else
-                                        {{ $itemIds }}
-                                    @endif</td>
+                            <td>@php
+                                    $itemIds = json_decode($data->item_id);
+                                @endphp
+                                @if(is_array($itemIds))
+                                    @foreach($itemIds as $itemId)
+                                        @php
+                                            $item = \App\Models\Item::find($itemId);
+                                        @endphp
+                                        {{ $item ? $item->name : 'Item not found' }}<br>
+                                    @endforeach
+                                @else
+                                    {{ $itemIds }}
+                                @endif</td>
                             <td>@php
                                     $itemIds = json_decode($data->item_id);
                                 @endphp
@@ -380,9 +427,9 @@
                             </td>
                             <td>
                                 @if($data->total_invoice)
-                                {{formatRupiah($data->total_invoice)}}
+                                    {{formatRupiah($data->total_invoice)}}
                                 @else
-                                {{formatRupiah($data->total_nominal)}}
+                                    {{formatRupiah($data->total_nominal)}}
                                 @endif
                             </td>
                             <td>{{formatRupiah($data->nominal_in)}}</td>
@@ -405,7 +452,7 @@
                             <td>
                                 @if($data->debt->isNotEmpty())
                                     @foreach($data->debt as $debt)
-                                    <li>{{$debt->penerima}}</li>
+                                        <li>{{$debt->penerima}}</li>
                                     @endforeach
                                 @else
                                     Tidak ada data
@@ -420,55 +467,55 @@
                                     <span class="badge bg-danger">Problem</span>
                                 @endif
                             </td>
-                            </tr>
-                        @endforeach
+                        </tr>
+                    @endforeach
                     </tbody>
                     <tfoot>
-                        <tr>
-                            <th class="border" colspan="2"> Total Nominal In</th>
-                            <th class="border">{{formatRupiah($totalin)}},-</th>
-                        </tr>
-                        <tr>
-                            <th class="border" colspan="2"> Total Nominal Outside</th>
-                            <th class="border">{{formatRupiah($totaloutside)}},-</th>
-                        </tr>
-                        <tr>
-                            <th class="border" colspan="2"> Total Fee/Diskon</th>
-                            <th class="border">{{formatRupiah($totaldiskon)}},-</th>
-                        </tr>
-                        <tr>
-                            <th class="border" colspan="2">Grand Total</th>
-                            <th class="border">{{formatRupiah($totalincome)}},-</th>
-                        </tr>
+                    <tr>
+                        <th class="border" colspan="2"> Total Nominal In</th>
+                        <th class="border">{{formatRupiah($totalin)}},-</th>
+                    </tr>
+                    <tr>
+                        <th class="border" colspan="2"> Total Nominal Outside</th>
+                        <th class="border">{{formatRupiah($totaloutside)}},-</th>
+                    </tr>
+                    <tr>
+                        <th class="border" colspan="2"> Total Fee/Diskon</th>
+                        <th class="border">{{formatRupiah($totaldiskon)}},-</th>
+                    </tr>
+                    <tr>
+                        <th class="border" colspan="2">Grand Total</th>
+                        <th class="border">{{formatRupiah($totalincome)}},-</th>
+                    </tr>
                     </tfoot>
                 </table>
             </div>
         </div>
         <div class="card-footer">
             <div class="table-responsive">
-                    <table>
-                        <tr>
-                            <th> <h5 class="mb-0 text-uppercase">Total Nominal In</h5></th>
-                            <td><h5>:</h5></td>
-                            <td><h5 class="ms-3">{{formatRupiah($totalin)}},-</h5></td>
-                        </tr>
-                        <tr>
-                            <th> <h5 class="mb-0 text-uppercase">Total Nominal Outside</h5></th>
-                            <td><h5>:</h5></td>
-                            <td><h5 class="ms-3">{{formatRupiah($totaloutside)}},-</h5></td>
-                        </tr>
-                        <tr>
-                            <th> <h5 class="mb-0 text-uppercase">Total Fee/Diskon</h5></th>
-                            <td><h5>:</h5></td>
-                            <td><h5 class="ms-2">{{formatRupiah($totaldiskon)}},-</h5></td>
-                        </tr>
-                        <tr>
-                            <th> <h5 class="mb-0 text-uppercase">Grand Total</h5></th>
-                            <td><h5>:</h5></td>
-                            <td><h5 class="ms-2">{{formatRupiah($totalincome)}},-</h5></td>
-                        </tr>
-                    </table>
-                </div>
+                <table>
+                    <tr>
+                        <th> <h5 class="mb-0 text-uppercase">Total Nominal In</h5></th>
+                        <td><h5>:</h5></td>
+                        <td><h5 class="ms-3">{{formatRupiah($totalin)}},-</h5></td>
+                    </tr>
+                    <tr>
+                        <th> <h5 class="mb-0 text-uppercase">Total Nominal Outside</h5></th>
+                        <td><h5>:</h5></td>
+                        <td><h5 class="ms-3">{{formatRupiah($totaloutside)}},-</h5></td>
+                    </tr>
+                    <tr>
+                        <th> <h5 class="mb-0 text-uppercase">Total Fee/Diskon</h5></th>
+                        <td><h5>:</h5></td>
+                        <td><h5 class="ms-2">{{formatRupiah($totaldiskon)}},-</h5></td>
+                    </tr>
+                    <tr>
+                        <th> <h5 class="mb-0 text-uppercase">Grand Total</h5></th>
+                        <td><h5>:</h5></td>
+                        <td><h5 class="ms-2">{{formatRupiah($totalincome)}},-</h5></td>
+                    </tr>
+                </table>
+            </div>
         </div>
     </div>
 
@@ -480,8 +527,8 @@
             font-size: 13px /* Atur ukuran font */
         }
         table.dataTable td {
-        padding: 3px; /* Atur padding agar lebih rapat jika diperlukan */
-    }
+            padding: 3px; /* Atur padding agar lebih rapat jika diperlukan */
+        }
 
     </style>
 @endpush
@@ -646,7 +693,7 @@
                 .appendTo('#table-report_wrapper .col-md-6:eq(0)');
         });
         $(document).ready(function () {
-                var table = $('#table-report-cicilan').DataTable({
+            var table = $('#table-report-cicilan').DataTable({
                 lengthChange: false,
                 buttons: [
                     {
@@ -699,31 +746,102 @@
                             rows.last().after(tfootRows);
                         }
                     },
+
                     {
                         extend: 'pdf',
-                        filename: 'Laporan_Rental_Cicilan',
+                        filename: 'Laporan_Rental',
                         exportOptions: {
                             stripHtml: false,
-                            footer: true,
-                        }
+                        },
+                        customize: function (doc) {
+                            // Set ukuran halaman PDF
+                            doc.pageSize = {
+                                width: 880,
+                                height: 595,
+                            };
+                            doc.pageOrientation = 'landscape';
+                            doc.pageMargins = [20, 20, 20, 20];
+
+                            // Ambil seluruh data dari DataTables (termasuk yang tidak terlihat)
+                            var allData = table.data().toArray();
+
+                            // Header Tabel
+                            var headers = [];
+                            $('#table-report thead th').each(function () {
+                                headers.push({ text: $(this).text(), style: 'tableHeader' });
+                            });
+
+                            // Isi Tabel
+                            var tableBody = [];
+                            tableBody.push(headers); // Tambahkan header ke body
+
+                            allData.forEach(function (rowData) {
+                                var row = [];
+                                rowData.forEach(function (cellData) {
+                                    // Hapus tag HTML seperti <li> dan <br>
+                                    var cleanedText = cellData
+                                        .replace(/<li>/g, '') // Hapus <li>
+                                        .replace(/<\/li>/g, '\n') // Ganti </li> dengan baris baru
+                                        .replace(/<br\s*\/?>/g, '\n') // Hapus <br> dan ganti dengan baris baru
+                                        .replace(/<\/?[^>]+(>|$)/g, ''); // Hapus tag HTML lainnya
+                                    row.push({ text: cleanedText.trim(), style: 'tableCell' });
+                                });
+                                tableBody.push(row);
+                            });
+
+                            // Footer Tabel (Jika Ada)
+                            var tfoot = $('#table-report-cicilan tfoot').clone();
+                            if (tfoot.length) {
+                                var footerRow = [];
+                                tfoot.find('th').each(function () {
+                                    footerRow.push({ text: $(this).text(), style: 'tableCell' });
+                                });
+                                while (footerRow.length < headers.length) {
+                                    footerRow.push({ text: '' });
+                                }
+                                tableBody.push(footerRow);
+                            }
+
+                            // Tambahkan Tabel ke Dokumen
+                            doc.content = [
+                                {
+                                    table: {
+                                        headerRows: 1,
+                                        widths: Array(headers.length).fill('auto'), // Perkecil kolom otomatis
+                                        body: tableBody,
+                                    },
+                                    layout: 'lightHorizontalLines',
+                                },
+                            ];
+
+                            // Styling
+                            doc.styles.tableHeader = {
+                                bold: true,
+                                fontSize: 8, // Ukuran lebih kecil
+                                color: 'black',
+                                fillColor: '#f2f2f2',
+                                alignment: 'center',
+                            };
+                            doc.styles.tableCell = {
+                                fontSize: 7, // Ukuran lebih kecil
+                            };
+                        },
                     },
                     {
                         extend: 'print',
-                        title: 'Laporan Cicilan Rental',
                         exportOptions: {
                             stripHtml: false,
-                            footer: true,
+                            tfoot: true,
                         },
                         customize: function (win) {
                             $(win.document.body)
                                 .find('table')
                                 .addClass('compact')
-                                .css('font-size', '9.8px');
-
+                                .css('font-size', '10px');
                             var tfoot = $('#table-report-cicilan tfoot').clone();
                             $(win.document.body).find('table').append(tfoot);
-                        }
-                    }
+                        },
+                    },
                 ],
             });
 
