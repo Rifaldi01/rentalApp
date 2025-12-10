@@ -98,7 +98,6 @@ class RentalController extends Controller
     }
     public function hsty()
     {
-
         // Tahun dipilih user (jika ada)
         $tahun = $request->tahun ?? date('Y');
 
@@ -108,24 +107,25 @@ class RentalController extends Controller
             ->orderBy('thn', 'DESC')
             ->get();
 
-        $rentals = Rental::leftjoin('accessories_categories as a', 'a.rental_id', '=', 'rentals.id')
-            ->leftjoin('accessories as b', 'a.accessories_id', '=', 'b.id')
+        $rentals = Rental::leftJoin('accessories_categories as a', 'a.rental_id', '=', 'rentals.id')
+            ->leftJoin('accessories as b', 'a.accessories_id', '=', 'b.id')
             ->select(
                 'rentals.id', 'rentals.customer_id', 'rentals.item_id', 'rentals.name_company',
                 'rentals.addres_company', 'rentals.phone_company', 'rentals.no_po', 'rentals.date_start', 'date_pays',
                 'rentals.date_end', 'rentals.status', 'a.rental_id', 'nominal_in', 'nominal_out', 'diskon', 'ongkir',
                 'rentals.image', 'rentals.created_at', 'no_inv', 'rentals.deleted_at', 'rentals.keterangan_item',
-                'rentals.keterangan_acces', 'rentals.fee', 'rentals.tgl_inv', 'fee',
+                'rentals.keterangan_acces', 'rentals.fee', 'rentals.tgl_inv',
                 DB::raw('GROUP_CONCAT(b.name) as access')
             )
-            ->whereYear('rentals.created_at', $tahun) // FILTER TAHUN
+            ->whereYear('rentals.tgl_inv', $tahun)     // FILTER TAHUN PAKAI TANGGAL INVOICE
             ->groupBy(
                 'rentals.id', 'rentals.customer_id', 'rentals.item_id', 'rentals.name_company',
                 'rentals.addres_company', 'rentals.phone_company', 'rentals.no_po', 'rentals.date_start', 'date_pays',
                 'rentals.date_end', 'rentals.status', 'a.rental_id', 'nominal_in', 'nominal_out', 'diskon', 'ongkir',
                 'rentals.image', 'rentals.created_at', 'no_inv', 'rentals.deleted_at', 'rentals.keterangan_item',
-                'rentals.keterangan_acces', 'rentals.fee', 'rentals.tgl_inv', 'fee',
+                'rentals.keterangan_acces', 'rentals.fee', 'rentals.tgl_inv'
             )
+            ->orderBy('rentals.tgl_inv', 'DESC') // 🔥 URUTAN DARI INVOICE TERBARU → TERLAMA
             ->get();
         return view('employe.rental.history', compact('rentals','listTahun', 'tahun'));
     }
