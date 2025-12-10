@@ -281,11 +281,13 @@
                                 </tr>
                                 <tr>
                                     <td style="border-left: 0.5px solid #dee2e6; border-right: 0.5px solid #dee2e6;" width="30%">
-                                        1. No. Rekening : 8105898874 - RIKA ROSITA, BCA
+                                        1. Pembayaran mohon diproses 3 hari sebelum tanggal jatuh tempo
                                         <br>
-                                        2. Jika Dokumen ini hilang, diubah, dan minta dibuatkan kembali, konsumen akan dikenakan biaya admin sebesar Rp.300.000,-
+                                        2. No. Rekening : 8105898874 - RIKA ROSITA, BCA
                                         <br>
-                                        3. Invoice bukan pembayaran yang sah apabila kwitansi tidak terlampir
+                                        3. Jika Dokumen ini hilang, diubah, dan minta dibuatkan kembali, konsumen akan dikenakan biaya admin sebesar Rp.300.000,-
+                                        <br>
+                                        4. Invoice bukan pembayaran yang sah apabila kwitansi tidak terlampir
                                     </td>
                                 </tr>
                             </table>
