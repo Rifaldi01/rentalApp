@@ -82,7 +82,7 @@
                                             data-bs-target="#penyewaan{{$data->id}}" data-bs-tool="tooltip"
                                             data-bs-placement="top" title="Print Surat Penyewa">
                                     </button>
-                                    @include('manager.rental.penyewaan')
+                                    @include('admin.rental.penyewaan')
                                     <button type="button" class="btn btn-primary lni lni-empty-file btn-sm"
                                             data-bs-toggle="modal" id="btn-print{{$data->id}}"
                                             data-bs-target="#exampleLargeModal{{$data->id}}" data-bs-tool="tooltip"
