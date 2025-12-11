@@ -78,7 +78,7 @@
                                 <th>{{formatId($data->date_start)}} - {{formatId($data->date_end)}}</th>
                                 <th width="1%" class="text-end">Perihal</th>
                                 <th width="1%" class="text-end">:</th>
-                                <th width="1%" style="border-right-width:0;">Rental</th>
+                                <th width="1%" style="border-right-width:0;">Pengembalian Rental</th>
                             </tr>
                             </thead>
                             <tbody>
