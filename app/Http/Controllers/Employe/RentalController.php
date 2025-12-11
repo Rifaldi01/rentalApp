@@ -48,6 +48,7 @@ class RentalController extends Controller
     {
         $rental = Rental::findOrFail($id);
         $rental->status = 0;
+        $rental->updated_at = now();
         $rental->save();
 
         return back()->withSuccess('Barang Telah Kembali Semua');
@@ -114,7 +115,7 @@ class RentalController extends Controller
                 'rentals.addres_company', 'rentals.phone_company', 'rentals.no_po', 'rentals.date_start', 'date_pays',
                 'rentals.date_end', 'rentals.status', 'a.rental_id', 'nominal_in', 'nominal_out', 'diskon', 'ongkir',
                 'rentals.image', 'rentals.created_at', 'no_inv', 'rentals.deleted_at', 'rentals.keterangan_item',
-                'rentals.keterangan_acces', 'rentals.fee', 'rentals.tgl_inv',
+                'rentals.keterangan_acces', 'rentals.fee', 'rentals.tgl_inv', 'rentals.updated_at',
                 DB::raw('GROUP_CONCAT(b.name) as access')
             )
             ->whereYear('rentals.tgl_inv', $tahun)     // FILTER TAHUN PAKAI TANGGAL INVOICE
@@ -123,7 +124,7 @@ class RentalController extends Controller
                 'rentals.addres_company', 'rentals.phone_company', 'rentals.no_po', 'rentals.date_start', 'date_pays',
                 'rentals.date_end', 'rentals.status', 'a.rental_id', 'nominal_in', 'nominal_out', 'diskon', 'ongkir',
                 'rentals.image', 'rentals.created_at', 'no_inv', 'rentals.deleted_at', 'rentals.keterangan_item',
-                'rentals.keterangan_acces', 'rentals.fee', 'rentals.tgl_inv'
+                'rentals.keterangan_acces', 'rentals.fee', 'rentals.tgl_inv', 'rentals.updated_at',
             )
             ->orderBy('rentals.tgl_inv', 'DESC') // 🔥 URUTAN DARI INVOICE TERBARU → TERLAMA
             ->get();

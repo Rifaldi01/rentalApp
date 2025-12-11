@@ -52,7 +52,7 @@ class RentalController extends Controller
                 'rentals.addres_company', 'rentals.phone_company', 'rentals.no_po', 'rentals.date_start',
                 'rentals.date_end', 'rentals.status', 'a.rental_id', 'rentals.nominal_in', 'rentals.nominal_out', 'fee',
                 'rentals.no_inv', 'rentals.diskon', 'rentals.total_invoice', 'rentals.deleted_at','rentals.keterangan_item', 'tgl_inv',
-                'rentals.keterangan_acces', 'rentals.fee',
+                'rentals.keterangan_acces', 'rentals.fee', 'rentals.updated_at',
                 DB::raw('GROUP_CONCAT(b.name) as access')
             )
             ->groupBy(
@@ -60,7 +60,7 @@ class RentalController extends Controller
                 'rentals.addres_company', 'rentals.phone_company', 'rentals.no_po', 'rentals.date_start',
                 'rentals.date_end', 'rentals.status', 'a.rental_id', 'rentals.nominal_in', 'rentals.nominal_out', 'fee',
                 'rentals.no_inv', 'rentals.diskon', 'rentals.total_invoice', 'rentals.deleted_at', 'rentals.keterangan_item', 'tgl_inv',
-                'rentals.keterangan_acces', 'rentals.fee'
+                'rentals.keterangan_acces', 'rentals.fee', 'rentals.updated_at',
             )
             ->orderBy('rentals.created_at', 'DESC')
             ->get();
@@ -478,7 +478,7 @@ class RentalController extends Controller
                 'rentals.addres_company', 'rentals.phone_company', 'rentals.no_po', 'rentals.date_start', 'date_pays',
                 'rentals.date_end', 'rentals.status', 'a.rental_id', 'nominal_in', 'nominal_out', 'diskon', 'ongkir',
                 'rentals.image', 'rentals.created_at', 'no_inv', 'rentals.deleted_at', 'rentals.keterangan_item',
-                'rentals.keterangan_acces', 'rentals.fee', 'rentals.tgl_inv',
+                'rentals.keterangan_acces', 'rentals.fee', 'rentals.tgl_inv', 'rentals.updated_at',
                 DB::raw('GROUP_CONCAT(b.name) as access')
             )
             ->whereYear('rentals.tgl_inv', $tahun)     // FILTER TAHUN PAKAI TANGGAL INVOICE
@@ -487,7 +487,7 @@ class RentalController extends Controller
                 'rentals.addres_company', 'rentals.phone_company', 'rentals.no_po', 'rentals.date_start', 'date_pays',
                 'rentals.date_end', 'rentals.status', 'a.rental_id', 'nominal_in', 'nominal_out', 'diskon', 'ongkir',
                 'rentals.image', 'rentals.created_at', 'no_inv', 'rentals.deleted_at', 'rentals.keterangan_item',
-                'rentals.keterangan_acces', 'rentals.fee', 'rentals.tgl_inv'
+                'rentals.keterangan_acces', 'rentals.fee', 'rentals.tgl_inv', 'rentals.updated_at',
             )
             ->orderBy('rentals.tgl_inv', 'DESC') // 🔥 URUTAN DARI INVOICE TERBARU → TERLAMA
             ->get();

@@ -53,7 +53,7 @@
                     {{--                    </div>--}}
                     <hr style="border: 3px solid #fbd4b3">
                     <div class="mb-3" style="font-size: 12px">
-                        <strong>Bandung,</strong> {{formatId($data->created_at)}}
+                        <strong>Bandung,</strong> {{formatId($data->updated_at)}}
                     </div>
                     <div class="table-responsive mb-4">
                         <table class="" style="width:100%">
