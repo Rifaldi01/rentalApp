@@ -17,25 +17,25 @@
                                      alt="dnd logo"
                                      style="width: 100%; height: 100px; object-fit: contain;">
                             </td>
-                            <td style="border: none; padding-left: 15px; white-space: nowrap;">
-                                <strong style="font-size: 12px;">
+                            <td class="text-center" width="80%" style="border: none; padding-left: 15px; white-space: nowrap;">
+                                <strong style="font-size: 12px; color:#fbd4b3;">
                                     Komplek Sukamenak Indah Blok R N0.11
                                 </strong>
                             </td>
                         </tr>
                         <tr>
-                            <td style="border: none; padding-left: 15px; white-space: nowrap;">
-                                <strong style="font-size: 12px;">Sukamenak, Margahayu, Kabupaten Bandung 40227</strong>
+                            <td class="text-center" width="80%" style="border: none; padding-left: 15px; white-space: nowrap;">
+                                <strong style="font-size: 12px; color:#fbd4b3;">Sukamenak, Margahayu, Kabupaten Bandung 40227</strong>
                             </td>
                         </tr>
                         <tr>
-                            <td style="border: none; padding-left: 15px; white-space: nowrap;">
-                                <strong style="font-size: 12px;">Phone: 0821-2990-5005</strong>
+                            <td class="text-center" width="80%" style="border: none; padding-left: 15px; white-space: nowrap;">
+                                <strong style="font-size: 12px; color:#fbd4b3;">Phone: 0821-2990-5005</strong>
                             </td>
                         </tr>
                         <tr>
-                            <td style="border: none; padding-left: 15px; white-space: nowrap;">
-                                <strong style="font-size: 12px;">Email:  dndsurvey90@gmail.com</strong>
+                            <td class="text-center" width="80%" style="border: none; padding-left: 15px; white-space: nowrap;">
+                                <strong style="font-size: 12px; color:#fbd4b3;">Email:  dndsurvey90@gmail.com</strong>
                             </td>
                         </tr>
                     </table>
@@ -51,7 +51,7 @@
                     {{--                                /Phone. 0821-2990-0025 / 081-2992-5005</strong>--}}
                     {{--                        </div>--}}
                     {{--                    </div>--}}
-                    <hr style="border: 3px solid #000">
+                    <hr style="border: 3px solid #fbd4b3">
                     <div class="mb-3" style="font-size: 12px">
                         <strong>Bandung,</strong> {{formatId($data->created_at)}}
                     </div>
@@ -60,7 +60,7 @@
                             <thead>
                             <tr>
                                 <th colspan="6" class="text-end bg-secondary bg-opacity-50 sjg" style="font-size: 13px;">
-                                    SURAT JALAN GUDANG
+                                    BERITA ACARA BARANG MASUK
                                 </th>
                             </tr>
                             <tr>
@@ -70,7 +70,7 @@
                                 <th width="1%">No</th>
                                 <th width="1%" class="text-end">:</th>
                                 <th width="1%" class="text-end"
-                                    style="border-right-width:0;">{{ $data->invoice }}</th>
+                                    style="border-right-width:0;">BABM/DND/...../...../...../</th>
                             </tr>
                             <tr>
                                 <th>Periode</th>
@@ -220,7 +220,7 @@
         }
 
         th.sjg {
-            background-color: rgba(108, 117, 125, 0.5) !important; /* bg-secondary bg-opacity-50 */
+            background-color: #fbd4b3 !important; /* bg-secondary bg-opacity-50 */
             -webkit-print-color-adjust: exact; /* Forcing color to be printed */
             color-adjust: exact; /* Forcing color to be printed in Firefox */
         }

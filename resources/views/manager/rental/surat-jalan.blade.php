@@ -17,25 +17,25 @@
                                      alt="dnd logo"
                                      style="width: 100%; height: 100px; object-fit: contain;">
                             </td>
-                            <td style="border: none; padding-left: 15px; white-space: nowrap;">
-                                <strong style="font-size: 12px;">
+                            <td class="text-center" width="80%" style="border: none; padding-left: 15px; white-space: nowrap;">
+                                <strong style="font-size: 12px; color:#fbd4b3;">
                                     Komplek Sukamenak Indah Blok R N0.11
                                 </strong>
                             </td>
                         </tr>
                         <tr>
-                            <td style="border: none; padding-left: 15px; white-space: nowrap;">
-                                <strong style="font-size: 12px;">Sukamenak, Margahayu, Kabupaten Bandung 40227</strong>
+                            <td class="text-center" width="80%" style="border: none; padding-left: 15px; white-space: nowrap;">
+                                <strong style="font-size: 12px; color:#fbd4b3;">Sukamenak, Margahayu, Kabupaten Bandung 40227</strong>
                             </td>
                         </tr>
                         <tr>
-                            <td style="border: none; padding-left: 15px; white-space: nowrap;">
-                                <strong style="font-size: 12px;">Phone: 0821-2990-5005</strong>
+                            <td class="text-center" width="80%" style="border: none; padding-left: 15px; white-space: nowrap;">
+                                <strong style="font-size: 12px; color:#fbd4b3;">Phone: 0821-2990-5005</strong>
                             </td>
                         </tr>
                         <tr>
-                            <td style="border: none; padding-left: 15px; white-space: nowrap;">
-                                <strong style="font-size: 12px;">Email:  dndsurvey90@gmail.com</strong>
+                            <td class="text-center" width="80%" style="border: none; padding-left: 15px; white-space: nowrap;">
+                                <strong style="font-size: 12px; color:#fbd4b3;">Email:  dndsurvey90@gmail.com</strong>
                             </td>
                         </tr>
                     </table>
@@ -51,7 +51,7 @@
                     {{--                                /Phone. 0821-2990-0025 / 081-2992-5005</strong>--}}
                     {{--                        </div>--}}
                     {{--                    </div>--}}
-                    <hr style="border: 3px solid #000">
+                    <hr style="border: 3px solid #fbd4b3">
                     <div class="mb-3" style="font-size: 12px">
                         <strong>Bandung,</strong> {{formatId($data->created_at)}}
                     </div>
@@ -60,25 +60,25 @@
                             <thead>
                             <tr>
                                 <th colspan="6" class="text-end bg-secondary bg-opacity-50 sjg" style="font-size: 13px;">
-                                    SURAT JALAN GUDANG
+                                    BERITA ACARA BARANG MASUK
                                 </th>
                             </tr>
                             <tr>
                                 <th width="4%">Kepada</th>
                                 <th width="1%">:</th>
-                                <th>{{optional($data->customer)->name ?? '-'}}</th>
+                                <th>{{optional($data->cust)->name ?? '-'}}</th>
                                 <th width="1%">No</th>
                                 <th width="1%" class="text-end">:</th>
                                 <th width="1%" class="text-end"
-                                    style="border-right-width:0;">{{ $data->invoice }}</th>
+                                    style="border-right-width:0;">BABM/DND/...../...../...../</th>
                             </tr>
                             <tr>
-                                <th></th>
-                                <th></th>
-                                <th></th>
+                                <th>Periode</th>
+                                <th>:</th>
+                                <th>{{formatId($data->date_start)}} - {{formatId($data->date_end)}}</th>
                                 <th width="1%" class="text-end">Perihal</th>
                                 <th width="1%" class="text-end">:</th>
-                                <th width="1%" style="border-right-width:0;">Penjualan</th>
+                                <th width="1%" style="border-right-width:0;">Rental</th>
                             </tr>
                             </thead>
                             <tbody>
@@ -86,7 +86,7 @@
                         </table>
                     </div>
                     <div class="table-responsive">
-                        <table class="table table-bordered">
+                        <table class="table table-bordered border-pdf">
                             <thead>
                             <tr>
                                 <th class="text-center" width="1%" style="border-left-width:1px;">No</th>
@@ -123,7 +123,7 @@
                                 <tr>
                                     <td class="text-center">{{ $no++ }}</td>
                                     <td>{{ $asdf->accessory ? $asdf->accessory->name : 'Not Found' }}</td>
-                                    <td>{{ $asdf->accessories_quantity }}</td>
+                                    <td>{{ $asdf->accessories_quantity + $asdf->kembali}}</td>
                                     <td>Aksesoris</td>
                                 </tr>
                             @endforeach
@@ -169,6 +169,13 @@
                 <button type="button" class="btn btn-primary" onclick="printSuratJalan('prinsurat{{$data->id}}')">
                     Print
                 </button>
+                <button type="button"
+                        class="btn btn-primary"
+                        onclick="downloadSuratJalan('prinsurat{{ $data->id }}')">
+                    Download PDF
+                </button>
+
+
             </div>
         </div>
     </div>
@@ -213,7 +220,7 @@
         }
 
         th.sjg {
-            background-color: rgba(108, 117, 125, 0.5) !important; /* bg-secondary bg-opacity-50 */
+            background-color: #fbd4b3 !important; /* bg-secondary bg-opacity-50 */
             -webkit-print-color-adjust: exact; /* Forcing color to be printed */
             color-adjust: exact; /* Forcing color to be printed in Firefox */
         }
@@ -226,9 +233,24 @@
             padding: 15mm;
             font-size: 12px;
         }
+        .border-pdf,
+        .border-pdf th,
+        .border-pdf td{
+            border-top-width:1px;
+            border-bottom-width:1px;
+            border-right-width:1px;
+            border-left-width:1px;
+        }
     </style>
 @endpush
 @push('js')
+    <!-- DOMPurify wajib -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/dompurify/2.3.10/purify.min.js"></script>
+
+    <!-- jsPDF -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+
     <script>
         function printSuratJalan(modalId) {
             var printContents = document.getElementById(modalId).innerHTML;
@@ -240,4 +262,25 @@
             location.reload(); // Reload untuk mengembalikan tampilan asli
         }
     </script>
+    <script>
+        async function downloadSuratJalan(modalId) {
+            const { jsPDF } = window.jspdf;
+
+            const content = document.getElementById(modalId).innerHTML;
+
+            const pdf = new jsPDF('p', 'pt', 'a4');
+
+            await pdf.html(content, {
+                callback: function (pdf) {
+                    pdf.save("surat_jalan.pdf");
+                },
+                x: 10,
+                y: 10,
+                width: 575,
+                windowWidth: 1200
+            });
+        }
+    </script>
+
+
 @endpush
