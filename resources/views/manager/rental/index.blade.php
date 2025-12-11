@@ -1,286 +1,296 @@
-<div class="modal fade" id="exampleExtraLargeModal{{$data->id}}" tabindex="-1"
-     aria-hidden="true">
-    <div class="modal-dialog modal-xl">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">Surat Jalan</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal"
-                        aria-label="Close"></button>
-            </div>
-            <div class="invoice overflow-auto" id="prinsurat{{$data->id}}">
-                <div class="modal-body modal-surat">
-                    <table>
-                        <tr>
-                            <td rowspan="4" style="border: none; width: 120px; vertical-align: middle;">
-                                <img src="{{asset('images/logodnd.png')}}"
-                                     class="print-img"
-                                     alt="dnd logo"
-                                     style="width: 100%; height: 100px; object-fit: contain;">
-                            </td>
-                            <td style="border: none; padding-left: 15px; white-space: nowrap;">
-                                <strong style="font-size: 12px; color:#fbd4b3;">
-                                    Komplek Sukamenak Indah Blok R N0.11
-                                </strong>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td style="border: none; padding-left: 15px; white-space: nowrap;">
-                                <strong style="font-size: 12px; color:#fbd4b3;">Sukamenak, Margahayu, Kabupaten Bandung 40227</strong>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td style="border: none; padding-left: 15px; white-space: nowrap;">
-                                <strong style="font-size: 12px; color:#fbd4b3;">Phone: 0821-2990-5005</strong>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td style="border: none; padding-left: 15px; white-space: nowrap;">
-                                <strong style="font-size: 12px; color:#fbd4b3;">Email:  dndsurvey90@gmail.com</strong>
-                            </td>
-                        </tr>
-                    </table>
-                    {{--                    <div class="text-center">--}}
-                    {{--                        <img src="{{asset('images/logo/'. $data->divisi->logo)}}" alt="" width="10%" class="img-surat">--}}
-                    {{--                        <div class="mt-1"><strong style="font-size: 13px;">Komplek--}}
-                    {{--                                Sukamenak Indah Blok Q90 Kopo - Sayati, Kabupaten Bandung,</strong>--}}
-                    {{--                        </div>--}}
-                    {{--                        <div class="mt-1"><strong style="font-size: 13px;">Website : dndsurvey.id |--}}
-                    {{--                                Email : admin@dndsurvey.id</strong>--}}
-                    {{--                        </div>--}}
-                    {{--                        <div class="mt-1"><strong style="font-size: 13px;">Kantor . 022 - 5442 0354--}}
-                    {{--                                /Phone. 0821-2990-0025 / 081-2992-5005</strong>--}}
-                    {{--                        </div>--}}
-                    {{--                    </div>--}}
-                    <hr style="border: 3px solid #fbd4b3">
-                    <div class="mb-3" style="font-size: 12px">
-                        <strong>Bandung,</strong> {{formatId($data->created_at)}}
-                    </div>
-                    <div class="table-responsive mb-4">
-                        <table class="" style="width:100%">
-                            <thead>
-                            <tr>
-                                <th colspan="6" class="text-end bg-secondary bg-opacity-50 sjg" style="font-size: 13px;">
-                                    BERITA ACARA BARANG MASUK
-                                </th>
-                            </tr>
-                            <tr>
-                                <th width="4%">Kepada</th>
-                                <th width="1%">:</th>
-                                <th>{{optional($data->cust)->name ?? '-'}}</th>
-                                <th width="1%">No</th>
-                                <th width="1%" class="text-end">:</th>
-                                <th width="1%" class="text-end"
-                                    style="border-right-width:0;">BABM/DND/...../...../...../</th>
-                            </tr>
-                            <tr>
-                                <th>Periode</th>
-                                <th>:</th>
-                                <th>{{formatId($data->date_start)}} - {{formatId($data->date_end)}}</th>
-                                <th width="1%" class="text-end">Perihal</th>
-                                <th width="1%" class="text-end">:</th>
-                                <th width="1%" style="border-right-width:0;">Rental</th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                            </tbody>
-                        </table>
-                    </div>
-                    <div class="table-responsive">
-                        <table class="table table-bordered border-pdf">
-                            <thead>
-                            <tr>
-                                <th class="text-center" width="1%" style="border-left-width:1px;">No</th>
-                                <th class="text-center">Nama Barang</th>
-                                <th class="text-center">Jumlah</th>
-                                <th class="text-center">No Seri</th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                            @php
-                                $itemIds = json_decode($data->item_id);
-                                $no = 1;
-                            @endphp
-
-                            @if(is_array($itemIds))
-                                @foreach($itemIds as $itemId)
-                                    @php
-                                        $item = \App\Models\Item::find($itemId);
-                                    @endphp
-                                    <tr>
-                                        <td class="text-center">{{ $no++ }}</td>
-                                        <td>{{ $item ? $item->name : 'Item not found' }}</td>
-                                        <td>1</td>
-                                        <td>{{ $item ? $item->no_seri : 'Item not found' }}</td>
-                                    </tr>
-                                @endforeach
-                            @else
-                                <tr>
-                                    <td colspan="4" class="text-center">{{ $itemIds }}</td>
-                                </tr>
-                            @endif
-
-                            @foreach($data->accessoriescategory as $asdf)
-                                <tr>
-                                    <td class="text-center">{{ $no++ }}</td>
-                                    <td>{{ $asdf->accessory ? $asdf->accessory->name : 'Not Found' }}</td>
-                                    <td>{{ $asdf->accessories_quantity + $asdf->kembali}}</td>
-                                    <td>Aksesoris</td>
-                                </tr>
-                            @endforeach
-                            </tbody>
-                        </table>
-
-                    </div>
-                    <div class="mt-2">
-                        <table width="100%">
-                            <thead>
-                            <tr>
-                                <th class="text-center">Yang Menerima,</th>
-                                <th class="text-center">Bagian Umum,</th>
-                                <th class="text-center" style="border-right-width:0px;">Hormat Kami,</th>
-                            </tr>
-                            </thead>
-                            <tr>
-                                <td>&nbsp;</td>
-                                <td>&nbsp;</td>
-                                <td style="border-right-width:0px;">&nbsp;</td>
-                            </tr>
-                            <tr>
-                                <td>&nbsp;</td>
-                                <td>&nbsp;</td>
-                                <td style="border-right-width:0px;">&nbsp;</td>
-                            </tr>
-                            <tr>
-                                <td>&nbsp;</td>
-                                <td>&nbsp;</td>
-                                <td style="border-right-width:0px;">&nbsp;</td>
-                            </tr>
-                            <tr>
-                                <td class="text-center">(...........................)</td>
-                                <td class="text-center">(...........................)</td>
-                                <td class="text-center" style="border-right-width:0px;">(...........................)
-                                </td>
-                            </tr>
-                        </table>
+@extends('layouts.master')
+@section('content')
+    <div class="card">
+        <div class="card-head">
+            <div class="row">
+                <div class="col-6">
+                    <div class="container mt-3">
+                        <h4 class="text-uppercase">List Rental Aktif</h4>
                     </div>
                 </div>
+                <div class="col-6">
+                    <a data-bs-toggle="tooltip" data-bs-placement="top" title="Add rental"
+                       href="{{route('manager.rental.create')}}"
+                       class="btn btn-dnd bx bx-plus float-end me-3 mt-3 shadow">
+                    </a>
+
+                </div>
             </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-primary" onclick="printSuratJalan('prinsurat{{$data->id}}')">
-                    Print
-                </button>
-                <button type="button"
-                        class="btn btn-primary"
-                        onclick="downloadSuratJalan('prinsurat{{ $data->id }}')">
-                    Download PDF
-                </button>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table id="aktif" class="table table-striped table-bordered fs-7 small-text" style="width:100%">
+                    <thead>
+                    <tr>
+                        <th width="2%" class="text-center">No</th>
+                        <th>No Invoice</th>
+                        <th>Name</th>
+                        <th>Total <br>Inv</th>
+                        <th width="">Ung <br>Masuk</th>
+                        <th>Sisa <br>Bayar</th>
+                        <th>Fee</th>
+                        <th>Discount</th>
+                        <th>Start Date</th>
+                        <th>End Date</th>
+                        <th class="text-center">Total Day</th>
+                        <th class="text-center">Status</th>
+                        <th class="text-center" width="8%">Print</th>
+                        <th class="text-center" width="10%">Action</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr>
+                        @foreach($rentals as $key => $data)
+                            @if($data->status == 1)
+                                <td>{{$key +1}}</td>
+                                <td>{{$data->no_inv}}</td>
+                                <td>{{$data->cust->name}}</td>
+                                <td>
+                                    @if($data->total_invoice)
+                                        {{formatRupiah($data->total_invoice)}}
+                                    @else
+                                        Rp. 0
+                                    @endif
+                                </td>
+                                <td>{{formatRupiah($data->nominal_in)}}</td>
+                                <td>{{formatRupiah($data->nominal_out)}}</td>
+                                <td>{{formatRupiah($data->fee)}}</td>
+                                <td>{{formatRupiah($data->diskon)}}</td>
+                                <td>
+                                    {{formatId($data->date_start)}}
+                                </td>
+                                <td>
+                                    {{formatId($data->date_end)}}
+                                </td>
+                                <td class="text-center">{{$data->days_difference}} Day</td>
+                                <td class="text-center">
+                                    @if($data->status == 1)
+                                        <span class="badge bg-success">Rent</span>
+                                    @elseif($data->status == 0)
+                                        <span class="badge bg-secondary">Finished</span>
+                                    @elseif($data->status == 2)
+                                        <span class="badge bg-danger">Problem</span>
+                                    @endif
+                                </td>
+                                <td>
+                                    <button class="btn btn-dnd lni lni-files btn-sm" data-bs-toggle="modal"
+                                            data-bs-target="#exampleExtraLargeModal{{$data->id}}" data-bs-tool="tooltip"
+                                            data-bs-placement="top" title="Print Surat Jalan">
+                                    </button>
+                                    @include('manager.rental.surat-jalan')
+                                    <button class="btn btn-warning lni lni-files btn-sm" data-bs-toggle="modal"
+                                            data-bs-target="#penyewaan{{$data->id}}" data-bs-tool="tooltip"
+                                            data-bs-placement="top" title="Print Surat Penyewa">
+                                    </button>
+                                    @include('admin.rental.penyewaan')
+                                    <button type="button" class="btn btn-primary lni lni-empty-file btn-sm"
+                                            data-bs-toggle="modal" id="btn-print{{$data->id}}"
+                                            data-bs-target="#exampleLargeModal{{$data->id}}" data-bs-tool="tooltip"
+                                            data-bs-placement="top" title="Print Invoice">
+                                    </button>
+                                    @include('manager.rental.invoice')
+                                </td>
+                                <td>
+                                    <button data-bs-toggle="modal"
+                                            data-bs-target="#exampleVerticallycenteredModal{{$data->id}}"
+                                            class="btn btn-danger btn-sm lni lni-warning mt-1"
+                                            data-bs-placement="top" title="Problem">
+                                    </button>
+                                    <div class="modal fade" id="exampleVerticallycenteredModal{{$data->id}}" tabindex="-1"
+                                         aria-hidden="true">
+                                        <div class="modal-dialog modal-dialog-centered">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h5 class="modal-title">Descrpti Proble</h5>
+                                                    <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                            aria-label="Close"></button>
+                                                </div>
+                                                <form action="{{route('manager.problem.store')}}"
+                                                      method="POST">
+                                                    @csrf
+                                                    <div class="modal-body">
+                                                        <input value="{{$data->id}}" type="hidden" name="rental_id"
+                                                               class="form-control">
+                                                        <label class="col-form-label">Descript</label>
+                                                        <textarea type="text" name="descript"
+                                                                  class="form-control"
+                                                                  placeholder="Enter Descript"></textarea>
+                                                    </div>
+                                                    <div class="modal-footer">
+                                                        <button type="button" class="btn btn-secondary"
+                                                                data-bs-dismiss="modal">Close
+                                                        </button>
+                                                        <button type="submit" class="btn btn-primary">Save<i
+                                                                class="bx bx-save"></i></button>
+                                                    </div>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <a href="{{route('manager.rental.edit', $data->id)}}"
+                                       class="btn-sm btn btn-warning lni lni-pencil mt-1 me-1"
+                                       data-bs-toggle="tooltip" data-bs-placement="top" title="Edit">
+                                    </a>
+                                    <a href="https://api.whatsapp.com/send?phone=62{{$data->cust->phone}}&text=Halo%20Customer%20yth,%20masa%20tenggang%20peminjaman%20barang%20anda%20tersisa%20 3 %20Hari%20segera%20konfirmasi%20peminjaman%20anda%20Termiaksih%20Atas%20Perhatianya.&source=&data="
+                                       class="btn-sm btn btn-success lni lni-whatsapp me-1 mt-1"
+                                       data-bs-toggle="tooltip" data-bs-placement="top" title="Chat Customer">
+                                    </a>
 
+                                    <form action="{{ route('manager.rental.finis', $data->id) }}" method="POST">
+                                        @csrf
+                                        <button type="submit"
+                                                class="btn-sm btn btn-success lni lni-checkmark  mt-1"
+                                                data-bs-toggle="tooltip" data-bs-placement="top"
+                                                title="Finished">
 
+                                        </button>
+                                    </form>
+
+                                </td>
+                    </tr>
+                    @endif
+                    @endforeach
+                    </tbody>
+                </table>
             </div>
         </div>
     </div>
-</div>
+    <div class="card">
+        <div class="card-head">
+            <div class="row">
+                <div class="col-6">
+                    <div class="container mt-3">
+                        <h4 class="text-uppercase">Menunggu Persetujuan</h4>
+                    </div>
+                </div>
 
+            </div>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table id="list2" class="table table-striped table-bordered fs-7 small-text" style="width:100%">
+                    <thead>
+                    <tr>
+                        <th width="2%" class="text-center">No</th>
+                        <th>No Invoice</th>
+                        <th>Name</th>
+                        <th>Total <br>Inv</th>
+                        <th width="">Ung <br>Masuk</th>
+                        <th>Sisa <br>Bayar</th>
+                        <th>Fee</th>
+                        <th>Discount</th>
+                        <th>Start Date</th>
+                        <th>End Date</th>
+                        <th class="text-center">Total Day</th>
+                        <th class="text-center">Action</th>
+                        <th class="text-center">Status</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr>
+                        @foreach($rentals as $key => $data)
+                            @if($data->status == 3)
+                                <td>{{$key +1}}</td>
+                                <td>{{$data->no_inv}}</td>
+                                <td>{{$data->cust->name}}</td>
+                                <td>
+                                    @if($data->total_invoice)
+                                        {{formatRupiah($data->total_invoice)}}
+                                    @else
+                                        Rp. 0
+                                    @endif
+                                </td>
+                                <td>{{formatRupiah($data->nominal_in)}}</td>
+                                <td>{{formatRupiah($data->nominal_out)}}</td>
+                                <td>{{formatRupiah($data->fee)}}</td>
+                                <td>{{formatRupiah($data->diskon)}}</td>
+                                <td>
+                                    {{formatId($data->date_start)}}
+                                </td>
+                                <td>
+                                    {{formatId($data->date_end)}}
+                                </td>
+                                <td class="text-center">{{$data->days_difference}} Day</td>
+                                <td class="text-center">
+                                    <a href="{{route('manager.rental.edit', $data->id)}}"
+                                       class="btn-sm btn btn-warning lni lni-pencil mt-1 me-1"
+                                       data-bs-toggle="tooltip" data-bs-placement="top" title="Edit">
+                                    </a>
+                                </td>
+                                <td class="text-center">
+                                    <span class="badge bg-warning">Waiting</span>
+                                </td>
+                    </tr>
+                    @endif
+                    @endforeach
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+@endsection
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+<style>
+    .small-text {
+        font-size: 0.9rem; /* Ukuran font lebih kecil */
+    }
+</style>
 @push('head')
-    <style>
-        /* CSS khusus untuk print */
-        @media print {
 
-            @page {
-                size: A4;
-                margin: 0;
-            }
-
-            .table-style {
-                width: 100%;
-                margin-top: 4px;
-                margin-bottom: 4px;
-                border-bottom-width: 0;
-            }
-
-            .modal-dialog,
-            .modal-dialog * {
-                visibility: visible;
-            }
-
-            .modal-dialog {
-                position: absolute;
-                left: 0;
-                top: 0;
-                width: 100%;
-                margin: 0;
-                padding: 0;
-            }
-            td{
-                font-size: 12px;
-            }
-            th{
-                font-size: 12px;
-            }
-        }
-
-        th.sjg {
-            background-color: #fbd4b3 !important; /* bg-secondary bg-opacity-50 */
-            -webkit-print-color-adjust: exact; /* Forcing color to be printed */
-            color-adjust: exact; /* Forcing color to be printed in Firefox */
-        }
-
-        .img-surat {
-            width: 20%;
-        }
-
-        .modal-surat {
-            padding: 15mm;
-            font-size: 12px;
-        }
-        .border-pdf,
-        .border-pdf th,
-        .border-pdf td{
-            border-top-width:1px;
-            border-bottom-width:1px;
-            border-right-width:1px;
-            border-left-width:1px;
-        }
-    </style>
 @endpush
 @push('js')
-    <!-- DOMPurify wajib -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/dompurify/2.3.10/purify.min.js"></script>
-
-    <!-- jsPDF -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
-
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.all.min.js"></script>
     <script>
-        function printSuratJalan(modalId) {
-            var printContents = document.getElementById(modalId).innerHTML;
-            var originalContents = document.body.innerHTML;
+        $(document).ready(function () {
+            var table = $('#list2').DataTable({
+                lengthChange: true,
 
-            document.body.innerHTML = printContents;
-            window.print();
-            document.body.innerHTML = originalContents;
-            location.reload(); // Reload untuk mengembalikan tampilan asli
-        }
-    </script>
-    <script>
-        async function downloadSuratJalan(modalId) {
-            const { jsPDF } = window.jspdf;
-
-            const content = document.getElementById(modalId).innerHTML;
-
-            const pdf = new jsPDF('p', 'pt', 'a4');
-
-            await pdf.html(content, {
-                callback: function (pdf) {
-                    pdf.save("surat_jalan.pdf");
-                },
-                x: 10,
-                y: 10,
-                width: 575,
-                windowWidth: 1200
             });
-        }
+
+            // Tambahkan tombol ekspor ke container
+            table.on('order.dt search.dt', function () {
+                let i = 1;
+                table.cells(null, 0, {search: 'applied', order: 'applied'}).every(function (cell) {
+                    this.data(i++);
+                });
+            }).draw();
+        });
+        $(document).ready(function () {
+            var table = $('#aktif').DataTable();
+
+            // Mengurutkan ulang nomor saat tabel diurutkan atau difilter
+            table.on('order.dt search.dt', function () {
+                let i = 1;
+                table.cells(null, 0, {search: 'applied', order: 'applied'}).every(function (cell) {
+                    this.data(i++);
+                });
+            }).draw();
+        });
+
+        document.addEventListener('DOMContentLoaded', function () {
+            // Tambahkan event listener untuk tombol "Finish"
+            document.querySelectorAll('form button[type="submit"]').forEach(function (button) {
+                button.addEventListener('click', function (event) {
+                    event.preventDefault(); // Mencegah form dikirimkan langsung
+
+                    const form = this.closest('form'); // Ambil form terdekat
+
+                    Swal.fire({
+                        title: 'Konfirmasi',
+                        text: "Apakah Anda yakin ingin menyelesaikan rental ini?",
+                        icon: 'warning',
+                        showCancelButton: true,
+                        confirmButtonColor: '#3085d6',
+                        cancelButtonColor: '#d33',
+                        confirmButtonText: 'Ya, selesai!',
+                        cancelButtonText: 'Batal'
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            form.submit(); // Kirimkan form jika tombol "Ya" diklik
+                        }
+                    });
+                });
+            });
+        });
     </script>
-
-
 @endpush
