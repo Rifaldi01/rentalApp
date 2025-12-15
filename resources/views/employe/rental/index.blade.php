@@ -137,18 +137,23 @@
                                                     @csrf
                                                     <div class="container">
                                                         <div class="mt-2 mb-2">
-                                                            <div class="table-responsive" style="max-height: 30vh;">
+                                                            <div class="table-responsive">
                                                                 <table class="table table-bordered table-responsive w-50" >
                                                                     <thead>
                                                                     <tr>
-                                                                        <td colspan="5">Note : @if($data->problems->isNotEmpty())
-                                                                                @foreach($data->problems as $problem)
-                                                                                    {{ $problem->descript }}
-                                                                                @endforeach
-                                                                            @else
-                                                                                <span class="text-muted">Tidak ada keterangan</span>
-                                                                            @endif
+                                                                        <td colspan="5">
+                                                                            <div class="note-text">
+                                                                                <strong>Note :</strong>
+                                                                                @if($data->problems->isNotEmpty())
+                                                                                    @foreach($data->problems as $problem)
+                                                                                        {{ $problem->descript }}
+                                                                                    @endforeach
+                                                                                @else
+                                                                                    <span class="text-muted">Tidak ada keterangan</span>
+                                                                                @endif
+                                                                            </div>
                                                                         </td>
+
                                                                     </tr>
                                                                     <tr>
                                                                         <th class="text-center" width="1%">No</th>
