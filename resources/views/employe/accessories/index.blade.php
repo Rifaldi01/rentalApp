@@ -37,7 +37,7 @@
                             <td>{{ $data['name'] }}</td>
                             <td>{{ $data['stok_all'] }}</td>
                             <td>{{ $data['stok'] }}</td>
-                            <td>{{ $data['rentedQty'] }}</td>
+                            <td>0</td>
                             <td>{{ $data['borrowedQty'] }}</td>
                             <td>{{ $data['maintenanceQty'] }}</td>
                             <td>
