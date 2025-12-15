@@ -10,6 +10,6 @@ class AccessoriesIn extends Model
 
     public function accessories()
     {
-        return $this->belongsTo(Accessories::class);
+        return $this->belongsTo(Accessories::class)->withTrashed();
     }
 }
