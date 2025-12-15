@@ -34,6 +34,7 @@ Route::group(['middleware' => ['auth:web', 'role:employe'], 'prefix' => 'employe
 
 
     Route::get('/accessories', [AccessoriesController::class, 'index'])->name('employe.acces');
+    Route::delete('/accessories/{id}', [AccessoriesController::class, 'destroy'])->name('employe.acces.destroy');
     Route::post('/sale/', [ItemController::class, 'storesale'])->name('employe.item.sale');
     Route::post('/accessories/store', [AccessoriesController::class, 'store'])->name('employe.acces.store');
     Route::put('/accessories/{id}', [AccessoriesController::class, 'update'])->name('employe.acces.update');

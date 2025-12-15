@@ -54,24 +54,24 @@ class ItemController extends Controller
      */
     public function create($id = null)
     {
-        $inject = [
-            'url' => route('employe.item.store'),
-            //'cat' => Category::pluck('name', 'id')->toArray(),
-
-        ];
-        if ($id){
-            $item = Item::whereId($id)->first();
-            $inject = [
-                'url' => route('employe.item.update', $id),
-                'item' => $item,
-                //'cat' => Category::pluck('name', 'id')->toArray(),
-
-            ];
-        }
         $cat = Category::all();
-        //return $cat;
-        return view('employe.item.create', $inject, compact('cat'));
+
+        if ($id) {
+            $item = Item::with('itemIn')->findOrFail($id);
+
+            return view('employe.item.create', [
+                'url'  => route('employe.item.update', $id),
+                'item' => $item,
+                'cat'  => $cat,
+            ]);
+        }
+
+        return view('employe.item.create', [
+            'url' => route('employe.item.store'),
+            'cat' => $cat,
+        ]);
     }
+
 
     /**
      * Store a newly created resource in storage.
@@ -142,9 +142,30 @@ class ItemController extends Controller
      */
     public function destroy(string $id)
     {
-        Item::whereId($id)->delete();
-        Alert::success('Success', 'Delet Iteme Success');
-        return back();
+        DB::transaction(function () use ($id) {
+
+            $item = Item::with('itemIn')->findOrFail($id);
+
+            // Hapus relasi itemIn (jika ada)
+            if ($item->itemIn) {
+                $item->itemIn->delete();
+            }
+
+            // Hapus image fisik (jika ada)
+            if ($item->image) {
+                foreach (json_decode($item->image, true) as $image) {
+                    $path = public_path('images/item/' . $image);
+                    if (file_exists($path)) {
+                        unlink($path);
+                    }
+                }
+            }
+
+            // Soft delete item
+            $item->delete();
+        });
+
+        return back()->with('success', 'Item deleted successfully');
     }
 
     private function save(Request $request, $id = null)

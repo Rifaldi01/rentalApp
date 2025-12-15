@@ -76,9 +76,9 @@
                 <div class="mt-3">
                     <button type="submit" class="btn btn-dnd float-end" id="submitBtn">Save<i class="bx bx-save"></i> </button>
                     @if(isset($item))
-                        <a href="{{route('admin.item.index')}}" class="btn btn-warning float-end me-2"><i class="bx bx-undo"></i>Back</a>
+                        <a href="{{route('manager.item.index')}}" class="btn btn-warning float-end me-2"><i class="bx bx-undo"></i>Back</a>
                     @else
-                        <a href="{{route('admin.item.index')}}" class="btn btn-warning float-end me-2"><i class="bx bx-list-ul"></i>List Item</a>
+                        <a href="{{route('manager.item.index')}}" class="btn btn-warning float-end me-2"><i class="bx bx-list-ul"></i>List Item</a>
                     @endif
                 </div>
             </form>
@@ -87,10 +87,10 @@
 @endsection
 
 @push('head')
-    
+
 @endpush
 @push('js')
-    
+
 <script>
         $(document).ready(function() {
             $('#submitBtn').click(function() {

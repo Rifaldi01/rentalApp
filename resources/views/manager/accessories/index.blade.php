@@ -41,7 +41,7 @@
                         <td>{{ $data['borrowedQty'] }}</td>
                         <td>{{ $data['maintenanceQty'] }}</td>
                         <td>
-                            <a href="{{ route('admin.acces.destroy', $data['id']) }}" data-confirm-delete="true" class="btn btn-danger btn-sm bx bx-trash" data-bs-toggle="tooltip" data-bs-placement="top" title="Delete"></a>
+                            <a href="{{ route('manager.acces.destroy', $data['id']) }}" data-confirm-delete="true" class="btn btn-danger btn-sm bx bx-trash" data-bs-toggle="tooltip" data-bs-placement="top" title="Delete"></a>
 
                             <button data-bs-toggle="modal" data-bs-target="#exampleVerticallycenteredModal{{ $data['id'] }}" class="btn btn-warning btn-sm float-end bx bx-edit ms-2" data-bs-placement="top" title="Edit"></button>
                             <div class="modal fade" id="exampleVerticallycenteredModal{{ $data['id'] }}" tabindex="-1" aria-hidden="true">

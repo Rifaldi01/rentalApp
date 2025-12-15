@@ -56,7 +56,7 @@
                 </div>
                 <div class="mt-3 mb-2">
                     <label class="col-form-label">Description</label>
-                    <textarea name="description" class="form-control" placeholder="Enter Description">{{isset($item) ? $item->itemIn->description : null}}</textarea>
+                    <textarea name="description" class="form-control" placeholder="Enter Description">{{ $item->itemIn->description ?? '' }}</textarea>
                 </div>
                 <div class="mt-3 mb-2">
                     <label class="col-form-label">Image</label>
