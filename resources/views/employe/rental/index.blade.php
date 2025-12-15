@@ -138,7 +138,7 @@
                                                     <div class="container">
                                                         <div class="mt-2 mb-2">
                                                             <div class="table-responsive">
-                                                                <table class="table table-bordered table-responsive w-50" >
+                                                                <table class="table table-bordered table-responsive w-100" >
                                                                     <thead>
                                                                     <tr>
                                                                         <td colspan="5">
