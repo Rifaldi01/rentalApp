@@ -137,8 +137,8 @@
                                                     @csrf
                                                     <div class="container">
                                                         <div class="mt-2 mb-2">
-                                                            <div class="table-responsive" style="max-height: 60vh;">
-                                                                <table class="table table-bordered table-responsive" >
+                                                            <div class="table-responsive" style="max-height: 30vh;">
+                                                                <table class="table table-bordered table-responsive w-50" >
                                                                     <thead>
                                                                     <tr>
                                                                         <td colspan="5">Note : @if($data->problems->isNotEmpty())
