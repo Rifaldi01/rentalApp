@@ -263,7 +263,7 @@
 @push('head')
     <style>
         .note-text {
-            max-width: 600px;      /* batas lebar */
+            max-width: 1200px;      /* batas lebar */
             white-space: normal;   /* teks turun ke bawah */
             word-wrap: break-word;
             word-break: break-word;
