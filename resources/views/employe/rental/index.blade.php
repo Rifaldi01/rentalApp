@@ -261,7 +261,14 @@
     </div>
 @endsection
 @push('head')
-
+    <style>
+        .note-text {
+            max-width: 600px;      /* batas lebar */
+            white-space: normal;   /* teks turun ke bawah */
+            word-wrap: break-word;
+            word-break: break-word;
+        }
+    </style>
 @endpush
 @push('js')
     <script>
