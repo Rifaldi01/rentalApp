@@ -75,29 +75,42 @@ class CustomerController extends Controller
     {
 
         $customer = Customer::findOrFail($id);
-        $rental = $customer->rental()
+        $rentals = $customer->rental()
             ->leftjoin('accessories_categories as a', 'a.rental_id', '=', 'rentals.id')
             ->leftjoin('accessories as b', 'a.accessories_id', '=', 'b.id')
             ->select(
                 'rentals.id', 'rentals.customer_id', 'rentals.item_id', 'rentals.name_company',
                 'rentals.addres_company', 'rentals.phone_company', 'rentals.no_po','rentals.date_start',
-                'rentals.date_end', 'rentals.status', 'a.rental_id',
-                DB::raw('GROUP_CONCAT(b.name) as access')
+                'rentals.date_end', 'rentals.status', 'a.rental_id',  'rentals.total_invoice',
+                DB::raw('GROUP_CONCAT(b.name) as access'),
             )
             ->groupBy(
                 'rentals.id', 'rentals.customer_id', 'rentals.item_id', 'rentals.name_company',
                 'rentals.addres_company', 'rentals.phone_company', 'rentals.no_po', 'rentals.date_start',
-                'rentals.date_end', 'rentals.status', 'a.rental_id'
-            )
-            ->get();
-        foreach ($rental as $data) {
+                'rentals.date_end', 'rentals.status', 'a.rental_id', 'rentals.total_invoice',
+            )->get();
+        foreach ($rentals as $data) {
             $dateStart = Carbon::parse($data->date_start);
             $dateEnd = Carbon::parse($data->date_end);
             $daysDifference = $dateStart->diffInDays($dateEnd);
             $data->days_difference = $daysDifference;
         }
+        $totalInvoice = $rentals->sum('total_invoice');
 
-        return view('admin.customer.show', compact('customer', 'rental'));
+
+
+        // Hitung selisih hari
+
+        foreach ($rentals as $data) {
+
+            $data->days_difference = Carbon::parse($data->date_start)
+
+                ->diffInDays(Carbon::parse($data->date_end));
+
+        }
+
+
+        return view('admin.customer.show', compact('customer', 'rentals', 'totalInvoice'));
     }
 
     /**

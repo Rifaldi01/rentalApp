@@ -112,6 +112,8 @@ class AccessoriesController extends Controller
             'accessories_id' => $accessory->id,
             'qty'            => $request->stok,
             'description'    => $request->description ?? null, // opsional
+            'created_at'     => $request->created_at,
+
         ]);
 
         return back()->with('Success', 'Stok Accessories berhasil ditambah');

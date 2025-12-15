@@ -43,7 +43,7 @@
                         @foreach($customer as $key => $data)
                             <td>{{$key +1}}</td>
                             <td>
-                                <a href="{{route('manager.customer.show', $data->id)}}" class="text-dark">
+                                <a href="{{route('admin.customer.show', $data->id)}}" class="text-dark">
                                     {{$data->name}}
                                 </a>
                             </td>

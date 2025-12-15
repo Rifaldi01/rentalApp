@@ -25,11 +25,12 @@
                         <th>Start Date</th>
                         <th>End Date</th>
                         <th class="text-center">Total Day</th>
+                        <th class="text-center">Total Invoice</th>
                         <th class="text-center">Status</th>
                     </tr>
                     </thead>
                     <tbody>
-                    @foreach($rental as $key => $data)
+                    @foreach($rentals as $key => $data)
                     <tr>
                         <td>{{$key +1}}</td>
                         <td>
@@ -61,6 +62,7 @@
                             {{formatId($data->date_end)}}
                         </td>
                         <td class="text-center" width="10%">{{$data->days_difference}}</td>
+                        <td class="text-center" width="10%">{{formatRupiah($data->total_invoice)}}</td>
                         <td class="text-center">
                             @if($data->status == 1)
                                 <span class="badge bg-success">Rental</span>
@@ -72,7 +74,15 @@
                         </td>
                     </tr>
                     @endforeach
+                    <tfoot>
+                    <tr class="fw-bold">
+                        <td colspan="7" class="text-end ">Total Invoice</td>
+                        <td class="text-center">{{ formatRupiah($totalInvoice ?? 0) }}</td>
+                    </tr>
+                    </tfoot>
+
                 </table>
+
             </div>
         </div>
     </div>

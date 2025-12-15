@@ -137,88 +137,90 @@
                                                     @csrf
                                                     <div class="container">
                                                         <div class="mt-2 mb-2">
-                                                            <table class="table table-bordered">
-                                                                <thead>
-                                                                <tr>
-                                                                    <td colspan="5">Note : @if($data->problems->isNotEmpty())
-                                                                            @foreach($data->problems as $problem)
-                                                                                {{ $problem->descript }}
-                                                                            @endforeach
-                                                                        @else
-                                                                            <span class="text-muted">Tidak ada keterangan</span>
-                                                                        @endif
-                                                                    </td>
-                                                                </tr>
-                                                                <tr>
-                                                                    <th class="text-center" width="1%">No</th>
-                                                                    <th class="text-center">Nama Barang</th>
-                                                                    <th class="text-center">Belum Kembali</th>
-                                                                    <th class="text-center" width="10%">Barang Kembali
-                                                                    </th>
-                                                                    <th class="text-center">No Seri</th>
-                                                                </tr>
-                                                                </thead>
-                                                                <tbody>
-                                                                @php
-                                                                    $itemIds = json_decode($data->item_id);
-                                                                    $no = 1;
-                                                                @endphp
-
-                                                                {{-- Barang utama --}}
-                                                                @if(is_array($itemIds))
-                                                                    @foreach($itemIds as $index => $itemId)
-                                                                        @php
-                                                                            $item = \App\Models\Item::find($itemId);
-                                                                        @endphp
-                                                                        <tr>
-                                                                            <td class="text-center">{{ $no++ }}</td>
-                                                                            <td>{{ $item ? $item->name : 'Item not found' }}</td>
-                                                                            <td class="text-center">-</td>
-                                                                            <td class="text-center">
-                                                                                @if($item && $item->status == 2)
-                                                                                    {{-- Jika status masih 1 (belum selesai), tampilkan checkbox --}}
-                                                                                    <input type="hidden"
-                                                                                           name="items[{{ $index }}][id]"
-                                                                                           value="{{ $item->id }}">
-                                                                                    <input type="checkbox"
-                                                                                           name="items[{{ $index }}][status]"
-                                                                                           value="0">
-                                                                                @else
-                                                                                    {{-- Jika status bukan 1, tampilkan badge selesai --}}
-                                                                                    <span class="badge bg-secondary">Selesai</span>
-                                                                                @endif
-                                                                            </td>
-
-                                                                            <td>{{ $item ? $item->no_seri : 'Item not found' }}</td>
-                                                                        </tr>
-                                                                    @endforeach
-                                                                @endif
-
-                                                                {{-- Accessories --}}
-                                                                @foreach($data->accessoriescategory as $i => $acces)
+                                                            <div class="table-responsive">
+                                                                <table class="table table-bordered table-responsive">
+                                                                    <thead>
                                                                     <tr>
-                                                                        <td class="text-center">{{ $no++ }}</td>
-                                                                        <td>{{ $acces->accessory ? $acces->accessory->name : 'Not Found' }}</td>
-                                                                        <td class="text-center">{{ $acces->accessories_quantity }}</td>
-                                                                        <td class="text-center">
-                                                                            @if($acces->accessories_quantity != 0)
-                                                                                <input type="hidden"
-                                                                                       name="accessories[{{ $i }}][id]"
-                                                                                       value="{{ $acces->id }}">
-                                                                                <input type="number"
-                                                                                       name="accessories[{{ $i }}][kembali]"
-                                                                                       class="form-control" min="0"
-                                                                                       value="0">
+                                                                        <td colspan="5">Note : @if($data->problems->isNotEmpty())
+                                                                                @foreach($data->problems as $problem)
+                                                                                    {{ $problem->descript }}
+                                                                                @endforeach
                                                                             @else
-                                                                                <span
-                                                                                    class="badge bg-secondary">Selesai</span>
+                                                                                <span class="text-muted">Tidak ada keterangan</span>
                                                                             @endif
                                                                         </td>
-                                                                        <td>Aksesoris</td>
                                                                     </tr>
-                                                                @endforeach
-                                                                </tbody>
-                                                            </table>
+                                                                    <tr>
+                                                                        <th class="text-center" width="1%">No</th>
+                                                                        <th class="text-center">Nama Barang</th>
+                                                                        <th class="text-center">Belum Kembali</th>
+                                                                        <th class="text-center" width="10%">Barang Kembali
+                                                                        </th>
+                                                                        <th class="text-center">No Seri</th>
+                                                                    </tr>
+                                                                    </thead>
+                                                                    <tbody>
+                                                                    @php
+                                                                        $itemIds = json_decode($data->item_id);
+                                                                        $no = 1;
+                                                                    @endphp
+
+                                                                    {{-- Barang utama --}}
+                                                                    @if(is_array($itemIds))
+                                                                        @foreach($itemIds as $index => $itemId)
+                                                                            @php
+                                                                                $item = \App\Models\Item::find($itemId);
+                                                                            @endphp
+                                                                            <tr>
+                                                                                <td class="text-center">{{ $no++ }}</td>
+                                                                                <td>{{ $item ? $item->name : 'Item not found' }}</td>
+                                                                                <td class="text-center">-</td>
+                                                                                <td class="text-center">
+                                                                                    @if($item && $item->status == 2)
+                                                                                        {{-- Jika status masih 1 (belum selesai), tampilkan checkbox --}}
+                                                                                        <input type="hidden"
+                                                                                               name="items[{{ $index }}][id]"
+                                                                                               value="{{ $item->id }}">
+                                                                                        <input type="checkbox"
+                                                                                               name="items[{{ $index }}][status]"
+                                                                                               value="0">
+                                                                                    @else
+                                                                                        {{-- Jika status bukan 1, tampilkan badge selesai --}}
+                                                                                        <span class="badge bg-secondary">Selesai</span>
+                                                                                    @endif
+                                                                                </td>
+
+                                                                                <td>{{ $item ? $item->no_seri : 'Item not found' }}</td>
+                                                                            </tr>
+                                                                        @endforeach
+                                                                    @endif
+
+                                                                    {{-- Accessories --}}
+                                                                    @foreach($data->accessoriescategory as $i => $acces)
+                                                                        <tr>
+                                                                            <td class="text-center">{{ $no++ }}</td>
+                                                                            <td>{{ $acces->accessory ? $acces->accessory->name : 'Not Found' }}</td>
+                                                                            <td class="text-center">{{ $acces->accessories_quantity }}</td>
+                                                                            <td class="text-center">
+                                                                                @if($acces->accessories_quantity != 0)
+                                                                                    <input type="hidden"
+                                                                                           name="accessories[{{ $i }}][id]"
+                                                                                           value="{{ $acces->id }}">
+                                                                                    <input type="number"
+                                                                                           name="accessories[{{ $i }}][kembali]"
+                                                                                           class="form-control" min="0"
+                                                                                           value="0">
+                                                                                @else
+                                                                                    <span
+                                                                                        class="badge bg-secondary">Selesai</span>
+                                                                                @endif
+                                                                            </td>
+                                                                            <td>Aksesoris</td>
+                                                                        </tr>
+                                                                    @endforeach
+                                                                    </tbody>
+                                                                </table>
+                                                            </div>
                                                         </div>
                                                     </div>
 
