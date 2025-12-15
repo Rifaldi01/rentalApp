@@ -293,4 +293,9 @@ class ItemController extends Controller
         $ins =  ItemIn::with('item')->get();
         return view('employe.item.itemin', compact('ins'));
     }
+    public function iteminDestroy($id){
+        itemIn::whereId($id)->delete();
+        return back()->with('success', 'Accessories has been deleted successfully');
+    }
+
 }

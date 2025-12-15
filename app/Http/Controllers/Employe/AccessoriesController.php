@@ -123,6 +123,10 @@ class AccessoriesController extends Controller
         $ins = AccessoriesIn::with('accessories')->get();
         return view('employe.accessories.accesin', compact('ins'));
     }
+    public function accesinDestroy($id){
+        AccessoriesIn::whereId($id)->delete();
+        return back()->with('success', 'Accessories has been deleted successfully');
+    }
     public function destroy(string $id)
     {
         Accessories::whereId($id)->delete();
