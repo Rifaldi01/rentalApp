@@ -37,7 +37,7 @@
                             <td>{{ $data['name'] }}</td>
                             <td>{{ $data['stok_all'] }}</td>
                             <td>{{ $data['stok'] }}</td>
-                            <td>0</td>
+                            <td>{{ $data['rentedQty'] }}</td>
                             <td>{{ $data['borrowedQty'] }}</td>
                             <td>{{ $data['maintenanceQty'] }}</td>
                             <td>
@@ -165,6 +165,7 @@
                     <thead>
                     <tr>
                         <th width="2%">No</th>
+                        <th>Inovice</th>
                         <th>Name</th>
                         <th>Customer</th>
                         <th>Qty</th>
@@ -177,6 +178,13 @@
                     @foreach($rentals as $key => $data)
                         <tr>
                             <td data-index="{{ $key + 1 }}">{{ $key + 1 }}</td>
+                            <td>
+                                @if($data->rental_id)
+                                    {{ $data->rental->no_inv ?? '-'}}
+                                @else
+                                    -
+                                @endif
+                            </td>
                             <td>
                                 @if($data->accessories_id)
                                     {{ $data->accessory->name ?? '-'}}
