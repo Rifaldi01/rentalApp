@@ -210,7 +210,7 @@
                         </tr>
                         <tr>
                             <td class="text-end bg-dnd" style="font-size: 10px; background-color: #fbd4b3;">Total : Rp.</td>
-                            <td class="text-end bg-dnd" width="10%" style="font-size: 10px; background-color: #fbd4b3;">{{ formatRupiah($data->total_invoice + $data->ppn - $data->diskon - $data->fee) }}</td>
+                            <td class="text-end bg-dnd" width="10%" style="font-size: 10px; background-color: #fbd4b3;">{{ formatRupiah($data->total_invoice + $data->ppn - $data->diskon - $data->fee - $data->nominal_in) }}</td>
                         </tr>
                         </thead>
                     </table>
