@@ -252,4 +252,11 @@ class ItemController extends Controller
         $item->save();
         return back()->withSuccess('Item Sedang dirental');
     }
+    public function selesai($id)
+    {
+        $item = Item::findOrFail($id);
+        $item->status = 0;
+        $item->save();
+        return back()->withSuccess('Item Selesai dirental');
+    }
 }

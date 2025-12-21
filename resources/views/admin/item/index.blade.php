@@ -188,14 +188,32 @@
 {{--                                        </div>--}}
 {{--                                    </div>--}}
 {{--                                </div>--}}
-                                <form action="{{ route('admin.item.rentItm', $data->id) }}" method="POST">
-                                    @csrf
-                                    <button type="submit"
-                                            class="konfir btn btn-secondary btn-sm bx bx-history" data-bs-toggle="tooltip"
-                                            data-bs-placement="top" title="Rental">
+                                <div class="row">
+                                    <div class="col-lg-6">
+                                        <form action="{{ route('admin.item.rentItm', $data->id) }}" method="POST">
+                                            @csrf
+                                            <button type="submit"
+                                                    class="konfir btn btn-secondary btn-sm bx bx-history" data-bs-toggle="tooltip"
+                                                    data-bs-placement="top" title="Rental">
 
-                                    </button>
-                                </form>
+                                            </button>
+                                        </form>
+                                    </div>
+                                    <div class="col-lg-6">
+                                       <div class="float-end ms-5">
+                                           @if($data->status == 2)
+                                               <form action="{{ route('admin.item.selesai', $data->id) }}" method="POST">
+                                                   @csrf
+                                                   <button type="submit"
+                                                           class="selesai btn btn-success btn-sm bx bx-check" data-bs-toggle="tooltip"
+                                                           data-bs-placement="top" title="Selesai">
+
+                                                   </button>
+                                               </form>
+                                           @endif
+                                       </div>
+                                    </div>
+                                </div>
                             </td>
                         </tr>
                     @endforeach
@@ -235,6 +253,31 @@
                     Swal.fire({
                         title: 'Konfirmasi',
                         text: "Apakah Item Sedang Dirental?",
+                        icon: 'warning',
+                        showCancelButton: true,
+                        confirmButtonColor: '#3085d6',
+                        cancelButtonColor: '#d33',
+                        confirmButtonText: 'Ya, Benar!',
+                        cancelButtonText: 'Batal'
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            form.submit(); // Kirimkan form jika tombol "Ya" diklik
+                        }
+                    });
+                });
+            });
+        });
+        document.addEventListener('DOMContentLoaded', function() {
+            // Tambahkan event listener untuk tombol "Finish"
+            document.querySelectorAll('form button.selesai').forEach(function(button) {
+                button.addEventListener('click', function(event) {
+                    event.preventDefault(); // Mencegah form dikirimkan langsung
+
+                    const form = this.closest('form'); // Ambil form terdekat
+
+                    Swal.fire({
+                        title: 'Konfirmasi',
+                        text: "Apakah Item Selesai Dirental?",
                         icon: 'warning',
                         showCancelButton: true,
                         confirmButtonColor: '#3085d6',
