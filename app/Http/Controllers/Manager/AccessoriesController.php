@@ -53,8 +53,11 @@ class AccessoriesController extends Controller
         }
 
         // Ambil data rental accessories yang sedang aktif
-        $rentals = AccessoriesCategory::where('status_acces', 1)
-            ->with('accessory', 'rental.cust')
+        $rentals = AccessoriesCategory::join('rentals', 'rentals.id', '=', 'accessories_categories.rental_id')
+            ->where('accessories_categories.status_acces', 1)
+            ->with(['accessory', 'rental.cust'])
+            ->orderBy('rentals.date_end', 'DESC')
+            ->select('accessories_categories.*')
             ->get();
     // Kirim data ke view
     return view('manager.accessories.index', compact(['accessoriesData', 'rentals']));
