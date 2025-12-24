@@ -254,7 +254,7 @@
                     </tbody>
                     <tfoot>
                     <tr>
-                        <th colspan="4" class="text-end">Total Qty</th>
+                        <th colspan="4" class="text-end">Total Accessories dirental</th>
                         <th></th>
                         <th colspan="2"></th>
                     </tr>
