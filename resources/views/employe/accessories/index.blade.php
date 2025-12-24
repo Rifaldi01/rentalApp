@@ -252,6 +252,14 @@
                         </tr>
                     @endforeach
                     </tbody>
+                    <tfoot>
+                    <tr>
+                        <th colspan="4" class="text-end">Total Qty</th>
+                        <th></th>
+                        <th colspan="2"></th>
+                    </tr>
+                    </tfoot>
+
                 </table>
             </div>
         </div>
@@ -366,28 +374,59 @@
                 }).draw();
             }
 
-            if (! $.fn.DataTable.isDataTable('#accessoriesRental')) {
+            if (!$.fn.DataTable.isDataTable('#accessoriesRental')) {
+
                 var table2 = $('#accessoriesRental').DataTable({
                     lengthChange: false,
-                    buttons: [{
-                        extend: 'pdf',
-                        exportOptions: { columns: [0,1,2,3,4] },
-                        customize: function (doc) { doc.content[1].alignment = 'center'; }
-                    }, {
-                        extend: 'print',
-                        exportOptions: { columns: [0,1,2,3,4] },
-                        customize: function (win) { $(win.document.body).find('table').addClass('table-center'); }
-                    }]
-                });
-                table2.buttons().container().appendTo('#accessoriesRental_wrapper .col-md-6:eq(0)');
+                    buttons: [
+                        {
+                            extend: 'pdf',
+                            exportOptions: { columns: [0,1,2,3,4] }
+                        },
+                        {
+                            extend: 'print',
+                            exportOptions: { columns: [0,1,2,3,4] }
+                        }
+                    ],
 
+                    footerCallback: function (row, data, start, end, display) {
+                        var api = this.api();
+
+                        // helper parsing number
+                        var intVal = function (i) {
+                            return typeof i === 'string'
+                                ? i.replace(/[^0-9]/g, '') * 1
+                                : typeof i === 'number'
+                                    ? i
+                                    : 0;
+                        };
+
+                        // JUMLAHKAN QTY BERDASARKAN HASIL SEARCH
+                        var totalQty = api
+                            .column(4, { search: 'applied' }) // kolom Qty
+                            .data()
+                            .reduce(function (a, b) {
+                                return a + intVal(b);
+                            }, 0);
+
+                        // Update footer kolom Qty
+                        $(api.column(4).footer()).html(totalQty);
+                    }
+                });
+
+                table2.buttons().container()
+                    .appendTo('#accessoriesRental_wrapper .col-md-6:eq(0)');
+
+                // Nomor urut dinamis
                 table2.on('order.dt search.dt', function () {
                     let i = 1;
-                    table2.cells(null, 0, {search: 'applied', order: 'applied'}).every(function (cell) {
-                        this.data(i++);
-                    });
+                    table2.cells(null, 0, { search: 'applied', order: 'applied' })
+                        .every(function () {
+                            this.data(i++);
+                        });
                 }).draw();
             }
+
 
             // 5) Init flatpickr untuk inputs yang mungkin dibuat/dinamis di runtime
             // (opsional) jika kamu menambahkan input datepicker secara dinamis, panggil initFlatpickrOn(el) setelah menambahkan.
