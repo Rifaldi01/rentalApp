@@ -54,8 +54,7 @@ class ReportController extends Controller
                 $diskon = $item->rental?->diskon ?? 0; // Gunakan null-safe operator dan fallback 0
                 $fee = $item->rental?->fee ?? 0; // Gunakan null-safe operator dan fallback 0
                 $ppn = $item->rental?->ppn ?? 0; // Gunakan null-safe operator dan fallback 0
-                $pph = $item->rental?->pph ?? 0; // Gunakan null-safe operator dan fallback 0
-                return $item->rental->total_invoice - $ppn - $diskon - $fee - $pph;
+                return $item->rental->nominal_in - $ppn - $diskon - $fee ;
             });
         });
 
@@ -135,8 +134,7 @@ class ReportController extends Controller
                 $diskon = $item->rental?->diskon ?? 0; // Gunakan null-safe operator dan fallback 0
                 $fee = $item->rental?->fee ?? 0; // Gunakan null-safe operator dan fallback 0
                 $ppn = $item->rental?->ppn ?? 0; // Gunakan null-safe operator dan fallback 0
-                $pph = $item->rental?->pph ?? 0; // Gunakan null-safe operator dan fallback 0
-                return $item->rental->total_invoice - $ppn - $diskon - $fee - $pph;
+                return $item->rental->nominal_in - $ppn - $diskon - $fee ;
             });
         });
 
@@ -218,8 +216,7 @@ class ReportController extends Controller
                 $diskon = $item->rental?->diskon ?? 0; // Gunakan null-safe operator dan fallback 0
                 $fee = $item->rental?->fee ?? 0; // Gunakan null-safe operator dan fallback 0
                 $ppn = $item->rental?->ppn ?? 0; // Gunakan null-safe operator dan fallback 0
-                $pph = $item->rental?->pph ?? 0; // Gunakan null-safe operator dan fallback 0
-                return $item->rental->total_invoice - $ppn - $diskon - $fee - $pph;
+                return $item->rental->nominal_in - $ppn - $diskon - $fee;
             });
         });
 
