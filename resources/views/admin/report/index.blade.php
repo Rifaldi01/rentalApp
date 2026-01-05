@@ -71,6 +71,7 @@
                         <th>Tgl Selesai</th>
                         <th>Total <br>Inv</th>
                         <th>PPN</th>
+                        <th>PPH</th>
                         <th>Fee</th>
                         <th>Discount</th>
                         <th>Total</th>
@@ -129,6 +130,7 @@
                                 @endif
                             </td>
                             <td>{{formatRupiah($datas->rental->ppn)}}</td>
+                            <td>{{formatRupiah($datas->rental->pph)}}</td>
                             <td>{{formatRupiah($datas->rental->fee)}}</td>
                             <td>{{formatRupiah($datas->rental->diskon)}}</td>
                             <td>{{formatRupiah($total[$datas->id])}}</td>

@@ -67,6 +67,7 @@ class PembayaranController extends Controller
         $nominal_in = str_replace(['Rp.', '.', ' '], '', $request->input('nominal_in'));
         $pay_debts = str_replace(['Rp.', '.', ' '], '', $request->input('pay_debts'));
         $diskon = str_replace(['Rp.', '.', ' '], '', $request->input('diskon'));
+        $fee = str_replace(['Rp.', '.', ' '], '', $request->input('fee'));
 
         // Ambil data rental
         $rental = Rental::findOrFail($id);
@@ -85,6 +86,7 @@ class PembayaranController extends Controller
         // Set nominal_in dan diskon yang baru
         $rental->nominal_in = $nominal_in;
         $rental->diskon = $diskon;
+        $rental->fee = $fee;
         $rental->save();
 
         // Simpan data ke tabel debts

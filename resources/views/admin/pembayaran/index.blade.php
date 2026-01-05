@@ -164,6 +164,21 @@
                                                             </div>
                                                         </div>
                                                         <div class="row mb-3">
+                                                            <label for="input42"
+                                                                class="col-sm-3 col-form-label">Fee</label>
+                                                            <div class="col-sm-9">
+                                                                <div class="position-relative input-icon">
+                                                                    <input type="text" class="form-control"
+                                                                        value="0" name="fee"
+                                                                        id="fee_{{ $data->id }}"
+                                                                        onkeyup="formatRupiah2(this)">
+                                                                    <span
+                                                                        class="position-absolute top-50 translate-middle-y"><i
+                                                                            class='lni lni-tag'></i></span>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="row mb-3">
                                                             <label for="input42" class="col-sm-3 col-form-label"><i
                                                                     class="text-danger">*</i> Date</label>
                                                             <div class="col-sm-9">
