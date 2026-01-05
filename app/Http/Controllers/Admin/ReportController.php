@@ -52,8 +52,9 @@ class ReportController extends Controller
         $total = $cicilan->groupBy('id')->map(function ($group) {
             return $group->sum(function ($item) {
                 $diskon = $item->rental?->diskon ?? 0; // Gunakan null-safe operator dan fallback 0
+                $fee = $item->rental?->fee ?? 0; // Gunakan null-safe operator dan fallback 0
                 $ppn = $item->rental?->ppn ?? 0; // Gunakan null-safe operator dan fallback 0
-                return $item->rental->total_invoice - $ppn - $diskon;
+                return $item->rental->total_invoice - $ppn - $diskon - $fee;
             });
         });
 
