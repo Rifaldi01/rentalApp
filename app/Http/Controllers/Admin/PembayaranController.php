@@ -122,9 +122,9 @@ class PembayaranController extends Controller
         ->get();;
 
         // Calculate totals
-        $rental = Rental::where('nominal_out', '!=', '0')->get();
+        $rentals = Rental::where('nominal_out', '!=', '0')->get();
         $bank = Bank::all();
-        $totalseharusnya = $rental->groupBy('id')->map(function ($group) {
+        $totalseharusnya = $rentals->groupBy('id')->map(function ($group) {
             return $group->sum(function ($item){
                 return $item->nominal_in + $item->nominal_out;
             });
@@ -154,7 +154,7 @@ class PembayaranController extends Controller
             'totalbersih',
             'sisabayar',
             'diskon',
-            'rental',
+            'rentals',
             'bank',
             'totalseharusnya',
             'total',
