@@ -129,12 +129,12 @@ class PembayaranController extends Controller
                 return $item->nominal_in + $item->nominal_out;
             });
         });
-        $total = $rental->groupBy('id')->map(function ($group) {
+        $total = $rentals->groupBy('id')->map(function ($group) {
             return $group->sum(function ($item){
                 return $item->nominal_in + $item->nominal_out - $item->diskon;
             });
         });
-        $hutang = $rental->sum('nominal_out');
+        $hutang = $rentals->sum('nominal_out');
         $diskon = $debt->sum(function ($item) {
             return $item->rental->diskon;
         });
