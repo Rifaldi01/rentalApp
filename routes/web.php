@@ -17,12 +17,15 @@ Route::get('/', function () {
 Auth::routes([
     'register' => false
 ]);
+Route::group(['middleware' => ['auth:web'], 'prefix' => 'employe'], function () {
+    Route::resource('/profile/edit', EditController::class)->names('profile.edit');
+});
+
 Route::group(['middleware' => ['auth:web', 'role:employe'], 'prefix' => 'employe'], function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
     Route::get('/', function () {
         return redirect()->route('dashboard');
     });
-    Route::resource('/profile/edit', EditController::class)->names('profile.edit');
 
     Route::resource('item', ItemController::class)->names('employe.item');
     Route::get('/items/sale', [ItemController::class, 'sale'])->name('employe.sale');
