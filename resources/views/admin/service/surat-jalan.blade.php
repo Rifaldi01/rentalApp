@@ -113,6 +113,16 @@
 
                     </div>
                     <div class="mt-2">
+                        <table class="table table-bordered">
+                            <tr>
+                                <td style="border-left-width:1px;">KETERANGAN
+                                    <br>{{$data->descript}}
+                                    <br>&nbsp;
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                    <div class="mt-2">
                         <table width="100%">
                             <thead>
                             <tr>
