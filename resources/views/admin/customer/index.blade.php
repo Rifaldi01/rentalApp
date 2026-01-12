@@ -85,8 +85,11 @@
                                                         aria-label="Close"></button>
                                             </div>
                                             <div class="modal-body">
-                                                <img src="{{asset('images/identity/'.$data->image)}}" style="width:100%"
-                                                     alt="">
+                                                @foreach (json_decode($data->image) as $image)
+                                                    <div class="col-md-2">
+                                                        <img src="{{ asset('images/identity/' . $image) }}" alt="Image" class="img-thumbnail mb-2">
+                                                    </div>
+                                                @endforeach
                                                 <table class="mt-3 bg-secondary">
                                                     <tr>
                                                         <th class="text-white"><p>Address : </p></th>
