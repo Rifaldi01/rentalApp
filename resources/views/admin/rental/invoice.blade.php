@@ -62,7 +62,7 @@
                         </tr>
                         <tr>
                             <td>
-                                <strong>{{ optional($data)->name_company ?? '-' }}</strong> <br>
+                                <strong>{{ optional($data)->name_company ?? ''}}</strong> <br>
                                 <strong>{{ optional($data->cust)->name ?? '-' }}</strong> <br>
                                 <strong>{{ optional($data->cust)->addres ?? '-' }}</strong>
                             </td>
