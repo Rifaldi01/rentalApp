@@ -279,7 +279,7 @@
                                     <td style="border-left: 0.5px solid #dee2e6; border-right: 0.5px solid #dee2e6;" width="30%">
                                         1. Pembayaran mohon diproses 3 hari sebelum tanggal jatuh tempo
                                         <br>
-                                        2. No. Rekening : 8105898874 - RIKA ROSITA, BCA
+                                        2. No. Rekening : 1320014716980 Mandiri a.n RIKA ROSITA
                                         <br>
                                         3. Jika Dokumen ini hilang, diubah, dan minta dibuatkan kembali, konsumen akan dikenakan biaya admin sebesar Rp.300.000,-
                                         <br>
