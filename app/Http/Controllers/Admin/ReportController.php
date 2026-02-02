@@ -222,7 +222,7 @@ class ReportController extends Controller
                 $diskon = $item->rental?->diskon ?? 0; // Gunakan null-safe operator dan fallback 0
                 $fee = $item->rental?->fee ?? 0; // Gunakan null-safe operator dan fallback 0
                 $ppn = $item->rental?->ppn ?? 0; // Gunakan null-safe operator dan fallback 0
-                return $item->nominal_in - $ppn - $diskon - $fee;
+                return $item->pay_debts - $ppn - $diskon - $fee;
             });
         });
 
