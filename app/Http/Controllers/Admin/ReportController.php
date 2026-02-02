@@ -77,7 +77,7 @@ class ReportController extends Controller
             return $item->rental->nominal_out;
         });
         $totalbersih = $cicilan->sum(function ($item) {
-            return $item->pay_debts - $item->rental->diskon - $item->rental->ppn - $item->rental->fee;
+            return $item->rental->nominal_in - $item->rental->diskon - $item->rental->ppn - $item->rental->fee;
         });
 
         // return $debt;
@@ -157,7 +157,7 @@ class ReportController extends Controller
             return $item->rental->nominal_out;
         });
         $totalbersih = $cicilan->sum(function ($item) {
-            return $item->pay_debts - $item->rental->diskon - $item->rental->ppn - $item->rental->fee;
+            return $item->rental->nominal_in - $item->rental->diskon - $item->rental->ppn - $item->rental->fee;
         });
         $totalppn = $cicilan->sum(function ($item) {
             return $item->rental->ppn;
@@ -243,7 +243,7 @@ class ReportController extends Controller
             return $item->rental->nominal_out;
         });
         $totalbersih = $cicilan->sum(function ($item) {
-            return $item->pay_debts - $item->rental->diskon - $item->rental->ppn - $item->rental->fee;
+            return $item->rental->nominal_in - $item->rental->diskon - $item->rental->ppn - $item->rental->fee;
         });
         $totalppn = $cicilan->sum(function ($item) {
             return $item->rental->ppn;
