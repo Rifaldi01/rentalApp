@@ -41,7 +41,7 @@ class ReportController extends Controller
         // Perhitungan total
         $totaldiskon = $report->sum('diskon');
         $totalin = $report->sum('nominal_in');
-        $totalfee = $report->sum('fee');
+
         $totalincome = $report->sum(function ($item) {
             return $item->nominal_in - $item->diskon;
         });
@@ -66,6 +66,9 @@ class ReportController extends Controller
         });
         $diskon = $cicilan->sum(function ($item) {
             return $item->rental->diskon;
+        });
+        $totalfee = $cicilan->sum(function ($item) {
+            return $item->rental->fee;
         });
         $totalppn = $cicilan->sum(function ($item) {
             return $item->rental->ppn;
@@ -121,7 +124,7 @@ class ReportController extends Controller
 
         // Calculate totals
         $totaldiskon = $report->sum('diskon');
-        $totalfee = $report->sum('fee');
+
         $totalin = $report->sum('nominal_in');
         $totalincome = $report->sum(function ($item) {
             return $item->nominal_in - $item->diskon;
@@ -146,6 +149,9 @@ class ReportController extends Controller
         });
         $diskon = $cicilan->sum(function ($item) {
             return $item->rental->diskon;
+        });
+        $totalfee = $cicilan->sum(function ($item) {
+            return $item->rental->fee;
         });
         $sisabayar = $cicilan->sum(function ($item) {
             return $item->rental->nominal_out;
@@ -201,7 +207,7 @@ class ReportController extends Controller
 
         // Calculate totals
         $totaldiskon = $report->sum('diskon');
-        $totalfee = $report->sum('fee');
+
         $totalin = $report->sum('nominal_in');
         $totalincome = $report->sum(function ($item) {
             return $item->nominal_in - $item->diskon;
@@ -229,6 +235,9 @@ class ReportController extends Controller
         });
         $diskon = $cicilan->sum(function ($item) {
             return $item->rental->diskon;
+        });
+        $totalfee = $cicilan->sum(function ($item) {
+            return $item->rental->fee;
         });
         $sisabayar = $cicilan->sum(function ($item) {
             return $item->rental->nominal_out;
