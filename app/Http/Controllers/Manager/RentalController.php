@@ -449,26 +449,36 @@ class RentalController extends Controller
         Alert::warning('Warning', 'The Rental Has Problem');
         return redirect()->back();
     }
-    public function hsty()
+    public function hsty(Request $request)
     {
-        $rent = Rental::latest()->paginate();
-        $title = 'Delet Rental?';
-        $text = "Are you sure you want to delete?";
-        confirmDelete($title, $text);
+        // Tahun dipilih user (jika ada)
+        $tahun = $request->tahun ?? date('Y');
 
-        $rentals = Rental::leftjoin('accessories_categories as a', 'a.rental_id', '=', 'rentals.id')
-            ->leftjoin('accessories as b', 'a.accessories_id', '=', 'b.id')
+        // List tahun untuk dropdown
+        $listTahun = Rental::selectRaw('YEAR(tgl_inv) as thn')
+            ->groupBy('thn')
+            ->orderBy('thn', 'DESC')
+            ->get();
+
+        $rentals = Rental::leftJoin('accessories_categories as a', 'a.rental_id', '=', 'rentals.id')
+            ->leftJoin('accessories as b', 'a.accessories_id', '=', 'b.id')
             ->select(
-                'rentals.id', 'rentals.customer_id', 'rentals.item_id', 'rentals.name_company', 'fee', 'rentals.updated_at',
-                'rentals.addres_company', 'rentals.phone_company', 'rentals.no_po','rentals.date_start', 'rentals.tgl_inv',
-                'rentals.date_end', 'rentals.status', 'a.rental_id', 'nominal_in', 'nominal_out', 'diskon', 'ongkir', 'rentals.image', 'rentals.no_inv',
+                'rentals.id', 'rentals.customer_id', 'rentals.item_id', 'rentals.name_company',
+                'rentals.addres_company', 'rentals.phone_company', 'rentals.no_po', 'rentals.date_start', 'date_pays',
+                'rentals.date_end', 'rentals.status', 'a.rental_id', 'nominal_in', 'nominal_out', 'diskon', 'ongkir',
+                'rentals.image', 'rentals.created_at', 'no_inv', 'rentals.deleted_at', 'rentals.keterangan_item',
+                'rentals.keterangan_acces', 'rentals.fee', 'rentals.tgl_inv', 'rentals.updated_at', 'rentals.total_invoice', 'ppn',
                 DB::raw('GROUP_CONCAT(b.name) as access')
             )
+            ->whereYear('rentals.tgl_inv', $tahun)     // FILTER TAHUN PAKAI TANGGAL INVOICE
             ->groupBy(
-                'rentals.id', 'rentals.customer_id', 'rentals.item_id', 'rentals.name_company', 'fee', 'rentals.updated_at',
-                'rentals.addres_company', 'rentals.phone_company', 'rentals.no_po', 'rentals.date_start', 'rentals.tgl_inv',
-                'rentals.date_end', 'rentals.status', 'a.rental_id', 'nominal_in', 'nominal_out', 'diskon', 'ongkir', 'rentals.image', 'rentals.no_inv',
+                'rentals.id', 'rentals.customer_id', 'rentals.item_id', 'rentals.name_company',
+                'rentals.addres_company', 'rentals.phone_company', 'rentals.no_po', 'rentals.date_start', 'date_pays',
+                'rentals.date_end', 'rentals.status', 'a.rental_id', 'nominal_in', 'nominal_out', 'diskon', 'ongkir',
+                'rentals.image', 'rentals.created_at', 'no_inv', 'rentals.deleted_at', 'rentals.keterangan_item',
+                'rentals.keterangan_acces', 'rentals.fee', 'rentals.tgl_inv', 'rentals.updated_at', 'rentals.total_invoice', 'ppn',
             )
+            ->orderBy('rentals.tgl_inv', 'DESC') // 🔥 URUTAN DARI INVOICE TERBARU → TERLAMA
             ->get();
         return view('manager.rental.history', compact('rentals'));
     }
