@@ -480,7 +480,7 @@ class RentalController extends Controller
             )
             ->orderBy('rentals.tgl_inv', 'DESC') // 🔥 URUTAN DARI INVOICE TERBARU → TERLAMA
             ->get();
-        return view('manager.rental.history', compact('rentals'));
+        return view('manager.rental.history', compact('rentals', 'listTahun', 'tahun'));
     }
     public function deleteImage(Request $request)
     {
