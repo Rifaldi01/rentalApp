@@ -10,7 +10,7 @@
                 </div>
                 <div class="col-6">
                     <div class="me-2">
-                        <form method="GET" action="{{ route('manager.rental.history') }}" class="float-end mt-3">
+                        <form method="GET" action="{{ route('manager.rental.hsty') }}" class="float-end mt-3">
                             <select name="tahun" class="form-control" style="width: 200px" onchange="this.form.submit()">
                                 <option value="">-- Pilih Tahun --</option>
 
