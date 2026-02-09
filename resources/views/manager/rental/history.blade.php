@@ -408,6 +408,7 @@
                                         </div>
                                     </div>
                                 </div>
+                                <a href="{{route('manager.rental.edit', $data->id)}}" class="btn btn-warning lni lni-pencil btn-sm"></a>
                             </td>
                     </tr>
                     @endforeach
