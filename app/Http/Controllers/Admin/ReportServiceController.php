@@ -26,25 +26,34 @@ class ReportServiceController extends Controller
             return optional($item->service)->nominal_in - optional($item->service)->diskon - optional($item->service)->biaya_ganti;
         });
 
-        $totaldiskon = $report->sum(function ($item) {
-            return optional($item->service)->diskon ?? 0;
-        });
+        $totaldiskon = $report
+            ->groupBy('service_id')
+            ->sum(function ($items) {
+                return $items->first()->service->diskon ?? 0;
+            });
 
-        $totalbiaya = $report->sum(function ($item) {
-            return optional($item->service)->biaya_ganti ?? 0;
-        });
-        $totalppn = $report->sum(function ($item) {
-            return optional($item->service)->ppn ?? 0;
-        });
+        $totalbiaya = $report
+            ->groupBy('service_id')
+            ->sum(function ($items) {
+                return $items->first()->service->biaya_ganti ?? 0;
+            });
+        $totalppn = $report
+            ->groupBy('service_id')
+            ->sum(function ($items) {
+                return $items->first()->service->ppn ?? 0;
+            });
 
         $totalin = $report->sum(function ($item) {
             return $item->pay_debts ?? 0;
         });
 
-        $totaloutside = $report->sum(function ($item) {
-            return optional($item->service)->nominal_out ?? 0;
-        });
+        $totaloutside = $report
+            ->groupBy('service_id')
+            ->sum(function ($items) {
+                return $items->first()->service->nominal_out ?? 0;
+            });
 
+        $total = $this->calculateCicilan($report);
 
         return view('admin.reportservice.index', compact(
             'totalppn',
@@ -53,7 +62,8 @@ class ReportServiceController extends Controller
             'report',
             'totalincome',
             'totaloutside',
-            'totaldiskon'
+            'totaldiskon',
+            'total'
         ));
     }
 
@@ -73,28 +83,44 @@ class ReportServiceController extends Controller
             ->whereBetween('date_pay', [$start_date, $end_date])
             ->orderBy('date_pay')
             ->get();
-        $totalincome = $report->sum(function ($item) {
-            return optional($item->service)->nominal_in - optional($item->service)->diskon - optional($item->service)->biaya_ganti;
-        });
+        $totalincome = $report
+            ->groupBy('service_id')
+            ->sum(function ($items) {
 
-        $totaldiskon = $report->sum(function ($item) {
-            return optional($item->service)->diskon ?? 0;
-        });
+                $service = optional($items->first())->service;
 
-        $totalbiaya = $report->sum(function ($item) {
-            return optional($item->service)->biaya_ganti ?? 0;
-        });
+                return ($service->nominal_in ?? 0)
+                    - ($service->diskon ?? 0)
+                    - ($service->biaya_ganti ?? 0);
+            });
+
+        $totaldiskon = $report
+            ->groupBy('service_id')
+            ->sum(function ($items) {
+                return $items->first()->service->diskon ?? 0;
+            });
+
+        $totalbiaya = $report
+            ->groupBy('service_id')
+            ->sum(function ($items) {
+                return $items->first()->service->biaya_ganti ?? 0;
+            });
+        $totalppn = $report
+            ->groupBy('service_id')
+            ->sum(function ($items) {
+                return $items->first()->service->ppn ?? 0;
+            });
 
         $totalin = $report->sum(function ($item) {
             return $item->pay_debts ?? 0;
         });
-        $totalppn = $report->sum(function ($item) {
-            return optional($item->service)->ppn ?? 0;
-        });
 
-        $totaloutside = $report->sum(function ($item) {
-            return optional($item->service)->nominal_out ?? 0;
-        });
+        $total = $this->calculateCicilan($report);
+        $totaloutside = $report
+            ->groupBy('service_id')
+            ->sum(function ($items) {
+                return $items->first()->service->nominal_out ?? 0;
+            });
         return view('admin.reportservice.index', compact(
             'totalppn',
             'report',
@@ -102,7 +128,40 @@ class ReportServiceController extends Controller
             'totalin',
             'totalincome',
             'totaloutside',
-            'totaldiskon'
+            'totaldiskon',
+            'total'
         ));
     }
+    private function calculateCicilan($report)
+    {
+        $total = [];
+
+        $grouped = $report
+            ->sortBy([['service_id','asc'],['date_pay','asc']])
+            ->groupBy('service_id');
+
+        foreach ($grouped as $serviceId => $items) {
+
+            $first = true;
+
+            foreach ($items as $item) {
+
+                $ppn = 0;
+                $diskon = 0;
+                $biayaGanti = 0;
+
+                if ($first) {
+                    $ppn = $item->service->ppn ?? 0;
+                    $diskon = $item->service->diskon ?? 0;
+                    $biayaGanti = $item->service->biaya_ganti ?? 0;
+                    $first = false;
+                }
+
+                $total[$item->id] = $item->pay_debts - $ppn - $diskon - $biayaGanti;
+            }
+        }
+
+        return $total;
+    }
+
 }

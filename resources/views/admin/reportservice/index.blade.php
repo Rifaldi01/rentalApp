@@ -83,6 +83,11 @@
                         </tr>
                     </thead>
                     <tbody>
+                    @php
+                        $shownServiceDiskon = [];
+                        $shownServicePpn = [];
+                        $shownServiceBiayaGanti = [];
+                    @endphp
                         @foreach($report as $key => $data)
                             <tr>
                                 <td data-index="{{ $key +1 }}">{{$key +1}}</td>
@@ -116,10 +121,37 @@
                                     @endif
                                 </td>
                                 <td>{{formatRupiah(optional($data->service)->total_invoice)}}</td>
-                                <td>{{formatRupiah(optional($data->service)->biaya_ganti)}}</td>
-                                <td>{{formatRupiah(optional($data->service)->ppn)}}</td>
-                                <td>{{formatRupiah(optional($data->service)->diskon)}}</td>
-                                <td>{{formatRupiah($data->service['nominal_in'] - $data->service['ppn'] - $data->service['diskon']- $data->service['biaya_ganti'])}}</td>
+                                <td>
+                                    @if(!in_array($data->service_id, $shownServiceBiayaGanti))
+                                        {{ formatRupiah($data->service->biaya_ganti) }}
+                                        @php
+                                            $shownServiceBiayaGanti[] = $data->service_id;
+                                        @endphp
+                                    @else
+                                        -
+                                    @endif
+                                </td>
+                                <td>
+                                    @if(!in_array($data->service_id, $shownServicePpn))
+                                        {{ formatRupiah($data->service->ppn) }}
+                                        @php
+                                            $shownServicePpn[] = $data->service_id;
+                                        @endphp
+                                    @else
+                                        -
+                                    @endif
+                                </td>
+                                <td>
+                                    @if(!in_array($data->service_id, $shownServiceDiskon))
+                                        {{ formatRupiah($data->service->diskon) }}
+                                        @php
+                                            $shownServiceDiskon[] = $data->service_id;
+                                        @endphp
+                                    @else
+                                        -
+                                    @endif
+                                </td>
+                                <td>{{ formatRupiah($total[$data->id] ?? 0) }}</td>
                                 <td>{{formatRupiah($data->pay_debts)}}</td>
                                 <td>{{formatRupiah(optional($data->service)->nominal_out)}}</td>
                                 <td>

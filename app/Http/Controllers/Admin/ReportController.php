@@ -57,15 +57,21 @@ class ReportController extends Controller
                 return $item->rental->total_invoice + $item->rental->ppn - $item->rental->nominal_in - $item->rental->diskon;
             });
         });
-        $diskon = $cicilan->sum(function ($item) {
-            return $item->rental->diskon;
-        });
-        $totalfee = $cicilan->sum(function ($item) {
-            return $item->rental->fee;
-        });
-        $totalppn = $cicilan->sum(function ($item) {
-            return $item->rental->ppn;
-        });
+        $diskon = $cicilan
+            ->groupBy('rental_id')
+            ->sum(function ($items) {
+                return $items->first()->rental->diskon ?? 0;
+            });
+        $totalfee = $cicilan
+            ->groupBy('rental_id')
+            ->sum(function ($items) {
+                return $items->first()->rental->fee ?? 0;
+            });
+        $totalppn = $cicilan
+            ->groupBy('rental_id')
+            ->sum(function ($items) {
+                return $items->first()->rental->ppn ?? 0;
+            });
         $sisabayar = $cicilan->sum(function ($item) {
             return $item->rental->nominal_out;
         });
@@ -169,12 +175,16 @@ class ReportController extends Controller
                 return $item->rental->total_invoice + $item->rental->ppn - $item->rental->nominal_in - $item->rental->diskon;
             });
         });
-        $diskon = $cicilan->sum(function ($item) {
-            return $item->rental->diskon;
-        });
-        $totalfee = $cicilan->sum(function ($item) {
-            return $item->rental->fee;
-        });
+        $diskon = $cicilan
+            ->groupBy('rental_id')
+            ->sum(function ($items) {
+                return $items->first()->rental->diskon ?? 0;
+            });
+        $totalfee = $cicilan
+            ->groupBy('rental_id')
+            ->sum(function ($items) {
+                return $items->first()->rental->fee ?? 0;
+            });
         $sisabayar = $cicilan->sum(function ($item) {
             return $item->rental->nominal_out;
         });
@@ -188,9 +198,11 @@ class ReportController extends Controller
             });
 
         $totalbersih = $totalPay - $totalPotongan;
-        $totalppn = $cicilan->sum(function ($item) {
-            return $item->rental->ppn;
-        });
+        $totalppn = $cicilan
+            ->groupBy('rental_id')
+            ->sum(function ($items) {
+                return $items->first()->rental->ppn ?? 0;
+            });
 
         // return $debt;
         return view('admin.report.index', compact('totalppn', 'sisabayar', 'totalfee', 'totalbersih', 'diskon', 'sisa', 'totalin', 'report', 'totaldiskon', 'totalincome', 'totaloutside', 'cicilan', 'total', 'uangmasuk'));
@@ -254,9 +266,11 @@ class ReportController extends Controller
                 return $item->rental->total_invoice + $item->rental->ppn - $item->rental->nominal_in - $item->rental->diskon;
             });
         });
-        $diskon = $cicilan->sum(function ($item) {
-            return $item->rental->diskon;
-        });
+        $diskon = $cicilan
+            ->groupBy('rental_id')
+            ->sum(function ($items) {
+                return $items->first()->rental->diskon ?? 0;
+            });
         $totalfee = $cicilan
             ->groupBy('rental_id')
             ->sum(function ($items) {
