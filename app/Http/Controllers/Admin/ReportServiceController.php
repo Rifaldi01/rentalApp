@@ -91,7 +91,8 @@ class ReportServiceController extends Controller
 
                 return ($service->nominal_in ?? 0)
                     - ($service->diskon ?? 0)
-                    - ($service->biaya_ganti ?? 0);
+                    - ($service->biaya_ganti ?? 0)
+                    - ($service->ppn ?? 0);
             });
 
         $totaldiskon = $report
@@ -146,9 +147,9 @@ class ReportServiceController extends Controller
 
             foreach ($items as $item) {
 
-                $ppn = 0;
                 $diskon = 0;
                 $biayaGanti = 0;
+                $ppn = 0;
 
                 if ($first) {
                     $ppn = $item->service->ppn ?? 0;

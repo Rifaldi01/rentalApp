@@ -204,7 +204,7 @@
                         </tr>
 
                         <tr>
-                            <th class="border" colspan="2">Grand Total</th>
+                            <th class="border" colspan="2">Laba Untung-Rugi</th>
                             <th class="border">{{formatRupiah($totalincome)}},-</th>
                         </tr>
                     </tfoot>
