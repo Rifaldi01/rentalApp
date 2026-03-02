@@ -83,6 +83,9 @@
                     </tr>
                     </thead>
                     <tbody>
+                    @php
+                        $shownRentalFee = [];
+                    @endphp
                     @foreach($cicilan as $key => $datas)
                         <tr>
                             <td class="text-center">{{$key +1}}</td>
@@ -131,9 +134,18 @@
                             </td>
                             <td>{{formatRupiah($datas->rental->ppn)}}</td>
                             <td>{{formatRupiah($datas->rental->pph)}}</td>
-                            <td>{{formatRupiah($datas->rental->fee)}}</td>
+                            <td>
+                                @if(!in_array($datas->rental_id, $shownRentalFee))
+                                    {{ formatRupiah($datas->rental->fee) }}
+                                    @php
+                                        $shownRentalFee[] = $datas->rental_id;
+                                    @endphp
+                                @else
+                                    -
+                                @endif
+                            </td>
                             <td>{{formatRupiah($datas->rental->diskon)}}</td>
-                            <td>{{formatRupiah($total[$datas->id])}}</td>
+                            <td>{{ formatRupiah($total[$datas->id] ?? 0) }}</td>
                             <td>
                                 {{formatRupiah($datas->pay_debts)}}
                             </td>

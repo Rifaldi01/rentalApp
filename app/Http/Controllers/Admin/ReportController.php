@@ -49,14 +49,7 @@ class ReportController extends Controller
         $cicilan = Debts::whereYear('date_pay', $currentYear)
             ->with(['rental.cust', 'rental.item', 'bank'])
             ->get();
-        $total = $cicilan->groupBy('id')->map(function ($group) {
-            return $group->sum(function ($item) {
-                $diskon = $item->rental?->diskon ?? 0; // Gunakan null-safe operator dan fallback 0
-                $fee = $item->rental?->fee ?? 0; // Gunakan null-safe operator dan fallback 0
-                $ppn = $item->rental?->ppn ?? 0; // Gunakan null-safe operator dan fallback 0
-                return $item->pay_debts - $ppn - $fee ;
-            });
-        });
+        $total = $this->calculateCicilan($cicilan);
 
         $uangmasuk = $cicilan->sum('pay_debts');
         $sisa = $cicilan->groupBy('id')->map(function ($group) {
@@ -82,6 +75,35 @@ class ReportController extends Controller
 
         // return $debt;
         return view('admin.report.index', compact('totalppn', 'sisabayar', 'totalbersih', 'totalfee', 'diskon', 'sisa', 'totalin', 'report', 'totaldiskon', 'totalincome', 'totaloutside', 'cicilan', 'total', 'uangmasuk'));
+    }
+    private function calculateCicilan($cicilan)
+    {
+        $total = [];
+
+        $grouped = $cicilan
+            ->sortBy([['rental_id','asc'],['date_pay','asc']])
+            ->groupBy('rental_id');
+
+        foreach ($grouped as $rentalId => $items) {
+
+            $first = true;
+
+            foreach ($items as $item) {
+
+                $ppn = 0;
+                $fee = 0;
+
+                if ($first) {
+                    $ppn = $item->rental->ppn ?? 0;
+                    $fee = $item->rental->fee ?? 0;
+                    $first = false;
+                }
+
+                $total[$item->id] = $item->pay_debts - $ppn - $fee;
+            }
+        }
+
+        return $total;
     }
 
     public function filter(Request $request)
@@ -132,14 +154,7 @@ class ReportController extends Controller
         $totaloutside = $report->sum('nominal_out');
         $cicilan = Debts::with(['rental.cust', 'rental.item', 'bank'])
             ->get();
-        $total = $cicilan->groupBy('id')->map(function ($group) {
-            return $group->sum(function ($item) {
-                $diskon = $item->rental?->diskon ?? 0; // Gunakan null-safe operator dan fallback 0
-                $fee = $item->rental?->fee ?? 0; // Gunakan null-safe operator dan fallback 0
-                $ppn = $item->rental?->ppn ?? 0; // Gunakan null-safe operator dan fallback 0
-                return $item->pay_debts - $ppn - $fee ;
-            });
-        });
+        $total = $this->calculateCicilan($cicilan);
 
         $uangmasuk = $cicilan->sum('pay_debts');
         $sisa = $cicilan->groupBy('id')->map(function ($group) {
@@ -217,15 +232,7 @@ class ReportController extends Controller
             ->whereBetween('date_pay', [$tanggal_mulai, $tanggal_akhir])
             ->orderBy('date_pay', 'asc')
             ->get();
-        $total = $cicilan->groupBy('id')->map(function ($group) {
-            return $group->sum(function ($item) {
-                $diskon = $item->rental?->diskon ?? 0; // Gunakan null-safe operator dan fallback 0
-                $fee = $item->rental?->fee ?? 0; // Gunakan null-safe operator dan fallback 0
-                $ppn = $item->rental?->ppn ?? 0; // Gunakan null-safe operator dan fallback 0
-                return $item->pay_debts - $ppn  - $fee;
-            });
-        });
-
+        $total = $this->calculateCicilan($cicilan);
 
         $uangmasuk = $cicilan->sum('pay_debts');
         $sisa = $cicilan->groupBy('id')->map(function ($group) {
