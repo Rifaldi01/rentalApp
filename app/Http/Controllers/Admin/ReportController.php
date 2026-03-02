@@ -178,9 +178,16 @@ class ReportController extends Controller
         $sisabayar = $cicilan->sum(function ($item) {
             return $item->rental->nominal_out;
         });
-        $totalbersih = $cicilan->sum(function ($item) {
-            return $item->pay_debts  - $item->rental->ppn - $item->rental->fee;
-        });
+        $totalPay = $cicilan->sum('pay_debts');
+
+        $totalPotongan = $cicilan
+            ->groupBy('rental_id')
+            ->sum(function ($items) {
+                $rental = $items->first()->rental;
+                return ($rental->ppn ?? 0) + ($rental->fee ?? 0);
+            });
+
+        $totalbersih = $totalPay - $totalPotongan;
         $totalppn = $cicilan->sum(function ($item) {
             return $item->rental->ppn;
         });
@@ -258,9 +265,16 @@ class ReportController extends Controller
         $sisabayar = $cicilan->sum(function ($item) {
             return $item->rental->nominal_out;
         });
-        $totalbersih = $cicilan->sum(function ($item) {
-            return $item->pay_debts  - $item->rental->ppn - $item->rental->fee;
-        });
+        $totalPay = $cicilan->sum('pay_debts');
+
+        $totalPotongan = $cicilan
+            ->groupBy('rental_id')
+            ->sum(function ($items) {
+                $rental = $items->first()->rental;
+                return ($rental->ppn ?? 0) + ($rental->fee ?? 0);
+            });
+
+        $totalbersih = $totalPay - $totalPotongan;
         $totalppn = $cicilan
             ->groupBy('rental_id')
             ->sum(function ($items) {
