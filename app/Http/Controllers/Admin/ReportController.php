@@ -69,7 +69,9 @@ class ReportController extends Controller
         $sisabayar = $cicilan->sum(function ($item) {
             return $item->rental->nominal_out;
         });
-        $totalbersih =$this->calculateCicilan($cicilan);
+        $totalbersih = $cicilan->sum(function ($item) {
+            return $item->pay_debts - $item->rental->ppn - $item->rental->fee;
+        });
 
         // return $debt;
         return view('admin.report.index', compact('totalppn', 'sisabayar', 'totalbersih', 'totalfee', 'diskon', 'sisa', 'totalin', 'report', 'totaldiskon', 'totalincome', 'totaloutside', 'cicilan', 'total', 'uangmasuk'));
@@ -77,7 +79,6 @@ class ReportController extends Controller
     private function calculateCicilan($cicilan)
     {
         $total = [];
-        $totalbersih = 0;
 
         $grouped = $cicilan
             ->sortBy([['rental_id','asc'],['date_pay','asc']])
@@ -91,27 +92,20 @@ class ReportController extends Controller
 
                 $ppn = 0;
                 $fee = 0;
-                $diskon = 0;
 
                 if ($first) {
                     $ppn = $item->rental->ppn ?? 0;
                     $fee = $item->rental->fee ?? 0;
-                    $diskon = $item->rental->diskon ?? 0;
                     $first = false;
                 }
 
-                $net = $item->pay_debts - $ppn - $fee - $diskon;
-
-                $total[$item->id] = $net;
-                $totalbersih += $net;
+                $total[$item->id] = $item->pay_debts - $ppn - $fee;
             }
         }
 
-        return [
-            'total' => $total,
-            'totalbersih' => $totalbersih,
-        ];
+        return $total;
     }
+
     public function filter(Request $request)
     {
         $request->validate([
@@ -177,7 +171,9 @@ class ReportController extends Controller
         $sisabayar = $cicilan->sum(function ($item) {
             return $item->rental->nominal_out;
         });
-        $totalbersih = $this->calculateCicilan($cicilan);
+        $totalbersih = $cicilan->sum(function ($item) {
+            return $item->pay_debts  - $item->rental->ppn - $item->rental->fee;
+        });
         $totalppn = $cicilan->sum(function ($item) {
             return $item->rental->ppn;
         });
@@ -255,7 +251,9 @@ class ReportController extends Controller
         $sisabayar = $cicilan->sum(function ($item) {
             return $item->rental->nominal_out;
         });
-        $totalbersih = $this->calculateCicilan($cicilan);
+        $totalbersih = $cicilan->sum(function ($item) {
+            return $item->pay_debts  - $item->rental->ppn - $item->rental->fee;
+        });
         $totalppn = $cicilan
             ->groupBy('rental_id')
             ->sum(function ($items) {
