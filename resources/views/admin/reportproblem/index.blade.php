@@ -66,7 +66,6 @@
                         <th>Name </th>
                         <th>Item</th>
                         <th>No Seri</th>
-                        <th>Accessories</th>
                         <th>Total <br>Inv</th>
                         <th width="">Ung <br>Masuk</th>
                         <th>Sisa <br>Bayar</th>
@@ -116,13 +115,6 @@
                                 @endif
                             </td>
 
-                            <td>
-                                @if($data->access)
-                                    @foreach(explode(',', $data->access) as $accessory)
-                                        <li>{{ $accessory }}</li>
-                                    @endforeach
-                                @endif
-                            </td>
 
                             <td>{{formatRupiah($data->rental->total_invoice)}}</td>
                             <td>{{formatRupiah($data->rental->nominal_in)}}</td>
