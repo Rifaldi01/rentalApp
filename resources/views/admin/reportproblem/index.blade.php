@@ -62,73 +62,88 @@
                     <thead>
                     <tr>
                         <th width="2%">No</th>
+                        <th>Invoice </th>
                         <th>Name </th>
                         <th>Item</th>
                         <th>No Seri</th>
                         <th>Accessories</th>
-                        <th>Problem Date</th>
-                        <th>Descript</th>
+                        <th>Total <br>Inv</th>
+                        <th width="">Ung <br>Masuk</th>
+                        <th>Sisa <br>Bayar</th>
+                        <th>Fee</th>
+                        <th>Discount</th>
+                        <th>Start Date</th>
+                        <th>End Date</th>
                         <th class="text-center">Status</th>
                     </tr>
                     </thead>
                     <tbody>
-                    <tr>
-                        @foreach ($report as $key => $data)
-                            <td>{{$key +1}}</td>
-                            <td>{{$data->rental->cust->name}}</td>
+                    @foreach ($report as $key => $data)
+                        <tr>
+                            <td>{{ $key + 1 }}</td>
+
+                            <td>{{ $data->no_inv ?? '-' }}</td>
+
+                            <td>{{ optional(optional($data->rental)->cust)->name ?? '-' }}</td>
+
                             <td>
                                 @php
                                     $itemIds = json_decode($data->item_id);
                                 @endphp
+
                                 @if(is_array($itemIds))
                                     @foreach($itemIds as $itemId)
-                                        @php
-                                            $item = \App\Models\Item::find($itemId);
-                                        @endphp
-                                            <li>{{ $item ? $item->name : 'Item not found' }}</li>
+                                        @php $item = \App\Models\Item::find($itemId); @endphp
+                                        <li>{{ $item ? $item->name : 'Item not found' }}</li>
                                     @endforeach
-                                @else
-                                    {{ $itemIds }}
                                 @endif
                             </td>
+
                             <td>
                                 @php
                                     $itemIds = json_decode($data->item_id);
                                 @endphp
+
                                 @if(is_array($itemIds))
                                     @foreach($itemIds as $itemId)
-                                        @php
-                                            $item = \App\Models\Item::find($itemId);
-                                        @endphp
-                                            <li>{{ $item ? $item->cat->name : null }}-{{ $item ? $item->no_seri : 'Item not found' }}</li>
+                                        @php $item = \App\Models\Item::find($itemId); @endphp
+                                        <li>
+                                            {{ $item ? $item->cat->name : '-' }}
+                                            -
+                                            {{ $item ? $item->no_seri : '-' }}
+                                        </li>
                                     @endforeach
-                                @else
-                                    {{ $itemIds }}
                                 @endif
                             </td>
+
                             <td>
-                            @if($data->access)
-                                @foreach(explode(',', $data->access) as $accessory)
-                                    <li>{{ $accessory }}</li>
-                                @endforeach
-                            @else
-                               
-                            @endif
+                                @if($data->access)
+                                    @foreach(explode(',', $data->access) as $accessory)
+                                        <li>{{ $accessory }}</li>
+                                    @endforeach
+                                @endif
+                            </td>
+
+                            <td>{{formatRupiah($data->rental->total_invoice)}}</td>
+                            <td>{{formatRupiah($data->rental->nominal_in)}}</td>
+                            <td>{{formatRupiah($data->rental->nominal_out)}}</td>
+                            <td>{{formatRupiah($data->rental->fee)}}</td>
+                            <td>{{formatRupiah($data->rental->diskon)}}</td>
+                            <td>
+                                {{formatId($data->rental->date_start)}}
                             </td>
                             <td>
-                                {{\Carbon\Carbon::parse($data->created_at)->translatedFormat('d F Y')}}
+                                {{formatId($data->rental->date_end)}}
                             </td>
-                            <td>
-                                {{$data->descript}}
-                            </td>
+
                             <td class="text-center">
-                                @if($data->status == 1)
+                                @if($data->problem_status == 1)
                                     <span class="badge bg-success">Finished</span>
-                                @elseif($data->status == 0)
+                                @elseif($data->problem_status == 0)
                                     <span class="badge bg-danger">Problem</span>
                                 @endif
                             </td>
-                    </tr>
+                        </tr>
                     @endforeach
                     </tbody>
                 </table>
