@@ -69,7 +69,7 @@ class ReportProblemController extends Controller
             )
             ->orderBy('rentals.created_at', 'desc')
             ->get();
-
+dd($report);
         return view('admin.reportproblem.index', compact('report'));
     }
 
