@@ -28,7 +28,7 @@ class ReportProblemController extends Controller
                 'rentals.status as rental_status',
                 'rentals.nominal_in',
                 'rentals.total_invoice',
-                'rentals.created_at as rental_created_at',
+                'rentals.created_at',
 
                 'a.rental_id',
 
@@ -42,7 +42,7 @@ class ReportProblemController extends Controller
             )
             ->where('problems.status', 0)
             ->where('rentals.status', 2)
-            ->whereColumn('rentals.nominal_in', 'rentals.total_invoice')
+            ->whereColumn('rentals.nominal_in', '!=', 'rentals.total_invoice')
             ->groupBy(
                 'rentals.id',
                 'rentals.customer_id',
