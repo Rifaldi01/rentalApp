@@ -129,11 +129,7 @@
                             </td>
 
                             <td class="text-center">
-                                @if($data->problem_status == 1)
-                                    <span class="badge bg-success">Finished</span>
-                                @elseif($data->problem_status == 0)
-                                    <span class="badge bg-danger">Problem</span>
-                                @endif
+                                <span class="badge bg-danger">Problem</span>
                             </td>
                         </tr>
                     @endforeach
