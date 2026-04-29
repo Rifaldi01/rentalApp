@@ -101,20 +101,24 @@ class ReportProblemController extends Controller
                 'rentals.no_inv',
                 'rentals.date_start',
                 'rentals.date_end',
-                'rentals.status',
+                'rentals.status as rental_status',
+                'rentals.nominal_in',
+                'rentals.total_invoice',
                 'rentals.created_at',
+
                 'a.rental_id',
-
-                'problems.created_at',
-
-                \DB::raw('GROUP_CONCAT(b.name) as access'),
 
                 'problems.id as problem_id',
                 'problems.rental_id',
-                'problems.status',
-                'problems.descript'
+                'problems.status as problem_status',
+                'problems.descript',
+                'problems.created_at as problem_created_at',
+
+                \DB::raw('GROUP_CONCAT(b.name) as access')
             )
             ->where('problems.status', 0)
+            ->where('rentals.status', 2)
+            ->whereColumn('rentals.nominal_in', '!=', 'rentals.total_invoice')
             ->whereBetween('rentals.date_start', [$start_date, $end_date])
             ->groupBy(
                 'rentals.id',
@@ -128,13 +132,17 @@ class ReportProblemController extends Controller
                 'rentals.date_start',
                 'rentals.date_end',
                 'rentals.status',
+                'rentals.nominal_in',
+                'rentals.total_invoice',
                 'rentals.created_at',
+
                 'a.rental_id',
-                'problems.created_at',
+
                 'problems.id',
                 'problems.rental_id',
                 'problems.status',
-                'problems.descript'
+                'problems.descript',
+                'problems.created_at'
             )
             ->orderBy('rentals.created_at', 'desc')
             ->get();
