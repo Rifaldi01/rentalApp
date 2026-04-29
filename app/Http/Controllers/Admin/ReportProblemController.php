@@ -108,9 +108,9 @@ class ReportProblemController extends Controller
 
                 \DB::raw('GROUP_CONCAT(b.name) as access')
             )
-            ->where('problems.status', 0)
-            ->where('rentals.status', 2)
-            ->whereColumn('rentals.nominal_in', '!=', 'rentals.total_invoice')
+            ->where('rentals.nominal_out', '!=', 0)
+            ->orWhere('rentals.status', 2)
+            ->orWhere('problems.status', 0)
             ->whereBetween('rentals.date_start', [$start_date, $end_date])
             ->groupBy(
                 'rentals.id',
