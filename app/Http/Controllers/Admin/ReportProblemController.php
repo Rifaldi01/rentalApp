@@ -29,9 +29,7 @@ class ReportProblemController extends Controller
                 'rentals.nominal_in',
                 'rentals.total_invoice',
                 'rentals.created_at',
-
                 'a.rental_id',
-
                 'problems.id as problem_id',
                 'problems.rental_id',
                 'problems.status as problem_status',
@@ -40,9 +38,9 @@ class ReportProblemController extends Controller
 
                 \DB::raw('GROUP_CONCAT(b.name) as access')
             )
-            ->where('problems.status', 0)
-            ->where('rentals.status', 2)
-            ->whereColumn('rentals.nominal_in', '!=', 'rentals.total_invoice')
+            ->where('rentals.nominal_out', '!=', 0)
+            ->orWhere('rentals.status', 2)
+            ->orWhere('problems.status', 0)
             ->groupBy(
                 'rentals.id',
                 'rentals.customer_id',
@@ -58,17 +56,13 @@ class ReportProblemController extends Controller
                 'rentals.nominal_in',
                 'rentals.total_invoice',
                 'rentals.created_at',
-
                 'a.rental_id',
-
                 'problems.id',
                 'problems.rental_id',
                 'problems.status',
                 'problems.descript',
                 'problems.created_at'
-            )
-            ->orderBy('rentals.created_at', 'desc')
-            ->get();
+            )->get();
 
         return view('admin.reportproblem.index', compact('report'));
     }
@@ -105,9 +99,7 @@ class ReportProblemController extends Controller
                 'rentals.nominal_in',
                 'rentals.total_invoice',
                 'rentals.created_at',
-
                 'a.rental_id',
-
                 'problems.id as problem_id',
                 'problems.rental_id',
                 'problems.status as problem_status',
@@ -135,9 +127,7 @@ class ReportProblemController extends Controller
                 'rentals.nominal_in',
                 'rentals.total_invoice',
                 'rentals.created_at',
-
                 'a.rental_id',
-
                 'problems.id',
                 'problems.rental_id',
                 'problems.status',
