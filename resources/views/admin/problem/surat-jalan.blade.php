@@ -137,7 +137,7 @@
                             <tr>
                                 <th class="text-center">Yang Menerima,</th>
                                 <th class="text-center">Bagian Umum,</th>
-                                <th class="text-center" style="border-right-width:0px;">Hormat Kami,</th>
+                                <th class="text-center" style="border-right-width:0px;">Yang Menyerahkan,</th>
                             </tr>
                             </thead>
                             <tr>
