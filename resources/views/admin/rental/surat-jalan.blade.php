@@ -119,11 +119,17 @@
                                 </tr>
                             @endif
 
-                            @foreach($data->accessoriescategory as $asdf)
+                            @php
+                                $accessories = \App\Models\AccessoriesCategory::with('accessory')
+                                    ->where('rental_id', $data->rental_id)
+                                    ->get();
+                            @endphp
+
+                            @foreach($accessories as $asdf)
                                 <tr>
                                     <td class="text-center">{{ $no++ }}</td>
-                                    <td>{{ $asdf->accessory ? $asdf->accessory->name : 'Not Found' }}</td>
-                                    <td>{{ $asdf->accessories_quantity + $asdf->kembali}}</td>
+                                    <td>{{ $asdf->accessory->name ?? 'Not Found' }}</td>
+                                    <td>{{ $asdf->accessories_quantity + $asdf->kembali }}</td>
                                     <td>Aksesoris</td>
                                 </tr>
                             @endforeach
@@ -137,7 +143,7 @@
                             <tr>
                                 <th class="text-center">Yang Menerima,</th>
                                 <th class="text-center">Bagian Umum,</th>
-                                <th class="text-center" style="border-right-width:0px;">Hormat Kami,</th>
+                                <th class="text-center" style="border-right-width:0px;">Yang Menyerakan,</th>
                             </tr>
                             </thead>
                             <tr>
