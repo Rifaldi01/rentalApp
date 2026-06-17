@@ -75,7 +75,7 @@
                             <td>
                                 <button class="btn btn-dnd lni lni-files btn-sm" data-bs-toggle="modal"
                                         data-bs-target="#exampleExtraLargeModal{{$data->id}}" data-bs-tool="tooltip"
-                                        data-bs-placement="top" title="Print Surat Jalan">
+                                        data-bs-placement="top" title="BABM">
                                 </button>
                                 @include('admin.rental.surat-jalan')
                                 <button class="btn btn-warning lni lni-files btn-sm" data-bs-toggle="modal"
