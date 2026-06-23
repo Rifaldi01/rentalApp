@@ -60,7 +60,7 @@
                             <thead>
                             <tr>
                                 <th colspan="6" class="text-end bg-secondary bg-opacity-50 sjg" style="font-size: 13px;">
-                                    SURAT JALAN GUDANG
+                                    BERITA ACARA BARANG MASUK
                                 </th>
                             </tr>
                             <tr>
