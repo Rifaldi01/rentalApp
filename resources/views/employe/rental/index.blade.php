@@ -118,10 +118,57 @@
                                     @include('admin.rental.surat-jalan')
                                 </td>
                                 <td>
-                                    <button class="btn btn-warning lni lni-package float-end me-1"
-                                            data-bs-toggle="modal" data-bs-target="#kembali{{ $data->id }}"
-                                            title="Returned">
-                                    </button>
+                                    @php
+                                        $semuaSelesai = true;
+
+                                        // Ambil item yang sudah dikembalikan
+                                        $returnedItems = json_decode($data->returned_item_id, true) ?? [];
+
+                                        // Cek item rental
+                                        $itemIds = json_decode($data->item_id, true) ?? [];
+
+                                        foreach ($itemIds as $itemId) {
+                                            if (!in_array((string)$itemId, $returnedItems)) {
+                                                $semuaSelesai = false;
+                                                break;
+                                            }
+                                        }
+
+                                        // Jika item sudah selesai semua, cek accessories
+                                        if ($semuaSelesai) {
+                                            foreach ($data->accessoriescategory as $acces) {
+                                                if ($acces->accessories_quantity > 0 || $acces->status_acces == 1) {
+                                                    $semuaSelesai = false;
+                                                    break;
+                                                }
+                                            }
+                                        }
+                                    @endphp
+                                    @if(!$semuaSelesai)
+
+                                        <button class="btn btn-warning lni lni-package float-end me-1"
+                                                data-bs-toggle="modal"
+                                                data-bs-target="#kembali{{ $data->id }}"
+                                                title="Returned">
+                                        </button>
+
+                                    @else
+
+                                        <form action="{{ route('employe.rental.rental-finis', $data->id) }}"
+                                              method="POST"
+                                              class="float-end">
+                                            @csrf
+
+                                            <button type="submit"
+                                                    id="btnFinish{{ $data->id }}"
+                                                    class="btn btn-success lni lni-checkmark mt-1"
+                                                    data-bs-toggle="tooltip"
+                                                    data-bs-placement="top"
+                                                    title="Rental Selesai">
+                                            </button>
+                                        </form>
+
+                                    @endif
 
                                     <div class="modal fade" id="kembali{{ $data->id }}" tabindex="-1"
                                          aria-hidden="true">
@@ -129,8 +176,68 @@
                                             <div class="modal-content">
                                                 <div class="modal-header">
                                                     <h5 class="modal-title text-center">Apakah Sudah Dikembalikan?</h5>
+                                                    <br>
+
                                                     <button type="button" class="btn-close" data-bs-dismiss="modal"
                                                             aria-label="Close"></button>
+                                                </div>
+                                                <div class="container">
+                                                    @php
+                                                        $belumSelesai = false;
+
+                                                        // Semua item rental
+                                                        $itemIds = json_decode($data->item_id, true) ?? [];
+
+                                                        // Item yang sudah dikembalikan
+                                                        $returnedItems = json_decode($data->returned_item_id, true) ?? [];
+
+                                                        /*
+                                                        |--------------------------------------------------------------------------
+                                                        | CEK ITEM
+                                                        |--------------------------------------------------------------------------
+                                                        */
+                                                        foreach ($itemIds as $itemId) {
+
+                                                            if (!in_array((string)$itemId, $returnedItems)) {
+                                                                $belumSelesai = true;
+                                                                break;
+                                                            }
+                                                        }
+
+                                                        /*
+                                                        |--------------------------------------------------------------------------
+                                                        | CEK ACCESSORIES
+                                                        |--------------------------------------------------------------------------
+                                                        */
+                                                        if (!$belumSelesai) {
+
+                                                            foreach ($data->accessoriescategory as $acces) {
+
+                                                                if (
+                                                                    $acces->status_acces == 1 ||
+                                                                    $acces->accessories_quantity > 0
+                                                                ) {
+                                                                    $belumSelesai = true;
+                                                                    break;
+                                                                }
+                                                            }
+                                                        }
+                                                    @endphp
+                                                    @if($belumSelesai)
+                                                        <form
+                                                            action="{{ route('employe.rental.finis', $data->id) }}"
+                                                            method="POST">
+                                                            @csrf
+                                                            <button type="submit"
+                                                                    id="btnFinish"
+                                                                    class="btn btn-success lni lni-checkmark mt-1"
+                                                                    data-bs-toggle="tooltip"
+                                                                    data-bs-placement="top"
+                                                                    title="Selesaikan Semua">
+                                                                Selesaikan Semua
+                                                            </button>
+                                                        </form>
+                                                    @endif
                                                 </div>
                                                 <form action="{{ route('employe.rental.kembali', $data->id) }}"
                                                       method="POST">
@@ -138,7 +245,8 @@
                                                     <div class="container">
                                                         <div class="mt-2 mb-2">
                                                             <div class="table-responsive">
-                                                                <table class="table table-bordered table-responsive w-100" >
+                                                                <table
+                                                                    class="table table-bordered table-responsive w-100">
                                                                     <thead>
                                                                     <tr>
                                                                         <td colspan="5">
@@ -152,6 +260,7 @@
                                                                                     <span class="text-muted">Tidak ada keterangan</span>
                                                                                 @endif
                                                                             </div>
+
                                                                         </td>
 
                                                                     </tr>
@@ -159,7 +268,8 @@
                                                                         <th class="text-center" width="1%">No</th>
                                                                         <th class="text-center">Nama Barang</th>
                                                                         <th class="text-center">Belum Kembali</th>
-                                                                        <th class="text-center" width="10%">Barang Kembali
+                                                                        <th class="text-center" width="10%">Barang
+                                                                            Kembali
                                                                         </th>
                                                                         <th class="text-center">No Seri</th>
                                                                     </tr>
@@ -175,14 +285,18 @@
                                                                         @foreach($itemIds as $index => $itemId)
                                                                             @php
                                                                                 $item = \App\Models\Item::find($itemId);
+
+                                                                                $returnedItems = json_decode(
+                                                                                    $data->returned_item_id,
+                                                                                    true
+                                                                                ) ?? [];
                                                                             @endphp
                                                                             <tr>
                                                                                 <td class="text-center">{{ $no++ }}</td>
                                                                                 <td>{{ $item ? $item->name : 'Item not found' }}</td>
                                                                                 <td class="text-center">-</td>
                                                                                 <td class="text-center">
-                                                                                    @if($item && $item->status == 2)
-                                                                                        {{-- Jika status masih 1 (belum selesai), tampilkan checkbox --}}
+                                                                                    @if($item && !in_array($item->id, $returnedItems))
                                                                                         <input type="hidden"
                                                                                                name="items[{{ $index }}][id]"
                                                                                                value="{{ $item->id }}">
@@ -190,11 +304,10 @@
                                                                                                name="items[{{ $index }}][status]"
                                                                                                value="0">
                                                                                     @else
-                                                                                        {{-- Jika status bukan 1, tampilkan badge selesai --}}
-                                                                                        <span class="badge bg-secondary">Selesai</span>
+                                                                                        <span
+                                                                                            class="badge bg-secondary">Selesai</span>
                                                                                     @endif
                                                                                 </td>
-
                                                                                 <td>{{ $item ? $item->no_seri : 'Item not found' }}</td>
                                                                             </tr>
                                                                         @endforeach
@@ -230,26 +343,12 @@
                                                     </div>
 
                                                     <div class="modal-footer">
-                                                        <button type="button" class="btn btn-danger"
-                                                                data-bs-dismiss="modal">Batal
-                                                        </button>
-                                                        <button type="submit" class="btn btn-primary">Ya</button>
+                                                        <button type="submit" class="btn btn-primary">Simpan</button>
                                                     </div>
                                                 </form>
                                             </div>
                                         </div>
                                     </div>
-
-                                    <form action="{{ route('employe.rental.finis', $data->id) }}" method="POST">
-                                        @csrf
-                                        <button type="submit" id="btnFinish"
-                                                class="btn-sm btn btn-success lni lni-checkmark  mt-1"
-                                                data-bs-toggle="tooltip" data-bs-placement="top"
-                                                title="Setuju">
-
-                                        </button>
-                                    </form>
-
                                 </td>
                     </tr>
                     @endif
@@ -263,8 +362,8 @@
 @push('head')
     <style>
         .note-text {
-            max-width: 1200px;      /* batas lebar */
-            white-space: normal;   /* teks turun ke bawah */
+            max-width: 1200px; /* batas lebar */
+            white-space: normal; /* teks turun ke bawah */
             word-wrap: break-word;
             word-break: break-word;
         }

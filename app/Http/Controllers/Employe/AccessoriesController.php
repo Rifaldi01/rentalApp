@@ -7,6 +7,7 @@ use App\Models\Accessories;
 use App\Models\AccessoriesCategory;
 use App\Models\AccessoriesIn;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use RealRashid\SweetAlert\Facades\Alert;
 
 class AccessoriesController extends Controller
@@ -137,5 +138,57 @@ class AccessoriesController extends Controller
         return back()->with('success', 'Accessories has been deleted successfully');
     }
 
+    public function finish($id)
+    {
+        DB::beginTransaction();
 
+        try {
+
+            $accessoryCategory = AccessoriesCategory::findOrFail($id);
+
+            $qtyBelumKembali = (int) $accessoryCategory->accessories_quantity;
+
+            // Tambah stok accessories
+            if ($qtyBelumKembali > 0) {
+
+                $accessory = Accessories::find(
+                    $accessoryCategory->accessories_id
+                );
+
+                if ($accessory) {
+
+                    $accessory->stok += $qtyBelumKembali;
+                    $accessory->save();
+                }
+            }
+
+            // Pindahkan quantity ke kembali
+            $accessoryCategory->kembali =
+                (int) ($accessoryCategory->kembali ?? 0)
+                + $qtyBelumKembali;
+
+            // Quantity menjadi 0
+            $accessoryCategory->accessories_quantity = 0;
+
+            // Status selesai
+            $accessoryCategory->status_acces = 0;
+
+            $accessoryCategory->save();
+
+            DB::commit();
+
+            return back()->with(
+                'success',
+                'Accessories berhasil dikembalikan.'
+            );
+
+        } catch (\Exception $e) {
+
+            DB::rollBack();
+
+            return back()->withErrors([
+                'error' => $e->getMessage()
+            ]);
+        }
+    }
 }

@@ -46,6 +46,7 @@ Route::group(['middleware' => ['auth:web', 'role:employe'], 'prefix' => 'employe
     Route::put('/acces-tambah/{id}', [AccessoriesController::class, 'tambah'])->name('employe.acces.tambah');
     Route::get('/maintenance', [MaintenanceController::class, 'index'])->name('employe.mainten');
     Route::get('riwayat/accessories/', [AccessoriesController::class,'accesin'])->name('employe.accessories.accesin');
+    Route::put('finis/accessories/{id}', [AccessoriesController::class,'finish'])->name('employ.acces.finish');
 
 });
 
@@ -61,6 +62,7 @@ Route::group(['middleware' => ['auth:web', 'role:employe|manager'], 'prefix' => 
 
     Route::post('rental-kembali/{id}', [RentalController::class, 'kembali'])->name('employe.rental.kembali');
     Route::post('rental-finis/{id}', [RentalController::class, 'finis'])->name('employe.rental.finis');
+    Route::post('finis-rental/{id}', [RentalController::class, 'finisRental'])->name('employe.rental.rental-finis');
     Route::get('/rental', [RentalController::class, 'index'])->name('employe.rental');
     Route::post('/rental/{id}', [RentalController::class, 'approveRental'])->name('employe.rental.approve');
 

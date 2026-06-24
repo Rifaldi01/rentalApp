@@ -46,56 +46,198 @@ class RentalController extends Controller
      */
     public function finis($id)
     {
-        $rental = Rental::findOrFail($id);
-        $rental->status = 0;
-        $rental->updated_at = now();
-        $rental->save();
+        DB::beginTransaction();
 
-        return back()->withSuccess('Barang Telah Kembali Semua');
+        try {
+
+            $rental = Rental::findOrFail($id);
+
+            /*
+            |--------------------------------------------------------------------------
+            | KEMBALIKAN SEMUA ITEM
+            |--------------------------------------------------------------------------
+            */
+            $itemIds = json_decode($rental->item_id, true) ?? [];
+
+            $returnedItems = json_decode(
+                $rental->returned_item_id,
+                true
+            ) ?? [];
+
+            foreach ($itemIds as $itemId) {
+
+                $itemIdString = (string) $itemId;
+
+                // Jika belum pernah dikembalikan
+                if (!in_array($itemIdString, $returnedItems)) {
+
+                    $item = Item::find($itemId);
+
+                    if ($item) {
+                        $item->status = 0; // tersedia
+                        $item->save();
+                    }
+
+                    $returnedItems[] = $itemIdString;
+                }
+            }
+
+            $rental->returned_item_id = json_encode(
+                array_values(array_unique($returnedItems))
+            );
+
+            /*
+            |--------------------------------------------------------------------------
+            | KEMBALIKAN SEMUA ACCESSORIES
+            |--------------------------------------------------------------------------
+            */
+            $accessoriesCategories = AccessoriesCategory::where(
+                'rental_id',
+                $rental->id
+            )->get();
+
+            foreach ($accessoriesCategories as $accesCat) {
+
+                $qtyBelumKembali = (int) $accesCat->accessories_quantity;
+
+                if ($qtyBelumKembali > 0) {
+
+                    $accessories = Accessories::find(
+                        $accesCat->accessories_id
+                    );
+
+                    if ($accessories) {
+                        $accessories->stok += $qtyBelumKembali;
+                        $accessories->save();
+                    }
+
+                    $accesCat->kembali =
+                        ($accesCat->kembali ?? 0)
+                        + $qtyBelumKembali;
+                }
+
+                $accesCat->accessories_quantity = 0;
+                $accesCat->status_acces = 0;
+                $accesCat->save();
+            }
+
+            /*
+            |--------------------------------------------------------------------------
+            | SELESAIKAN RENTAL
+            |--------------------------------------------------------------------------
+            */
+            $rental->status = 0;
+            $rental->updated_at = now();
+            $rental->save();
+
+            DB::commit();
+
+            return back()->withSuccess(
+                'Semua item dan accessories berhasil dikembalikan.'
+            );
+
+        } catch (\Exception $e) {
+
+            DB::rollBack();
+
+            return back()->withErrors([
+                'error' => $e->getMessage()
+            ]);
+        }
     }
     public function kembali(Request $request, $id)
     {
-        // ✅ 1. Proses Item (ubah status)
+        $rental = Rental::findOrFail($id);
+
+        $returnedItems = json_decode(
+            $rental->returned_item_id,
+            true
+        ) ?? [];
+
+        /*
+        |--------------------------------------------------------------------------
+        | ITEM
+        |--------------------------------------------------------------------------
+        */
         if ($request->has('items')) {
+
             foreach ($request->items as $data) {
+
                 $item = Item::find($data['id']);
-                if ($item && isset($data['status'])) {
-                    $item->status = $data['status'];
-                    $item->save();
+
+                if (!$item || !isset($data['status'])) {
+                    continue;
+                }
+
+                // Simpan status item global
+                $item->status = $data['status'];
+                $item->save();
+
+                // Simpan riwayat pengembalian per rental
+                $itemId = (string) $item->id;
+
+                if (!in_array($itemId, $returnedItems)) {
+                    $returnedItems[] = $itemId;
                 }
             }
+
+            $rental->returned_item_id = json_encode(
+                array_unique($returnedItems)
+            );
         }
 
-        // ✅ 2. Proses Accessories (kembalikan stok dan ubah status)
+        /*
+        |--------------------------------------------------------------------------
+        | ACCESSORIES
+        |--------------------------------------------------------------------------
+        */
         if ($request->has('accessories')) {
+
             foreach ($request->accessories as $data) {
+
                 $jumlahKembali = (int)($data['kembali'] ?? 0);
-                if ($jumlahKembali <= 0) continue;
+
+                if ($jumlahKembali <= 0) {
+                    continue;
+                }
 
                 $accesCat = AccessoriesCategory::find($data['id']);
-                if (!$accesCat) continue;
 
-                // Update jumlah kembali dan quantity
-                $accesCat->kembali = ($accesCat->kembali ?? 0) + $jumlahKembali;
-                $accesCat->accessories_quantity = max(0, $accesCat->accessories_quantity - $jumlahKembali);
+                if (!$accesCat) {
+                    continue;
+                }
 
-                // ✅ Jika accessories_quantity sudah 0, ubah status_acces menjadi 0 (selesai)
+                $accesCat->kembali =
+                    ($accesCat->kembali ?? 0) + $jumlahKembali;
+
+                $accesCat->accessories_quantity =
+                    max(0, $accesCat->accessories_quantity - $jumlahKembali);
+
                 if ($accesCat->accessories_quantity == 0) {
                     $accesCat->status_acces = 0;
                 }
 
                 $accesCat->save();
 
-                // Tambah stok ke tabel accessories
-                $acces = Accessories::find($accesCat->accessories_id);
+                $acces = Accessories::find(
+                    $accesCat->accessories_id
+                );
+
                 if ($acces) {
-                    $acces->stok = ($acces->stok ?? 0) + $jumlahKembali;
+                    $acces->stok =
+                        ($acces->stok ?? 0) + $jumlahKembali;
+
                     $acces->save();
                 }
             }
         }
 
-        return back()->with('success', 'Data pengembalian berhasil diperbarui.');
+        $rental->save();
+
+        return back()->with(
+            'success',
+            'Data pengembalian berhasil diperbarui.'
+        );
     }
     public function hsty()
     {
@@ -129,6 +271,15 @@ class RentalController extends Controller
             ->orderBy('rentals.tgl_inv', 'DESC') // 🔥 URUTAN DARI INVOICE TERBARU → TERLAMA
             ->get();
         return view('employe.rental.history', compact('rentals','listTahun', 'tahun'));
+    }
+    public function finisRental($id)
+    {
+        $rental = Rental::findOrFail($id);
+        $rental->status = 0;
+        $rental->updated_at = now();
+        $rental->save();
+
+        return back()->withSuccess('Barang Telah Kembali Semua');
     }
 
 }

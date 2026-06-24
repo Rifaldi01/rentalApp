@@ -115,15 +115,19 @@
                                                 @method('PUT')
                                                 <div class="modal-body">
                                                     <label class="col-form-label">Tanggal</label>
-                                                    <input type="text" name="created_at" id="" class="form-control datepicker" placeholder="Masukan Tanggal">
+                                                    <input type="text" name="created_at" id=""
+                                                           class="form-control datepicker"
+                                                           placeholder="Masukan Tanggal">
                                                     <label class="col-form-label">Name Accessories</label>
                                                     <input value="{{ $data['name'] }}" type="text" name="name"
-                                                           class="form-control" placeholder="Enter Accessories" readonly>
+                                                           class="form-control" placeholder="Enter Accessories"
+                                                           readonly>
                                                     <label class="col-form-label mt-2">qty</label>
                                                     <input type="number" value="0" name="stok"
                                                            class="form-control" placeholder="">
                                                     <label class="col-form-label mt-2">Keterangan</label>
-                                                    <textarea name="description" class="form-control" id="" cols="30" rows="5"></textarea>
+                                                    <textarea name="description" class="form-control" id="" cols="30"
+                                                              rows="5"></textarea>
                                                 </div>
                                                 <div class="modal-footer">
                                                     <button type="button" class="btn btn-secondary"
@@ -171,7 +175,7 @@
                         <th>Qty</th>
                         <th>Periode</th>
                         <th>Keterangan</th>
-                        {{--                        <th class="text-center" width="9%">Action</th>--}}
+                        <th class="text-center" width="9%">Action</th>
                     </tr>
                     </thead>
                     <tbody>
@@ -218,37 +222,51 @@
                                     <span class="badge bg-secondary">Finished</span>
                                 @endif
                             </td>
-                            {{--                        <td>--}}
-                            {{--                            <a href="{{ route('admin.acces.destroy', $data['id']) }}" data-confirm-delete="true" class="btn btn-danger btn-sm bx bx-trash" data-bs-toggle="tooltip" data-bs-placement="top" title="Delete"></a>--}}
-                            {{--                            <button data-bs-toggle="modal" data-bs-target="#exampleVerticallycenteredModal{{ $data['id'] }}" class="btn btn-warning btn-sm float-end bx bx-edit ms-2" data-bs-placement="top" title="Edit"></button>--}}
+                            <td class="text-center">
+                                <form action="{{ route('employ.acces.finish', $data->id) }}"
+                                      method="POST"
+                                      class="finish-form"
+                                      style="display:inline;">
+                                    @csrf
+                                    @method('PUT')
 
-                            {{--                            <!-- Edit Modal -->--}}
-                            {{--                            <div class="modal fade" id="exampleVerticallycenteredModal{{ $data['id'] }}" tabindex="-1" aria-hidden="true">--}}
-                            {{--                                <div class="modal-dialog modal-dialog-centered">--}}
-                            {{--                                    <div class="modal-content">--}}
-                            {{--                                        <div class="modal-header">--}}
-                            {{--                                            <h5 class="modal-title">Edit Accessories</h5>--}}
-                            {{--                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>--}}
-                            {{--                                        </div>--}}
-                            {{--                                        <form action="{{ route('admin.acces.update', $data['id']) }}" method="POST">--}}
-                            {{--                                            @csrf--}}
-                            {{--                                            @method('PUT')--}}
-                            {{--                                            <div class="modal-body">--}}
-                            {{--                                                <label class="col-form-label">Name Accessories</label>--}}
-                            {{--                                                <input value="{{ $data['name'] }}" type="text" name="name" class="form-control" placeholder="Enter Accessories">--}}
-                            {{--                                                <label class="col-form-label mt-2">Stok</label>--}}
-                            {{--                                                <input type="number" value="{{ $data['stok'] }}" name="stok" class="form-control" placeholder="">--}}
-                            {{--                                            </div>--}}
-                            {{--                                            <div class="modal-footer">--}}
-                            {{--                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>--}}
-                            {{--                                                <button type="submit" class="btn btn-primary">Save<i class="bx bx-save"></i></button>--}}
-                            {{--                                            </div>--}}
-                            {{--                                        </form>--}}
-                            {{--                                    </div>--}}
-                            {{--                                </div>--}}
-                            {{--                            </div>--}}
-                            {{--                            <!-- End of Edit Modal -->--}}
-                            {{--                        </td>--}}
+                                    <button type="submit"
+                                            class="btn btn-success btn-sm bx bx-check"
+                                            data-bs-toggle="tooltip"
+                                            data-bs-placement="top"
+                                            title="Selesai">
+                                    </button>
+                                </form>
+                                {{--                            <a href="{{ route('admin.acces.destroy', $data['id']) }}" data-confirm-delete="true" class="btn btn-danger btn-sm bx bx-trash" data-bs-toggle="tooltip" data-bs-placement="top" title="Delete"></a>--}}
+                                {{--                            <button data-bs-toggle="modal" data-bs-target="#exampleVerticallycenteredModal{{ $data['id'] }}" class="btn btn-warning btn-sm float-end bx bx-edit ms-2" data-bs-placement="top" title="Edit"></button>--}}
+
+                                {{--                            <!-- Edit Modal -->--}}
+                                {{--                            <div class="modal fade" id="exampleVerticallycenteredModal{{ $data['id'] }}" tabindex="-1" aria-hidden="true">--}}
+                                {{--                                <div class="modal-dialog modal-dialog-centered">--}}
+                                {{--                                    <div class="modal-content">--}}
+                                {{--                                        <div class="modal-header">--}}
+                                {{--                                            <h5 class="modal-title">Edit Accessories</h5>--}}
+                                {{--                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>--}}
+                                {{--                                        </div>--}}
+                                {{--                                        <form action="{{ route('admin.acces.update', $data['id']) }}" method="POST">--}}
+                                {{--                                            @csrf--}}
+                                {{--                                            @method('PUT')--}}
+                                {{--                                            <div class="modal-body">--}}
+                                {{--                                                <label class="col-form-label">Name Accessories</label>--}}
+                                {{--                                                <input value="{{ $data['name'] }}" type="text" name="name" class="form-control" placeholder="Enter Accessories">--}}
+                                {{--                                                <label class="col-form-label mt-2">Stok</label>--}}
+                                {{--                                                <input type="number" value="{{ $data['stok'] }}" name="stok" class="form-control" placeholder="">--}}
+                                {{--                                            </div>--}}
+                                {{--                                            <div class="modal-footer">--}}
+                                {{--                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>--}}
+                                {{--                                                <button type="submit" class="btn btn-primary">Save<i class="bx bx-save"></i></button>--}}
+                                {{--                                            </div>--}}
+                                {{--                                        </form>--}}
+                                {{--                                    </div>--}}
+                                {{--                                </div>--}}
+                                {{--                            </div>--}}
+                                {{--                            <!-- End of Edit Modal -->--}}
+                            </td>
                         </tr>
                     @endforeach
                     </tbody>
@@ -279,7 +297,8 @@
                     @csrf
                     <div class="modal-body">
                         <label class="col-form-label">Tanggal</label>
-                        <input type="text" name="created_at" id="" class="form-control datepicker" placeholder="Enter Accessories">
+                        <input type="text" name="created_at" id="" class="form-control datepicker"
+                               placeholder="Enter Accessories">
                         <label class="col-form-label">Name Accesories</label>
                         <input type="text" name="name" id="" class="form-control" placeholder="Enter Accessories">
                         <label class="col-form-label mt-2">Stok All</label>
@@ -306,7 +325,37 @@
 @push('js')
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
 
+            document.querySelectorAll('.finish-form').forEach(function(form) {
+
+                form.addEventListener('submit', function(e) {
+
+                    e.preventDefault();
+
+                    Swal.fire({
+                        title: 'Selesaikan Accessories?',
+                        text: 'Semua quantity accessories akan dikembalikan dan status akan menjadi selesai.',
+                        icon: 'warning',
+                        showCancelButton: true,
+                        confirmButtonText: 'Ya, Selesaikan',
+                        cancelButtonText: 'Batal',
+                        reverseButtons: true
+                    }).then((result) => {
+
+                        if (result.isConfirmed) {
+                            form.submit();
+                        }
+
+                    });
+
+                });
+
+            });
+
+        });
+    </script>
     <script>
         // Helper: inisialisasi single flatpickr jika belum ada
         function initFlatpickrOn(el, options = {}) {
@@ -319,7 +368,7 @@
 
         $(document).ready(function () {
             // 1) Inisialisasi datepicker untuk elemen yang sudah ada di DOM
-            document.querySelectorAll('.datepicker').forEach(function(input) {
+            document.querySelectorAll('.datepicker').forEach(function (input) {
                 initFlatpickrOn(input, {
                     // default options — sesuaikan bila perlu
                     dateFormat: "Y-m-d",
@@ -354,17 +403,21 @@
             });
 
             // 4) DataTables: init once per table (hindari inisialisasi ganda)
-            if (! $.fn.DataTable.isDataTable('#accessories')) {
+            if (!$.fn.DataTable.isDataTable('#accessories')) {
                 var table1 = $('#accessories').DataTable({
                     lengthChange: false,
                     buttons: [{
                         extend: 'pdf',
-                        exportOptions: { columns: [0,1,2,3,4] },
-                        customize: function (doc) { doc.content[1].alignment = 'center'; }
+                        exportOptions: {columns: [0, 1, 2, 3, 4]},
+                        customize: function (doc) {
+                            doc.content[1].alignment = 'center';
+                        }
                     }, {
                         extend: 'print',
-                        exportOptions: { columns: [0,1,2,3,4] },
-                        customize: function (win) { $(win.document.body).find('table').addClass('table-center'); }
+                        exportOptions: {columns: [0, 1, 2, 3, 4]},
+                        customize: function (win) {
+                            $(win.document.body).find('table').addClass('table-center');
+                        }
                     }]
                 });
                 table1.buttons().container().appendTo('#accessories_wrapper .col-md-6:eq(0)');
@@ -382,9 +435,9 @@
 
                 function formatDatePdf() {
                     const date = new Date();
-                    const day   = String(date.getDate()).padStart(2, '0');
-                    const month = date.toLocaleString('en-US', { month: 'short' });
-                    const year  = String(date.getFullYear()).slice(-2);
+                    const day = String(date.getDate()).padStart(2, '0');
+                    const month = date.toLocaleString('en-US', {month: 'short'});
+                    const year = String(date.getFullYear()).slice(-2);
                     return `${day} ${month} ${year}`;
                 }
 
@@ -397,7 +450,7 @@
                             filename: function () {
                                 return 'Report Accessories ' + formatDatePdf();
                             },
-                            exportOptions: { columns: [0,1,2,3,4,5,6] },
+                            exportOptions: {columns: [0, 1, 2, 3, 4, 5, 6]},
                             customize: function (doc) {
 
                                 doc.defaultStyle.fontSize = 8;
@@ -423,7 +476,7 @@
                         {
                             extend: 'print',
                             footer: true,
-                            exportOptions: { columns: [0,1,2,3,4,5,6] }
+                            exportOptions: {columns: [0, 1, 2, 3, 4, 5, 6]}
                         }
                     ],
 
@@ -439,7 +492,7 @@
                         };
 
                         var totalQty = api
-                            .column(4, { search: 'applied' })
+                            .column(4, {search: 'applied'})
                             .data()
                             .reduce(function (a, b) {
                                 return a + intVal(b);
@@ -454,13 +507,12 @@
 
                 table2.on('order.dt search.dt', function () {
                     let i = 1;
-                    table2.cells(null, 0, { search: 'applied', order: 'applied' })
+                    table2.cells(null, 0, {search: 'applied', order: 'applied'})
                         .every(function () {
                             this.data(i++);
                         });
                 }).draw();
             }
-
 
 
             // 5) Init flatpickr untuk inputs yang mungkin dibuat/dinamis di runtime
