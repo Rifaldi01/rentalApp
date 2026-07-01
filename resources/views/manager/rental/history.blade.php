@@ -11,15 +11,54 @@
                 <div class="col-6">
                     <div class="me-2">
                         <form method="GET" action="{{ route('manager.rental.hsty') }}" class="float-end mt-3">
-                            <select name="tahun" class="form-control" style="width: 200px" onchange="this.form.submit()">
-                                <option value="">-- Pilih Tahun --</option>
+                            <div class="row">
+                                <div class="col-sm-4">
+                                    <select name="tahun" class="form-select">
 
-                                @foreach($listTahun as $th)
-                                    <option value="{{ $th->thn }}" {{ $tahun == $th->thn ? 'selected' : '' }}>
-                                        {{ $th->thn }}
-                                    </option>
-                                @endforeach
-                            </select>
+                                        <option value="all"
+                                            {{ request()->has('tahun') && request('tahun') == 'all' ? 'selected' : '' }}>
+                                            Semua Tahun
+                                        </option>
+
+                                        @foreach($listTahun as $item)
+                                            <option value="{{ $item->thn }}"
+                                                {{
+                                                    request()->has('tahun')
+                                                        ? (request('tahun') == $item->thn ? 'selected' : '')
+                                                        : (date('Y') == $item->thn ? 'selected' : '')
+                                                }}>
+                                                {{ $item->thn }}
+                                            </option>
+                                        @endforeach
+
+                                    </select>
+                                </div>
+                                <div class="col-sm-4">
+                                    <select name="bulan" class="form-select">
+
+                                        <option value="all"
+                                            {{ request()->has('bulan') && request('bulan') == 'all' ? 'selected' : '' }}>
+                                            Semua Bulan
+                                        </option>
+
+                                        @for($i = 1; $i <= 12; $i++)
+                                            <option value="{{ $i }}"
+                                                {{
+                                                    request()->has('bulan')
+                                                        ? (request('bulan') == $i ? 'selected' : '')
+                                                        : (date('n') == $i ? 'selected' : '')
+                                                }}>
+                                                {{ \Carbon\Carbon::create()->month($i)->translatedFormat('F') }}
+                                            </option>
+                                        @endfor
+
+                                    </select>
+                                </div>
+                                <div class="col-sm-4" >
+                                    <button class="btn btn-success">Filter</button>
+                                    <a href="{{route('manager.rental.hsty')}}" class="btn btn-danger">Reset</a>
+                                </div>
+                            </div>
                         </form>
                     </div>
                 </div>
@@ -409,6 +448,11 @@
                                     </div>
                                 </div>
                                 <a href="{{route('manager.rental.edit', $data->id)}}" class="btn btn-warning lni lni-pencil btn-sm"></a>
+                                <a href="{{route('manager.rental.destroy', $data->id)}}" data-confirm-delete="true"
+                                   type="submit" class="lni lni-trash btn btn-sm btn-danger"
+                                   data-bs-toggle="tooltip"
+                                   data-bs-placement="top" title="Hapus">
+                                </a>
                             </td>
                     </tr>
                     @endforeach

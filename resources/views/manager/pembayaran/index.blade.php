@@ -302,6 +302,7 @@
                         <th>Sisa <br>Bayar</th>
                         <th>Ket. (Nama Bank)</th>
                         <th>Penerima</th>
+                        <th>Action</th>
                     </tr>
                     </thead>
                     <tbody>
@@ -379,6 +380,13 @@
                                     @else
                                         -
                                     @endif
+                                </td>
+                                <td>
+                                    <a href="{{ route('manager.debts.hapus', $data->id) }}" data-confirm-delete="true"
+                                       type="submit" class=" lni lni-trash btn btn-sm btn-danger"
+                                       data-bs-toggle="tooltip"
+                                       data-bs-placement="top" title="Hapus">
+                                    </a>
                                 </td>
                             </tr>
                     @endforeach
