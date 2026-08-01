@@ -121,51 +121,89 @@
                                     @php
                                         $semuaSelesai = true;
 
-                                        // Ambil item yang sudah dikembalikan
+                                        /*
+                                        |--------------------------------------------------------------------------
+                                        | ITEM
+                                        |--------------------------------------------------------------------------
+                                        */
+
+                                        $itemIds = json_decode($data->item_id, true) ?? [];
                                         $returnedItems = json_decode($data->returned_item_id, true) ?? [];
 
-                                        // Cek item rental
-                                        $itemIds = json_decode($data->item_id, true) ?? [];
+                                        // Samakan tipe data ID menjadi string
+                                        $itemIds = array_map('strval', $itemIds);
+                                        $returnedItems = array_map('strval', $returnedItems);
 
+                                        // Cek apakah semua item sudah dikembalikan
                                         foreach ($itemIds as $itemId) {
-                                            if (!in_array((string)$itemId, $returnedItems)) {
+                                            if (!in_array($itemId, $returnedItems, true)) {
                                                 $semuaSelesai = false;
                                                 break;
                                             }
                                         }
 
-                                        // Jika item sudah selesai semua, cek accessories
+
+                                        /*
+                                        |--------------------------------------------------------------------------
+                                        | ACCESSORIES
+                                        |--------------------------------------------------------------------------
+                                        */
+
                                         if ($semuaSelesai) {
+
                                             foreach ($data->accessoriescategory as $acces) {
-                                                if ($acces->accessories_quantity > 0 || $acces->status_acces == 1) {
+
+                                                /*
+                                                 * accessories_quantity > 0
+                                                 * berarti masih ada accessories yang belum dikembalikan
+                                                 */
+                                                if ((int) $acces->accessories_quantity > 0) {
+                                                    $semuaSelesai = false;
+                                                    break;
+                                                }
+
+                                                /*
+                                                 * Jika status_acces == 1 juga berarti
+                                                 * accessories masih belum selesai.
+                                                 */
+                                                if ((int) $acces->status_acces === 1) {
                                                     $semuaSelesai = false;
                                                     break;
                                                 }
                                             }
                                         }
                                     @endphp
+
+
                                     @if(!$semuaSelesai)
 
-                                        <button class="btn btn-warning lni lni-package float-end me-1"
-                                                data-bs-toggle="modal"
-                                                data-bs-target="#kembali{{ $data->id }}"
-                                                title="Returned">
+                                        {{-- MASIH ADA BARANG YANG BELUM DIKEMBALIKAN --}}
+                                        <button
+                                            class="btn btn-warning lni lni-package float-end me-1"
+                                            data-bs-toggle="modal"
+                                            data-bs-target="#kembali{{ $data->id }}"
+                                            title="Returned">
                                         </button>
 
                                     @else
 
-                                        <form action="{{ route('employe.rental.rental-finis', $data->id) }}"
-                                              method="POST"
-                                              class="float-end">
+                                        {{-- SEMUA ITEM DAN ACCESSORIES SUDAH DIKEMBALIKAN --}}
+                                        <form
+                                            action="{{ route('employe.rental.rental-finis', $data->id) }}"
+                                            method="POST"
+                                            class="float-end">
+
                                             @csrf
 
-                                            <button type="submit"
-                                                    id="btnFinish{{ $data->id }}"
-                                                    class="btn btn-success lni lni-checkmark mt-1"
-                                                    data-bs-toggle="tooltip"
-                                                    data-bs-placement="top"
-                                                    title="Rental Selesai">
+                                            <button
+                                                type="submit"
+                                                id="btnFinish{{ $data->id }}"
+                                                class="btn btn-success lni lni-checkmark mt-1"
+                                                data-bs-toggle="tooltip"
+                                                data-bs-placement="top"
+                                                title="Rental Selesai">
                                             </button>
+
                                         </form>
 
                                     @endif
@@ -183,47 +221,53 @@
                                                 </div>
                                                 <div class="container">
                                                     @php
-                                                        $belumSelesai = false;
-
-                                                        // Semua item rental
-                                                        $itemIds = json_decode($data->item_id, true) ?? [];
-
-                                                        // Item yang sudah dikembalikan
-                                                        $returnedItems = json_decode($data->returned_item_id, true) ?? [];
-
                                                         /*
                                                         |--------------------------------------------------------------------------
                                                         | CEK ITEM
                                                         |--------------------------------------------------------------------------
                                                         */
-                                                        foreach ($itemIds as $itemId) {
 
-                                                            if (!in_array((string)$itemId, $returnedItems)) {
-                                                                $belumSelesai = true;
-                                                                break;
-                                                            }
-                                                        }
+                                                        $itemIds = json_decode($data->item_id, true) ?? [];
+                                                        $returnedItems = json_decode($data->returned_item_id, true) ?? [];
+
+                                                        // Samakan tipe ID
+                                                        $itemIds = array_map('strval', $itemIds);
+                                                        $returnedItems = array_map('strval', $returnedItems);
+
+                                                        /*
+                                                        |--------------------------------------------------------------------------
+                                                        | Apakah sudah ada ITEM yang dikembalikan?
+                                                        |--------------------------------------------------------------------------
+                                                        */
+
+                                                        $adaItemDikembalikan = !empty(
+                                                            array_intersect($itemIds, $returnedItems)
+                                                        );
+
 
                                                         /*
                                                         |--------------------------------------------------------------------------
                                                         | CEK ACCESSORIES
                                                         |--------------------------------------------------------------------------
                                                         */
-                                                        if (!$belumSelesai) {
 
-                                                            foreach ($data->accessoriescategory as $acces) {
+                                                        $adaAccessoriesDikembalikan = $data->accessoriescategory
+                                                            ->contains(function ($acces) {
+                                                                return (int) $acces->kembali > 0;
+                                                            });
 
-                                                                if (
-                                                                    $acces->status_acces == 1 ||
-                                                                    $acces->accessories_quantity > 0
-                                                                ) {
-                                                                    $belumSelesai = true;
-                                                                    break;
-                                                                }
-                                                            }
-                                                        }
+
+                                                        /*
+                                                        |--------------------------------------------------------------------------
+                                                        | TENTUKAN TOMBOL SELESAIKAN SEMUA
+                                                        |--------------------------------------------------------------------------
+                                                        */
+
+                                                        $bolehSelesaikanSemua =
+                                                            !$adaItemDikembalikan &&
+                                                            !$adaAccessoriesDikembalikan;
                                                     @endphp
-                                                    @if($belumSelesai)
+                                                    @if($bolehSelesaikanSemua)
                                                         <form
                                                             action="{{ route('employe.rental.finis', $data->id) }}"
                                                             method="POST">
