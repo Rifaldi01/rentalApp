@@ -58,8 +58,7 @@
                             <td>{{formatRupiah($data->diskon)}}</td>
                             <td>
                                 {{formatId($data->date_start)}}
-                            </td>
-                            <td>
+                            -
                                 {{formatId($data->date_end)}}
                             </td>
                             <td class="text-center">{{$data->days_difference}} Day</td>
