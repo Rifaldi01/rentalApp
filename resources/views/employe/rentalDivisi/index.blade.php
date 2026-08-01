@@ -27,7 +27,6 @@
                         <th>Nama Divisi</th>
                         <th>Deskripsi</th>
                         <th>Tanggal Peminjaman</th>
-                        <th>Status</th>
                         <th>Print</th>
                         <th>Action</th>
                     </tr>
@@ -42,13 +41,6 @@
                                 {{$data->description}}
                             </td>
                             <td>{{formatId($data->created_at)}}</td>
-                            <td class="text-center">
-                                @if($data->status == 1)
-                                    <span class="badge bg-success">Finished</span>
-                                @elseif($data->status == 0)
-                                    <span class="badge bg-secondary">Rental</span>
-                                @endif
-                            </td>
                             <td>
                                 <button class="btn btn-dnd lni lni-files btn-sm" data-bs-toggle="modal"
                                         data-bs-target="#exampleExtraLargeModal{{$data->id}}" data-bs-tool="tooltip"
@@ -58,12 +50,7 @@
                             </td>
                             <td>
                                 @if($data->status == 1)
-                                    <button type="button" id="finis"
-                                            class="btn-sm btn btn-success lni lni-checkmark  mt-1"
-                                            data-bs-toggle="tooltip" data-bs-placement="top"
-                                            title="Finished" disabled>
-
-                                    </button>
+                                    <span class="badge bg-success">Finished</span>
                                 @elseif($data->status == 0)
                                     <form action="{{ route('employe.rentaldivisi.finis', $data->id) }}" method="POST">
                                         @csrf
