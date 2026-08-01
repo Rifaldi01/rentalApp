@@ -29,7 +29,7 @@
                     <a href="{{route('admin.rental.create')}}"><i class='lni lni-timer'></i>Rental</a>
                 </li>
                 <li>
-                    <a href="{{route('admin.rental.index')}}"><i class='bx bx-list-ul'></i>Rental</a>
+                    <a href="{{route('admin.rental.index')}}"><i class='bx bx-list-ul'></i>Daftar Rental</a>
                 </li>
                 <li>
                     <a href="{{route('admin.rental.divisi')}}"><i class='lni lni-apartment'></i>Rental Divisi</a>
