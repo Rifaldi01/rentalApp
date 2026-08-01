@@ -35,49 +35,47 @@
                     <tbody>
                     <tr>
                         @foreach($rentalDivisi as $key => $data)
-                                <td>{{$key +1}}</td>
-                                <td>{{$data->kode_pinjaman}}</td>
-                                <td>{{$data->divisi->name}}</td>
-                                <td>
-                                    {{$data->description}}
-                                </td>
-                                <td>{{formatId($data->created_at)}}</td>
-                                <td class="text-center">
-                                    @if($data->status == 1)
-                                        <span class="badge bg-success">Finished</span>
-                                    @elseif($data->status == 0)
-                                        <span class="badge bg-secondary">Rental</span>
-                                    @endif
-                                </td>
-                                <td>
-                                    <button class="btn btn-dnd lni lni-files btn-sm" data-bs-toggle="modal"
-                                            data-bs-target="#exampleExtraLargeModal{{$data->id}}" data-bs-tool="tooltip"
-                                            data-bs-placement="top" title="Print Surat Jalan">
+                            <td>{{$key +1}}</td>
+                            <td>{{$data->kode_pinjaman}}</td>
+                            <td>{{$data->divisi->name}}</td>
+                            <td>
+                                {{$data->description}}
+                            </td>
+                            <td>{{formatId($data->created_at)}}</td>
+                            <td class="text-center">
+                                @if($data->status == 1)
+                                    <span class="badge bg-success">Finished</span>
+                                @elseif($data->status == 0)
+                                    <span class="badge bg-secondary">Rental</span>
+                                @endif
+                            </td>
+                            <td>
+                                <button class="btn btn-dnd lni lni-files btn-sm" data-bs-toggle="modal"
+                                        data-bs-target="#exampleExtraLargeModal{{$data->id}}" data-bs-tool="tooltip"
+                                        data-bs-placement="top" title="Print Surat Jalan">
+                                </button>
+                                @include('employe.rentalDivisi.surat-jalan')
+                            </td>
+                            <td>
+                                @if($data->status == 1)
+                                    <button type="button" id="finis"
+                                            class="btn-sm btn btn-success lni lni-checkmark  mt-1"
+                                            data-bs-toggle="tooltip" data-bs-placement="top"
+                                            title="Finished" disabled>
+
                                     </button>
-                                    @include('employe.rentalDivisi.surat-jalan')
-                                </td>
-                                <td>
-                                    @if($data->status == 1)
-                                            <button type="button" id="finis"
-                                                    class="btn-sm btn btn-success lni lni-checkmark  mt-1"
-                                                    data-bs-toggle="tooltip" data-bs-placement="top"
-                                                    title="Finished" disabled>
+                                @elseif($data->status == 0)
+                                    <form action="{{ route('employe.rentaldivisi.finis', $data->id) }}" method="POST">
+                                        @csrf
+                                        <button type="submit"
+                                                class="btn-sm btn btn-success lni lni-checkmark  mt-1"
+                                                data-bs-toggle="tooltip" data-bs-placement="top"
+                                                title="Finished">
 
-                                            </button>
-                                    @elseif($data->status == 0)
-                                        <form action="{{ route('employe.rentaldivisi.finis', $data->id) }}" method="POST">
-                                            @csrf
-                                            <button type="submit"
-                                                    class="btn-sm btn btn-success lni lni-checkmark  mt-1"
-                                                    data-bs-toggle="tooltip" data-bs-placement="top"
-                                                    title="Finished">
-
-                                            </button>
-                                        </form>
-                                    @endif
-
-
-                                </td>
+                                        </button>
+                                    </form>
+                                @endif
+                            </td>
                     </tr>
                     @endforeach
                     </tbody>

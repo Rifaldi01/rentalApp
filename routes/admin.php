@@ -16,7 +16,7 @@ use App\Http\Controllers\Admin\ReportController;
 use App\Http\Controllers\Admin\ReportMaintenController;
 use App\Http\Controllers\Admin\ReportProblemController;
 use App\Http\Controllers\Admin\ReportServiceController;
-use App\Models\Service;
+use App\Http\Controllers\RentalDivisiController;
 
 Route::group(['middleware' => ['auth:web', 'role:admin'], 'prefix' => 'admin'], function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('admin.dashboard');
@@ -97,6 +97,7 @@ Route::group(['middleware' => ['auth:web', 'role:admin'], 'prefix' => 'admin'], 
     Route::get('report/service', [ReportServiceController::class, 'index'])->name('admin.report.service.index');
     Route::get('/report/service/filter', [ReportServiceController::class, 'filter'])->name('admin.service.filter');
     //report end
+    Route::post('rental-divisi/finis/{id}', [RentalDivisiController::class, 'finis'])->name('admin.rentaldivisi.finis');
 
     //poin
     Route::get('/poin', [PoinController::class, 'index'])->name('admin.poin.index');

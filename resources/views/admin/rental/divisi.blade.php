@@ -50,16 +50,24 @@
                                 @include('employe.rentalDivisi.surat-jalan')
                             </td>
                             <td>
-                                <form action="{{ route('admin.rental.finis', $data->id) }}" method="POST">
-                                    @csrf
-                                    <button type="submit"
+                                @if($data->status == 1)
+                                    <button type="button" id="finis"
                                             class="btn-sm btn btn-success lni lni-checkmark  mt-1"
                                             data-bs-toggle="tooltip" data-bs-placement="top"
-                                            title="Finished">
+                                            title="Finished" disabled>
 
                                     </button>
-                                </form>
+                                @elseif($data->status == 0)
+                                    <form action="{{ route('admin.rentaldivisi.finis', $data->id) }}" method="POST">
+                                        @csrf
+                                        <button type="submit"
+                                                class="btn-sm btn btn-success lni lni-checkmark  mt-1"
+                                                data-bs-toggle="tooltip" data-bs-placement="top"
+                                                title="Finished">
 
+                                        </button>
+                                    </form>
+                                @endif
                             </td>
                     </tr>
                     @endforeach
