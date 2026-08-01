@@ -1,20 +1,6 @@
 @extends('layouts.master')
+@section('title', strtoupper('Laporan Servis Alat'))
 @section('content')
-    <div class="card">
-        <div class="card-body">
-            <div class="col">
-                <div class="row">
-                    <div class="col-sm">
-                        <h4 class="mb-0 text-uppercase">
-                            Service Report
-                        </h4>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <hr/>
     <div class="card table-timbang">
         <div class="card-head">
             @if ($errors->any())
@@ -39,13 +25,13 @@
                     <div class="row">
                         <div class="col-5 ms-2 mt-2">
                             <label class="form-label">
-                                Start Tanggal
+                                Tanggal Mulai
                             </label>
                             <input type="date" class="form-control" name="start_date"  required>
                         </div>
                         <div class="col-6 mt-2">
                             <label class="form-label">
-                                End Tanggal
+                                Tanggal Berakhir
                             </label>
                             <input type="date" class="form-control" name="end_date"  required>
                         </div>
@@ -64,11 +50,10 @@
                             <th width="2%">No</th>
                             <th>No Invoce</th>
                             <th>Pelanggan</th>
-                            <th>Item</th>
+                            <th>Alat</th>
                             <th>No Seri</th>
                             <th>Type</th>
-                            <th>Tgl. Service</th>
-                            <th>Tgl. Selesai</th>
+                            <th>Periode Servis</th>
                             <th>Total Inv</th>
                             <th>Biaya Ganti</th>
                             <th>PPN</th>
@@ -112,12 +97,11 @@
                                         <li>{{ trim($type) }} </li>
                                     @endforeach
                                 </td>
-                                <td>{{formatId(optional($data->service)->date_service)}}</td>
-                                <td>
+                                <td>{{formatId(optional($data->service)->date_service)}} -
                                     @if(optional($data->service)->date_finis)
                                     {{formatId(optional($data->service)->date_finis)}}
                                     @else
-                                    <div class="text-center">-</div>
+                                    <div class="text-center">Proses</div>
                                     @endif
                                 </td>
                                 <td>{{formatRupiah(optional($data->service)->total_invoice)}}</td>

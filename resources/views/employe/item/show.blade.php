@@ -1,15 +1,15 @@
 @extends('layouts.master')
+@section('title', 'DETAIL RIWAYAT ' . strtoupper($item->name))
 @section('content')
     <div class="card">
         <div class="card-head">
             <div class="row mt-2">
                 <div class="col-6">
                     <div class="container">
-                        <h4 class=" text-uppercase">{{$item->name}} <i class="bx bx-history"></i></h4>
                     </div>
                 </div>
                 <div class="col-6">
-                    <a href="{{route('admin.item.index')}}" class="btn btn-warning float-end me-3 shadow">Back</a>
+                    <a href="{{route('employe.item.index')}}" class="btn btn-warning float-end me-3 shadow">Kembali</a>
                 </div>
             </div>
             <hr>
@@ -20,11 +20,10 @@
                     <thead>
                     <tr>
                         <th width="2%">No</th>
-                        <th>Item</th>
-                        <th>Accessories</th>
-                        <th>Start Date</th>
-                        <th>End Date</th>
-                        <th class="text-center">Total Day</th>
+                        <th>Alat</th>
+                        <th>Aksesoris</th>
+                        <th>Periode</th>
+                        <th class="text-center">Lama Sewa</th>
                         <th class="text-center">Status</th>
                     </tr>
                     </thead>
@@ -44,8 +43,7 @@
                             </td>
                             <td>
                                 {{\Carbon\Carbon::parse($data->date_start)->translatedFormat('d F Y')}}
-                            </td>
-                            <td>
+                            -
                                 {{\Carbon\Carbon::parse($data->date_end)->translatedFormat('d F Y')}}
                             </td>
                             <td class="text-center" width="10%">{{$data->days_difference}}</td>

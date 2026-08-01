@@ -1,20 +1,6 @@
 @extends('layouts.master')
+@section('title', strtoupper('Laporan Perawatan'))
 @section('content')
-    <div class="card">
-        <div class="card-body">
-            <div class="col">
-                <div class="row">
-                    <div class="col-sm">
-                        <h4 class="mb-0 text-uppercase">
-                            Maintenance Report
-                        </h4>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <hr/>
     <div class="card table-timbang">
         <div class="card-head">
             @if ($errors->any())
@@ -39,13 +25,13 @@
                     <div class="row">
                         <div class="col-5 ms-2 mt-2">
                             <label class="form-label">
-                                Start Date
+                                Tanggal Mulai
                             </label>
                             <input type="date" class="form-control" name="start_date"  required>
                         </div>
                         <div class="col-6 mt-2">
                             <label class="form-label">
-                                End Date
+                                Tanggak Berakhir
                             </label>
                             <input type="date" class="form-control" name="end_date"  required>
                         </div>
@@ -62,10 +48,10 @@
                     <thead>
                     <tr>
                         <th width="2%">No</th>
-                        <th>Name </th>
+                        <th>Nama Alat </th>
                         <th>No Seri</th>
-                        <th>Descript</th>
-                        <th>Date Maintenance</th>
+                        <th>Keterangan</th>
+                        <th>Tanggal Perawatan</th>
                         <th class="text-center">Status</th>
                     </tr>
                     </thead>

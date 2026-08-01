@@ -1,8 +1,8 @@
 @extends('layouts.master')
 @section('content')
     <div class="card">
-        <div class="container mt-2">
-            <h5>Stok Item <i class="bx bx-box"></i></h5>
+        <div class="ms-2 mt-2">
+            <h5>Stok Alat <i class="bx bx-box"></i></h5>
         </div>
     </div>
     <div class="row row-cols-1 row-cols-md-2 row-cols-xl-4">
@@ -11,9 +11,9 @@
                 <div class="card-body">
                     <div class="d-flex align-items-center">
                         <div>
-                            <p class="mb-0 text-secondary">Total Items</p>
+                            <p class="mb-0 text-secondary">Total Alat</p>
                             <h4 class="my-1 text-warning">{{$item}}</h4>
-                            <p class="mb-0 font-13">All Items</p>
+                            <p class="mb-0 font-13">Semua Alat</p>
                         </div>
                         <div class="widgets-icons-2 rounded-circle bg-gradient-orange text-white ms-auto"><i
                                 class='bx bxs-box'></i>
@@ -45,9 +45,9 @@
                 <div class="card-body">
                     <div class="d-flex align-items-center">
                         <div>
-                            <p class="mb-0 text-secondary">Item Maintenance</p>
+                            <p class="mb-0 text-secondary">Perawatan Alat</p>
                             <h4 class="my-1 text-success">{{$maintenance}}</h4>
-                            <p class="mb-0 font-13">Chek Item Maintenance</p>
+                            <p class="mb-0 font-13">Perikasa Alat Rusak</p>
                         </div>
                         <div class="widgets-icons-2 rounded-circle bg-gradient-ohhappiness text-white ms-auto"><i
                                 class='bx bx-box'></i>

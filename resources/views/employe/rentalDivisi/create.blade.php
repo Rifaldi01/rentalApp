@@ -1,8 +1,8 @@
 @extends('layouts.master')
+@section('title', strtoupper('Tmmbah Pinjaman Divisi'))
 @section('content')
     <div class="card">
         <div class="card-body p-4">
-            <h5 class="mb-4">Pinjaman Divisi</h5>
             <form class="row g-3" action="{{$url}}" method="POST" enctype="multipart/form-data" id="myForm">
                 @csrf
                 @isset($rentalDivisi)
@@ -11,16 +11,16 @@
 
                 @if(isset($rentalDivisi))
                     <div class="col-md-12">
-                        <label for="input1" class="form-label"><i class="text-danger">*</i> Name Divisi</label>
-                        {{ html()->select('divisi_id', $divisi, isset($rentalDivisi) ? $rentalDivisi->divisi_id : null )->class('form-control')->id('single-select-field')->placeholder("--Select Divisi--") }}
+                        <label for="input1" class="form-label"><i class="text-danger">*</i> Nama Divisi</label>
+                        {{ html()->select('divisi_id', $divisi, isset($rentalDivisi) ? $rentalDivisi->divisi_id : null )->class('form-control')->id('single-select-field')->placeholder("--Pilih Divisi--") }}
                     </div>
                 @else
                     <div class="col-md-12">
-                        <label for="input1" class="form-label"><i class="text-danger">*</i> Name Divisi</label>
+                        <label for="input1" class="form-label"><i class="text-danger">*</i> Nama Divisi</label>
                         {{ html()->select('divisi_id', $divisi, isset($rentalDivisi) ? $rentalDivisi->customer_id : old('customer_id'))
                             ->class(['form-control', 'is-invalid' => $errors->has('customer_id')])
                             ->id('single-select-field')
-                            ->placeholder("--Select Divisi--")
+                            ->placeholder("--Pilihh Divisi--")
                         }}
                         @error('customer_id')
                         <div class="invalid-feedback">
@@ -31,11 +31,11 @@
                 @endif
                 <div class="col-md-12">
                     <label for="input3" class="form-label">
-                        <i class="text-danger">*</i> Item
+                        <i class="text-danger">*</i> Alat
                     </label>
                     <select name="item_id[]" id="multiple-select-field"
                             class="form-control @error('item_id') is-invalid @enderror"
-                            data-placeholder="Select Item" multiple>
+                            data-placeholder="Pilih Alat" multiple>
                         @foreach($item as $items)
                             <option value="{{ $items->id }}"
                                     @if(
@@ -58,7 +58,7 @@
                 <div id="dynamic-fields">
                     <div class="col-md-12">
                         <button class="btn btn-dnd float-end add-field me-4 mb-2" type="button" id="add-field"
-                                data-bs-toggle="tooltip" data-bs-placement="top" title="Add Accessories">Tambah Access
+                                data-bs-toggle="tooltip" data-bs-placement="top" title="Tambah Accessories">Aksesoris
                             <i
                                 class="bx bx-plus"></i></button>
                     </div>
@@ -66,9 +66,9 @@
                         @foreach($rentalDivisi->accessoriescategory as $data)
                             <div class="input-group mt-2">
                                 <div class="col-md-7">
-                                    <label for="input3" class="form-label">Accessories</label>
+                                    <label for="input3" class="form-label">Aksesoris</label>
                                     <select name="access[]" class="form-control" id="single-select-optgroup-field"
-                                            data-placeholder="Choose one thing">
+                                            data-placeholder="Pilih Aksesoris">
                                         @foreach($acces as $accessory)
                                             <option
                                                 value="{{ $accessory->id }}" {{ $accessory->id == $data->accessories_id ? 'selected' : '' }}>{{ $accessory->name }}</option>
@@ -81,16 +81,16 @@
                                            value="{{ $data->accessories_quantity }}" required>
                                 </div>
                                 <button class="btn btn-danger me-1 float-end remove-field me-3" type="button"
-                                        data-bs-toggle="tooltip" data-bs-placement="top" title="Delete Accessories"><i
+                                        data-bs-toggle="tooltip" data-bs-placement="top" title="Hapus Accessories"><i
                                         class="bx bx-trash"></i></button>
                             </div>
                         @endforeach
                     @else
                         <div class="input-group mt-2">
                             <div class="col-md-7">
-                                <label for="input3" class="form-label">Accessories</label>
+                                <label for="input3" class="form-label">Aksesoris</label>
                                 <select name="access[]" class="form-control" id="single-select-optgroup-field"
-                                        data-placeholder="Choose one thing">
+                                        data-placeholder="Pilihh Aksesoris">
                                     @foreach($acces as $accessory)
                                         <option value="">--Select Accessories--</option>
                                         <option value="{{ $accessory->id }}">{{ $accessory->name }}</option>
@@ -102,7 +102,7 @@
                                 <input type="number" class="form-control" name="qty[]" required>
                             </div>
                             <button class="btn btn-danger me-1 float-end remove-field me-3" type="button"
-                                    data-bs-toggle="tooltip" data-bs-placement="top" title="Delete Accessories"><i
+                                    data-bs-toggle="tooltip" data-bs-placement="top" title="Hapus Accessories"><i
                                     class="bx bx-trash"></i></button>
                         </div>
                     @endif
@@ -113,8 +113,8 @@
                 </div>
                 <div class="col-md-12">
                     <div class="d-md-flex d-grid align-rentals-center gap-3">
-                        <button type="submit" class="btn btn-primary px-4" id="submitBtn">Submit</button>
-                        <a href="{{route('admin.rental.index')}}" class="btn btn-warning">Back</a>
+                        <button type="submit" class="btn btn-primary px-4" id="submitBtn">Simpan</button>
+                        <a href="{{route('employe.rentaldivisi.index')}}" class="btn btn-warning">Kembali</a>
                     </div>
                 </div>
             </form>
@@ -167,8 +167,8 @@
                 $('#dynamic-fields').append(
                     '<div class="input-group mt-2">' +
                     '<div class="col-md-7">' +
-                    '<label for="input3" class="form-label">Accessories</label>' +
-                    '<select name="access[]" class="form-control single-select-clear-field" data-placeholder="Choose one thing">' +
+                    '<label for="input3" class="form-label">Aksesoris</label>' +
+                    '<select name="access[]" class="form-control single-select-clear-field" data-placeholder="Pilih Aksesoris">' +
                     '@foreach($acces as $accessory)' +
                     '@if(isset($rentalDivisi))' +
                     '<option value="{{ $accessory->id }}" @foreach($rentalDivisi->accessoriescategory as $data) @if(in_array($accessory->id,old('accessory', [$data->accessories_id])))selected="selected" @endif @endforeach>{{ $accessory->name }}</option>' +
@@ -183,13 +183,16 @@
                     '<input type="number" class="form-control" name="accessories_quantity[]" value="{{isset($rentalDivisi) ? $rentalDivisi->qty : null}}" required>' +
                     '</div>' +
                     '<br>' +
-                    '<button class="btn btn-danger float-end remove-field" type="button" id="addButton" data-bs-toggle="tooltip" data-bs-placement="top" title="Delete Accessories"><i class="bx bx-trash"></i></button>' +
+                    '<button class="btn btn-danger float-end remove-field" type="button" id="addButton" data-bs-toggle="tooltip" data-bs-placement="top" title="Hapus Accessories"><i class="bx bx-trash"></i></button>' +
                     '</div>' +
                     '</div>'
                 );
 
                 // Inisialisasi select2 pada elemen yang baru ditambahkan
-                $('.single-select-clear-field').last().select2();
+                $('.single-select-clear-field').last().select2({
+                    theme: 'bootstrap-5',
+                    width: '100%',
+                });
             });
 
             // Hapus kolom

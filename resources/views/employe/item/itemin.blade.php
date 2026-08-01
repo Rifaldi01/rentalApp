@@ -1,4 +1,5 @@
 @extends('layouts.master')
+@section('title', 'RIWAYAT ALAT MASUK')
 @section('content')
     <div class="card">
         <div class="card-body">

@@ -1,11 +1,11 @@
 @extends('layouts.master')
+@section('title', strtoupper('daftar perawatan alat'))
 @section('content')
     <div class="card">
         <div class="card-head">
             <div class="row">
                 <div class="col-6">
                     <div class="container mt-3">
-                        <h4 class="text-uppercase">List Items Miantenance</h4>
                     </div>
                 </div>
             </div>
@@ -16,10 +16,10 @@
                     <thead>
                     <tr>
                         <th width="2%">No</th>
-                        <th>Name</th>
+                        <th>Nama</th>
                         <th>No Seri</th>
                         <th class="text-center">Detail</th>
-                        <th class="text-center" width="13%">Action</th>
+                        <th class="text-center" width="13%">Aksi</th>
                     </tr>
                     </thead>
                     <tbody>
@@ -37,13 +37,13 @@
                                     <div class="modal-dialog">
                                         <div class="modal-content">
                                             <div class="modal-header">
-                                                <h5 class="modal-title" id="exampleModalLabel">Detail Maintenance</h5>
+                                                <h5 class="modal-title" id="exampleModalLabel">Detail Perawatan</h5>
                                                 <button type="button" class="btn-close" data-bs-dismiss="modal"
                                                         aria-label="Close"></button>
                                             </div>
                                             <table id="" class="table table-bordered">
                                                 <tr>
-                                                    <th width="5%"><div class="float-start">Name</div></th>
+                                                    <th width="5%"><div class="float-start">Nama</div></th>
                                                     <td><div class="float-start">{{$data->item->name}}</div></td>
                                                 </tr>
                                                 <tr>
@@ -52,7 +52,7 @@
                                                 </tr>
                                                 <tr>
                                                     <th>
-                                                        <div class="float-start">Descript</div>
+                                                        <div class="float-start">Keterangan</div>
                                                     </th>
                                                     <td>
                                                         <div class="float-start">{{$data->descript}}</div>

@@ -1,15 +1,15 @@
 @extends('layouts.master')
+@section('title', strtoupper('Detail Pelanggan ' . $customer->name))
 @section('content')
     <div class="card">
         <div class="card-head">
             <div class="row mt-2">
                 <div class="col-6">
                     <div class="container">
-                    <h4 class=" text-uppercase">{{$customer->name}} <i class="bx bx-history"></i></h4>
                     </div>
                 </div>
                 <div class="col-6">
-                    <a href="{{route('admin.customer.index')}}" class="btn btn-warning float-end me-3 shadow">Back</a>
+                    <a href="{{route('admin.customer.index')}}" class="btn btn-warning float-end me-3 shadow">Kembali</a>
                 </div>
             </div>
             <hr>
@@ -20,11 +20,10 @@
                     <thead>
                     <tr>
                         <th width="2%">No</th>
-                        <th>Item</th>
-                        <th>Accessories</th>
-                        <th>Start Date</th>
-                        <th>End Date</th>
-                        <th class="text-center">Total Day</th>
+                        <th>Alat</th>
+                        <th>Aksesoris</th>
+                        <th>Periode</th>
+                        <th class="text-center">Lama Rental</th>
                         <th class="text-center">Total Invoice</th>
                         <th class="text-center">Status</th>
                     </tr>
@@ -57,8 +56,7 @@
                             @endif</td>
                         <td>
                             {{formatId($data->date_start)}}
-                        </td>
-                        <td>
+                        -
                             {{formatId($data->date_end)}}
                         </td>
                         <td class="text-center" width="10%">{{$data->days_difference}}</td>
@@ -76,7 +74,7 @@
                     @endforeach
                     <tfoot>
                     <tr class="fw-bold">
-                        <td colspan="7" class="text-end ">Total Invoice</td>
+                        <td colspan="6" class="text-end ">Total Invoice</td>
                         <td class="text-center">{{ formatRupiah($totalInvoice ?? 0) }}</td>
                     </tr>
                     </tfoot>

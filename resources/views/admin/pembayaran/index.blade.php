@@ -1,4 +1,5 @@
 @extends('layouts.master')
+@section('title', strtoupper('pembayaran transaksi'))
 @section('content')
     <div class="card">
         <div class="card-head">
@@ -24,7 +25,7 @@
                             <th class="text-center" width="5%">Sisa Bayar</th>
                             <th class="text-center" width="5%">Diskon</th>
                             <th class="text-center" width="5%">Total</th>
-                            <th class="text-center" width="5%">Action</th>
+                            <th class="text-center" width="5%">aksi</th>
                         </tr>
                     </thead>
                     <tbody>

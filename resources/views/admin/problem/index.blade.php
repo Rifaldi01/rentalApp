@@ -1,8 +1,8 @@
 @extends('layouts.master')
+@section('title', strtoupper('Daftar Pelanggaran'))
 @section('content')
     <div class="card">
         <div class="card-header">
-            <h4 class="text-uppercase">List Problem</h4>
         </div>
         <div class="card-body">
             <div class="table-responsive">
@@ -11,15 +11,14 @@
                     <tr>
                         <th width="2%">No</th>
                         <th>INV</th>
-                        <th>Name</th>
-                        <th>Item</th>
-                        <th>Accessories</th>
-                        <th>Start Date</th>
-                        <th>End Date</th>
+                        <th>Nama Pelanggan</th>
+                        <th>Alat</th>
+                        <th>Aksesoris</th>
+                        <th>Periode</th>
                         <th>Keterangan</th>
                         <th>Print</th>
                         <th class="text-center">Status</th>
-                        <th class="text-center" >Action</th>
+                        <th class="text-center" >Aksi</th>
                     </tr>
                     </thead>
                     <tbody>
@@ -52,8 +51,7 @@
                                     <li>No accessories</li>
                                 @endif
                             </td>
-                            <td>{{ formatId($data->date_start) }}</td>
-                            <td>{{ formatId($data->date_end) }}</td>
+                            <td>{{ formatId($data->date_start) }} - {{ formatId($data->date_end) }}</td>
                             <td><i style="color: red"> {{Str::limit($data->descript, 30)}}</i></td>
                             <td>
                                 <button class="btn btn-dnd lni lni-files btn-sm" data-bs-toggle="modal"

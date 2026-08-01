@@ -1,15 +1,15 @@
 @extends('layouts.master')
+@section('title', strtoupper('daftar riwayat servis'))
 @section('content')
         <div class="card">
             <div class="card-head">
                 <div class="row">
                     <div class="col-md-6">
                         <div class="container mt-3">
-                            <h4 class="text-uppercase">List Service</h4>
                         </div>
                     </div>
                     <div class="col-md-6">
-                        <a data-bs-toggle="tooltip" data-bs-placement="top" title="Add Service"
+                        <a data-bs-toggle="tooltip" data-bs-placement="top" title="Tambah Service"
                            href="{{route('admin.service.create')}}"
                            class="btn btn-dnd float-end me-3 mt-3 btn-sm shadow"><i
                                 class="bx bx-plus"></i>
@@ -23,15 +23,15 @@
                         <thead>
                         <tr>
                             <th width="2%">No</th>
-                            <th>Name</th>
-                            <th>Phone</th>
-                            <th>Item</th>
+                            <th>Nama Pelanggan</th>
+                            <th>No. Tlpn</th>
+                            <th>Alat</th>
                             <th>No Seri</th>
-                            <th>Accessories</th>
-                            <th>Date Service</th>
-                            <th>Price</th>
+                            <th>Aksesoris</th>
+                            <th>Tanggal Servis</th>
+                            <th>Harga</th>
                             <th>Status</th>
-                            <th>Action</th>
+                            <th>Aksi</th>
                         </tr>
                         </thead>
                         <tbody>
@@ -76,7 +76,7 @@
                                                     <table id="" class="table table-bordered">
                                                         <tr>
                                                             <th width="5%">
-                                                                <div class="float-start">Name Customer</div>
+                                                                <div class="float-start">Nama Pelanggan</div>
                                                             </th>
                                                             <td>
                                                                 <div class="float-start">{{$data->name}}</div>

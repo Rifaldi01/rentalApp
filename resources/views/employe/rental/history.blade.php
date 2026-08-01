@@ -1,11 +1,11 @@
 @extends('layouts.master')
+@section('title', strtoupper('daftar riwayat rental'))
 @section('content')
     <div class="card">
         <div class="card-head">
             <div class="row">
                 <div class="col-6">
                     <div class="container mt-3">
-                        <h4 class="text-uppercase">List History</h4>
                     </div>
                 </div>
                 <div class="col-6">
@@ -33,15 +33,14 @@
                         <th width="2%">No</th>
                         <th>Tgl Invoice</th>
                         <th>Invoice</th>
-                        <th>Name</th>
-                        <th>Item</th>
+                        <th>Nama Pelanggan</th>
+                        <th>Alat</th>
                         <th>No Seri</th>
-                        <th>Accessories</th>
-                        <th>Start Date</th>
-                        <th>End Date</th>
+                        <th>Aksesoris</th>
+                        <th>Periode</th>
                         <th>Print</th>
                         <th class="text-center">Status</th>
-                        <th class="text-center" width="14%">Action</th>
+                        <th class="text-center" width="14%">Aksi</th>
                     </tr>
                     </thead>
                     <tbody>
@@ -90,8 +89,7 @@
                                 @endif</td>
                             <td>
                                 {{formatId($data->date_start)}}
-                            </td>
-                            <td>
+                            -
                                 {{formatId($data->date_end)}}
                             </td>
                             <td>

@@ -1,8 +1,8 @@
 @extends('layouts.master')
+@section('title', strtoupper('Servis Alat'))
 @section('content')
     <div class="card">
         <div class="card-body p-4">
-            <h5 class="mb-4">Service</h5>
             <form class="row g-3" action="{{ $url }}" method="POST" enctype="multipart/form-data" id="myForm">
                 @csrf
                 @isset($service)
@@ -12,12 +12,12 @@
                 {{-- Nama Pelanggan --}}
                 @if(isset($service))
                     <div class="col-md-6">
-                        <label for="input1" class="form-label"><i class="text-danger">*</i> Name Customer</label>
+                        <label for="input1" class="form-label"><i class="text-danger">*</i> Nama Pelanggan</label>
                         {{ html()->select('customer_id', $cust, isset($service) ? $service->customer_id : null )->class('form-control')->id('single-select-field')->placeholder("--Select Customer--") }}
                     </div>
                 @else
                     <div class="col-md-6">
-                        <label for="input1" class="form-label"><i class="text-danger">*</i> Name Customer</label>
+                        <label for="input1" class="form-label"><i class="text-danger">*</i> Nama Pelanggan</label>
                         {{ html()->select('customer_id', $cust, isset($service) ? $service->customer_id : old('customer_id'))
                             ->class(['form-control', 'is-invalid' => $errors->has('customer_id')])
                             ->id('single-select-field')
@@ -53,7 +53,7 @@
 
                 {{-- Item --}}
                 <div class="col-md-6">
-                    <label class="form-label"><i class="text-danger">*</i> Item</label>
+                    <label class="form-label"><i class="text-danger">*</i> Alat</label>
                     <textarea class="form-control @error('item') is-invalid @enderror"
                               name="item" placeholder="Enter Item">{{ isset($service) ? $service->item : old('item') }}</textarea>
                     @error('item') <span class="invalid-feedback">{{ $message }}</span> @enderror
@@ -195,8 +195,8 @@
                 {{-- Buttons --}}
                 <div class="col-md-12">
                     <div class="d-md-flex d-grid align-items-center gap-3">
-                        <button type="submit" class="btn btn-primary px-4" id="submitBtn">Submit</button>
-                        <a href="{{ route('admin.service.index') }}" class="btn btn-warning">Back</a>
+                        <button type="submit" class="btn btn-primary px-4" id="submitBtn">Simpan</button>
+                        <a href="{{ route('admin.service.index') }}" class="btn btn-warning">Kembali</a>
                     </div>
                 </div>
             </form>

@@ -1,11 +1,12 @@
 @extends('layouts.master')
+@section('title', strtoupper('daftar aksesoris'))
 @section('content')
     <div class="card">
         <div class="card-head">
             <div class="row">
                 <div class="col-6">
                     <div class="container mt-3">
-                        <h4 class="text-uppercase">List accesories</h4>
+                        <h4 class="text-uppercase">Aksesoris Stok</h4>
                     </div>
                 </div>
                 <div class="col-6">
@@ -21,13 +22,13 @@
                     <thead>
                     <tr>
                         <th width="2%">No</th>
-                        <th>Name</th>
-                        <th>Stok All</th>
-                        <th>Stok Available</th>
-                        <th>Rental</th>
-                        <th>Rental Divisi</th>
-                        <th>Maintenance</th>
-                        <th class="text-center" width="9%">Action</th>
+                        <th>Nama</th>
+                        <th>Semua Stok</th>
+                        <th>Stok Tersedia</th>
+                        <th>Dirental</th>
+                        <th>Dirental Divisi</th>
+                        <th>Perawatan/Rusak</th>
+                        <th class="text-center" width="9%">Aksi</th>
                     </tr>
                     </thead>
                     <tbody>
@@ -153,7 +154,7 @@
             <div class="row">
                 <div class="col-6">
                     <div class="container mt-3">
-                        <h4 class="text-uppercase">Accessories Rental</h4>
+                        <h4 class="text-uppercase">Aksesoris Rental</h4>
                     </div>
                 </div>
                 <div class="col-6">
@@ -170,12 +171,12 @@
                     <tr>
                         <th width="2%">No</th>
                         <th>Inovice</th>
-                        <th>Name</th>
-                        <th>Customer</th>
+                        <th>Nama</th>
+                        <th>Pelanggan</th>
                         <th>Qty</th>
                         <th>Periode</th>
                         <th>Keterangan</th>
-                        <th class="text-center" width="9%">Action</th>
+                        <th class="text-center" width="9%">Aksi</th>
                     </tr>
                     </thead>
                     <tbody>

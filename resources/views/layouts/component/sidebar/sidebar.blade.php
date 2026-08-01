@@ -36,7 +36,7 @@
                 <div class="parent-icon">
                     <i class='bx bx-history'></i></div>
                 <div class="menu-title">
-                    History Rental
+                    Riwayat Rental
                 </div>
             </a>
         </li>
@@ -46,7 +46,7 @@
             <div class="menu-title">Rental Divisi</div>
         </a>
         </li>
-        <li class="menu-label">Items</li>
+        <li class="menu-label">Alat</li>
         <li>
             <a href="{{route('employe.item.index')}}">
                 <div class="parent-icon">
@@ -60,7 +60,7 @@
                 <div class="parent-icon">
                     <i class='bx bx-collection'></i>
                 </div>
-                <div class="menu-title">Accessories</div>
+                <div class="menu-title">Aksesoris</div>
             </a>
         </li>
         <li>
@@ -71,10 +71,10 @@
             </a>
             <ul>
                 <li>
-                    <a href="{{route('employe.item.itemin')}}"><i class='lni lni-timer'></i>Item</a>
+                    <a href="{{route('employe.item.itemin')}}"><i class='lni lni-timer'></i>Alat</a>
                 </li>
                 <li>
-                    <a href="{{route('employe.accessories.accesin')}}"><i class='bx bx-list-ul'></i>Accessories</a>
+                    <a href="{{route('employe.accessories.accesin')}}"><i class='bx bx-list-ul'></i>Aksesoris</a>
                 </li>
             </ul>
         </li>
@@ -82,26 +82,26 @@
             <a href="{{route('employe.sale')}}">
                 <div class="parent-icon"><i class='bx bx-dollar'></i>
                 </div>
-                <div class="menu-title">Item Sale</div>
+                <div class="menu-title">Alat Dijual</div>
             </a>
         </li>
         <li>
             <a href="{{route('employe.accesSale.index')}}">
                 <div class="parent-icon"><i class='bx bx-dollar'></i>
                 </div>
-                <div class="menu-title">Accessories Sale</div>
+                <div class="menu-title">Aksesoris Dijual</div>
             </a>
         </li>
         <li>
             <a href="javascript:;" class="has-arrow">
                 <div class="parent-icon"><i class='bx bx-shield-quarter'></i>
                 </div>
-                <div class="menu-title">Maintenance</div>
+                <div class="menu-title">Perawatan</div>
             </a>
             <ul>
                 <li>
-                    <a href="{{route('employe.mainten')}}"><i class="bx bx-box"></i> Item</a>
-                    <a href="{{route('employe.mainten.access')}}"><i class="bx bx-collection"></i> Accessories</a>
+                    <a href="{{route('employe.mainten')}}"><i class="bx bx-box"></i> Alat</a>
+                    <a href="{{route('employe.mainten.access')}}"><i class="bx bx-collection"></i> Aksesoris</a>
                 </li>
             </ul>
         </li>

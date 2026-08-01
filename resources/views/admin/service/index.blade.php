@@ -1,4 +1,9 @@
 @extends('layouts.master')
+@if($service->first() && $service->first()->status == 0)
+    @section('title', strtoupper('daftar servis aktif'))
+@else
+    @section('title', strtoupper('riwayat servis'))
+@endif
 @section('content')
     @if($service->isEmpty())
         <div class="card">
@@ -25,15 +30,18 @@
                 <div class="row">
                     <div class="col-md-6">
                         <div class="container mt-3">
-                            <h4 class="text-uppercase">List Service</h4>
                         </div>
                     </div>
                     <div class="col-md-6">
-                        <a data-bs-toggle="tooltip" data-bs-placement="top" title="Add Service"
-                           href="{{route('admin.service.create')}}"
-                           class="btn btn-dnd float-end me-3 mt-3 btn-sm shadow"><i
-                                class="bx bx-plus"></i>
-                        </a>
+                        @if($service->first() && $service->first()->status == 0)
+                            <a data-bs-toggle="tooltip" data-bs-placement="top" title="Add Service"
+                               href="{{route('admin.service.create')}}"
+                               class="btn btn-dnd float-end me-3 mt-3 btn-sm shadow"><i
+                                    class="bx bx-plus"></i>
+                            </a>
+                        @else
+
+                        @endif
                     </div>
                 </div>
             </div>
@@ -104,8 +112,8 @@
                                     @if($data->status == 0)
                                         <button class="btn btn-warning lni lni-eye btn-sm" data-bs-toggle="modal"
                                                 data-bs-tool="tooltip" data-bs-placement="top" title="Detail"
-                                                data-bs-target="#exampleLargeModal{{$data->id}}"></button>
-                                        <div class="modal fade" id="exampleLargeModal{{$data->id}}" tabindex="-1"
+                                                data-bs-target="#exampleLargeModaldetail{{$data->id}}"></button>
+                                        <div class="modal fade" id="exampleLargeModaldetail{{$data->id}}" tabindex="-1"
                                              aria-hidden="true">
                                             <div class="modal-dialog modal-lg">
                                                 <div class="modal-content">
@@ -118,48 +126,77 @@
                                                         <div class="table-responsive">
                                                             <table id="" class="table table-bordered">
                                                                 <tr>
-                                                                    <th class="bg-primary text-center" colspan="4">
-                                                                        CUSTOMER
+                                                                    <th width="5%">
+                                                                        <div class="float-start">Nama Pelanggan</div>
                                                                     </th>
-                                                                </tr>
-                                                                <tr>
-                                                                    <th colspan="2" width="10%">Pelanggan</th>
-                                                                    <td colspan="2" class="">
-                                                                        @if($data->name)
-                                                                            {{$data->name}}
-                                                                        @else
-                                                                            {{$data->cust->name}}
-                                                                        @endif
+                                                                    <td>
+                                                                        <div class="float-start">{{$data->name}}</div>
+                                                                    </td>
+                                                                    <th width="5%">
+                                                                        <div class="float-start">Name Sales</div>
+                                                                    </th>
+                                                                    <td>
+                                                                        <div
+                                                                            class="float-start">{{$data->name_sales}}</div>
                                                                     </td>
                                                                 </tr>
                                                                 <tr>
-                                                                    <th class="text-center bg-primary" colspan="4">
-                                                                        ITEM
+                                                                    <th>
+                                                                        <div class="float-start">Phone Customer</div>
                                                                     </th>
+                                                                    <td>
+                                                                        <div class="float-start">{{$data->phone}}</div>
+                                                                    </td>
+                                                                    <th>
+                                                                        <div class="float-start">Phone Sales</div>
+                                                                    </th>
+                                                                    <td>
+                                                                        <div
+                                                                            class="float-start">{{$data->phone_sales}}</div>
+                                                                    </td>
                                                                 </tr>
                                                                 <tr>
-                                                                    <th colspan="2">
-                                                                        <div class="text-center">Name Item</div>
+                                                                    <th class="text-center" colspan="4">ITEM</th>
+                                                                </tr>
+                                                                <tr>
+                                                                    <th>
+                                                                        <div class="float-start">Name Item</div>
                                                                     </th>
                                                                     <th>
-                                                                        <div class="text-center">No Seri</div>
+                                                                        <div class="float-start">No Seri</div>
                                                                     </th>
                                                                     <th>
-                                                                        <div class="text-center">Type</div>
+                                                                        <div class="float-start">Date Produksi</div>
+                                                                    </th>
+                                                                    <th>
+                                                                        <div class="float-start">Date Pemebelian</div>
                                                                     </th>
                                                                 </tr>
                                                                 <tr>
 
-                                                                    <td colspan="2">
-                                                                        <div class="text-center">{{$data->item}}</div>
+                                                                    <td>
+                                                                        <div class="float-start">{{$data->item}}</div>
                                                                     </td>
                                                                     <td>
                                                                         <div
-                                                                            class="text-center">{{$data->no_seri}}</div>
+                                                                            class="float-start">{{$data->no_seri}}</div>
                                                                     </td>
                                                                     <td>
                                                                         <div
-                                                                            class="text-center">{{$data->type}}</div>
+                                                                            class="float-start">{{dateId($data->date_produksi)}}</div>
+                                                                    </td>
+                                                                    <td>
+                                                                        <div
+                                                                            class="float-start">{{dateId($data->date_pembelian)}}</div>
+                                                                    </td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <th>
+                                                                        <div class="float-start">Accessories</div>
+                                                                    </th>
+                                                                    <td colspan="3">
+                                                                        <div
+                                                                            class="float-start">{{($data->accessories)}}</div>
                                                                     </td>
                                                                 </tr>
                                                                 <tr>
@@ -168,12 +205,12 @@
                                                                     </th>
                                                                     <td colspan="3">
                                                                         <div
-                                                                            class="float-start">{{($data->jenis_service)}}</div>
+                                                                            class="float-start">{{($data->accessories)}}</div>
                                                                     </td>
                                                                 </tr>
                                                                 <tr>
-                                                                    <th colspan="4" class="bg-primary">
-                                                                        <div class="text-center ">DATE</div>
+                                                                    <th colspan="4">
+                                                                        <div class="text-center">DATE</div>
                                                                     </th>
                                                                 </tr>
                                                                 <tr>
@@ -198,8 +235,7 @@
                                                                         <div class="float-start">Descript</div>
                                                                     </th>
                                                                     <td colspan="3">
-                                                                        <div
-                                                                            class="float-start">{{$data->descript}}</div>
+                                                                        {{$data->descript}}
                                                                     </td>
                                                                 </tr>
                                                                 <tr>
@@ -216,30 +252,13 @@
                                                                         @endif
                                                                     </td>
                                                                 </tr>
-                                                            </table>
-                                                        </div>
-                                                        <div class="table-responsive">
-                                                            <table id="" class="table table-bordered">
                                                                 <tr>
-                                                                    <th colspan="6" class="bg-success text-center">
-                                                                        PRICE
+                                                                    <th>
+                                                                        <div class="float-start">Price</div>
                                                                     </th>
-                                                                </tr>
-                                                                <tr>
-                                                                    <th>Total Invoice</th>
-                                                                    <th>Uang Masuk</th>
-                                                                    <th>Sisa Bayar</th>
-                                                                    <th>Biaya Ganti</th>
-                                                                    <th>Ongkir</th>
-                                                                    <th> Diskon</th>
-                                                                </tr>
-                                                                <tr>
-                                                                    <td>{{formatRupiah($data->total_invoice)}},-</td>
-                                                                    <td>{{formatRupiah($data->nominal_in)}},-</td>
-                                                                    <td>{{formatRupiah($data->nominal_out)}},-</td>
-                                                                    <td>{{formatRupiah($data->biaya_ganti)}},-</td>
-                                                                    <td>{{formatRupiah($data->ongkir)}},-</td>
-                                                                    <td>{{formatRupiah($data->diskon)}},-</td>
+                                                                    <td colspan="3">
+                                                                        {{formatRupiah($data->price)}},-
+                                                                    </td>
                                                                 </tr>
                                                             </table>
                                                         </div>
@@ -253,6 +272,7 @@
                                                 </div>
                                             </div>
                                         </div>
+
                                         @if($data->nominal_out == 0)
                                             <button class="btn btn-success btn-sm lni lni-checkmark"
                                                     data-bs-toggle="modal"
@@ -460,7 +480,6 @@
                                                         class="btn-sm btn btn-success lni lni-checkmark btn-finish mt-1"
                                                         data-bs-toggle="tooltip" data-bs-placement="top"
                                                         title="Finished">
-
                                                 </button>
                                             </form>
                                         @endif
@@ -513,8 +532,8 @@
                                     @else($data->status == 1)
                                         <button class="btn btn-warning lni lni-eye btn-sm" data-bs-toggle="modal"
                                                 data-bs-tool="tooltip" data-bs-placement="top" title="Detail"
-                                                data-bs-target="#exampleLargeModal{{$data->id}}"></button>
-                                        <div class="modal fade" id="exampleLargeModal{{$data->id}}" tabindex="-1"
+                                                data-bs-target="#exampleLargeModaldetail{{$data->id}}"></button>
+                                        <div class="modal fade" id="exampleLargeModaldetail{{$data->id}}" tabindex="-1"
                                              aria-hidden="true">
                                             <div class="modal-dialog modal-lg">
                                                 <div class="modal-content">
@@ -524,139 +543,144 @@
                                                                 aria-label="Close"></button>
                                                     </div>
                                                     <div class="modal-body">
-                                                        <div class="modal-body">
-                                                            <div class="table-responsive">
-                                                                <table id="" class="table table-bordered">
-                                                                    <tr>
-                                                                        <th class="bg-primary text-center" colspan="4">
-                                                                            CUSTOMER
-                                                                        </th>
-                                                                    </tr>
-                                                                    <tr>
-                                                                        <th colspan="2" width="10%">Pelanggan</th>
-                                                                        <td colspan="2" class="">
-                                                                            @if($data->name)
-                                                                                {{$data->name}}
-                                                                            @else
-                                                                                {{$data->cust->name}}
-                                                                            @endif
-                                                                        </td>
-                                                                    </tr>
-                                                                    <tr>
-                                                                        <th class="text-center bg-primary" colspan="4">
-                                                                            ITEM
-                                                                        </th>
-                                                                    </tr>
-                                                                    <tr>
-                                                                        <th colspan="2">
-                                                                            <div class="text-center">Name Item</div>
-                                                                        </th>
-                                                                        <th>
-                                                                            <div class="text-center">No Seri</div>
-                                                                        </th>
-                                                                        <th>
-                                                                            <div class="text-center">Type</div>
-                                                                        </th>
-                                                                    </tr>
-                                                                    <tr>
+                                                        <div class="table-responsive">
+                                                            <table id="" class="table table-bordered">
+                                                                <tr>
+                                                                    <th width="5%">
+                                                                        <div class="float-start">Nama Pelanggan</div>
+                                                                    </th>
+                                                                    <td>
+                                                                        <div class="float-start">{{$data->name}}</div>
+                                                                    </td>
+                                                                    <th width="5%">
+                                                                        <div class="float-start">Name Sales</div>
+                                                                    </th>
+                                                                    <td>
+                                                                        <div
+                                                                            class="float-start">{{$data->name_sales}}</div>
+                                                                    </td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <th>
+                                                                        <div class="float-start">Phone Customer</div>
+                                                                    </th>
+                                                                    <td>
+                                                                        <div class="float-start">{{$data->phone}}</div>
+                                                                    </td>
+                                                                    <th>
+                                                                        <div class="float-start">Phone Sales</div>
+                                                                    </th>
+                                                                    <td>
+                                                                        <div
+                                                                            class="float-start">{{$data->phone_sales}}</div>
+                                                                    </td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <th class="text-center" colspan="4">ITEM</th>
+                                                                </tr>
+                                                                <tr>
+                                                                    <th>
+                                                                        <div class="float-start">Name Item</div>
+                                                                    </th>
+                                                                    <th>
+                                                                        <div class="float-start">No Seri</div>
+                                                                    </th>
+                                                                    <th>
+                                                                        <div class="float-start">Date Produksi</div>
+                                                                    </th>
+                                                                    <th>
+                                                                        <div class="float-start">Date Pemebelian</div>
+                                                                    </th>
+                                                                </tr>
+                                                                <tr>
 
-                                                                        <td colspan="2">
-                                                                            <div
-                                                                                class="text-center">{{$data->item}}</div>
-                                                                        </td>
-                                                                        <td>
-                                                                            <div
-                                                                                class="text-center">{{$data->no_seri}}</div>
-                                                                        </td>
-                                                                        <td>
-                                                                            <div
-                                                                                class="text-center">{{$data->type}}</div>
-                                                                        </td>
-                                                                    </tr>
-                                                                    <tr>
-                                                                        <th>
-                                                                            <div class="float-start">Jenis Service</div>
-                                                                        </th>
-                                                                        <td colspan="3">
-                                                                            <div
-                                                                                class="float-start">{{$data->jenis_service}}</div>
-                                                                        </td>
-                                                                    </tr>
-                                                                    <tr>
-                                                                        <th colspan="4" class="bg-primary">
-                                                                            <div class="text-center ">DATE</div>
-                                                                        </th>
-                                                                    </tr>
-                                                                    <tr>
-                                                                        <th colspan="2" class="text-center">Date Service
-                                                                        </th>
-                                                                        <th colspan="2" class="text-center">Date
-                                                                            Finish
-                                                                        </th>
-                                                                    </tr>
-                                                                    <tr>
-                                                                        <td colspan="2"
-                                                                            class="text-center">{{dateId($data->date_service)}}</td>
-                                                                        <td colspan="2" class="text-center">
-                                                                            @if($data->date_finis)
-                                                                                {{dateId($data->date_finis)}}
-                                                                            @else
-                                                                                <i class="text-danger">Service Belum
-                                                                                    Selesai</i>
-                                                                            @endif
-                                                                        </td>
-                                                                    </tr>
-                                                                    <tr>
-                                                                        <th>
-                                                                            <div class="float-start">Descript</div>
-                                                                        </th>
-                                                                        <td colspan="3">
-                                                                            <div
-                                                                                class="float-start">{{$data->descript}}</div>
-                                                                        </td>
-                                                                    </tr>
-                                                                    <tr>
-                                                                        <th>
-                                                                            <div class="float-start">Status</div>
-                                                                        </th>
-                                                                        <td colspan="3">
-                                                                            @if($data->status == 0)
-                                                                                <span
-                                                                                    class="badge bg-success float-start">Service</span>
-                                                                            @else
-                                                                                <span
-                                                                                    class="badge bg-secondary float-start">Finished</span>
-                                                                            @endif
-                                                                        </td>
-                                                                    </tr>
-                                                                </table>
-                                                            </div>
-                                                            <div class="table-responsive">
-                                                                <table id="" class="table table-bordered">
-                                                                    <tr>
-                                                                        <th colspan="6" class="bg-success text-center">
-                                                                            PRICE
-                                                                        </th>
-                                                                    </tr>
-                                                                    <tr>
-                                                                        <th>Total Invoice</th>
-                                                                        <th>Uang Masuk</th>
-                                                                        <th>Sisa Bayar</th>
-                                                                        <th>Biaya Ganti</th>
-                                                                        <th>Ongkir</th>
-                                                                        <th> Diskon</th>
-                                                                    </tr>
-                                                                    <tr>
-                                                                        <td>{{formatRupiah($data->total_invoice)}},-
-                                                                        </td>
-                                                                        <td>{{formatRupiah($data->nominal_in)}},-</td>
-                                                                        <td>{{formatRupiah($data->nominal_out)}},-</td>
-                                                                        <td>{{formatRupiah($data->biaya_ganti)}},-</td>
-                                                                        <td>{{formatRupiah($data->ongkir)}},-</td>
-                                                                        <td>{{formatRupiah($data->diskon)}},-</td>
-                                                                    </tr>
-                                                                </table>
-                                                            </div>
+                                                                    <td>
+                                                                        <div class="float-start">{{$data->item}}</div>
+                                                                    </td>
+                                                                    <td>
+                                                                        <div
+                                                                            class="float-start">{{$data->no_seri}}</div>
+                                                                    </td>
+                                                                    <td>
+                                                                        <div
+                                                                            class="float-start">{{dateId($data->date_produksi)}}</div>
+                                                                    </td>
+                                                                    <td>
+                                                                        <div
+                                                                            class="float-start">{{dateId($data->date_pembelian)}}</div>
+                                                                    </td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <th>
+                                                                        <div class="float-start">Accessories</div>
+                                                                    </th>
+                                                                    <td colspan="3">
+                                                                        <div
+                                                                            class="float-start">{{($data->accessories)}}</div>
+                                                                    </td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <th>
+                                                                        <div class="float-start">Jenis Service</div>
+                                                                    </th>
+                                                                    <td colspan="3">
+                                                                        <div
+                                                                            class="float-start">{{($data->accessories)}}</div>
+                                                                    </td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <th colspan="4">
+                                                                        <div class="text-center">DATE</div>
+                                                                    </th>
+                                                                </tr>
+                                                                <tr>
+                                                                    <th colspan="2" class="text-center">Date Service
+                                                                    </th>
+                                                                    <th colspan="2" class="text-center">Date Finish</th>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td colspan="2"
+                                                                        class="text-center">{{dateId($data->date_service)}}</td>
+                                                                    <td colspan="2" class="text-center">
+                                                                        @if($data->date_finis)
+                                                                            {{dateId($data->date_finis)}}
+                                                                        @else
+                                                                            <i class="text-danger">Service Belum
+                                                                                Selesai</i>
+                                                                        @endif
+                                                                    </td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <th>
+                                                                        <div class="float-start">Descript</div>
+                                                                    </th>
+                                                                    <td colspan="3">
+                                                                        {{$data->descript}}
+                                                                    </td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <th>
+                                                                        <div class="float-start">Status</div>
+                                                                    </th>
+                                                                    <td colspan="3">
+                                                                        @if($data->status == 0)
+                                                                            <span
+                                                                                class="badge bg-success float-start">Service</span>
+                                                                        @else
+                                                                            <span
+                                                                                class="badge bg-secondary float-start">Finished</span>
+                                                                        @endif
+                                                                    </td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <th>
+                                                                        <div class="float-start">Price</div>
+                                                                    </th>
+                                                                    <td colspan="3">
+                                                                        {{formatRupiah($data->price)}},-
+                                                                    </td>
+                                                                </tr>
+                                                            </table>
                                                         </div>
                                                     </div>
                                                     <div class="modal-footer">
@@ -668,6 +692,7 @@
                                                 </div>
                                             </div>
                                         </div>
+
                                         @if($data->nominal_out != 0)
                                             <button class="btn btn-warning lni lni-dollar btn-sm" data-bs-toggle="modal"
                                                     data-bs-target="#examplemodal{{$data->id}}" data-bs-tool="tooltip"
@@ -1010,10 +1035,11 @@
             });
 
         }
-        document.addEventListener('DOMContentLoaded', function() {
+
+        document.addEventListener('DOMContentLoaded', function () {
             // Tambahkan event listener untuk tombol "Finish"
-            document.querySelectorAll('.btn-finish').forEach(function(button) {
-                button.addEventListener('click', function(event) {
+            document.querySelectorAll('.btn-finish').forEach(function (button) {
+                button.addEventListener('click', function (event) {
                     event.preventDefault(); // Mencegah form dikirimkan langsung
 
                     const form = this.closest('form'); // Ambil form terdekat

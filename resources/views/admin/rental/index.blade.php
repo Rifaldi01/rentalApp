@@ -1,11 +1,12 @@
 @extends('layouts.master')
+@section('title', strtoupper('Daftar rental'))
 @section('content')
     <div class="card">
         <div class="card-head">
             <div class="row">
                 <div class="col-6">
                     <div class="container mt-3">
-                        <h4 class="text-uppercase">List Rental Aktif</h4>
+                        <h4 class="text-uppercase">Rental Aktif</h4>
                     </div>
                 </div>
                 <div class="col-6">
@@ -24,18 +25,17 @@
                     <tr>
                         <th width="2%" class="text-center">No</th>
                         <th>No Invoice</th>
-                        <th>Name</th>
+                        <th>Nama Pelanggan</th>
                         <th>Total <br>Inv</th>
                         <th width="">Ung <br>Masuk</th>
                         <th>Sisa <br>Bayar</th>
                         <th>Fee</th>
-                        <th>Discount</th>
-                        <th>Start Date</th>
-                        <th>End Date</th>
-                        <th class="text-center">Total Day</th>
+                        <th>Diskon</th>
+                        <th>Periode</th>
+                        <th class="text-center">Lama Rental</th>
                         <th class="text-center">Status</th>
                         <th class="text-center" width="8%">Print</th>
-                        <th class="text-center" width="10%">Action</th>
+                        <th class="text-center" width="10%">Aksi</th>
                     </tr>
                     </thead>
                     <tbody>
@@ -101,7 +101,7 @@
                                     <div class="modal-dialog modal-dialog-centered">
                                         <div class="modal-content">
                                             <div class="modal-header">
-                                                <h5 class="modal-title">Descrpti Proble</h5>
+                                                <h5 class="modal-title">Keterangan Proble</h5>
                                                 <button type="button" class="btn-close" data-bs-dismiss="modal"
                                                         aria-label="Close"></button>
                                             </div>
@@ -111,16 +111,16 @@
                                                 <div class="modal-body">
                                                     <input value="{{$data->id}}" type="hidden" name="rental_id"
                                                            class="form-control">
-                                                    <label class="col-form-label">Descript</label>
+                                                    <label class="col-form-label">Keterangan</label>
                                                     <textarea type="text" name="descript"
                                                               class="form-control"
                                                               placeholder="Enter Descript"></textarea>
                                                 </div>
                                                 <div class="modal-footer">
                                                     <button type="button" class="btn btn-secondary"
-                                                            data-bs-dismiss="modal">Close
+                                                            data-bs-dismiss="modal">Tutup
                                                     </button>
-                                                    <button type="submit" class="btn btn-primary">Save<i
+                                                    <button type="submit" class="btn btn-primary">Simpan<i
                                                             class="bx bx-save"></i></button>
                                                 </div>
                                             </form>
@@ -160,7 +160,7 @@
             <div class="row">
                 <div class="col-6">
                     <div class="container mt-3">
-                        <h4 class="text-uppercase">Menunggu Persetujuan</h4>
+                        <h4 class="text-uppercase">Rental Menunggu Persetujuan</h4>
                     </div>
                 </div>
 
@@ -173,15 +173,14 @@
                     <tr>
                         <th width="2%" class="text-center">No</th>
                         <th>No Invoice</th>
-                        <th>Name</th>
+                        <th>Nama Pelanggan</th>
                         <th>Total <br>Inv</th>
                         <th width="">Ung <br>Masuk</th>
                         <th>Sisa <br>Bayar</th>
                         <th>Fee</th>
-                        <th>Discount</th>
-                        <th>Start Date</th>
-                        <th>End Date</th>
-                        <th class="text-center">Total Day</th>
+                        <th>Diskon</th>
+                        <th>Periode</th>
+                        <th class="text-center">Lama Rental</th>
                         <th class="text-center">Action</th>
                         <th class="text-center">Status</th>
                     </tr>
@@ -206,8 +205,7 @@
                             <td>{{formatRupiah($data->diskon)}}</td>
                             <td>
                                 {{formatId($data->date_start)}}
-                            </td>
-                            <td>
+                            -
                                 {{formatId($data->date_end)}}
                             </td>
                             <td class="text-center">{{$data->days_difference}} Day</td>

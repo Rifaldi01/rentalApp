@@ -1,11 +1,11 @@
 @extends('layouts.master')
+@section('title', strtoupper('Daftara aksesoris terjual'))
 @section('content')
     <div class="card">
         <div class="card-head">
             <div class="row">
                 <div class="col-6">
                     <div class="container mt-3">
-                        <h4 class="text-uppercase">Accessories Sales</h4>
                     </div>
                 </div>
 {{--                <div class="col-6">--}}
@@ -26,7 +26,7 @@
                     <thead>
                     <tr>
                         <th width="5%">No</th>
-                        <th>Name</th>
+                        <th>Nama</th>
                         <th>Qty</th>
                         <th class="text-center">Detail</th>
                     </tr>
@@ -50,9 +50,9 @@
                                                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                                             </div>
                                             <table class="table table-bordered">
-                                                <tr><th>Accessories</th><td>{{ $data->accessories->name }}</td></tr>
+                                                <tr><th>aksesoris</th><td>{{ $data->accessories->name }}</td></tr>
                                                 <tr><th>Jumlah</th><td>{{ $data->qty}}</td></tr>
-                                                <tr><th>Descript</th><td>{{ $data->description }}</td></tr>
+                                                <tr><th>Keterangan</th><td>{{ $data->description }}</td></tr>
                                             </table>
                                         </div>
                                     </div>
@@ -135,7 +135,7 @@
                 $('#exampleVerticallycenteredModal .single-select-field').select2({
                     dropdownParent: $('#exampleVerticallycenteredModal'),
                     theme: 'bootstrap-5',
-                    placeholder: '--Select Accessories--',
+                    placeholder: '--Pilih Aksesoris--',
                     allowClear: true
                 });
             }

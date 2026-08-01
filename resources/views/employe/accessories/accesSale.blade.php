@@ -1,12 +1,11 @@
 @extends('layouts.master')
+@section('title', strtoupper('daftar aksesoris terjual'))
 @section('content')
     <div class="card">
         <div class="card-head">
             <div class="row">
                 <div class="col-6">
-                    <div class="container mt-3">
-                        <h4 class="text-uppercase">Accessories Sales</h4>
-                    </div>
+
                 </div>
                 <div class="col-6">
                     <div class="container mt-3">
@@ -26,7 +25,7 @@
                     <thead>
                     <tr>
                         <th width="5%">No</th>
-                        <th>Name</th>
+                        <th>Nama</th>
                         <th>Qty</th>
                         <th class="text-center">Detail</th>
                     </tr>
@@ -50,9 +49,9 @@
                                                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                                             </div>
                                             <table class="table table-bordered">
-                                                <tr><th>Accessories</th><td>{{ $data->accessories->name }}</td></tr>
+                                                <tr><th>Aksesoris</th><td>{{ $data->accessories->name }}</td></tr>
                                                 <tr><th>Jumlah</th><td>{{ $data->qty}}</td></tr>
-                                                <tr><th>Descript</th><td>{{ $data->description }}</td></tr>
+                                                <tr><th>Keterangan</th><td>{{ $data->description }}</td></tr>
                                             </table>
                                         </div>
                                     </div>
@@ -71,7 +70,7 @@
         <div class="modal-dialog modal-dialog-centered modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title">Add Accessories</h5>
+                    <h5 class="modal-title">TAMBAH AKSESORIS TERJUAL</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
 
@@ -80,7 +79,7 @@
                     <div class="modal-body">
                         <div class="d-flex justify-content-end mb-3">
                             <button class="btn btn-dnd btn-sm add-field" type="button" id="add-field">
-                                <i class="bx bx-plus"></i> Add Accessories
+                                <i class="bx bx-plus"></i> Tamba Aksesoris
                             </button>
                         </div>
 
@@ -88,9 +87,9 @@
                             {{-- Field awal --}}
                             <div class="row align-items-end mt-2 dynamic-row">
                                 <div class="col-md-5">
-                                    <label class="form-label">Accessories</label>
-                                    <select name="accessories_id[]" class="form-select single-select-field" data-placeholder="--Select Accessories--">
-                                        <option value="">--Select Accessories--</option>
+                                    <label class="form-label">Aksesories</label>
+                                    <select name="accessories_id[]" class="form-select single-select-field" data-placeholder="--Pilih Aksesoris--">
+                                        <option value="">--Pilih Aksesoris--</option>
                                         @foreach($accessories as $acc)
                                             <option value="{{ $acc->id }}">{{ $acc->name }}</option>
                                         @endforeach
@@ -102,7 +101,7 @@
                                     <input type="number" class="form-control" name="qty[]" required>
                                 </div>
                                 <div class="col-md-3">
-                                    <label class="form-label">Deskripsi</label>
+                                    <label class="form-label">Keterangan</label>
                                     <textarea class="form-control" name="description[]" required></textarea>
                                 </div>
 
@@ -116,9 +115,9 @@
                     </div>
 
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
                         <button type="submit" class="btn btn-primary">
-                            Save <i class="bx bx-save"></i>
+                            Simpan <i class="bx bx-save"></i>
                         </button>
                     </div>
                 </form>
@@ -146,9 +145,9 @@
                 return `
         <div class="row align-items-end mt-2 dynamic-row">
             <div class="col-md-5">
-                <label class="form-label">Accessories</label>
-                <select name="accessories_id[]" class="form-select single-select-field" data-placeholder="--Select Accessories--">
-                    <option value="">--Select Accessories--</option>
+                <label class="form-label">Aksesoris</label>
+                <select name="accessories_id[]" class="form-select single-select-field" data-placeholder="--Pilih Aksesoris--">
+                    <option value="">--Pilih Aksesoris--</option>
                     @foreach($accessories as $acc)
                 <option value="{{ $acc->id }}">{{ $acc->name }}</option>
                     @endforeach
@@ -159,7 +158,7 @@
                 <input type="number" class="form-control" name="qty[]" required>
             </div>
             <div class="col-md-3">
-              <label class="form-label">Deskripsi</label>
+              <label class="form-label">Keterangan</label>
               <textarea class="form-control" name="description[]" required></textarea>
             </div>
             <div class="col-md-2 text-center">

@@ -1,4 +1,5 @@
 @extends('layouts.master')
+@section('title', strtoupper('riwayat aksesoris masuk'))
 @section('content')
     <div class="card">
         <div class="card-body">
@@ -11,7 +12,7 @@
                         <th>Nama</th>
                         <th>QTY</th>
                         <th>Keterangan</th>
-                        <th>Action</th>
+                        <th>Aksi</th>
                     </tr>
                     </thead>
                     <tbody>
@@ -52,7 +53,7 @@
             let form = $(this).closest('.delete-form');
 
             Swal.fire({
-                title: 'Delete Data?',
+                title: 'Hapus Data?',
                 text: 'Data yang dihapus tidak dapat dikembalikan!',
                 icon: 'warning',
                 showCancelButton: true,

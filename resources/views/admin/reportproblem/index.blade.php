@@ -1,20 +1,7 @@
 @extends('layouts.master')
+@section('title', strtoupper('laporan pelanggaran'))
 @section('content')
-    <div class="card">
-        <div class="card-body">
-            <div class="col">
-                <div class="row">
-                    <div class="col-sm">
-                        <h4 class="mb-0 text-uppercase">
-                            Problem Report
-                        </h4>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
 
-    <hr/>
     <div class="card table-timbang">
         <div class="card-head">
             @if ($errors->any())
@@ -39,13 +26,13 @@
                     <div class="row">
                         <div class="col-5 ms-2 mt-2">
                             <label class="form-label">
-                                Start Date
+                                Tanggal Mulai
                             </label>
                             <input type="date" class="form-control" name="start_date"  required>
                         </div>
                         <div class="col-6 mt-2">
                             <label class="form-label">
-                                End Date
+                                Tanggal Berakhir
                             </label>
                             <input type="date" class="form-control" name="end_date"  required>
                         </div>
@@ -63,16 +50,15 @@
                     <tr>
                         <th width="2%">No</th>
                         <th>Invoice </th>
-                        <th>Name </th>
-                        <th>Item</th>
+                        <th>Nama Pelanggan </th>
+                        <th>Alamat</th>
                         <th>No Seri</th>
                         <th>Total <br>Inv</th>
                         <th width="">Ung <br>Masuk</th>
                         <th>Sisa <br>Bayar</th>
                         <th>Fee</th>
-                        <th>Discount</th>
-                        <th>Start Date</th>
-                        <th>End Date</th>
+                        <th>Diskon</th>
+                        <th>Periode</th>
                         <th class="text-center">Status</th>
                     </tr>
                     </thead>
@@ -123,8 +109,7 @@
                             <td>{{formatRupiah($data->rental->diskon)}}</td>
                             <td>
                                 {{formatId($data->rental->date_start)}}
-                            </td>
-                            <td>
+                            -
                                 {{formatId($data->rental->date_end)}}
                             </td>
 

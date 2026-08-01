@@ -1,11 +1,11 @@
 @extends('layouts.master')
+@section('title', strtoupper('daftar perawatan alat'))
 @section('content')
     <div class="card">
         <div class="card-head">
             <div class="row">
                 <div class="col-6">
                     <div class="container mt-3">
-                        <h4 class="text-uppercase">List Items Miantenance</h4>
                     </div>
                 </div>
             </div>
@@ -16,10 +16,10 @@
                     <thead>
                     <tr>
                         <th width="2%">No</th>
-                        <th>Name</th>
+                        <th>Nama</th>
                         <th>No Seri</th>
                         <th class="text-center">Detail</th>
-                        <th class="text-center" width="13%">Action</th>
+                        <th class="text-center" width="13%">Aksi</th>
                     </tr>
                     </thead>
                     <tbody>

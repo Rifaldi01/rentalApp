@@ -1,11 +1,11 @@
 @extends('layouts.master')
+@section('title', 'DAFTAR ALAT')
 @section('content')
     <div class="card">
         <div class="card-head">
             <div class="row">
                 <div class="col-6">
                     <div class="container mt-3">
-                        <h4 class="text-uppercase">List Items</h4>
                     </div>
                 </div>
                 <div class="col-6">
@@ -22,12 +22,12 @@
                     <thead>
                     <tr>
                         <th width="2%">No</th>
-                        <th>Name</th>
+                        <th>Nama</th>
                         <th>No Seri</th>
                         <th class="text-center">Status</th>
-                        <th class="text-center">Customer</th>
+                        <th class="text-center">Pelanggan</th>
                         <th class="text-center">Periode</th>
-                        <th class="text-center">Image</th>
+                        <th class="text-center">Gambar</th>
                         <th class="text-center" width="15%">Action</th>
                     </tr>
                     </thead>
@@ -104,7 +104,7 @@
                                         </div>
                                     </div>
                                 @else
-                                    <span class="text-danger">Empty</span>
+                                    <span class="text-danger">Kosong</span>
                                 @endif
                             </td>
                             <td>

@@ -1,4 +1,5 @@
 @extends('layouts.master')
+@section('title', strtoupper('daftar rental'))
 @section('content')
     <div class="card">
         <div class="card-head">
@@ -19,11 +20,10 @@
                     <tr>
                         <th width="2%" class="text-center">No</th>
                         <th>No Invoice</th>
-                        <th>Name</th>
-                        <th>Start Date</th>
-                        <th>End Date</th>
+                        <th>Nama Pelanggan</th>
+                        <th>Periode</th>
                         <th class="text-center" width="3%">Print</th>
-                        <th class="text-center" width="3%">Action</th>
+                        <th class="text-center" width="3%">Aksi</th>
                     </tr>
                     </thead>
                     <tbody>
@@ -35,8 +35,7 @@
                                 <td>{{$data->cust->name}}</td>
                                 <td>
                                     {{formatId($data->date_start)}}
-                                </td>
-                                <td>
+                                -
                                     {{formatId($data->date_end)}}
                                 </td>
                                 <td>
@@ -90,11 +89,10 @@
                     <tr>
                         <th width="2%" class="text-center">No</th>
                         <th>No Invoice</th>
-                        <th>Name</th>
-                        <th>Start Date</th>
-                        <th>End Date</th>
+                        <th>Nama Pelanggan</th>
+                        <th>Periode</th>
                         <th class="text-center" width="3%">Print</th>
-                        <th class="text-center" width="7%">Action</th>
+                        <th class="text-center" width="7%">Aksi</th>
                     </tr>
                     </thead>
                     <tbody>
@@ -106,8 +104,7 @@
                                 <td>{{$data->cust->name}}</td>
                                 <td>
                                     {{formatId($data->date_start)}}
-                                </td>
-                                <td>
+                               -
                                     {{formatId($data->date_end)}}
                                 </td>
                                 <td>

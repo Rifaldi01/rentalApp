@@ -29,16 +29,16 @@
                     <a href="{{route('admin.rental.create')}}"><i class='lni lni-timer'></i>Rental</a>
                 </li>
                 <li>
-                    <a href="{{route('admin.rental.index')}}"><i class='bx bx-list-ul'></i>List Rental</a>
+                    <a href="{{route('admin.rental.index')}}"><i class='bx bx-list-ul'></i>Rental</a>
                 </li>
                 <li>
                     <a href="{{route('admin.rental.divisi')}}"><i class='lni lni-apartment'></i>Rental Divisi</a>
                 </li>
                 <li>
-                    <a href="{{route('admin.rental.history')}}"><i class='bx bx-history'></i>History Rental</a>
+                    <a href="{{route('admin.rental.history')}}"><i class='bx bx-history'></i>Riwayat Rental</a>
                 </li>
                 <li>
-                    <a href="{{route('admin.rental.problems')}}"><i class='lni lni-warning'></i>Problem</a>
+                    <a href="{{route('admin.rental.problems')}}"><i class='lni lni-warning'></i>Pelanggaran</a>
                 </li>
             </ul>
         </li>
@@ -46,13 +46,13 @@
             <a href="javascript:;" class="has-arrow">
                 <div class="parent-icon"><i class="lni lni-users"></i>
                 </div>
-                <div class="menu-title">Customer</div>
+                <div class="menu-title">Pelanggan</div>
             </a>
             <ul>
-                <li><a href="{{route('admin.customer.create')}}"><i class='bx bx-user-plus'></i>Register
-                        Customer</a>
+                <li><a href="{{route('admin.customer.index')}}"><i class='lni lni-users'></i>Pelanggan</a>
                 </li>
-                <li><a href="{{route('admin.customer.index')}}"><i class='lni lni-users'></i>List Customers</a>
+                <li><a href="{{route('admin.customer.create')}}"><i class='bx bx-user-plus'></i>Register
+                        Pelanggan</a>
                 </li>
             </ul>
         </li>
@@ -70,24 +70,24 @@
 {{--                <div class="menu-title">Poin</div>--}}
 {{--            </a>--}}
 {{--        </li>--}}
-        <li class="menu-label">Items</li>
+        <li class="menu-label">Item</li>
         <li>
             <a href="javascript:;" class="has-arrow">
                 <div class="parent-icon"><i class='bx bx-box'></i>
                 </div>
-                <div class="menu-title">Items</div>
+                <div class="menu-title">Alat</div>
             </a>
             <ul>
                 <li>
                     <a href="{{route('admin.item.index')}}">
                         <i class='bx bx-box'></i>
-                        Items
+                        Alat
                     </a>
                 </li>
                 <li>
                     <a href="{{route('admin.cat.index')}}">
                         <i class='bx bx-category'></i>
-                        Category
+                        Kategori
                     </a>
                 </li>
             </ul>
@@ -97,78 +97,78 @@
                 <div class="parent-icon">
                     <i class='bx bx-collection'></i>
                 </div>
-                <div class="menu-title">Accessories</div>
+                <div class="menu-title">Aksesoris</div>
             </a>
         </li>
         <li>
             <a href="{{route('admin.sale')}}">
                 <div class="parent-icon"><i class='bx bx-dollar'></i>
                 </div>
-                <div class="menu-title">Item Sale</div>
+                <div class="menu-title">Alat Dijual</div>
             </a>
         </li>
         <li>
             <a href="{{route('admin.access.sale')}}">
                 <div class="parent-icon"><i class='bx bx-dollar'></i>
                 </div>
-                <div class="menu-title">Accessories Sale</div>
+                <div class="menu-title">Aksesoris Dijual</div>
             </a>
         </li>
         <li>
             <a href="{{route('admin.mainten.index')}}">
                 <div class="parent-icon"><i class='bx bx-shield-quarter'></i>
                 </div>
-                <div class="menu-title">Maintenance</div>
+                <div class="menu-title">Perawatan</div>
             </a>
         </li>
         <li>
             <a href="javascript:;" class="has-arrow">
                 <div class="parent-icon"><i class='bx bx-cog'></i>
                 </div>
-                <div class="menu-title">Service</div>
+                <div class="menu-title">Servis</div>
             </a>
             <ul>
                 <li>
                     <a href="{{route('admin.service.index')}}">
                         <i class='bx bx-list-ul '></i>
-                        Service
+                        Servis
                     </a>
                 </li>
                 <li>
                     <a href="{{route('admin.service.history')}}">
                         <i class='bx bx-history'></i>
-                        History Service
+                        Riwayat Servis
                     </a>
                 </li>
             </ul>
         </li>
-        <li class="menu-label">Managemen</li>
+        <li class="menu-label">Kelola Laporan</li>
         <li>
             <a href="{{route('admin.rental.report')}}">
                 <div class="parent-icon"><i class='bx bx-file'></i>
                 </div>
-                <div class="menu-title">Report Rental</div>
+                <div class="menu-title">Laporan Rental</div>
             </a>
         </li>
         <li>
             <a href="{{route('admin.problem.report')}}">
                 <div class="parent-icon"><i class='bx bx-file'></i>
                 </div>
-                <div class="menu-title">Report Problem</div>
+                <div class="menu-title">Laporan Pelanggaran</div>
             </a>
         </li>
         <li>
             <a href="{{route('admin.mainten.report')}}">
                 <div class="parent-icon"><i class='bx bx-file'></i>
                 </div>
-                <div class="menu-title">Report Maintenance</div>
+                <div class="menu-title">Laporan Perawatan</div>
             </a>
         </li>
         <li>
             <a href="{{route('admin.report.service.index')}}">
                 <div class="parent-icon"><i class='bx bx-file'></i>
                 </div>
-                <div class="menu-title">Report Service</div>
+                <div class="menu-title">Laporan Servis</div>
             </a>
         </li>
     </ul>

@@ -1,13 +1,14 @@
 @extends('layouts.master')
+@if(isset($item))
+    @section('title', 'EDIT ALAT')
+@else
+    @section('title', 'TAMBAH ALAT')
+@endif
 @section('content')
     <div class="card">
         <div class="card-head">
             <div class="mt-3">
-                @if(isset($item))
-                    <h5 class="mb-4 ms-3">Edit Item<i class="bx bx-edit"></i></h5>
-                @else
-                    <h5 class="mb-4 ms-3">Add Item<i class="bx bx-user-plus"></i></h5>
-                @endif
+
             </div>
         </div>
         @if ($errors->any())
@@ -34,15 +35,18 @@
                     @method('PUT')
                 @endisset
                 <div class="mb-2">
-                    <label class="col-form-label">Name Item</label>
-                    <input type="text" name="name" class="form-control" placeholder="Enter Namae Item" value="{{isset($item) ? $item->name : null}}">
+                    <label class="col-form-label">Nama Alat</label>
+                    <input type="text" name="name" class="form-control" placeholder="Enter Namae Item"
+                           value="{{isset($item) ? $item->name : null}}">
                 </div>
                 <div class="mt-3 mb-2">
-                    <label for="single-select-field" class="form-label">Category</label>
-                    <select name="cat_id" class="form-select" id="single-select-clear-field" data-placeholder="Choose one thing">
+                    <label for="single-select-field" class="form-label">Kategori</label>
+                    <select name="cat_id" class="form-select" id="single-select-clear-field"
+                            data-placeholder="Pilih Kategori">
                         @foreach($cat as $category)
                             @if(isset($item))
-                                <option value="{{ $category->id }}" {{ $item->cat_id == $category->id ? 'selected' : '' }}>{{ $category->name }}</option>
+                                <option
+                                    value="{{ $category->id }}" {{ $item->cat_id == $category->id ? 'selected' : '' }}>{{ $category->name }}</option>
                             @else
                                 <option value=""></option>
                                 <option value="{{ $category->id }}">{{ $category->name }}</option>
@@ -52,37 +56,45 @@
                 </div>
                 <div class="mt-3 mb-2">
                     <label class="col-form-label">No Seri</label>
-                    <input type="text" name="no_seri" class="form-control" placeholder="Enter No Seri" value="{{isset($item) ? $item->no_seri : null}}">
+                    <input type="text" name="no_seri" class="form-control" placeholder="Enter No Seri"
+                           value="{{isset($item) ? $item->no_seri : null}}">
                 </div>
                 <div class="mt-3 mb-2">
-                    <label class="col-form-label">Description</label>
-                    <textarea name="description" class="form-control" placeholder="Enter Description">{{ $item->itemIn->description ?? '' }}</textarea>
+                    <label class="col-form-label">Keterangan</label>
+                    <textarea name="description" class="form-control"
+                              placeholder="Enter Description">{{ $item->itemIn->description ?? '' }}</textarea>
                 </div>
                 <div class="mt-3 mb-2">
-                    <label class="col-form-label">Image</label>
+                    <label class="col-form-label">Gambar</label>
                     @if (isset($item) && $item->image)
                         <div class="mt-3">
                             <h6>Existing Images:</h6>
                             <div class="row">
                                 @foreach (json_decode($item->image) as $image)
                                     <div class="col-md-2">
-                                        <img src="{{ asset('images/item/' . $image) }}" alt="Image" class="img-thumbnail mb-2">
-                                        <button type="button" class="btn btn-danger btn-sm delete-image" data-image="{{ $image }}">Remove</button>
+                                        <img src="{{ asset('images/item/' . $image) }}" alt="Image"
+                                             class="img-thumbnail mb-2">
+                                        <button type="button" class="btn btn-danger btn-sm delete-image"
+                                                data-image="{{ $image }}">Hapus
+                                        </button>
                                     </div>
                                 @endforeach
                             </div>
                         </div>
                     @endif
                     <form>
-                    <input name="image[]" id="image-uploadify" type="file" accept="image/*" multiple>
-					</form>
+                        <input name="image[]" id="image-uploadify" type="file" accept="image/*" multiple>
+                    </form>
                 </div>
                 <div class="mt-3">
-                    <button type="submit" class="btn btn-dnd float-end" id="submitBtn">Save<i class="bx bx-save"></i> </button>
+                    <button type="submit" class="btn btn-dnd float-end" id="submitBtn">Save<i class="bx bx-save"></i>
+                    </button>
                     @if(isset($item))
-                        <a href="{{route('employe.item.index')}}" class="btn btn-warning float-end me-2"><i class="bx bx-undo"></i>Back</a>
+                        <a href="{{route('employe.item.index')}}" class="btn btn-warning float-end me-2"><i
+                                class="bx bx-undo"></i>Kembali</a>
                     @else
-                        <a href="{{route('employe.item.index')}}" class="btn btn-warning float-end me-2"><i class="bx bx-list-ul"></i>List Item</a>
+                        <a href="{{route('employe.item.index')}}" class="btn btn-warning float-end me-2"><i
+                                class="bx bx-list-ul"></i>Daftar Alat</a>
                     @endif
                 </div>
             </form>
@@ -95,15 +107,15 @@
 @endpush
 @push('js')
 
-<script>
-        $(document).ready(function() {
-            $('#submitBtn').click(function() {
+    <script>
+        $(document).ready(function () {
+            $('#submitBtn').click(function () {
                 $(this).prop('disabled', true).text('Loading...');
                 $('#myForm').submit();
             });
 
             // Handle image removal with SweetAlert2 confirmation
-            $(document).on('click', '.delete-image', function() {
+            $(document).on('click', '.delete-image', function () {
                 let image = $(this).data('image');
                 let row = $(this).closest('.col-md-2');
 
@@ -125,7 +137,7 @@
                                 _token: '{{ csrf_token() }}',
                                 image: image
                             },
-                            success: function(response) {
+                            success: function (response) {
                                 if (response.success) {
                                     row.remove();
                                     Swal.fire('Deleted!', 'Your image has been deleted.', 'success');
@@ -133,7 +145,7 @@
                                     Swal.fire('Failed!', 'Failed to remove image.', 'error');
                                 }
                             },
-                            error: function() {
+                            error: function () {
                                 Swal.fire('Error!', 'An error occurred while processing your request.', 'error');
                             }
                         });

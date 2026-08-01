@@ -1,20 +1,20 @@
 @extends('layouts.master')
-
+@if(isset($customer))
+    @section('title', strtoupper('edit pelanggan'))
+@else
+    @section('title', strtoupper('register pelanggan'))
+@endif
 @section('content')
     <div class="card">
         <div class="row">
             <div class="col-sm-6 mt-3">
-                @if(isset($customer))
-                    <h5 class="mb-4 ms-3">Edit Customer<i class="bx bx-edit"></i></h5>
-                @else
-                    <h5 class="mb-4 ms-3">Register Customer<i class="bx bx-user-plus"></i></h5>
-                @endif
+
             </div>
             <div class="col-sm-6 mt-3">
-                <a href="{{route('admin.customer.index')}}" class="btn btn-warning float-end me-3">List Customer</a>
+                <a href="{{route('admin.customer.index')}}" class="btn btn-warning float-end me-3">Daftar Pelanggan</a>
             </div>
         </div>
-        
+
         <div id="error-container" style="display: none;">
                 @if ($errors->any())
                     @foreach ($errors->all() as $error)
@@ -22,25 +22,25 @@
                     @endforeach
                 @endif
             </div>
-        
+
         <form class="card-body p-4" action="{{$url}}" method="POST" enctype="multipart/form-data" id="myForm">
             @csrf
             @isset($customer)
                 @method('PUT')
             @endif
-            
+
             <div class="row mb-3">
-                <label for="input42" class="col-sm-3 col-form-label"><i class="text-danger">*</i> Customer Name</label>
+                <label for="input42" class="col-sm-3 col-form-label"><i class="text-danger">*</i> Nama Pelanggan</label>
                 <div class="col-sm-9">
                     <div class="position-relative input-icon">
-                        <input type="text" name="name" class="form-control" id="input42" placeholder="Enter Customer Name" value="{{ isset($customer) ? $customer->name : '' }}">
+                        <input type="text" name="name" class="form-control" id="input42" placeholder="Masukan Nama Pelanggan" value="{{ isset($customer) ? $customer->name : '' }}">
                         <span class="position-absolute top-50 translate-middle-y"><i class='bx bx-user'></i></span>
                     </div>
                 </div>
             </div>
-            
+
             <div class="row mb-3">
-                <label for="input43" class="col-sm-3 col-form-label"><i class="text-danger">*</i> Phone Whatsapp</label>
+                <label for="input43" class="col-sm-3 col-form-label"><i class="text-danger">*</i> Whatsapp</label>
                 <div class="col-sm-9">
                     <div class="position-relative input-icon">
                         <input type="number" name="phone" class="form-control" id="input43" placeholder="81XXXXXXXXXX" value="{{ isset($customer) ? $customer->phone : '' }}">
@@ -48,9 +48,9 @@
                     </div>
                 </div>
             </div>
-            
+
             <div class="row mb-3">
-                <label for="input43" class="col-sm-3 col-form-label">Phone</label>
+                <label for="input43" class="col-sm-3 col-form-label">No. Telepon</label>
                 <div class="col-sm-9">
                     <div class="position-relative input-icon">
                         <input type="number" name="phn" class="form-control" id="input43" placeholder="(optional)" value="{{ isset($customer) ? $customer->phn : '' }}">
@@ -58,9 +58,9 @@
                     </div>
                 </div>
             </div>
-            
+
             <div class="row mb-3">
-                <label for="input44" class="col-sm-3 col-form-label"><i class="text-danger">*</i> No Identity</label>
+                <label for="input44" class="col-sm-3 col-form-label"><i class="text-danger">*</i> No. Identitas</label>
                 <div class="col-sm-9">
                     <div class="position-relative input-icon">
                         <input type="number" name="no_identity" class="form-control" id="input44" placeholder="32XXXXXXXXXXXXX" value="{{ isset($customer) ? $customer->no_identity : '' }}">
@@ -68,19 +68,19 @@
                     </div>
                 </div>
             </div>
-            
+
             <div class="row mb-3">
-                <label for="input47" class="col-sm-3 col-form-label"><i class="text-danger">*</i> Address</label>
+                <label for="input47" class="col-sm-3 col-form-label"><i class="text-danger">*</i> Alamat</label>
                 <div class="col-sm-9">
-                    <textarea class="form-control" name="addres" id="input47" rows="3" placeholder="Address">{{ isset($customer) ? $customer->addres : '' }}</textarea>
+                    <textarea class="form-control" name="addres" id="input47" rows="3" placeholder="Alamat">{{ isset($customer) ? $customer->addres : '' }}</textarea>
                 </div>
             </div>
-            
+
             <div class="row mb-3">
-                <label class="col-sm-3 col-form-label">Identity</label>
+                <label class="col-sm-3 col-form-label">Identitas</label>
                 <div class="col-sm-9">
                 <div class="form-group">
-                <label class="form-label"><i class="text-danger">*</i> Image</label>
+                <label class="form-label"><i class="text-danger">*</i> Gambar</label>
                 <div class="preview-zone hidden">
                     <div class="box box-solid">
                         <div class="box-header with-border">
@@ -113,7 +113,7 @@
                                 @foreach (json_decode($customer->image) as $image)
                                     <div class="col-md-2">
                                         <img src="{{ asset('images/identity/' . $image) }}" alt="Image" class="img-thumbnail mb-2">
-                                        <button type="button" class="btn btn-danger btn-sm delete-image" data-image="{{ $image }}">Remove</button>
+                                        <button type="button" class="btn btn-danger btn-sm delete-image" data-image="{{ $image }}">Hhapus</button>
                                     </div>
                                 @endforeach
                             </div>
@@ -123,7 +123,7 @@
             </div>
 
             <div class="d-md-flex d-grid align-items-center gap-3 float-end">
-                <button type="submit" class="btn btn-dnd px-4" id="submitBtn">Save <i class="bx bx-save me-0"></i></button>
+                <button type="submit" class="btn btn-dnd px-4" id="submitBtn">Simpan <i class="bx bx-save me-0"></i></button>
             </div>
         </form>
     </div>

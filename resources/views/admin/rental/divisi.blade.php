@@ -1,11 +1,11 @@
 @extends('layouts.master')
+@section('title', strtoupper('Daftar pinjaman divisi'))
 @section('content')
     <div class="card">
         <div class="card-head">
             <div class="row">
                 <div class="col-6">
                     <div class="container mt-3">
-                        <h4 class="text-uppercase">Pinjaman Divisi</h4>
                     </div>
                 </div>
             </div>
@@ -22,7 +22,7 @@
                         <th>Tanggal Peminjaman</th>
                         <th>Status</th>
                         <th>Print</th>
-                        <th>Action</th>
+                        <th>Aksi</th>
                     </tr>
                     </thead>
                     <tbody>

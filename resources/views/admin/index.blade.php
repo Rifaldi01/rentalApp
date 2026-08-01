@@ -7,7 +7,7 @@
                     <div class="card-body">
                         <div class="d-flex align-items-center">
                             <div>
-                                <p class="mb-0 text-secondary">Rental Active</p>
+                                <p class="mb-0 text-secondary">Rental Aktif</p>
                                 <h4 class="my-1 text-info">{{$rentalss}}</h4>
                             </div>
                             <div class="widgets-icons-2 rounded-circle bg-gradient-blues text-white ms-auto"><i
@@ -24,7 +24,7 @@
                     <div class="card-body">
                         <div class="d-flex align-items-center">
                             <div>
-                                <p class="mb-0 text-secondary">Rental History</p>
+                                <p class="mb-0 text-secondary">Riwyat Rental</p>
                                 <h4 class="my-1 text-info">{{$history}}</h4>
                             </div>
                             <div class="widgets-icons-2 rounded-circle bg-gradient-blues text-white ms-auto"><i
@@ -41,7 +41,7 @@
                     <div class="card-body">
                         <div class="d-flex align-items-center">
                             <div>
-                                <p class="mb-0 text-secondary">Rental Problem</p>
+                                <p class="mb-0 text-secondary">Pelanggaran</p>
                                 <h4 class="my-1 text-info">{{$problem}}</h4>
                             </div>
                             <div class="widgets-icons-2 rounded-circle bg-gradient-blues text-white ms-auto"><i
@@ -58,7 +58,7 @@
                     <div class="card-body">
                         <div class="d-flex align-items-center">
                             <div>
-                                <p class="mb-0 text-secondary">Total Customers</p>
+                                <p class="mb-0 text-secondary">Total Pelanggan</p>
                                 <h4 class="my-1 text-warning">{{$customer}}</h4>
                             </div>
                             <div class="widgets-icons-2 rounded-circle bg-gradient-orange text-white ms-auto"><i
@@ -71,7 +71,7 @@
         </a>
     </div>
     <div class="card">
-        <div class="container mt-2">
+        <div class="ms-3 mt-2">
             <h5>Stok Item <i class="bx bx-box"></i></h5>
         </div>
     </div>
@@ -81,9 +81,9 @@
                 <div class="card-body">
                     <div class="d-flex align-items-center">
                         <div>
-                            <p class="mb-0 text-secondary">Total Items</p>
+                            <p class="mb-0 text-secondary">Total Alat</p>
                             <h4 class="my-1 text-warning">{{$item}}</h4>
-                            <p class="mb-0 font-13">All Items</p>
+                            <p class="mb-0 font-13">Semua Alat</p>
                         </div>
                         <div class="widgets-icons-2 rounded-circle bg-gradient-orange text-white ms-auto"><i
                                 class='bx bxs-box'></i>
@@ -99,8 +99,8 @@
                             <div class="d-flex align-items-center">
                                 <div>
                                     <p class="mb-0 text-secondary">{{$item->cat->name}}</p>
-                                    <h4 class="my-1 text-warning">{{ $item->available }} Available</h4>
-                                    <p class="mb-0 font-13">Of {{ $item->total }}</p>
+                                    <h4 class="my-1 text-warning">{{ $item->available }} Tersedia</h4>
+                                    <p class="mb-0 font-13">dari {{ $item->total }}</p>
                                 </div>
                                 <div class="widgets-icons-2 rounded-circle bg-gradient-orange text-white ms-auto"><i
                                         class='bx bx-box'></i>
@@ -115,9 +115,9 @@
                 <div class="card-body">
                     <div class="d-flex align-items-center">
                         <div>
-                            <p class="mb-0 text-secondary">Item Maintenance</p>
+                            <p class="mb-0 text-secondary">Perawatan Alat</p>
                             <h4 class="my-1 text-success">{{$maintenance}}</h4>
-                            <p class="mb-0 font-13">Chek Item Maintenance</p>
+                            <p class="mb-0 font-13">Cek Perawatan Alat</p>
                         </div>
                         <div class="widgets-icons-2 rounded-circle bg-gradient-ohhappiness text-white ms-auto"><i
                                 class='bx bx-box'></i>
@@ -128,14 +128,14 @@
         </div>
     </div>
     <div class="card mt-2">
-        <div class="container mt-2">
-            <h4>Rentals that End in 3 Days. {{$jumlah}} Rental</h4>
+        <div class="ms-3 mt-2">
+            <h5>Sewa yang akan Berakhir dalam 3 Hari. {{$jumlah}} Rental</h5>
         </div>
     </div>
     @if($rentals->isEmpty())
         <div class="card">
             <div class="card-body">
-                <p>No rentals ending in 3 days.</p>
+                <p>Tidak ada Rental yang Akan Berakhir dalam 3 Hari.</p>
             </div>
         </div>
     @else
@@ -146,15 +146,14 @@
                         <thead>
                         <tr>
                             <th width="2%">No</th>
-                            <th>Customer</th>
-                            <th>Item</th>
+                            <th>Pelanggan</th>
+                            <th>Alat</th>
                             <th>No Seri</th>
-                            <th>Accessories</th>
-                            <th>Start Date</th>
-                            <th>End Date</th>
-                            <th class="text-center">Total Day</th>
+                            <th>Aksesoris</th>
+                            <th>Periode Rental</th>
+                            <th class="text-center">Lama Rental</th>
                             <th class="text-center">Status</th>
-                            <th class="text-center" width="14%">Action</th>
+                            <th class="text-center" width="14%">Aksi</th>
                         </tr>
                         </thead>
                         <tbody>
@@ -203,8 +202,7 @@
                             </td>
                                 <td>
                                     {{\Carbon\Carbon::parse($data->date_start)->translatedFormat('d F Y')}}
-                                </td>
-                                <td>
+                                -
                                     {{\Carbon\Carbon::parse($data->date_end)->translatedFormat('d F Y')}}
                                 </td>
                                 <td class="text-center">{{$data->days_difference}} Day</td>

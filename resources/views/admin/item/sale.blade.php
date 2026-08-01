@@ -1,24 +1,24 @@
 @extends('layouts.master')
+@section('title', strtoupper('Dafatar alat terjual'))
 @section('content')
     <div class="card">
         <div class="card-head">
             <div class="row">
                 <div class="col-6">
                     <div class="container mt-3">
-                        <h4 class="text-uppercase">List Items Sale</h4>
                     </div>
                 </div>
             </div>
         </div>
-        <di class="card-body">
+        <div class="card-body">
             <div class="table-responsive">
                 <table id="example" class="table table-striped table-bordered" style="width:100%">
                     <thead>
                     <tr>
                         <th width="2%">No</th>
-                        <th>Name</th>
+                        <th>Nama</th>
                         <th>No Seri</th>
-                        <th class="text-center">Image</th>
+                        <th class="text-center">Gambar</th>
                         <th class="text-center">Detail</th>
                         <th class="text-center">Status</th>
                     </tr>
@@ -41,7 +41,7 @@
                                         <div class="modal-dialog">
                                             <div class="modal-content">
                                                 <div class="modal-header">
-                                                    <h5 class="modal-title" id="exampleModalLabel">Image</h5>
+                                                    <h5 class="modal-title" id="exampleModalLabel">Gambar</h5>
                                                     <button type="button" class="btn-close" data-bs-dismiss="modal"
                                                             aria-label="Close"></button>
                                                 </div>
@@ -67,7 +67,7 @@
                                     <div class="modal-dialog modal-dialog-centered">
                                         <div class="modal-content">
                                             <div class="modal-header">
-                                                <h5 class="modal-title">Descrpti Maintenance</h5>
+                                                <h5 class="modal-title">Keterangan Perbaikan</h5>
                                                 <button type="button" class="btn-close" data-bs-dismiss="modal"
                                                         aria-label="Close"></button>
                                             </div>
@@ -77,7 +77,7 @@
                                                 <div class="modal-body">
                                                     <input value="{{$data->id}}" type="hidden" name="item_id"
                                                            class="form-control">
-                                                    <label class="col-form-label">Descript</label>
+                                                    <label class="col-form-label">Keterangan</label>
                                                     <textarea type="text" name="descript"
                                                               class="form-control"
                                                               placeholder="Enter Descript"></textarea>
@@ -86,7 +86,7 @@
                                                     <button type="button" class="btn btn-secondary"
                                                             data-bs-dismiss="modal">Close
                                                     </button>
-                                                    <button type="submit" class="btn btn-primary">Save<i
+                                                    <button type="submit" class="btn btn-primary">Simpan<i
                                                             class="bx bx-save"></i></button>
                                                 </div>
                                             </form>
@@ -101,7 +101,7 @@
                                     <div class="modal-dialog modal-lg">
                                         <div class="modal-content">
                                             <div class="modal-header">
-                                                <h5 class="modal-title">Descript Sale</h5>
+                                                <h5 class="modal-title">Keterangan Jual</h5>
                                                 <button type="button" class="btn-close" data-bs-dismiss="modal"
                                                         aria-label="Close"></button>
                                             </div>
@@ -109,7 +109,7 @@
                                                 <div class="table-responsive">
                                                     <table id="" class="table table-bordered">
                                                         <tr>
-                                                            <th width="5%"><div class="float-start">Name</div></th>
+                                                            <th width="5%"><div class="float-start">Nama Alat</div></th>
                                                             <td><div class="float-start">{{$data->item->name}}</div></td>
                                                         </tr>
                                                         <tr>
@@ -117,7 +117,7 @@
                                                             <td><div class="float-start">{{$data->item->no_seri}}</div></td>
                                                         </tr>
                                                         <tr>
-                                                            <th><div class="float-start">Descript</div></th>
+                                                            <th><div class="float-start">Keterangan</div></th>
                                                             <td><div class="float-start">{{($data->descript)}}</div></td>
                                                         </tr>
                                                     </table>
@@ -128,16 +128,14 @@
                                 </div>
                             </td>
                             <td class="text-center">
-                                <span class="badge bg-warning">Sale</span>
+                                <span class="badge bg-warning">Jual</span>
                             </td>
                     </tr>
                     @endforeach
                     </tbody>
-                    </tfoot>
                 </table>
             </div>
-        </di>
-    </div>
+        </div>
     </div>
 @endsection
 

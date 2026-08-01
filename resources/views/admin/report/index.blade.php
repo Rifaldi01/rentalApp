@@ -1,11 +1,12 @@
 @extends('layouts.master')
+@section('title', strtoupper('Laporan Rental'))
 @section('content')
     <div class="card">
         <div class="card-body">
             <div class="col">
                 <div class="row">
                     <div class="col-sm">
-                        <h4 class="mb-0 text-uppercase">Cicilan Report
+                        <h4 class="mb-0 text-uppercase">Laporan Cicilan Rental
                         </h4>
                     </div>
                 </div>
@@ -38,13 +39,13 @@
                     <div class="row">
                         <div class="col-5 ms-2 mt-2">
                             <label class="form-label">
-                                Start Date
+                                Tanggal Mulai
                             </label>
                             <input type="date" class="form-control" name="tanggal_mulai" required>
                         </div>
                         <div class="col-6 mt-2">
                             <label class="form-label">
-                                End Date
+                                Tanggal Berakhir
                             </label>
                             <input type="date" class="form-control" name="tanggal_akhir" required>
                         </div>
@@ -73,7 +74,7 @@
                         <th>PPN</th>
                         <th>PPH</th>
                         <th>Fee</th>
-                        <th>Discount</th>
+                        <th>Diskon</th>
                         <th>Total</th>
                         <th width="">Ung <br>Masuk</th>
                         <th>Sisa <br>Bayar</th>
@@ -321,217 +322,217 @@
         </div>
     </div>
 
-    <div class="card">
-        <div class="card-body">
-            <div class="col">
-                <div class="row">
-                    <div class="col-sm">
-                        <h4 class="mb-0 text-uppercase">Rentals Report
-                        </h4>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    <hr/>
-    <div class="card table-timbang">
-        <div class="card-header">
-            @if ($errors->any())
-                @foreach ($errors->all() as $error)
-                    <div class="alert border-0 border-start border-5 border-danger alert-dismissible fade show py-2">
-                        <div class="d-flex align-items-center">
-                            <div class="font-35 text-danger"><i class='bx bxs-message-square-x'></i>
-                            </div>
-                            <div class="ms-3">
-                                <h6 class="mb-0 text-danger">Error</h6>
-                                <div>
-                                    <div>{{ $error }}</div>
-                                </div>
-                            </div>
-                        </div>
-                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                    </div>
-                @endforeach
-            @endif
-            <div class="row">
-                <form action="{{route('admin.report.filter')}}" method="GET">
-                    <div class="row">
-                        <div class="col-5 ms-2 mt-2">
-                            <label class="form-label">
-                                Start Date
-                            </label>
-                            <input type="date" class="form-control" name="start_date" required>
-                        </div>
-                        <div class="col-6 mt-2">
-                            <label class="form-label">
-                                End Date
-                            </label>
-                            <input type="date" class="form-control" name="end_date" required>
-                        </div>
-                    </div>
-                    <div class="col-md-1 pt-4 float-end me-5">
-                        <button type="submit" class="btn btn-success">Filter</button>
-                    </div>
-                </form>
-            </div>
-        </div>
-        <div class="card-body">
-            <div class="table-responsive">
-                <table id="table-report" class="table table-striped table-bordered" style="width:100%">
-                    <thead>
-                    <tr>
-                        <th width="2%">No</th>
-                        <th>Tanggal Inv</th>
-                        <th>No Inv</th>
-                        <th>Pelanggan</th>
-                        <th>Item</th>
-                        <th>No Seri</th>
-                        <th>Tgl Mulai</th>
-                        <th>Tgl Selesai</th>
-                        <th>Total <br>Inv</th>
-                        <th width="">Ung <br>Masuk</th>
-                        <th>Sisa <br>Bayar</th>
-                        <th>Fee /<br>Discount</th>
-                        <th>Total</th>
-                        <th>Ket. Byr</th>
-                        <th>Penerima</th>
-                        <th class="text-center">Status</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    @foreach ($report as $key => $data)
-                        <tr>
-                            <td>{{$key +1}}</td>
-                            <td>
-                                {{formatId($data->tgl_inv)}}
-                            </td>
-                            <td>{{$data->no_inv}}</td>
-                            <td>{{$data->cust->name}}</td>
-                            <td>@php
-                                    $itemIds = json_decode($data->item_id);
-                                @endphp
-                                @if(is_array($itemIds))
-                                    @foreach($itemIds as $itemId)
-                                        @php
-                                            $item = \App\Models\Item::find($itemId);
-                                        @endphp
-                                        {{ $item ? $item->name : 'Item not found' }}<br>
-                                    @endforeach
-                                @else
-                                    {{ $itemIds }}
-                                @endif</td>
-                            <td>@php
-                                    $itemIds = json_decode($data->item_id);
-                                @endphp
-                                @if(is_array($itemIds))
-                                    @foreach($itemIds as $itemId)
-                                        @php
-                                            $item = \App\Models\Item::find($itemId);
-                                        @endphp
-                                        {{ $item ? $item->no_seri : 'Item not found' }}<br>
-                                    @endforeach
-                                @else
-                                    {{ $itemIds }}
-                                @endif</td>
-                            <td>
-                                {{formatId($data->date_start)}}
-                            </td>
-                            <td>
-                                {{formatId($data->date_end)}}
-                            </td>
-                            <td>
-                                @if($data->total_invoice)
-                                    {{formatRupiah($data->total_invoice)}}
-                                @else
-                                    {{formatRupiah($data->total_nominal)}}
-                                @endif
-                            </td>
-                            <td>{{formatRupiah($data->nominal_in)}}</td>
-                            <td>{{formatRupiah($data->nominal_out)}}</td>
-                            <td>{{formatRupiah($data->diskon)}}</td>
-                            <td>{{formatRupiah($data->total)}}</td>
-                            <td>
-                                @if($data->debt->isNotEmpty())
-                                    @foreach($data->debt as $debt)
-                                        @if($debt->bank)
-                                            <li>{{$debt->date_pay}}, {{ $debt->bank->name }}</li>
-                                        @else
+{{--    <div class="card">--}}
+{{--        <div class="card-body">--}}
+{{--            <div class="col">--}}
+{{--                <div class="row">--}}
+{{--                    <div class="col-sm">--}}
+{{--                        <h4 class="mb-0 text-uppercase">Rentals Report--}}
+{{--                        </h4>--}}
+{{--                    </div>--}}
+{{--                </div>--}}
+{{--            </div>--}}
+{{--        </div>--}}
+{{--    </div>--}}
+{{--    <hr/>--}}
+{{--    <div class="card table-timbang">--}}
+{{--        <div class="card-header">--}}
+{{--            @if ($errors->any())--}}
+{{--                @foreach ($errors->all() as $error)--}}
+{{--                    <div class="alert border-0 border-start border-5 border-danger alert-dismissible fade show py-2">--}}
+{{--                        <div class="d-flex align-items-center">--}}
+{{--                            <div class="font-35 text-danger"><i class='bx bxs-message-square-x'></i>--}}
+{{--                            </div>--}}
+{{--                            <div class="ms-3">--}}
+{{--                                <h6 class="mb-0 text-danger">Error</h6>--}}
+{{--                                <div>--}}
+{{--                                    <div>{{ $error }}</div>--}}
+{{--                                </div>--}}
+{{--                            </div>--}}
+{{--                        </div>--}}
+{{--                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>--}}
+{{--                    </div>--}}
+{{--                @endforeach--}}
+{{--            @endif--}}
+{{--            <div class="row">--}}
+{{--                <form action="{{route('admin.report.filter')}}" method="GET">--}}
+{{--                    <div class="row">--}}
+{{--                        <div class="col-5 ms-2 mt-2">--}}
+{{--                            <label class="form-label">--}}
+{{--                                Start Date--}}
+{{--                            </label>--}}
+{{--                            <input type="date" class="form-control" name="start_date" required>--}}
+{{--                        </div>--}}
+{{--                        <div class="col-6 mt-2">--}}
+{{--                            <label class="form-label">--}}
+{{--                                End Date--}}
+{{--                            </label>--}}
+{{--                            <input type="date" class="form-control" name="end_date" required>--}}
+{{--                        </div>--}}
+{{--                    </div>--}}
+{{--                    <div class="col-md-1 pt-4 float-end me-5">--}}
+{{--                        <button type="submit" class="btn btn-success">Filter</button>--}}
+{{--                    </div>--}}
+{{--                </form>--}}
+{{--            </div>--}}
+{{--        </div>--}}
+{{--        <div class="card-body">--}}
+{{--            <div class="table-responsive">--}}
+{{--                <table id="table-report" class="table table-striped table-bordered" style="width:100%">--}}
+{{--                    <thead>--}}
+{{--                    <tr>--}}
+{{--                        <th width="2%">No</th>--}}
+{{--                        <th>Tanggal Inv</th>--}}
+{{--                        <th>No Inv</th>--}}
+{{--                        <th>Pelanggan</th>--}}
+{{--                        <th>Item</th>--}}
+{{--                        <th>No Seri</th>--}}
+{{--                        <th>Tgl Mulai</th>--}}
+{{--                        <th>Tgl Selesai</th>--}}
+{{--                        <th>Total <br>Inv</th>--}}
+{{--                        <th width="">Ung <br>Masuk</th>--}}
+{{--                        <th>Sisa <br>Bayar</th>--}}
+{{--                        <th>Fee /<br>Discount</th>--}}
+{{--                        <th>Total</th>--}}
+{{--                        <th>Ket. Byr</th>--}}
+{{--                        <th>Penerima</th>--}}
+{{--                        <th class="text-center">Status</th>--}}
+{{--                    </tr>--}}
+{{--                    </thead>--}}
+{{--                    <tbody>--}}
+{{--                    @foreach ($report as $key => $data)--}}
+{{--                        <tr>--}}
+{{--                            <td>{{$key +1}}</td>--}}
+{{--                            <td>--}}
+{{--                                {{formatId($data->tgl_inv)}}--}}
+{{--                            </td>--}}
+{{--                            <td>{{$data->no_inv}}</td>--}}
+{{--                            <td>{{$data->cust->name}}</td>--}}
+{{--                            <td>@php--}}
+{{--                                    $itemIds = json_decode($data->item_id);--}}
+{{--                                @endphp--}}
+{{--                                @if(is_array($itemIds))--}}
+{{--                                    @foreach($itemIds as $itemId)--}}
+{{--                                        @php--}}
+{{--                                            $item = \App\Models\Item::find($itemId);--}}
+{{--                                        @endphp--}}
+{{--                                        {{ $item ? $item->name : 'Item not found' }}<br>--}}
+{{--                                    @endforeach--}}
+{{--                                @else--}}
+{{--                                    {{ $itemIds }}--}}
+{{--                                @endif</td>--}}
+{{--                            <td>@php--}}
+{{--                                    $itemIds = json_decode($data->item_id);--}}
+{{--                                @endphp--}}
+{{--                                @if(is_array($itemIds))--}}
+{{--                                    @foreach($itemIds as $itemId)--}}
+{{--                                        @php--}}
+{{--                                            $item = \App\Models\Item::find($itemId);--}}
+{{--                                        @endphp--}}
+{{--                                        {{ $item ? $item->no_seri : 'Item not found' }}<br>--}}
+{{--                                    @endforeach--}}
+{{--                                @else--}}
+{{--                                    {{ $itemIds }}--}}
+{{--                                @endif</td>--}}
+{{--                            <td>--}}
+{{--                                {{formatId($data->date_start)}}--}}
+{{--                            </td>--}}
+{{--                            <td>--}}
+{{--                                {{formatId($data->date_end)}}--}}
+{{--                            </td>--}}
+{{--                            <td>--}}
+{{--                                @if($data->total_invoice)--}}
+{{--                                    {{formatRupiah($data->total_invoice)}}--}}
+{{--                                @else--}}
+{{--                                    {{formatRupiah($data->total_nominal)}}--}}
+{{--                                @endif--}}
+{{--                            </td>--}}
+{{--                            <td>{{formatRupiah($data->nominal_in)}}</td>--}}
+{{--                            <td>{{formatRupiah($data->nominal_out)}}</td>--}}
+{{--                            <td>{{formatRupiah($data->diskon)}}</td>--}}
+{{--                            <td>{{formatRupiah($data->total)}}</td>--}}
+{{--                            <td>--}}
+{{--                                @if($data->debt->isNotEmpty())--}}
+{{--                                    @foreach($data->debt as $debt)--}}
+{{--                                        @if($debt->bank)--}}
+{{--                                            <li>{{$debt->date_pay}}, {{ $debt->bank->name }}</li>--}}
+{{--                                        @else--}}
 
-                                        @endif
-                                    @endforeach
-                                @else
-                                    {{$data->date_pays}}
-                                @endif
-                            </td>
-                            <td>
-                                @if($data->debt->isNotEmpty())
-                                    @foreach($data->debt as $debt)
-                                        <li>{{$debt->penerima}}</li>
-                                    @endforeach
-                                @else
-                                    Tidak ada data
-                                @endif
-                            </td>
-                            <td class="text-center">
-                                @if($data->status == 1)
-                                    <span class="badge bg-success">Rent</span>
-                                @elseif($data->status == 0)
-                                    <span class="badge bg-secondary">Finished</span>
-                                @elseif($data->status == 2)
-                                    <span class="badge bg-danger">Problem</span>
-                                @endif
-                            </td>
-                        </tr>
-                    @endforeach
-                    </tbody>
-                    <tfoot>
-                    <tr>
-                        <th class="border" colspan="2"> Total Nominal In</th>
-                        <th class="border">{{formatRupiah($totalin)}},-</th>
-                    </tr>
-                    <tr>
-                        <th class="border" colspan="2"> Total Nominal Outside</th>
-                        <th class="border">{{formatRupiah($totaloutside)}},-</th>
-                    </tr>
-                    <tr>
-                        <th class="border" colspan="2"> Total Fee/Diskon</th>
-                        <th class="border">{{formatRupiah($totaldiskon)}},-</th>
-                    </tr>
-                    <tr>
-                        <th class="border" colspan="2">Grand Total</th>
-                        <th class="border">{{formatRupiah($totalincome)}},-</th>
-                    </tr>
-                    </tfoot>
-                </table>
-            </div>
-        </div>
-        <div class="card-footer">
-            <div class="table-responsive">
-                <table>
-                    <tr>
-                        <th> <h5 class="mb-0 text-uppercase">Total Nominal In</h5></th>
-                        <td><h5>:</h5></td>
-                        <td><h5 class="ms-3">{{formatRupiah($totalin)}},-</h5></td>
-                    </tr>
-                    <tr>
-                        <th> <h5 class="mb-0 text-uppercase">Total Nominal Outside</h5></th>
-                        <td><h5>:</h5></td>
-                        <td><h5 class="ms-3">{{formatRupiah($totaloutside)}},-</h5></td>
-                    </tr>
-                    <tr>
-                        <th> <h5 class="mb-0 text-uppercase">Total Fee/Diskon</h5></th>
-                        <td><h5>:</h5></td>
-                        <td><h5 class="ms-2">{{formatRupiah($totaldiskon)}},-</h5></td>
-                    </tr>
-                    <tr>
-                        <th> <h5 class="mb-0 text-uppercase">Grand Total</h5></th>
-                        <td><h5>:</h5></td>
-                        <td><h5 class="ms-2">{{formatRupiah($totalincome)}},-</h5></td>
-                    </tr>
-                </table>
-            </div>
-        </div>
-    </div>
+{{--                                        @endif--}}
+{{--                                    @endforeach--}}
+{{--                                @else--}}
+{{--                                    {{$data->date_pays}}--}}
+{{--                                @endif--}}
+{{--                            </td>--}}
+{{--                            <td>--}}
+{{--                                @if($data->debt->isNotEmpty())--}}
+{{--                                    @foreach($data->debt as $debt)--}}
+{{--                                        <li>{{$debt->penerima}}</li>--}}
+{{--                                    @endforeach--}}
+{{--                                @else--}}
+{{--                                    Tidak ada data--}}
+{{--                                @endif--}}
+{{--                            </td>--}}
+{{--                            <td class="text-center">--}}
+{{--                                @if($data->status == 1)--}}
+{{--                                    <span class="badge bg-success">Rent</span>--}}
+{{--                                @elseif($data->status == 0)--}}
+{{--                                    <span class="badge bg-secondary">Finished</span>--}}
+{{--                                @elseif($data->status == 2)--}}
+{{--                                    <span class="badge bg-danger">Problem</span>--}}
+{{--                                @endif--}}
+{{--                            </td>--}}
+{{--                        </tr>--}}
+{{--                    @endforeach--}}
+{{--                    </tbody>--}}
+{{--                    <tfoot>--}}
+{{--                    <tr>--}}
+{{--                        <th class="border" colspan="2"> Total Nominal In</th>--}}
+{{--                        <th class="border">{{formatRupiah($totalin)}},-</th>--}}
+{{--                    </tr>--}}
+{{--                    <tr>--}}
+{{--                        <th class="border" colspan="2"> Total Nominal Outside</th>--}}
+{{--                        <th class="border">{{formatRupiah($totaloutside)}},-</th>--}}
+{{--                    </tr>--}}
+{{--                    <tr>--}}
+{{--                        <th class="border" colspan="2"> Total Fee/Diskon</th>--}}
+{{--                        <th class="border">{{formatRupiah($totaldiskon)}},-</th>--}}
+{{--                    </tr>--}}
+{{--                    <tr>--}}
+{{--                        <th class="border" colspan="2">Grand Total</th>--}}
+{{--                        <th class="border">{{formatRupiah($totalincome)}},-</th>--}}
+{{--                    </tr>--}}
+{{--                    </tfoot>--}}
+{{--                </table>--}}
+{{--            </div>--}}
+{{--        </div>--}}
+{{--        <div class="card-footer">--}}
+{{--            <div class="table-responsive">--}}
+{{--                <table>--}}
+{{--                    <tr>--}}
+{{--                        <th> <h5 class="mb-0 text-uppercase">Total Nominal In</h5></th>--}}
+{{--                        <td><h5>:</h5></td>--}}
+{{--                        <td><h5 class="ms-3">{{formatRupiah($totalin)}},-</h5></td>--}}
+{{--                    </tr>--}}
+{{--                    <tr>--}}
+{{--                        <th> <h5 class="mb-0 text-uppercase">Total Nominal Outside</h5></th>--}}
+{{--                        <td><h5>:</h5></td>--}}
+{{--                        <td><h5 class="ms-3">{{formatRupiah($totaloutside)}},-</h5></td>--}}
+{{--                    </tr>--}}
+{{--                    <tr>--}}
+{{--                        <th> <h5 class="mb-0 text-uppercase">Total Fee/Diskon</h5></th>--}}
+{{--                        <td><h5>:</h5></td>--}}
+{{--                        <td><h5 class="ms-2">{{formatRupiah($totaldiskon)}},-</h5></td>--}}
+{{--                    </tr>--}}
+{{--                    <tr>--}}
+{{--                        <th> <h5 class="mb-0 text-uppercase">Grand Total</h5></th>--}}
+{{--                        <td><h5>:</h5></td>--}}
+{{--                        <td><h5 class="ms-2">{{formatRupiah($totalincome)}},-</h5></td>--}}
+{{--                    </tr>--}}
+{{--                </table>--}}
+{{--            </div>--}}
+{{--        </div>--}}
+{{--    </div>--}}
 
 @endsection
 

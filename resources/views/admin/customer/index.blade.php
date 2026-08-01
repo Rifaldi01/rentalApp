@@ -1,11 +1,11 @@
 @extends('layouts.master')
+@section('title', strtoupper('Daftar pelanggan'))
 @section('content')
     <div class="card">
         <div class="card-head">
             <div class="row">
                 <div class="col-6">
                     <div class="container mt-3">
-                        <h4 class="text-uppercase">List Customer</h4>
                     </div>
                 </div>
                 <div class="col-6">
@@ -27,15 +27,15 @@
                     <thead>
                     <tr>
                         <th width="2%">No</th>
-                        <th>Name</th>
-                        <th>No Identity</th>
+                        <th>Nama Pelanggan</th>
+                        <th>No. Identitas</th>
                         <th>WhatsApp</th>
-                        <th>Phone</th>
-                        <th>address</th>
+                        <th>No. Telepon</th>
+                        <th>Alamat</th>
                         <th>Point Rental</th>
-                        <th>Point Service</th>
-                        <th class="text-center" width="4%">Identity</th>
-                        <th class="text-center" width="9%">Action</th>
+                        <th>Point Servis</th>
+                        <th class="text-center" width="4%">Identitas</th>
+                        <th class="text-center" width="9%">Aksi</th>
                     </tr>
                     </thead>
                     <tbody>

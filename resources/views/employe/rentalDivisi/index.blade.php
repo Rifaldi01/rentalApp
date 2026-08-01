@@ -1,11 +1,11 @@
 @extends('layouts.master')
+@section('title', strtoupper('Daftar pinjaman divisi'))
 @section('content')
     <div class="card">
         <div class="card-head">
             <div class="row">
                 <div class="col-6">
                     <div class="container mt-3">
-                        <h4 class="text-uppercase">Pinjaman Divisi</h4>
                     </div>
                 </div>
                 <div class="col-6">
@@ -46,7 +46,7 @@
                                     @if($data->status == 1)
                                         <span class="badge bg-success">Finished</span>
                                     @elseif($data->status == 0)
-                                        <span class="badge bg-secondary">Dipinjam</span>
+                                        <span class="badge bg-secondary">Rental</span>
                                     @endif
                                 </td>
                                 <td>
