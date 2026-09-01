@@ -151,16 +151,16 @@ class ReportController extends Controller
             });
         });
         $diskon = $cicilan->sum(function ($item) {
-            return $item->rental->diskon;
+            return $item->rental->diskon ?? 0;
         });
         $sisabayar = $cicilan->sum(function ($item) {
-            return $item->rental->nominal_out;
+            return $item->rental->nominal_out ?? 0;
         });
         $totalbersih = $cicilan->sum(function ($item) {
-            return $item->pay_debts - $item->rental->diskon - $item->rental->ppn - $item->rental->fee;
+            return $item->pay_debts - ($item->rental->diskon ?? 0) - ($item->rental->ppn?? 0) - ($item->rental->fee?? 0);
         });
         $totalppn = $cicilan->sum(function ($item) {
-            return $item->rental->ppn;
+            return ($item->rental->ppn?? 0);
         });
 
         // return $debt;
@@ -233,16 +233,16 @@ class ReportController extends Controller
             });
         });
         $diskon = $cicilan->sum(function ($item) {
-            return $item->rental->diskon;
+            return $item->rental->diskon ?? 0;
         });
         $sisabayar = $cicilan->sum(function ($item) {
-            return $item->rental->nominal_out;
+            return $item->rental->nominal_out ?? 0;
         });
         $totalbersih = $cicilan->sum(function ($item) {
-            return $item->pay_debts - $item->rental->diskon - $item->rental->ppn - $item->rental->fee;
+            return $item->pay_debts - ($item->rental->diskon ?? 0) - ($item->rental->ppn?? 0) - ($item->rental->fee?? 0);
         });
         $totalppn = $cicilan->sum(function ($item) {
-            return $item->rental->ppn;
+            return ($item->rental->ppn?? 0);
         });
 
         // return $debt;

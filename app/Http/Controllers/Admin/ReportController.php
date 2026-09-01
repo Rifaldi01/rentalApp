@@ -194,7 +194,7 @@ class ReportController extends Controller
                 return $items->first()->rental->fee ?? 0;
             });
         $sisabayar = $cicilan->sum(function ($item) {
-            return $item->rental->nominal_out;
+            return $item->rental->nominal_out ?? 0;
         });
         $totalPay = $cicilan->sum('pay_debts');
 
@@ -285,7 +285,7 @@ class ReportController extends Controller
                 return $items->first()->rental->fee ?? 0;
             });
         $sisabayar = $cicilan->sum(function ($item) {
-            return $item->rental->nominal_out;
+            return $item->rental->nominal_out ?? 0;
         });
         $totalPay = $cicilan->sum('pay_debts');
 
