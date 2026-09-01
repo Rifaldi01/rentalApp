@@ -95,7 +95,7 @@
                             <td class="text-center">{{ $key + 1 }}</td>
 
                             {{-- TGL INVOICE --}}
-                            <td>{{ $rental?->tgl_inv ? formatId($rental->tgl_inv) : '-' }}</td>
+                            <td>{{ $rental?->tgl_inv ? formatId($rental->tgl_inv) : 'kosong' }}</td>
 
                             {{-- INVOICE --}}
                             <td>{{ $rental?->no_inv ?? '-' }}</td>
