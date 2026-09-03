@@ -73,6 +73,7 @@
                         <th>Tgl Invoice</th>
                         <th>Invoice</th>
                         <th>Name</th>
+                        <th>Perusahaan</th>
                         <th>Item</th>
                         <th>No Seri</th>
                         <th>Accessories</th>
@@ -89,6 +90,7 @@
                             <td>{{formatId($data->tgl_inv)}}</td>
                             <td>{{$data->no_inv}}</td>
                             <td>{{$data->cust->name}}</td>
+                            <td>{{$data->name_company}}</td>
                             <td>
                                 @php
                                     $itemIds = json_decode($data->item_id);
