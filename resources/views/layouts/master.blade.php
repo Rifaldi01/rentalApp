@@ -21,6 +21,9 @@
     @role('manager')
     @include('layouts.component.sidebar.sidebar-manager')
     @endrole
+    @role('marketing')
+    @include('layouts.component.sidebar.sidebar-marketing')
+    @endrole
     <!--end sidebar wrapper -->
     <!--start header -->
     @include('layouts.component.header')
