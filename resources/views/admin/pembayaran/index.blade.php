@@ -372,5 +372,16 @@
                 });
             }
         });
+        $(document).ready(function () {
+            var table = $('#cicilanTable').DataTable();
+
+            // Mengurutkan ulang nomor saat tabel diurutkan atau difilter
+            table.on('order.dt search.dt', function () {
+                let i = 1;
+                table.cells(null, 0, {search: 'applied', order: 'applied'}).every(function (cell) {
+                    this.data(i++);
+                });
+            }).draw();
+        });
     </script>
 @endpush
