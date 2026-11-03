@@ -33,6 +33,7 @@ Route::group(['middleware' => ['auth:web', 'role:admin'], 'prefix' => 'admin'], 
     Route::get('/rental/download/{id}', [RentalController::class, 'downloadImages'])->name('admin.rental.downloadImages');
     Route::put('/rental/date/{id}', [RentalController::class, 'tanggalBuat'])->name('admin.rental.tanggalbuat');
     Route::get('/pembayaran', [PembayaranController::class, 'index'])->name('admin.pembayaran.index');
+    Route::get('/pembayaran/{id}', [PembayaranController::class, 'show'])->name('admin.pembayaran.show')->whereNumber('id');
     Route::put('/pembayaran/{id}', [PembayaranController::class, 'bayar'])->name('admin.pembayaran.bayar');
     Route::put('/pembayaran/edit/{id}', [PembayaranController::class, 'update'])->name('admin.update.totalinv');
     Route::get('/pembayaran/filter', [PembayaranController::class, 'filter'])->name('admin.pembayaran.filter');
@@ -101,6 +102,15 @@ Route::group(['middleware' => ['auth:web', 'role:admin'], 'prefix' => 'admin'], 
 
     //poin
     Route::get('/poin', [PoinController::class, 'index'])->name('admin.poin.index');
+
+    Route::delete('/pembayaran/{rentalId}/cicilan/{paymentId}', [
+        PembayaranController::class,
+        'destroyPayment'
+    ])->name('admin.pembayaran.cicilan.destroy');
+    Route::get('/pembayaran/{id}/invoice', [
+        PembayaranController::class,
+        'printInvoice'
+    ])->name('admin.pembayaran.invoice');
 });
 
 

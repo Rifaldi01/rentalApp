@@ -31,6 +31,7 @@ Route::group(['middleware' => ['auth:web', 'role:manager'], 'prefix' => 'manager
     Route::put('/rental/date/{id}', [RentalController::class, 'tanggalBuat'])->name('manager.rental.tanggalbuat');
     Route::post('/rental/deleteimage', [RentalController::class, 'deleteImage'])->name('manager.rental.deleteImage');
     Route::get('/pembayaran', [PembayaranController::class, 'index'])->name('manager.pembayaran.index');
+    Route::get('/pembayaran/{id}', [PembayaranController::class, 'show'])->name('manager.pembayaran.show')->whereNumber('id');
     Route::put('/pembayaran/{id}', [PembayaranController::class, 'bayar'])->name('manager.pembayaran.bayar');
     Route::get('/pembayaran/filter', [PembayaranController::class, 'filter'])->name('manager.pembayaran.filter');
     Route::get('/pembayaran/filter', [PembayaranController::class, 'filter'])->name('manager.pembayaran.filter');
@@ -90,4 +91,13 @@ Route::group(['middleware' => ['auth:web', 'role:manager'], 'prefix' => 'manager
     //end report
 
     Route::resource('divisi', DivisiController::class)->names('manager.divisi');
+
+    Route::delete('/pembayaran/{rentalId}/cicilan/{paymentId}', [
+        PembayaranController::class,
+        'destroyPayment'
+    ])->name('manager.pembayaran.cicilan.destroy');
+    Route::get('/pembayaran/{id}/invoice', [
+        PembayaranController::class,
+        'printInvoice'
+    ])->name('manager.pembayaran.invoice');
 });

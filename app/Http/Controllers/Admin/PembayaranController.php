@@ -2,169 +2,225 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Models\Item;
 use Carbon\Carbon;
 use App\Models\Bank;
+use App\Models\AccessoriesCategory;
 use App\Models\Debts;
 use App\Models\Rental;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\DB;
 
 class PembayaranController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $rentals = Rental::where('nominal_out', '!=', '0')->get();
-        $bank = Bank::all();
+        $query = Rental::with('cust')->withCount('debt')->withSum('debt', 'pay_debts');
 
-        $totalseharusnya = $rentals->groupBy('id')->map(function ($group) {
-            return $group->sum(fn($item) => $item->nominal_in + $item->nominal_out);
-        });
+        $year = $request->input('year', now()->year);
+        $month = $request->input('month');
+        $status = $request->input('status');
+        $search = trim((string) $request->input('search'));
 
-        $total = $rentals->groupBy('id')->map(function ($group) {
-            return $group->sum(fn($item) => $item->total_invoice - $item->diskon + $item->ppn);
-        });
+        if ($year !== 'all' && $year) {
+            $query->whereYear('tgl_inv', $year);
+        }
+        if ($month && $month !== 'all') {
+            $query->whereMonth('tgl_inv', $month);
+        }
+        if ($request->filled('start_date')) {
+            $query->whereDate('tgl_inv', '>=', $request->input('start_date'));
+        }
+        if ($request->filled('end_date')) {
+            $query->whereDate('tgl_inv', '<=', $request->input('end_date'));
+        }
+        if ($status === 'paid') {
+            $query->where('nominal_out', '<=', 0);
+        } elseif ($status === 'unpaid') {
+            $query->where('nominal_out', '>', 0);
+        }
+        if ($search !== '') {
+            $query->where(function ($q) use ($search) {
+                $q->where('no_inv', 'like', "%{$search}%")
+                    ->orWhere('no_po', 'like', "%{$search}%")
+                    ->orWhereHas('cust', function ($customer) use ($search) {
+                        $customer->where('name', 'like', "%{$search}%");
+                    });
+            });
+        }
 
-        $currentYear = now()->year;
+        $rentals = $query->orderByDesc('tgl_inv')->orderByDesc('id')->get();
+        $years = Rental::selectRaw('YEAR(tgl_inv) as year')
+            ->whereNotNull('tgl_inv')->distinct()->orderByDesc('year')->pluck('year');
+        if (!$years->contains((int) now()->year)) {
+            $years->prepend(now()->year);
+        }
 
-        // Hanya ambil debt yang punya rental valid
-        $debt = Debts::whereYear('date_pay', $currentYear)
-            ->whereHas('rental')
-            ->with('rental')
+        return view('admin.pembayaran.index', [
+            'rentals' => $rentals,
+            'years' => $years,
+            'selectedYear' => $year,
+            'selectedMonth' => $month,
+            'selectedStatus' => $status,
+            'search' => $search,
+            'routePrefix' => 'admin',
+        ]);
+    }
+
+    public function show($id)
+    {
+        $rentals = Rental::with(['cust', 'debt.bank'])
+            ->findOrFail($id);
+
+        $rawItemIds = json_decode($rentals->item_id, true);
+
+        $itemIds = is_array($rawItemIds)
+            ? $rawItemIds
+            : (is_numeric($rentals->item_id) ? [$rentals->item_id] : []);
+
+        $items = Item::withTrashed()
+            ->whereIn('id', $itemIds)
             ->get();
 
-        $hutang = $rentals->sum('nominal_out');
+        $accessories = AccessoriesCategory::with(['accessory'])
+            ->where('rental_id', $rentals->id)
+            ->get();
 
-        $diskon = $debt->sum(fn($item) => $item->rentals->diskon ?? 0);
-        $sisabayar = $debt->sum(fn($item) => $item->rentals->nominal_out ?? 0);
-        $totalbersih = $debt->sum(fn($item) => $item->pay_debts - ($item->rentals->diskon ?? 0));
+        $payments = $rentals->debt()
+            ->with('bank')
+            ->orderBy('installment_no')
+            ->orderBy('date_pay')
+            ->orderBy('id')
+            ->get();
 
-        $totals = $debt->groupBy('id')->map(function ($group) {
-            return $group->sum(fn($item) => $item->pay_debts - ($item->rentals->diskon ?? 0));
-        });
+        $totalPaid = (int) $rentals->nominal_in
+            + (int) $payments->sum('pay_debts');
 
-        $uangmasuk = $debt->sum('pay_debts');
+        $remaining = max(0, (int) $rentals->nominal_out);
 
-        return view('admin.pembayaran.index', compact(
-            'totalbersih', 'sisabayar', 'diskon', 'rentals', 'bank',
-            'totalseharusnya', 'total', 'debt', 'hutang', 'uangmasuk', 'totals'
-        ));
+        $isPaid = $remaining <= 0;
+
+        $nextInstallment = ((int) $payments->max('installment_no')) + 1;
+
+        $bank = Bank::orderBy('name')->get();
+        return view('admin.pembayaran.show', compact(
+                'rentals',
+                'items',
+                'accessories',
+                'payments',
+                'totalPaid',
+                'remaining',
+                'isPaid',
+                'nextInstallment',
+                'bank'
+            ) + [
+                'routePrefix' => 'admin',
+            ]);
     }
 
     public function bayar(Request $request, $id)
     {
-        $validator = Validator::make($request->all(), [
-            'nominal_in'   => 'required',
-            'pay_debts'    => 'required',
-            'date_pay'     => 'required',
+        $cleanAmount = function ($value) {
+            return (int) preg_replace('/[^0-9]/', '', (string) $value);
+        };
+
+        $request->validate([
+            'pay_debts'  => 'required',
+            'date_pay'   => 'required|date',
+            'bank_id'    => 'nullable|exists:banks,id',
+            'penerima'   => 'nullable|string|max:255',
+            'description'=> 'nullable|string|max:1000',
         ]);
 
-        if ($validator->fails()) {
-            return back()->withErrors($validator)->withInput();
+        $payment = $cleanAmount($request->input('pay_debts'));
+        $diskon  = $cleanAmount($request->input('diskon', 0));
+        $fee     = $cleanAmount($request->input('fee', 0));
+
+        if ($payment <= 0) {
+            return back()
+                ->withErrors([
+                    'pay_debts' => 'Nominal pembayaran harus lebih besar dari 0.'
+                ])
+                ->withInput();
         }
 
-        // Format ulang input nominal_in, pay_debts, dan diskon untuk menghapus simbol dan titik
-        $nominal_in = str_replace(['Rp.', '.', ' '], '', $request->input('nominal_in'));
-        $pay_debts = str_replace(['Rp.', '.', ' '], '', $request->input('pay_debts'));
-        $diskon = str_replace(['Rp.', '.', ' '], '', $request->input('diskon'));
-        $fee = str_replace(['Rp.', '.', ' '], '', $request->input('fee'));
+        DB::transaction(function () use (
+            $id,
+            $request,
+            $payment,
+            $diskon,
+            $fee
+        ) {
+            // Kunci rental untuk mencegah pembayaran bersamaan.
+            $rental = Rental::whereKey($id)
+                ->lockForUpdate()
+                ->firstOrFail();
 
-        // Ambil data rental
-        $rental = Rental::findOrFail($id);
+            $remaining = (int) $rental->nominal_out;
 
-        // Kurangi nominal_out dengan pay_debts
-        $new_nominal_out = $rental->nominal_out - $pay_debts;
+            if ($payment > $remaining) {
+                throw \Illuminate\Validation\ValidationException::withMessages([
+                    'pay_debts' => 'Nominal pembayaran melebihi sisa tagihan (' .
+                        number_format($remaining, 0, ',', '.') . ').',
+                ]);
+            }
 
-        // Kurangi nominal_out dengan diskon jika berbeda dari sebelumnya
-        if ($diskon != $rental->diskon) {
-            $new_nominal_out -= $diskon;
-        }
+            // Nomor cicilan berikutnya.
+            $nextInstallment = ((int) Debts::where('rental_id', $id)
+                    ->max('installment_no')) + 1;
 
-        // Pastikan nominal_out tidak menjadi negatif
-        $rental->nominal_out = max(0, $new_nominal_out);
+            // Tambahkan pembayaran ke total uang masuk.
+            $rental->nominal_in = (int) $rental->nominal_in + $payment;
 
-        // Set nominal_in dan diskon yang baru
-        $rental->nominal_in = $nominal_in;
-        $rental->diskon = $diskon;
-        $rental->fee = $fee;
-        $rental->save();
+            // Kurangi sisa tagihan sesuai pembayaran.
+            $rental->nominal_out = max(0, $remaining - $payment);
 
-        // Simpan data ke tabel debts
-        Debts::create([
-            'rental_id'  => $id,
-            'bank_id'    => $request->input('bank_id'),
-            'pay_debts'  => $pay_debts,
-            'penerima'   => $request->input('penerima'),
-            'date_pay'   => $request->input('date_pay'),
-            'description'=> $request->input('description'),
-        ]);
+            // Hitung tambahan diskon saja.
+            $diskonTambahan = max(
+                0,
+                $diskon - (int) $rental->diskon
+            );
 
-        return back()->withSuccess('Pembayaran Berhasil');
+            // Kurangi sisa tagihan jika ada tambahan diskon.
+            if ($diskonTambahan > 0) {
+                $rental->nominal_out = max(
+                    0,
+                    (int) $rental->nominal_out - $diskonTambahan
+                );
+            }
+
+            $rental->diskon = $diskon;
+            $rental->fee = $fee;
+
+            $rental->save();
+
+            // Simpan histori cicilan.
+            Debts::create([
+                'rental_id'      => $id,
+                'installment_no' => $nextInstallment,
+                'bank_id'        => $request->input('bank_id') ?: null,
+                'pay_debts'      => $payment,
+                'penerima'       => $request->input('penerima'),
+                'date_pay'       => $request->input('date_pay'),
+                'description'    => $request->input('description'),
+            ]);
+        });
+
+        return redirect()
+            ->route('admin.pembayaran.show', $id)
+            ->withSuccess('Pembayaran berhasil disimpan.');
     }
 
-
-    public function filter(Request $request){
+    public function filter(Request $request)
+    {
         $request->validate([
-            'start_date' => 'required|date|before_or_equal:today',
-            'end_date' => 'required|date|after_or_equal:start_date|before_or_equal:today',
-        ], [
-            'end_date.after_or_equal' => 'Tanggal Akhir Tidak Boleh Kurang Dari Tanggal Mulai',
-            'start_date.before_or_equal' => 'Tanggal Mulai Harus Tanggal Sebelum Atau Sama Dengan Hari Ini',
-            'end_date.before_or_equal' => 'Tanggal Akhir Harus Tanggal Sebelum Atau Sama Dengan Hari Ini',
+            'start_date' => 'nullable|date',
+            'end_date' => 'nullable|date|after_or_equal:start_date',
         ]);
 
-        // Parse the dates
-        $start_date = Carbon::parse($request->start_date)->toDateTimeString();
-        $end_date = Carbon::parse($request->end_date)->toDateTimeString();
-
-        // Query the rentals with filters
-        $debt = Debts::with('rental', 'bank')
-        ->whereBetween('date_pay', [$start_date, $end_date])
-        ->orderBy('date_pay', 'asc')
-        ->get();;
-
-        // Calculate totals
-        $rentals = Rental::where('nominal_out', '!=', '0')->get();
-        $bank = Bank::all();
-        $totalseharusnya = $rentals->groupBy('id')->map(function ($group) {
-            return $group->sum(function ($item){
-                return $item->nominal_in + $item->nominal_out;
-            });
-        });
-        $total = $rentals->groupBy('id')->map(function ($group) {
-            return $group->sum(function ($item){
-                return $item->nominal_in + $item->nominal_out - $item->diskon;
-            });
-        });
-        $hutang = $rentals->sum('nominal_out');
-        $diskon = $debt->sum(function ($item) {
-            return $item->rental->diskon;
-        });
-        $sisabayar = $debt->sum(function ($item) {
-            return $item->rental->nominal_out;
-        });
-        $totalbersih = $debt->sum(function ($item) {
-            return $item->pay_debts - $item->rental->diskon;
-        });
-        $totals = $debt->groupBy('id')->map(function ($group) {
-            return $group->sum(function ($item){
-                return $item->pay_debts - $item->rental->diskon;
-            });
-        });
-        $uangmasuk = $debt->sum('pay_debts');
-        return view('admin.pembayaran.index', compact([
-            'totalbersih',
-            'sisabayar',
-            'diskon',
-            'rentals',
-            'bank',
-            'totalseharusnya',
-            'total',
-            'debt',
-            'hutang',
-            'uangmasuk',
-            'totals',
-        ]));
+        return redirect()->route('admin.pembayaran.index', $request->only('start_date', 'end_date'));
     }
 
     public function update(Request $request, $id)
@@ -188,5 +244,88 @@ class PembayaranController extends Controller
 
         return redirect()->back()->with('success', 'Rental Finished');
     }
+    public function destroyPayment($rentalId, $paymentId)
+    {
+        DB::transaction(function () use ($rentalId, $paymentId) {
 
+            // Kunci data rental agar tidak bentrok dengan pembayaran bersamaan.
+            $rental = Rental::whereKey($rentalId)
+                ->lockForUpdate()
+                ->firstOrFail();
+
+            // Pastikan cicilan memang milik rental tersebut.
+            $payment = Debts::where('id', $paymentId)
+                ->where('rental_id', $rental->id)
+                ->lockForUpdate()
+                ->firstOrFail();
+
+            $nominalDihapus = (int) $payment->pay_debts;
+
+            // Hapus histori cicilan.
+            $payment->delete();
+
+            // Kembalikan nominal cicilan ke sisa tagihan.
+            $rental->nominal_out = (int) $rental->nominal_out + $nominalDihapus;
+            $rental->save();
+
+            // Susun ulang nomor cicilan agar tetap berurutan.
+            $payments = Debts::where('rental_id', $rental->id)
+                ->orderBy('date_pay')
+                ->orderBy('id')
+                ->get();
+
+            foreach ($payments as $index => $row) {
+                $row->installment_no = $index + 1;
+                $row->save();
+            }
+        });
+
+        $prefix = request()->routeIs('manager.*') ? 'manager' : 'admin';
+
+        return redirect()
+            ->route($prefix . '.pembayaran.show', $rentalId)
+            ->with('success', 'Cicilan berhasil dihapus dan nominalnya dikembalikan ke sisa tagihan.');
+    }
+    public function printInvoice($id)
+    {
+        $rentals = Rental::with('cust')->findOrFail($id);
+
+        // Ambil item rental.
+        $rawItemIds = json_decode($rentals->item_id, true);
+
+        $itemIds = is_array($rawItemIds)
+            ? $rawItemIds
+            : (is_numeric($rentals->item_id) ? [$rentals->item_id] : []);
+
+        $items = \App\Models\Item::withTrashed()
+            ->whereIn('id', $itemIds)
+            ->get();
+
+        // Ambil accessories rental.
+        $accessories = AccessoriesCategory::with('accessory')
+            ->where('rental_id', $rentals->id)
+            ->get();
+
+        // Ambil histori pembayaran.
+        $payments = $rentals->debt()
+            ->with('bank')
+            ->orderBy('date_pay')
+            ->orderBy('id')
+            ->get();
+
+        // nominal_in adalah total uang masuk yang tersimpan pada rental.
+        $totalPaid = (int) $rentals->nominal_in;
+        $remaining = max(0, (int) $rentals->nominal_out);
+        $isPaid = $remaining <= 0;
+
+        return view('admin.pembayaran.invoice', compact(
+            'rentals',
+            'items',
+            'accessories',
+            'payments',
+            'totalPaid',
+            'remaining',
+            'isPaid'
+        ));
+    }
 }

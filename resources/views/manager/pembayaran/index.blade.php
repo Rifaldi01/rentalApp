@@ -1,863 +1,377 @@
 @extends('layouts.master')
+@section('title', 'Data Cicilan')
 @section('content')
-    <div class="card">
-        <div class="card-head">
-            <div class="row">
-                <div class="col-6 mt-3">
-                    <div class="container">
-                        <h4 class="text-uppercase">Pembayaran Belum Lunas</h4>
-                    </div>
-                </div>
+    <style>
+        .cicilan-card {
+            border: 1px solid #e7ebf0;
+            border-radius: 12px;
+            box-shadow: 0 3px 14px rgba(20, 35, 60, .045);
+        }
+
+        .cicilan-heading {
+            padding: 18px 20px 14px;
+            border-bottom: 1px solid #edf0f4;
+        }
+
+        .cicilan-heading h4 {
+            font-weight: 700;
+            color: #273449;
+            margin: 0;
+        }
+
+        .cicilan-heading p {
+            color: #7b8794;
+            margin: 4px 0 0;
+            font-size: 13px;
+        }
+
+        .cicilan-filter {
+            background: #fbfcfe;
+            border: 1px solid #e5eaf0;
+            border-radius: 9px;
+            padding: 15px;
+        }
+
+        .cicilan-filter label {
+            font-size: 13px;
+            font-weight: 600;
+            color: #465365;
+            margin-bottom: 6px;
+        }
+
+        .cicilan-filter .form-control, .cicilan-filter .form-select {
+            min-height: 40px;
+            border-color: #dce2e9;
+        }
+
+        .cicilan-table {
+            vertical-align: middle;
+            font-size: 13px;
+        }
+
+        .cicilan-table thead th {
+            background: #f5f7fa;
+            color: #344054;
+            font-weight: 700;
+            white-space: nowrap;
+            border-bottom: 1px solid #e3e8ef;
+            padding: 12px 10px;
+        }
+
+        .cicilan-table tbody td {
+            padding: 11px 10px;
+            border-color: #e8ecf1;
+        }
+
+        .cicilan-invoice {
+            font-weight: 700;
+            color: #344054;
+            white-space: nowrap;
+        }
+
+        .cicilan-customer {
+            font-weight: 600;
+            color: #273449;
+        }
+
+        .cicilan-subtext {
+            color: #8792a2;
+            font-size: 12px;
+        }
+
+        .cicilan-amount {
+            font-weight: 600;
+            white-space: nowrap;
+        }
+
+        .cicilan-balance-zero {
+            color: #16a34a;
+            font-weight: 700;
+        }
+
+        .cicilan-balance-due {
+            color: #ef4444;
+            font-weight: 700;
+        }
+
+        .cicilan-status {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            border-radius: 20px;
+            padding: 5px 10px;
+            font-size: 11px;
+            font-weight: 700;
+        }
+
+        .cicilan-status.paid {
+            color: #087b36;
+            background: #dcfce7;
+        }
+
+        .cicilan-status.unpaid {
+            color: #9a6700;
+            background: #fff1c2;
+        }
+
+        @media (max-width: 767px) {
+            .cicilan-heading {
+                padding: 15px;
+            }
+
+            .cicilan-filter .col-md-4, .cicilan-filter .col-md-3 {
+                margin-bottom: 8px;
+            }
+        }
+    </style>
+    <div class="card cicilan-card">
+        <div class="cicilan-heading d-flex align-items-center">
+            <div class="me-3 text-primary" style="font-size:25px"><i class="bx bx-money"></i></div>
+            <div>
+                <h4>Data Cicilan</h4>
+                <p>Daftar transaksi piutang dan pembayaran cicilan</p>
             </div>
         </div>
-        <div class="card-body">
-            <div class="table-responsive">
-                <table id="excel" class="table table-striped table-bordered" style="width:100%">
-                    <thead>
-                    <tr>
-                        <th width="4%">No</th>
-                        <th class="text-center" width="5%">Invoice</th>
-                        <th>Customer</th>
-                        <th class="text-center" width="5%">Total Invoice</th>
-                        <th class="text-center" width="5%">Uang Masuk</th>
-                        <th class="text-center" width="5%">Sisa Bayar</th>
-                        <th class="text-center" width="5%">Diskon</th>
-                        <th class="text-center" width="5%">Total</th>
-                        <th class="text-center" width="5%">Action</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    @foreach($rentals as $key => $data)
-
-
-                            <tr>
-                                <td data-index="{{ $key + 1 }}">{{$key +1}}</td>
-                                <td>{{$data->no_inv}}</td>
-                                <td>{{$data->cust->name}}</td>
-                                <td class="text-center">
-                                    @if($data->total_invoice)
-                                        {{formatRupiah($data->total_invoice)}}
-                                    @else
-                                       Rp. 0
-                                    @endif
-                                </td>
-                                <td>{{formatRupiah($data->nominal_in)}}</td>
-                                <td>{{formatRupiah($data->nominal_out)}}</td>
-                                <td>{{formatRupiah($data->diskon)}}</td>
-                                <td>{{formatRupiah($total[$data->id])}}</td>
-                                <td class="text-center">
-                                    @if($data->total_invoice == 0 || $data->total_invoice == null)
-                                        <button class="btn btn-dnd lni lni-pencil btn-sm" data-bs-toggle="modal"
-                                                data-bs-target="#edit{{$data->id}}" data-bs-tool="tooltip"
-                                                data-bs-placement="top" title="edit">
-                                        </button>
-                                        <div class="modal fade" id="edit{{$data->id}}" tabindex="-1"
-                                            aria-hidden="true">
-                                            <div class="modal-dialog">
-                                                <div class="modal-content">
-                                                    <div class="modal-header">
-                                                        <h5 class="modal-title">Edit Total Invoice</h5>
-                                                        <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                                                aria-label="Close"></button>
-                                                    </div>
-                                                    <form action="{{route('manager.update.totalinv', $data->id)}}" method="POST" id="myForm">
-                                                        @csrf
-                                                        @method('PUT')
-                                                        <div class="modal-body">
-                                                            <div class="row mb-3">
-                                                                <label for="input42" class="col-sm-3 col-form-label"><i
-                                                                        class="text-danger">*</i> Total Invoice</label>
-                                                                <div class="col-sm-9">
-                                                                    <div class="position-relative input-icon">
-                                                                        <input type="text" class="form-control" name="total_invoice"
-                                                                            value="{{$data->total_invoice}}"onkeyup="formatRupiah2(this)">
-                                                                        <span
-                                                                            class="position-absolute top-50 translate-middle-y"><i
-                                                                                class='bx bx-dollar'></i></span>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                        <div class="modal-footer">
-                                                            <button class="btn btn-primary" id="bayarbutton">Save</button>
-                                                        </div>
-                                                    </form>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    @else
-                                    @endif
-                                    <button class="btn btn-warning lni lni-dollar btn-sm" data-bs-toggle="modal"
-                                            data-bs-target="#examplemodal{{$data->id}}" data-bs-tool="tooltip"
-                                            data-bs-placement="top" title="Bayar">
-                                    </button>
-                                    <div class="modal fade" id="examplemodal{{$data->id}}" tabindex="-1"
-                                         aria-hidden="true">
-                                        <div class="modal-dialog">
-                                            <div class="modal-content">
-                                                <div class="modal-header">
-                                                    <h5 class="modal-title">Pembayaran</h5>
-                                                    <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                                            aria-label="Close"></button>
-                                                </div>
-                                                <form action="{{route('manager.pembayaran.bayar', $data->id)}}" method="POST" id="myForm">
-                                                    @csrf
-                                                    @method('PUT')
-                                                    <div class="modal-body">
-                                                        <div class="row mb-3">
-                                                            <label for="input42" class="col-sm-3 col-form-label"><i
-                                                                    class="text-danger">*</i> Uang Masuk</label>
-                                                            <div class="col-sm-9">
-                                                                <div class="position-relative input-icon">
-                                                                    <input type="hidden" id="nominal_in_value_{{$data->id}}"
-                                                                           value="{{ $data->nominal_in }}">
-                                                                    <input type="text" class="form-control"
-                                                                           id="nominal_in_{{$data->id}}" name="nominal_in"
-                                                                           value="{{ formatRupiah($data->nominal_in) }}"
-                                                                           readonly>
-                                                                    <span
-                                                                        class="position-absolute top-50 translate-middle-y"><i
-                                                                            class='bx bx-dollar'></i></span>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                        <div class="row mb-3">
-                                                            <label for="input42" class="col-sm-3 col-form-label"><i
-                                                                    class="text-danger">*</i> Pay Debts</label>
-                                                            <div class="col-sm-9">
-                                                                <div class="position-relative input-icon">
-                                                                    <input type="text" class="form-control"
-                                                                           name="pay_debts" id="pay_debts_{{$data->id}}"
-                                                                           onkeyup="formatRupiah2(this)">
-                                                                    <span
-                                                                        class="position-absolute top-50 translate-middle-y"><i
-                                                                            class='bx bx-money'></i></span>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                        <div class="row mb-3">
-                                                            <label for="input42" class="col-sm-3 col-form-label">Diskon</label>
-                                                            <div class="col-sm-9">
-                                                                <div class="position-relative input-icon">
-                                                                    <input type="text" class="form-control" value="0"
-                                                                           name="diskon" id="diskon_{{$data->id}}"
-                                                                           onkeyup="formatRupiah2(this)">
-                                                                    <span
-                                                                        class="position-absolute top-50 translate-middle-y"><i
-                                                                            class='lni lni-tag'></i></span>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                        <div class="row mb-3">
-                                                            <label for="input42" class="col-sm-3 col-form-label"><i
-                                                                    class="text-danger">*</i> Date</label>
-                                                            <div class="col-sm-9">
-                                                                <div class="position-relative input-icon">
-                                                                    <input type="text" class="form-control datepicker"
-                                                                           name="date_pay" id="input42">
-                                                                    <span
-                                                                        class="position-absolute top-50 translate-middle-y"><i
-                                                                            class='bx bx-calendar'></i></span>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                        <div class="row mb-3" id="bankField_{{$data->id}}">
-                                                            <label for="input42"
-                                                                   class="col-sm-3 col-form-label">Bank</label>
-                                                            <div class="col-sm-9">
-                                                                <div class="input-group mb-3">
-                                                                    <div class="input-group-text"><i
-                                                                            class="bx bx-credit-card"></i></div>
-                                                                    <select class="form-select" id="single-select-field"
-                                                                            name="bank_id"
-                                                                            data-placeholder="-- Nama Bank --">
-                                                                        <option></option>
-                                                                        @foreach($bank as $banks)
-                                                                            <option
-                                                                                value="{{$banks->id}}">{{$banks->name}}
-                                                                                ({{$banks->code}})
-                                                                            </option>
-                                                                        @endforeach
-                                                                    </select>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                        <div class="row mb-3" id="penerimaField_{{$data->id}}">
-                                                            <label for="input42" class="col-sm-3 col-form-label">Penerima</label>
-                                                            <div class="col-sm-9">
-                                                                <div class="position-relative input-icon">
-                                                                    <input type="text" class="form-control"
-                                                                         name="penerima" id="penerima_{{$data->id}}">
-                                                                    <span class="position-absolute top-50 translate-middle-y"><i
-                                                                        class='bx bx-user'></i></span>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                        <div class="row mb-3">
-                                                            <label for="input42" class="col-sm-3 col-form-label"><i
-                                                                    class="text-danger"></i> </label>
-                                                            <div class="col-sm-9">
-                                                                <div class="position-relative input-icon">
-                                                                    <input type="checkbox" class="form-check"
-                                                                           id="lainya_{{$data->id}}">
-                                                                    <span class="position-absolute top-50 translate-middle-y ms-1"> Lainya</span>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                        <div class="row mb-3" id="descriptionField">
-                                                            <label for="input42"
-                                                                   class="col-sm-3 col-form-label"></label>
-                                                            <div class="col-sm-9">
-                                                                <textarea id="description_{{$data->id}}" type="text"
-                                                                          class="form-control" name="description"
-                                                                          placeholder="Isi Lainya pembayaran melalui apa?"></textarea>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                    <div class="modal-footer">
-                                                        <button class="btn btn-primary" id="bayarbutton">Save</button>
-                                                    </div>
-                                                </form>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <a href="{{ route('manager.rent.hapus', $data->id) }}" data-confirm-delete="true"
-                                        type="submit" class=" lni lni-trash btn btn-sm btn-danger"
-                                        data-bs-toggle="tooltip"
-                                        data-bs-placement="top" title="Hapus">
-                                    </a>
-                                </td>
-                            </tr>
-
-                    @endforeach
-                    <tfoot>
-                        <tr>
-                            <th class="border" colspan="2"> Total Sisa Bayar</th>
-                            <th class="border" colspan="2">{{formatRupiah($hutang)}},-</th>
-                        </tr>
-                    </tfoot>
-                </table>
-            </div>
-            <div class="card-footer">
-                    <table>
-                        <tr>
-                            <th> <h5 class="mb-0 text-uppercase">Total Sisa Bayar</h5></th>
-                            <td><h5>:</h5></td>
-                            <td><h5 class="ms-3">{{formatRupiah($hutang)}},-</h5></td>
-                        </tr>
-
-                    </table>
-            </div>
-        </div>
-    </div>
-    <div class="card">
-        <div class="card-head">
-            <div class="row">
-                <div class="col-6 mt-3">
-                    <div class="container">
-                        <h4 class="text-uppercase">Daftar Pembayaran</h4>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="card-body">
-        <div class="row">
-                <form action="{{route('manager.pembayaran.filter')}}" method="GET">
-                    <div class="row">
-                        <div class="col-5 ms-2 mt-2">
-                            <label class="form-label">
-                                Start Date
-                            </label>
-                            <input type="date" class="form-control" name="start_date" required>
-                        </div>
-                        <div class="col-6 mt-2">
-                            <label class="form-label">
-                                End Date
-                            </label>
-                            <input type="date" class="form-control" name="end_date" required>
+        <div class="card-body p-3 p-lg-4">
+            <form method="GET" action="{{ route('manager.pembayaran.index') }}" class="cicilan-filter mb-3">
+                <div class="row g-3 align-items-end">
+                    <div class="col-lg-4 col-md-12">
+                        <label for="search">Pencarian</label>
+                        <div class="input-group">
+                            <span class="input-group-text bg-white"><i class="bx bx-search"></i></span>
+                            <input type="text" id="search" name="search" class="form-control" value="{{ $search }}"
+                                   placeholder="Invoice / Invoice Manual / Customer">
                         </div>
                     </div>
-                    <div class="col-md-1 pt-4 float-end me-5">
-                        <button type="submit" class="btn btn-success">Filter</button>
+                    <div class="col-lg-2 col-md-4">
+                        <label for="year">Tahun</label>
+                        <select name="year" id="year" class="form-select">
+                            <option value="all" {{ $selectedYear === 'all' ? 'selected' : '' }}>Semua Tahun</option>
+                            @foreach($years as $year)
+                                <option
+                                    value="{{ $year }}" {{ (string)$selectedYear === (string)$year ? 'selected' : '' }}>{{ $year }}</option>
+                            @endforeach
+                        </select>
                     </div>
-                </form>
+                    <div class="col-lg-2 col-md-4">
+                        <label for="month">Bulan</label>
+                        <select name="month" id="month" class="form-select">
+                            <option value="all">Semua Bulan</option>
+                            @foreach([1=>'Januari',2=>'Februari',3=>'Maret',4=>'April',5=>'Mei',6=>'Juni',7=>'Juli',8=>'Agustus',9=>'September',10=>'Oktober',11=>'November',12=>'Desember'] as $number=>$monthName)
+                                <option
+                                    value="{{ $number }}" {{ (string)$selectedMonth === (string)$number ? 'selected' : '' }}>{{ $monthName }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                    <div class="col-lg-2 col-md-4">
+                        <label for="status">Status</label>
+                        <select name="status" id="status" class="form-select">
+                            <option value="">Semua Status</option>
+                            <option value="paid" {{ $selectedStatus === 'paid' ? 'selected' : '' }}>Lunas</option>
+                            <option value="unpaid" {{ $selectedStatus === 'unpaid' ? 'selected' : '' }}>Belum Lunas
+                            </option>
+                        </select>
+                    </div>
+                    <div class="col-lg-2 d-flex gap-2">
+                        <button class="btn btn-primary flex-grow-1" type="submit"><i class="bx bx-filter-alt me-1"></i>
+                            Filter
+                        </button>
+                        <a href="{{ route('manager.pembayaran.index') }}" class="btn btn-outline-secondary"
+                           title="Reset"><i class="bx bx-reset"></i></a>
+                    </div>
+                </div>
+            </form>
+
+            <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-3">
+                <div class="small text-muted">
+                    Filter aktif:
+                    @if($selectedYear && $selectedYear !== 'all')
+                        <span class="badge bg-info text-dark">Tahun: {{ $selectedYear }}</span>
+                    @endif
+                    @if($selectedMonth && $selectedMonth !== 'all')
+                        <span class="badge bg-info text-dark">Bulan: {{ $selectedMonth }}</span>
+                    @endif
+                    @if($selectedStatus)
+                        <span
+                            class="badge bg-info text-dark">Status: {{ $selectedStatus === 'paid' ? 'Lunas' : 'Belum Lunas' }}</span>
+                    @endif
+                    @if($search)
+                        <span class="badge bg-info text-dark">Pencarian: {{ $search }}</span>
+                    @endif
+                    @if(!$selectedStatus && (!$selectedMonth || $selectedMonth === 'all') && (!$selectedYear || $selectedYear === 'all') && !$search)
+                        <span class="badge bg-light text-dark border">Semua data</span>
+                    @endif
+                </div>
+                <button type="button" class="btn btn-success btn-sm px-3" onclick="exportCicilanExcel()"><i
+                        class="bx bx-spreadsheet me-1"></i> Export Excel
+                </button>
             </div>
+
             <div class="table-responsive">
-            <table id="transaction" class="table table-striped table-bordered" style="width:100%">
+                <table class="table table-striped table-bordered cicilan-table mb-0" id="cicilanTable">
                     <thead>
                     <tr>
-                    <th width="2%">No</th>
-                        <th>Tgl Inv</th>
+                        <th class="text-center" style="width:55px">No</th>
+                        <th>Tanggal</th>
                         <th>Invoice</th>
-                        <th>Tgl Bayar</th>
-                        <th>Pelanggan</th>
-                        <th>Item</th>
-                        <th>No Seri</th>
-                        <th>Tgl Mulai</th>
-                        <th>Tgl Selesai</th>
-                        <th>Total <br>Inv</th>
-                        <th>Fee /<br>Discount</th>
-                        <th>Total</th>
-                        <th width="">Ung <br>Masuk</th>
-                        <th>Sisa <br>Bayar</th>
-                        <th>Ket. (Nama Bank)</th>
-                        <th>Penerima</th>
-                        <th>Action</th>
+                        <th>Customer</th>
+                        <th class="text-end">Total Tagihan</th>
+                        <th class="text-end">Sudah Bayar</th>
+                        <th class="text-end">Sisa Piutang</th>
+                        <th class="text-center">Status</th>
+                        <th class="text-center" style="width:85px">Action</th>
                     </tr>
                     </thead>
                     <tbody>
-                    @foreach($debt as $key => $data)
-
-                            <tr>
-                                <td class="text-center">{{$key+1}}</td>
-                                <td>{{formatId($data->rental->tgl_inv)}}</td>
-                                <td>
-                                    @if($data->rental)
-                                        {{$data->rental->no_inv}}
-                                    @else
-                                    @endif
-                                </td>
-                                <td>{{formatId($data->date_pay)}}</td>
-                                <td>
-                                    @if($data->rental)
-                                        {{$data->rental->cust->name}}
-                                    @else
-                                    @endif
-                                </td>
-                                <td>
-                                    @php
-                                        $itemIds = json_decode($data->rental->item_id);
-                                    @endphp
-                                    @if(is_array($itemIds))
-                                        @foreach($itemIds as $itemId)
-                                            @php
-                                                $item = \App\Models\Item::find($itemId);
-                                            @endphp
-                                            <li>{{ $item ? $item->name : 'Item not found' }}</li>
-                                        @endforeach
-                                    @else
-                                        {{ $itemIds }}
-                                    @endif
-                                </td>
-                                <td>
-                                    @php
-                                        $itemIds = json_decode($data->rental->item_id);
-                                    @endphp
-                                    @if(is_array($itemIds))
-                                        @foreach($itemIds as $itemId)
-                                            @php
-                                                $item = \App\Models\Item::find($itemId);
-                                            @endphp
-                                            <li>{{ $item ? $item->no_seri : 'Item not found' }}</li>
-                                        @endforeach
-                                    @else
-                                        {{ $itemIds }}
-                                    @endif
-                                </td>
-                                <td>{{formatId($data->rental->date_start)}}</td>
-                                <td>{{formatId($data->rental->date_end)}}</td>
-                                <td>
-                                    @if($data->rental->total_invoice)
-                                        {{formatRupiah($data->rental->total_invoice)}}
-                                    @else
-                                        0
-                                    @endif
-                                </td>
-                                <td>{{formatRupiah($data->rental->diskon)}}</td>
-                                <td>{{formatRupiah($totals[$data->id])}}</td>
-                                <td>{{formatRupiah($data->pay_debts)}}</td>
-                                <td>{{formatRupiah($data->rental->nominal_out)}}</td>
-                                <td>
-                                    @if($data->bank_id)
-                                        {{$data->bank->name}}
-                                    @else
-                                        {{$data->description}}
-                                    @endif
-                                </td>
-                                <td>
-                                    @if($data->penerima)
-                                        {{$data->penerima}}
-                                    @else
-                                        -
-                                    @endif
-                                </td>
-                                <td>
-                                    <a href="{{ route('manager.debts.hapus', $data->id) }}" data-confirm-delete="true"
-                                       type="submit" class=" lni lni-trash btn btn-sm btn-danger"
-                                       data-bs-toggle="tooltip"
-                                       data-bs-placement="top" title="Hapus">
-                                    </a>
-                                </td>
-                            </tr>
-                    @endforeach
-                    <tfoot>
+                    @forelse($rentals as $key => $data)
+                        @php
+                            $paid = max(0, (int) $data->nominal_in + (int) ($data->debt_sum_pay_debts ?? 0));
+                            $remaining = max(0, (int) $data->nominal_out);
+                            $isPaid = $remaining <= 0;
+                            $grandTotal = (int) ($data->total_invoice ?? ($paid + $remaining));
+                        @endphp
                         <tr>
-                            <td>-</td>
-                            <td>-</td>
-                            <td>-</td>
-                            <td>-</td>
-                            <td>-</td>
-                            <td>-</td>
-                            <td>-</td>
-                            <td>-</td>
-                            <td>-</td>
-                            <td>-</td>
-                            <td>-</td>
-                            <td>-</td>
-                            <td>-</td>
-                            <td>-</td>
-                            <th class="border" > <strong>Total Uang Masuk</strong></th>
-                            <th class="border" >{{formatRupiah($uangmasuk)}},-</th>
+                            <td class="text-center">{{ $key + 1 }}</td>
+                            <td class="text-nowrap">{{ $data->tgl_inv ? formatId($data->tgl_inv) : '-' }}</td>
+                            <td><span class="cicilan-invoice">{{ $data->no_inv ?: '-' }}</span></td>
+                            <td>
+                                <div class="cicilan-customer">{{ $data->cust->name ?? 'Customer dihapus' }}</div>
+                                <div class="cicilan-subtext">{{ $data->cust->phone ?? '' }}</div>
+                            </td>
+                            <td class="text-end cicilan-amount">Rp {{ number_format($grandTotal, 0, ',', '.') }}</td>
+                            <td class="text-end cicilan-amount">Rp {{ number_format($paid, 0, ',', '.') }}</td>
+                            <td class="text-end">
+                                <span
+                                    class="{{ $isPaid ? 'cicilan-balance-zero' : 'cicilan-balance-due' }}">Rp {{ number_format($remaining, 0, ',', '.') }}</span>
+                            </td>
+                            <td class="text-center">
+                                @if($isPaid)
+                                    <span class="cicilan-status paid"><i class="bx bx-check-circle"></i> Lunas</span>
+                                @else
+                                    <span class="cicilan-status unpaid"><i
+                                            class="bx bx-time-five"></i> Belum Lunas</span>
+                                @endif
+                            </td>
+                            <td class="text-center">
+                                <a href="{{ route('manager.pembayaran.show', $data->id) }}"
+                                   class="btn btn-primary btn-sm px-3" title="Lihat detail">
+                                    <i class="bx bx-show"></i>
+                                </a>
+                            </td>
                         </tr>
+                    @empty
                         <tr>
-                            <td>-</td>
-                            <td>-</td>
-                            <td>-</td>
-                            <td>-</td>
-                            <td>-</td>
-                            <td>-</td>
-                            <td>-</td>
-                            <td>-</td>
-                            <td>-</td>
-                            <td>-</td>
-                            <td>-</td>
-                            <td>-</td>
-                            <td>-</td>
-                            <td>-</td>
-                            <th class="border" > <strong>Total Diskon</strong></th>
-                            <th class="border" >{{formatRupiah($diskon)}},-</th>
+                            <td colspan="9" class="text-center text-muted py-4">Data cicilan tidak ditemukan.</td>
                         </tr>
-                        <tr>
-                            <td>-</td>
-                            <td>-</td>
-                            <td>-</td>
-                            <td>-</td>
-                            <td>-</td>
-                            <td>-</td>
-                            <td>-</td>
-                            <td>-</td>
-                            <td>-</td>
-                            <td>-</td>
-                            <td>-</td>
-                            <td>-</td>
-                            <td>-</td>
-                            <td>-</td>
-                            <th class="border" > <strong>Total Bersih</strong></th>
-                            <th class="border" >{{formatRupiah($totalbersih)}},-</th>
-                        </tr>
-                        <tr>
-                            <td>-</td>
-                            <td>-</td>
-                            <td>-</td>
-                            <td>-</td>
-                            <td>-</td>
-                            <td>-</td>
-                            <td>-</td>
-                            <td>-</td>
-                            <td>-</td>
-                            <td>-</td>
-                            <td>-</td>
-                            <td>-</td>
-                            <td>-</td>
-                            <td>-</td>
-                            <th class="border" > <strong>Total Sisa Bayar</strong></th>
-                            <th class="border" >{{formatRupiah($sisabayar)}},-</th>
-                        </tr>
-                    </tfoot>
+                    @endforelse
+                    </tbody>
                 </table>
             </div>
-            <div class="card-footer">
-                    <table>
-                        <tr>
-                            <th> <h5 class="mb-0 text-uppercase"><strong>Total Uang Masuk</strong></h5></th>
-                            <td><h5>:</h5></td>
-                            <td><h5 class="ms-3">{{formatRupiah($uangmasuk)}},-</h5></td>
-                        </tr>
-                        <tr>
-                            <th> <h5 class="mb-0 text-uppercase"><strong>Total Diskon</strong></h5></th>
-                            <td><h5>:</h5></td>
-                            <td><h5 class="ms-3">{{formatRupiah($diskon)}},-</h5></td>
-                        </tr>
-                        <tr>
-                            <th> <h5 class="mb-0 text-uppercase"><strong>Total Bersih</strong></h5></th>
-                            <td><h5>:</h5></td>
-                            <td><h5 class="ms-3">{{formatRupiah($totalbersih)}},-</h5></td>
-                        </tr>
-                        <tr>
-                            <th> <h5 class="mb-0 text-uppercase"><strong>Total Sisa Bayar</strong></h5></th>
-                            <td><h5>:</h5></td>
-                            <td><h5 class="ms-3">{{formatRupiah($sisabayar)}},-</h5></td>
-                        </tr>
-
-                    </table>
+            <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 pt-3">
+                <small class="text-muted">Menampilkan {{ $rentals->count() }} data cicilan</small>
+                <small class="text-muted">Klik ikon mata untuk melihat detail pembayaran.</small>
             </div>
         </div>
     </div>
 @endsection
-
-@push('head')
-    <link href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css" rel="stylesheet"/>
-@endpush
-
+@push('head') @endpush
 @push('js')
-    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
     <script>
-        $(".datepicker").flatpickr();
-        $(".time-picker").flatpickr({
-            enableTime: true,
-            noCalendar: true,
-            dateFormat: "Y-m-d H:i",
-        });
-        $(".date-time").flatpickr({
-            enableTime: true,
-            dateFormat: "Y-m-d H:i",
-        });
-        $(".date-format").flatpickr({
-            altInput: true,
-            altFormat: "F j, Y",
-            dateFormat: "Y-m-d",
-        });
-        $(".date-range").flatpickr({
-            mode: "range",
-            altInput: true,
-            altFormat: "F j, Y",
-            dateFormat: "Y-m-d",
-        });
-        $(".date-inline").flatpickr({
-            inline: true,
-            altInput: true,
-            altFormat: "F j, Y",
-            dateFormat: "Y-m-d",
-        });
-    </script>
+        function exportCicilanExcel() {
+            const tableElement = document.getElementById('cicilanTable');
 
-    <script>
-        $(document).ready(function () {
-            var table = $('#excel').DataTable({
-                lengthChange: false,
-                paginate: false,
-                buttons: [
-                {
-                    extend: 'excel',
-                    text: 'Excel',
-                    title: function () {
-                                var currentDate = new Date();
-                                var day = String(currentDate.getDate()).padStart(2, '0'); // Mendapatkan tanggal dengan dua digit
-                                var month = String(currentDate.getMonth() + 1).padStart(2, '0'); // Mendapatkan bulan dengan dua digit
-                                var year = String(currentDate.getFullYear()).slice(-2); // Mendapatkan dua digit terakhir tahun
-                                var formattedDate = `${day}/${month}/${year}`; // Menggabungkan format tanggal/bulan/tahun
-                                return 'Laporan Pembayaran Tanggal ' + formattedDate; // Nama file sesuai tanggal
-                            },
-                    customize: function (xlsx) {
-                        var sheet = xlsx.xl.worksheets['sheet1.xml'];
-                        var tfoot = $('#excel tfoot').clone(); // Salin bagian tfoot
-                        var tfootRows = '';
-                        tfoot.find('tr').each(function () {
-                            var trow = '<row>';
-                            $(this).find('th').each(function () {
-                                var cell = '<c t="inlineStr"><is><t>' + $(this).text() + '</t></is></c>';
-                                trow += cell;
-                            });
-                            trow += '</row>';
-                            tfootRows += trow;
-                        });
+            if (!tableElement) return;
 
-                        var lastRowIndex = $('row', sheet).length;
-                        $('row', sheet).last().after(tfootRows);
-                    }
-                }],
-            });
+            let exportTable;
 
-            table.buttons().container()
-                .appendTo('#excel_wrapper .col-md-6:eq(0)');
-            table.on('order.dt search.dt', function () {
-                let i = 1;
-                table.cells(null, 0, {search: 'applied', order: 'applied'}).every(function (cell) {
-                    this.data(i++);
-                });
-            }).draw();
-        });
-    </script>
+            // Ambil seluruh data dari DataTables
+            if ($.fn.DataTable && $.fn.DataTable.isDataTable('#cicilanTable')) {
+                const dataTable = $('#cicilanTable').DataTable();
 
-    <script>
-       $(document).ready(function () {
-            var table = $('#transaction').DataTable({
-                lengthChange: false,
-                buttons: [
-                    {
-                        extend: 'excel',
-                        text: 'Excel',
-                        title: function () {
-                            var currentDate = new Date();
-                            var day = String(currentDate.getDate()).padStart(2, '0');
-                            var month = String(currentDate.getMonth() + 1).padStart(2, '0');
-                            var year = String(currentDate.getFullYear()).slice(-2);
-                            return 'Laporan Pembayaran Tanggal ' + `${day}/${month}/${year}`;
-                        },
-                        exportOptions: {
-                            columns: ':visible',
-                            footer: true,
-                            format: {
-                                body: function (data) {
-                                    if (data === null || data === undefined) {
-                                        return '';
-                                    }
-                                    return String(data)
-                                        .replace(/\./g, '')
-                                        .replace(/<li>/g, '')
-                                        .replace(/<\/li>/g, '\n')
-                                        .replace(/<br\s*\/?>/g, '\n')
-                                        .replace(/<\/?[^>]+(>|$)/g, '');
-                                },
-                            }
-                        },
-                        customize: function (xlsx) {
-                            var sheet = xlsx.xl.worksheets['sheet1.xml'];
-                            var rows = $('row', sheet);
+                exportTable = document.createElement('table');
+                exportTable.className = tableElement.className;
 
-                            // Salin footer dari tabel
-                            var tfoot = $('#transaction tfoot');
-                            var tfootRows = '';
+                // Salin bagian header
+                exportTable.appendChild(
+                    tableElement.querySelector('thead').cloneNode(true)
+                );
 
-                            tfoot.find('tr').each(function () {
-                                var trow = '<row>';
-                                $(this).find('th, td').each(function () {
-                                    var cellText = $(this).text().trim();
-                                    var cell = `<c t="inlineStr"><is><t>${cellText}</t></is></c>`;
-                                    trow += cell;
-                                });
-                                trow += '</row>';
-                                tfootRows += trow;
-                            });
+                const tbody = document.createElement('tbody');
 
-                            // Sisipkan footer setelah baris terakhir
-                            rows.last().after(tfootRows);
+                // Ambil seluruh baris, bukan hanya halaman aktif
+                dataTable.rows({ search: 'applied', order: 'applied' })
+                    .nodes()
+                    .each(function (row) {
+                        const clonedRow = row.cloneNode(true);
+
+                        // Hilangkan kolom Action
+                        if (clonedRow.lastElementChild) {
+                            clonedRow.removeChild(clonedRow.lastElementChild);
                         }
-                    },
-                    {
-                        extend: 'pdf',
-                        exportOptions: {
-                            stripHtml: false,
-                        },
-                        title: function () {
-                            var currentDate = new Date();
-                            var day = String(currentDate.getDate()).padStart(2, '0'); // Mendapatkan tanggal dengan dua digit
-                            var month = String(currentDate.getMonth() + 1).padStart(2, '0'); // Mendapatkan bulan dengan dua digit
-                            var year = String(currentDate.getFullYear()).slice(-2); // Mendapatkan dua digit terakhir tahun
-                            var formattedDate = `${day}/${month}/${year}`; // Menggabungkan format tanggal/bulan/tahun
-                            return 'Laporan Pembayaran Tanggal ' + formattedDate; // Nama file sesuai tanggal
-                        },
 
-                        customize: function (doc) {
-                            // Set ukuran halaman PDF
-                            doc.pageSize = {
-                                width: 880,
-                                height: 595,
-                            };
-                            doc.pageOrientation = 'landscape';
-                            doc.pageMargins = [20, 20, 20, 20];
-                            // Ambil seluruh data dari DataTables (termasuk yang tidak terlihat)
-                            var allData = table.data().toArray();
+                        tbody.appendChild(clonedRow);
+                    });
 
-                            // Header Tabel
-                            var headers = [];
-                            $('#transaction thead th').each(function () {
-                                headers.push({ text: $(this).text(), style: 'tableHeader' });
-                            });
-
-                            // Isi Tabel
-                            var tableBody = [];
-                            tableBody.push(headers); // Tambahkan header ke body
-
-                            allData.forEach(function (rowData) {
-                                var row = [];
-                                rowData.forEach(function (cellData) {
-                                    // Hapus tag HTML seperti <li> dan <br>
-                                    var cleanedText = cellData
-                                        .replace(/<li>/g, '') // Hapus <li>
-                                        .replace(/<\/li>/g, '\n') // Ganti </li> dengan baris baru
-                                        .replace(/<br\s*\/?>/g, '\n') // Hapus <br> dan ganti dengan baris baru
-                                        .replace(/<\/?[^>]+(>|$)/g, ''); // Hapus tag HTML lainnya
-                                    row.push({ text: cleanedText.trim(), style: 'tableCell' });
-                                });
-                                tableBody.push(row);
-                            });
-
-                            // Footer Tabel (Jika Ada)
-                            var tfoot = $('#transaction tfoot').clone();
-                            if (tfoot.length) {
-                                var footerRow = [];
-                                tfoot.find('th').each(function () {
-                                    footerRow.push({ text: $(this).text(), style: 'tableCell' });
-                                });
-                                while (footerRow.length < headers.length) {
-                                    footerRow.push({ text: '' });
-                                }
-                                tableBody.push(footerRow);
-                            }
-
-                            // Tambahkan Tabel ke Dokumen
-                            doc.content = [
-                                {
-                                    table: {
-                                        headerRows: 1,
-                                        widths: Array(headers.length).fill('auto'), // Perkecil kolom otomatis
-                                        body: tableBody,
-                                    },
-                                    layout: 'lightHorizontalLines',
-                                },
-                            ];
-
-                            // Styling
-                            doc.styles.tableHeader = {
-                                bold: true,
-                                fontSize: 9, // Ukuran lebih kecil
-                                color: 'black',
-                                fillColor: '#f2f2f2',
-                                alignment: 'center',
-                            };
-                            doc.styles.tableCell = {
-                                fontSize: 7, // Ukuran lebih kecil
-                            };
-                        },
-                    },
-                    {
-                        extend: 'print',
-                        exportOptions: {
-                            stripHtml: false,
-                            tfoot: true,
-                            columns: [0, 1, 2, 3, 4, 5, 6]
-                        },
-                        title: function () {
-                            var currentDate = new Date();
-                            var day = String(currentDate.getDate()).padStart(2, '0'); // Mendapatkan tanggal dengan dua digit
-                            var month = String(currentDate.getMonth() + 1).padStart(2, '0'); // Mendapatkan bulan dengan dua digit
-                            var year = String(currentDate.getFullYear()).slice(-2); // Mendapatkan dua digit terakhir tahun
-                            var formattedDate = `${day}/${month}/${year}`; // Menggabungkan format tanggal/bulan/tahun
-                            return 'Laporan Pembayaran Tanggal ' + formattedDate; // Nama file sesuai tanggal
-                        },
-
-                        customize: function (win) {
-                            $(win.document.body)
-                                .find('table')
-                                .addClass('compact')
-                                .css('font-size', '10px');
-                            var tfoot = $('#transaction tfoot').clone();
-                            $(win.document.body).find('table').append(tfoot);
-
-                            $(win.document.body)
-                            .find('h1') // Selector untuk elemen judul
-                            .css({
-                                fontSize: '14px', // Atur ukuran font menjadi 12px
-                                fontWeight: 'bold',
-                                textAlign: 'center',
-                            });
-                        },
-                    },
-                ],
-            });
-
-            // Tambahkan tombol ekspor ke container
-            table
-                .buttons()
-                .container()
-                .appendTo('#transaction_wrapper .col-md-6:eq(0)');
-        });
-    </script>
-
-    <script>
-        $(document).ready(function () {
-            // Inisialisasi Select2 setelah modal dibuka
-            $(document).on('shown.bs.modal', function (e) {
-                let modal = $(e.target); // Modal yang sedang ditampilkan
-                modal.find('#single-select-field').select2({
-                    dropdownParent: modal, // Tetapkan parent dropdown ke modal yang aktif
-                    placeholder: '-- Nama Bank --',
-                    allowClear: true,
-                    theme: 'bootstrap-5'
-                });
-            });
-        });
-    </script>
-
-    <script>
-        $(document).ready(function () {
-            function calculateTotal(id) {
-                let nominal_in = parseFloat($(`#nominal_in_value_${id}`).val()) || 0;
-                let pay_debts = parseFloat($(`#pay_debts_${id}`).val().replace(/[^0-9]/g, '')) || 0;
-
-                let total = nominal_in + pay_debts;
-                $(`#nominal_in_${id}`).val('Rp. ' + total.toLocaleString('id-ID'));
-            }
-
-            $('[id^=pay_debts_]').on('input', function () {
-                let id = $(this).attr('id').split('_')[2];
-                calculateTotal(id);
-            });
-
-            $('[id^=nominal_in_value_]').each(function () {
-                let id = $(this).attr('id').split('_')[2];
-                calculateTotal(id);
-            });
-        });
-    </script>
-
-    <script>
-        $(document).ready(function () {
-            $('#bayarbutton').click(function (event) {
-                // Nonaktifkan tombol dan ubah teksnya
-                $(this).prop('disabled', true).text('Memuat...');
-                $('#myForm').submit();
-            });
-        });
-
-        function formatRupiah2(element) {
-            let value = element.value.replace(/[^,\d]/g, '');
-            let split = value.split(',');
-            let sisa = split[0].length % 3;
-            let rupiah = split[0].substr(0, sisa);
-            let ribuan = split[0].substr(sisa).match(/\d{3}/gi);
-
-            if (ribuan) {
-                let separator = sisa ? '.' : '';
-                rupiah += separator + ribuan.join('.');
-            }
-
-            rupiah = split[1] != undefined ? rupiah + ',' + split[1] : rupiah;
-            element.value = rupiah;
-
-            function toggleValidation(id) {
-            if ($(`#lainya_${id}`).is(':checked')) {
-                // Jika checkbox lainya dicentang:
-                $(`#description_${id}`).prop('required', true); // Description wajib diisi
-                $(`#bankField_${id}`).hide(); // Sembunyikan bank field
-                $(`#penerimaField_${id}`).hide(); // Sembunyikan bank field
-                $(`#single-select-field_${id}`).prop('required', false); // Bank tidak wajib
-                $(`#penerima_${id}`).prop('required', false); // Bank tidak wajib
+                exportTable.appendChild(tbody);
             } else {
-                // Jika checkbox lainya tidak dicentang:
-                $(`#description_${id}`).prop('required', false); // Description tidak wajib
-                $(`#bankField_${id}`).show(); // Tampilkan bank field
-                $(`#penerimaField_${id}`).show(); // Tampilkan bank field
-                $(`#single-select-field_${id}`).prop('required', true); // Bank wajib diisi
-                $(`#penerima${id}`).prop('required', true); // Bank wajib diisi
+                exportTable = tableElement.cloneNode(true);
+
+                exportTable.querySelectorAll('tr').forEach(row => {
+                    if (row.lastElementChild) {
+                        row.removeChild(row.lastElementChild);
+                    }
+                });
             }
-        }
 
-        // Event listener untuk checkbox lainya
-        $("[id^='lainya_']").on('change', function () {
-            var id = $(this).attr('id').split('_')[1]; // Ambil ID dinamis
-            toggleValidation(id);
-        });
+            const html =
+                '<html><head><meta charset="UTF-8"></head><body>' +
+                exportTable.outerHTML +
+                '</body></html>';
 
-        // Inisialisasi validasi saat halaman dimuat
-        $("[id^='lainya_']").each(function () {
-            var id = $(this).attr('id').split('_')[1]; // Ambil ID dinamis
-            toggleValidation(id);
-        });
+            const blob = new Blob(
+                ['\ufeff', html],
+                { type: 'application/vnd.ms-excel;charset=utf-8;' }
+            );
 
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement('a');
+
+            link.href = url;
+            link.download = 'data-cicilan-{{ now()->format('Ymd') }}.xls';
+
+            document.body.appendChild(link);
+            link.click();
+            link.remove();
+
+            URL.revokeObjectURL(url);
         }
     </script>
-
+    <script>
+        $(document).ready(function () {
+            if ($.fn.DataTable && !$.fn.DataTable.isDataTable('#cicilanTable')) {
+                $('#cicilanTable').DataTable({
+                    pageLength: 25,
+                    lengthMenu: [
+                        [10, 25, 50, 100],
+                        [10, 25, 50, 100]
+                    ],
+                    ordering: true,
+                    language: {
+                        lengthMenu: 'Tampilkan _MENU_ data',
+                        zeroRecords: 'Data tidak ditemukan',
+                        info: 'Menampilkan _START_ sampai _END_ dari _TOTAL_ data',
+                        infoEmpty: 'Tidak ada data',
+                        infoFiltered: '(difilter dari _MAX_ total data)',
+                        search: 'Cari:',
+                        paginate: {
+                            first: 'Awal',
+                            last: 'Akhir',
+                            next: 'Berikutnya',
+                            previous: 'Sebelumnya'
+                        }
+                    }
+                });
+            }
+        });
+    </script>
 @endpush
-
