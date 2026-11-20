@@ -27,6 +27,7 @@ return new class extends Migration
             $table->bigInteger('nominal_out')->nullable();
             $table->bigInteger('diskon')->nullable();
             $table->bigInteger('fee')->nullable();
+            $table->bigInteger('biaya_ganti')->nullable();
             $table->bigInteger('ongkir')->nullable();
             $table->string('date_pays')->nullable();
             $table->date('date_start');

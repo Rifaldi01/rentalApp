@@ -31,16 +31,59 @@
     <!--start page wrapper -->
     <div class="page-wrapper">
         <div class="page-content">
-{{--            <div class="alert alert-warning border-0 bg-warning alert-dismissible fade show py-2">--}}
-{{--                <div class="d-flex align-items-center">--}}
-{{--                    <div class="font-35 text-dark"><i class='bx bx-info-circle'></i>--}}
-{{--                    </div>--}}
-{{--                    <div class="ms-3">--}}
-{{--                        <h6 class="mb-0 text-dark">Warning Hosting</h6>--}}
-{{--                        <div class="text-dark">Kami ingin mengingatkan bahwa hosting dnd-survey.com Anda akan berakhir pada 05 Juli 2025.</div>--}}
+{{--            <div class="modal fade" id="hostingWarningModal" tabindex="-1"--}}
+{{--                 aria-labelledby="hostingWarningModalLabel" aria-hidden="true"--}}
+{{--                 data-bs-backdrop="static">--}}
+
+{{--                <div class="modal-dialog modal-dialog-centered">--}}
+{{--                    <div class="modal-content border-0 shadow">--}}
+
+{{--                        <div class="modal-header bg-warning">--}}
+{{--                            <h5 class="modal-title text-dark" id="hostingWarningModalLabel">--}}
+{{--                                <i class="bx bx-info-circle me-2"></i>--}}
+{{--                                Warning Hosting--}}
+{{--                            </h5>--}}
+
+{{--                            <button type="button" class="btn-close"--}}
+{{--                                    data-bs-dismiss="modal" aria-label="Close"></button>--}}
+{{--                        </div>--}}
+
+{{--                        <div class="modal-body text-center py-4">--}}
+
+{{--                            <div class="mb-3">--}}
+{{--                                <i class="bx bx-error-circle text-warning"--}}
+{{--                                   style="font-size: 65px;"></i>--}}
+{{--                            </div>--}}
+
+{{--                            <h5 class="fw-bold mb-3">--}}
+{{--                                Pemberitahuan Masa Aktif Hosting & Domain--}}
+{{--                            </h5>--}}
+
+{{--                            <p class="mb-0 text-secondary">--}}
+{{--                                Kami ingin mengingatkan bahwa hosting & Domain--}}
+{{--                                <strong>penjualan.dnd-survey.com</strong> Anda akan berakhir pada:--}}
+{{--                            </p>--}}
+
+{{--                            <h4 class="text-danger fw-bold mt-3">--}}
+{{--                                25 November 2026--}}
+{{--                            </h4>--}}
+
+{{--                            <p class="text-muted small mt-3 mb-0">--}}
+{{--                                Mohon segera lakukan perpanjangan hosting--}}
+{{--                                agar layanan tetap berjalan dengan normal.--}}
+{{--                            </p>--}}
+
+{{--                        </div>--}}
+
+{{--                        <div class="modal-footer justify-content-center">--}}
+{{--                            <button type="button" class="btn btn-warning px-4"--}}
+{{--                                    data-bs-dismiss="modal">--}}
+{{--                                Ok--}}
+{{--                            </button>--}}
+{{--                        </div>--}}
+
 {{--                    </div>--}}
 {{--                </div>--}}
-{{--                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>--}}
 {{--            </div>--}}
 
             @yield('content')
