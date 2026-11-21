@@ -95,6 +95,7 @@
             <div>
                 <h4 class="mb-1 fw-bold text-dark">Detail Pembayaran</h4>
                 <div class="text-muted small">Rincian tagihan rental dan histori pembayaran cicilan.</div>
+                <div class="text-muted small "><i class="text-danger">* Tombol Ceklis Hanya Diperuntukan Untuk INV yang Seharusnya Lunas Tetapi Masih ada Tagihan!!</i></div>
             </div>
             <div class="d-flex flex-wrap gap-2">
                 <a href="{{ route('manager.pembayaran.invoice', $rentals->id) }}"
@@ -127,12 +128,34 @@
                     <div class="value">Rp {{ number_format($rentals->nominal_out,0,',','.') }}</div>
                 </div>
                 <div class="col-md-2 text-md-end">
-                    @if($isPaid)
-                        <span class="badge bg-success px-3 py-2 fs-6"><i
-                                class="bx bx-check-circle me-1"></i> LUNAS</span>
-                    @else
-                        <span class="badge bg-warning text-dark px-3 py-2 fs-6">BELUM LUNAS</span>
-                    @endif
+                    <div class="row">
+                        <div class="col-md-4">
+                            @if($isPaid)
+                            @else
+                                <form action="{{ route('manager.rentals.lunas', $rentals->id) }}"
+                                      method="POST"
+                                      class="d-inline form-lunas">
+                                    @csrf
+
+                                    <button type="submit"
+                                            class="btn btn-success btn-sm"
+                                            data-bs-toggle="tooltip"
+                                            data-bs-placement="top"
+                                            title="Lunas">
+                                        <i class="lni lni-checkmark me-1"></i>
+                                    </button>
+                                </form>
+                            @endif
+                        </div>
+                        <div class="col-md-6">
+                            @if($isPaid)
+                                <span class="badge bg-success px-3 py-2 fs-6"><i
+                                        class="bx bx-check-circle me-1"></i> LUNAS</span>
+                            @else
+                                <span class="badge bg-warning text-dark px-3 py-2 fs-6">BELUM LUNAS</span>
+                            @endif
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>

@@ -111,6 +111,8 @@ Route::group(['middleware' => ['auth:web', 'role:admin'], 'prefix' => 'admin'], 
         PembayaranController::class,
         'printInvoice'
     ])->name('admin.pembayaran.invoice');
+    Route::post('/rental/{id}/lunas', [PembayaranController::class, 'lunas'])
+        ->name('admin.rentals.lunas');
 });
 
 

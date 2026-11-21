@@ -95,6 +95,7 @@
             <div>
                 <h4 class="mb-1 fw-bold text-dark">Detail Pembayaran</h4>
                 <div class="text-muted small">Rincian tagihan rental dan histori pembayaran cicilan.</div>
+                <div class="text-muted small "><i class="text-danger">* Tombol Ceklis Hanya Diperuntukan Untuk INV yang Seharusnya Lunas Tetapi Masih ada Tagihan!!</i></div>
             </div>
             <div class="d-flex flex-wrap gap-2">
                 <a href="{{ route('admin.pembayaran.invoice', $rentals->id) }}"
@@ -127,12 +128,34 @@
                     <div class="value">Rp {{ number_format($rentals->nominal_out,0,',','.') }}</div>
                 </div>
                 <div class="col-md-2 text-md-end">
-                    @if($isPaid)
-                        <span class="badge bg-success px-3 py-2 fs-6"><i
-                                class="bx bx-check-circle me-1"></i> LUNAS</span>
-                    @else
-                        <span class="badge bg-warning text-dark px-3 py-2 fs-6">BELUM LUNAS</span>
-                    @endif
+                    <div class="row">
+                        <div class="col-md-4">
+                            @if($isPaid)
+                            @else
+                            <form action="{{ route('admin.rentals.lunas', $rentals->id) }}"
+                                  method="POST"
+                                  class="d-inline form-lunas">
+                                @csrf
+
+                                <button type="submit"
+                                        class="btn btn-success btn-sm"
+                                        data-bs-toggle="tooltip"
+                                        data-bs-placement="top"
+                                        title="Lunas">
+                                    <i class="lni lni-checkmark me-1"></i>
+                                </button>
+                            </form>
+                            @endif
+                        </div>
+                        <div class="col-md-6">
+                            @if($isPaid)
+                                <span class="badge bg-success px-3 py-2 fs-6"><i
+                                        class="bx bx-check-circle me-1"></i> LUNAS</span>
+                            @else
+                                <span class="badge bg-warning text-dark px-3 py-2 fs-6">BELUM LUNAS</span>
+                            @endif
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -186,6 +209,16 @@
                                 <div class="payment-info-label">Fee</div>
                                 <div class="payment-info-value">
                                     Rp {{ number_format((int)$rentals->fee,0,',','.') }}</div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="payment-info-label">PPN</div>
+                                <div class="payment-info-value">
+                                    Rp {{ number_format((int)$rentals->ppn,0,',','.') }}</div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="payment-info-label">Biaya ganti</div>
+                                <div class="payment-info-value">
+                                    Rp {{ number_format((int)$rentals->biaya_ganti,0,',','.') }}</div>
                             </div>
                         </div>
                     </div>
@@ -463,6 +496,7 @@
             </div>
         </div>
     @endif
+
     @if($errors->any())
         <script>
             document.addEventListener('DOMContentLoaded', function () {
@@ -478,7 +512,9 @@
 
 @endpush
 @push('js')
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
+
         window.formatRupiah = function(elementOrValue){
             let value = typeof elementOrValue === 'object' && elementOrValue !== null ? elementOrValue.value : elementOrValue;
 
@@ -494,5 +530,35 @@
 
             return 'Rp ' + formatted;
         };
+
+        //alert confirm
+        document.addEventListener('DOMContentLoaded', function () {
+
+            document.querySelectorAll('.form-lunas').forEach(function (form) {
+
+                form.addEventListener('submit', function (e) {
+                    e.preventDefault();
+
+                    Swal.fire({
+                        title: 'Konfirmasi Pelunasan',
+                        text: 'Apakah Anda Yakin Transaksi Sudah Lunas?',
+                        icon: 'warning',
+                        showCancelButton: true,
+                        confirmButtonColor: '#28a745',
+                        cancelButtonColor: '#d33',
+                        confirmButtonText: 'Ya, Lunas!',
+                        cancelButtonText: 'Batal',
+                        reverseButtons: true
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            form.submit();
+                        }
+                    });
+
+                });
+
+            });
+
+        });
     </script>
 @endpush

@@ -301,6 +301,20 @@ class PembayaranController extends Controller
             'isPaid'
         ));
     }
+    public function lunas($id)
+    {
+        try {
+            $rental = Rental::findOrFail($id);
 
+            $rental->update([
+                'nominal_out' => 0
+            ]);
+
+            return redirect()->back()->with('success', 'Pembayaran berhasil diselesaikan.');
+
+        } catch (\Throwable $e) {
+            return redirect()->back()->with('error', 'Gagal memperbarui pembayaran.');
+        }
+    }
 
 }

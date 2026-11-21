@@ -100,4 +100,6 @@ Route::group(['middleware' => ['auth:web', 'role:manager'], 'prefix' => 'manager
         PembayaranController::class,
         'printInvoice'
     ])->name('manager.pembayaran.invoice');
+    Route::post('/rental/{id}/lunas', [PembayaranController::class, 'lunas'])
+        ->name('manager.rentals.lunas');
 });

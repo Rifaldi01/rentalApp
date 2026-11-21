@@ -503,7 +503,7 @@
                             <th>Fee</th>
                             <th>Diskon</th>
                             <th>Biaya Ganti</th>
-                            <th>Total Tagihan</th>
+                            <th>Total </th>
                             <th>Uang Masuk</th>
                             <th>Sisa Bayar</th>
                             <th>Bank / Keterangan</th>
