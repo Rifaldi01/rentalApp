@@ -1,5 +1,8 @@
+
 @extends('layouts.master')
+
 @section('title', 'Detail Pembayaran')
+
 @section('content')
     <style>
         .payment-detail .card {
@@ -85,18 +88,84 @@
             margin-bottom: 6px;
         }
 
-        .payment-detail .form-control, .payment-detail .form-select {
+        .payment-detail .form-control,
+        .payment-detail .form-select {
             min-height: 42px;
+        }
+
+        /* Select2 */
+        .select2-container {
+            width: 100% !important;
+        }
+
+        .select2-container--default .select2-selection--single {
+            height: 42px;
+            border: 1px solid #dee2e6;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+        }
+
+        .select2-container--default .select2-selection--single .select2-selection__rendered {
+            line-height: 40px;
+            padding-left: 12px;
+            padding-right: 30px;
+            color: #495057;
+        }
+
+        .select2-container--default .select2-selection--single .select2-selection__arrow {
+            height: 40px;
+            right: 5px;
+        }
+
+        .select2-container--default .select2-selection--single .select2-selection__placeholder {
+            color: #6c757d;
+        }
+
+        .select2-container--default.select2-container--focus .select2-selection--single {
+            border-color: #86b7fe;
+            box-shadow: 0 0 0 .2rem rgba(13, 110, 253, .15);
+            outline: 0;
+        }
+
+        .select2-dropdown {
+            border: 1px solid #dee2e6;
+            border-radius: 6px;
+            z-index: 1060;
+        }
+
+        .select2-container--default .select2-results__option--highlighted.select2-results__option--selectable {
+            background-color: #1677d2;
+        }
+
+        .select2-container--default .select2-search--dropdown .select2-search__field {
+            border: 1px solid #dee2e6;
+            border-radius: 5px;
+            padding: 7px 10px;
+            outline: none;
+        }
+
+        .select2-container--default .select2-selection--single .select2-selection__clear {
+            margin-right: 8px;
         }
     </style>
 
     <div class="payment-detail">
+
+        {{-- HEADER --}}
         <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-3">
             <div>
                 <h4 class="mb-1 fw-bold text-dark">Detail Pembayaran</h4>
-                <div class="text-muted small">Rincian tagihan rental dan histori pembayaran cicilan.</div>
-                <div class="text-muted small "><i class="text-danger">* Tombol Ceklis Hanya Diperuntukan Untuk INV yang Seharusnya Lunas Tetapi Masih ada Tagihan!!</i></div>
+                <div class="text-muted small">
+                    Rincian tagihan rental dan histori pembayaran cicilan.
+                </div>
+                <div class="text-muted small">
+                    <i class="text-danger">
+                        * Tombol Ceklis Hanya Diperuntukan Untuk INV yang Seharusnya Lunas Tetapi Masih ada Tagihan!!
+                    </i>
+                </div>
             </div>
+
             <div class="d-flex flex-wrap gap-2">
                 <a href="{{ route('manager.pembayaran.invoice', $rentals->id) }}"
                    target="_blank"
@@ -109,145 +178,228 @@
                     <i class="bx bx-arrow-back me-1"></i> Kembali ke Data Cicilan
                 </a>
             </div>
-
         </div>
 
+        {{-- HERO --}}
         <div class="payment-hero mb-3">
             <div class="row align-items-center g-3">
+
                 <div class="col-md-4">
                     <div class="label">Invoice Rental</div>
-                    <div class="h5 fw-bold mb-1 text-white">{{ $rentals->no_inv ?: '-' }}</div>
-                    <div class="label">{{ $rentals->cust->name ?? 'Customer dihapus' }}</div>
-                </div>
-                <div class="col-md-3">
-                    <div class="label">Total Sudah Dibayar</div>
-                    <div class="value">Rp {{ number_format($rentals->nominal_in,0,',','.') }}</div>
-                </div>
-                <div class="col-md-3">
-                    <div class="label">Sisa Tagihan</div>
-                    <div class="value">Rp {{ number_format($rentals->nominal_out,0,',','.') }}</div>
-                </div>
-                <div class="col-md-2 text-md-end">
-                    <div class="row">
-                        <div class="col-md-4">
-                            @if($isPaid)
-                            @else
-                                <form action="{{ route('manager.rentals.lunas', $rentals->id) }}"
-                                      method="POST"
-                                      class="d-inline form-lunas">
-                                    @csrf
-
-                                    <button type="submit"
-                                            class="btn btn-success btn-sm"
-                                            data-bs-toggle="tooltip"
-                                            data-bs-placement="top"
-                                            title="Lunas">
-                                        <i class="lni lni-checkmark me-1"></i>
-                                    </button>
-                                </form>
-                            @endif
-                        </div>
-                        <div class="col-md-6">
-                            @if($isPaid)
-                                <span class="badge bg-success px-3 py-2 fs-6"><i
-                                        class="bx bx-check-circle me-1"></i> LUNAS</span>
-                            @else
-                                <span class="badge bg-warning text-dark px-3 py-2 fs-6">BELUM LUNAS</span>
-                            @endif
-                        </div>
+                    <div class="h5 fw-bold mb-1 text-white">
+                        {{ $rentals->no_inv ?: '-' }}
+                    </div>
+                    <div class="label">
+                        {{ $rentals->cust->name ?? 'Customer dihapus' }}
                     </div>
                 </div>
+
+                <div class="col-md-3">
+                    <div class="label">Total Sudah Dibayar</div>
+                    <div class="value">
+                        Rp {{ number_format($rentals->nominal_in, 0, ',', '.') }}
+                    </div>
+                </div>
+
+                <div class="col-md-3">
+                    <div class="label">Sisa Tagihan</div>
+                    <div class="value">
+                        Rp {{ number_format($rentals->nominal_out, 0, ',', '.') }}
+                    </div>
+                </div>
+
+                <div class="col-md-2 text-md-end">
+                    <div class="d-flex align-items-center justify-content-md-end gap-2">
+
+                        @if(!$isPaid)
+                            <form action="{{ route('manager.rentals.lunas', $rentals->id) }}"
+                                  method="POST"
+                                  class="d-inline form-lunas">
+                                @csrf
+
+                                <button type="submit"
+                                        class="btn btn-success btn-sm"
+                                        data-bs-toggle="tooltip"
+                                        data-bs-placement="top"
+                                        title="Lunas">
+                                    <i class="lni lni-checkmark me-1"></i>
+                                </button>
+                            </form>
+                        @endif
+
+                        @if($isPaid)
+                            <span class="badge bg-success px-3 py-2 fs-6">
+                                <i class="bx bx-check-circle me-1"></i> LUNAS
+                            </span>
+                        @else
+                            <span class="badge bg-warning text-dark px-3 py-2 fs-6">
+                                BELUM LUNAS
+                            </span>
+                        @endif
+
+                    </div>
+                </div>
+
             </div>
         </div>
 
+        {{-- INFORMASI TRANSAKSI --}}
         <div class="row g-3 mb-3">
+
             <div class="col-lg-8">
                 <div class="card h-100">
                     <div class="card-body">
-                        <div class="payment-section-title"><i class="bx bx-receipt me-1 text-primary"></i> Informasi
-                            Transaksi
+
+                        <div class="payment-section-title">
+                            <i class="bx bx-receipt me-1 text-primary"></i>
+                            Informasi Transaksi
                         </div>
+
                         <div class="row g-3">
+
                             <div class="col-md-4">
                                 <div class="payment-info-label">Nama Customer</div>
-                                <div class="payment-info-value">{{ $rentals->cust->name ?? '-' }}</div>
+                                <div class="payment-info-value">
+                                    {{ $rentals->cust->name ?? '-' }}
+                                </div>
                             </div>
+
                             <div class="col-md-4">
                                 <div class="payment-info-label">Tanggal Invoice</div>
-                                <div
-                                    class="payment-info-value">{{ $rentals->tgl_inv ? formatId($rentals->tgl_inv) : '-' }}</div>
+                                <div class="payment-info-value">
+                                    {{ $rentals->tgl_inv ? formatId($rentals->tgl_inv) : '-' }}
+                                </div>
                             </div>
+
                             <div class="col-md-4">
                                 <div class="payment-info-label">Nomor PO</div>
-                                <div class="payment-info-value">{{ $rentals->no_po ?: '-' }}</div>
+                                <div class="payment-info-value">
+                                    {{ $rentals->no_po ?: '-' }}
+                                </div>
                             </div>
+
                             <div class="col-md-4">
                                 <div class="payment-info-label">Tanggal Mulai Rental</div>
-                                <div
-                                    class="payment-info-value">{{ $rentals->date_start ? formatId($rentals->date_start) : '-' }}</div>
+                                <div class="payment-info-value">
+                                    {{ $rentals->date_start ? formatId($rentals->date_start) : '-' }}
+                                </div>
                             </div>
+
                             <div class="col-md-4">
                                 <div class="payment-info-label">Tanggal Selesai Rental</div>
-                                <div
-                                    class="payment-info-value">{{ $rentals->date_end ? formatId($rentals->date_end) : '-' }}</div>
+                                <div class="payment-info-value">
+                                    {{ $rentals->date_end ? formatId($rentals->date_end) : '-' }}
+                                </div>
                             </div>
+
                             <div class="col-md-4">
                                 <div class="payment-info-label">Kontak Customer</div>
-                                <div class="payment-info-value">{{ $rentals->cust->phone ?? '-' }}</div>
+                                <div class="payment-info-value">
+                                    {{ $rentals->cust->phone ?? '-' }}
+                                </div>
                             </div>
+
                             <div class="col-md-4">
                                 <div class="payment-info-label">Total Invoice</div>
                                 <div class="payment-info-value">
-                                    Rp {{ number_format((int)$rentals->total_invoice,0,',','.') }}</div>
+                                    Rp {{ number_format((int) $rentals->total_invoice, 0, ',', '.') }}
+                                </div>
                             </div>
+
                             <div class="col-md-4">
                                 <div class="payment-info-label">Diskon</div>
                                 <div class="payment-info-value">
-                                    Rp {{ number_format((int)$rentals->diskon,0,',','.') }}</div>
+                                    Rp {{ number_format((int) $rentals->diskon, 0, ',', '.') }}
+                                </div>
                             </div>
+
                             <div class="col-md-4">
                                 <div class="payment-info-label">Fee</div>
                                 <div class="payment-info-value">
-                                    Rp {{ number_format((int)$rentals->fee,0,',','.') }}</div>
+                                    Rp {{ number_format((int) $rentals->fee, 0, ',', '.') }}
+                                </div>
                             </div>
+
+                            <div class="col-md-4">
+                                <div class="payment-info-label">PPN</div>
+                                <div class="payment-info-value">
+                                    Rp {{ number_format((int) $rentals->ppn, 0, ',', '.') }}
+                                </div>
+                            </div>
+
+                            <div class="col-md-4">
+                                <div class="payment-info-label">Biaya ganti</div>
+                                <div class="payment-info-value">
+                                    Rp {{ number_format((int) $rentals->biaya_ganti, 0, ',', '.') }}
+                                </div>
+                            </div>
+
                         </div>
                     </div>
                 </div>
             </div>
+
+            {{-- RINGKASAN --}}
             <div class="col-lg-4">
                 <div class="card h-100">
                     <div class="card-body d-flex flex-column">
-                        <div class="payment-section-title"><i class="bx bx-wallet me-1 text-primary"></i> Ringkasan
-                            Pembayaran
+
+                        <div class="payment-section-title">
+                            <i class="bx bx-wallet me-1 text-primary"></i>
+                            Ringkasan Pembayaran
                         </div>
-                        <div class="d-flex justify-content-between mb-3"><span class="text-muted small">Jumlah pembayaran</span><strong>{{ $payments->count() }}
-                                kali</strong></div>
-                        <div class="d-flex justify-content-between mb-3"><span
-                                class="text-muted small">Total diterima</span><strong
-                                class="text-success">Rp {{ number_format($rentals->nominal_in,0,',','.') }}</strong></div>
-                        <div class="d-flex justify-content-between mb-3"><span
-                                class="text-muted small">Sisa piutang</span><strong
-                                class="{{ $isPaid ? 'text-success' : 'text-danger' }}">Rp {{ number_format($rentals->nominal_out,0,',','.') }}</strong>
+
+                        <div class="d-flex justify-content-between mb-3">
+                            <span class="text-muted small">Jumlah pembayaran</span>
+                            <strong>{{ $payments->count() }} kali</strong>
                         </div>
+
+                        <div class="d-flex justify-content-between mb-3">
+                            <span class="text-muted small">Total diterima</span>
+                            <strong class="text-success">
+                                Rp {{ number_format($rentals->nominal_in, 0, ',', '.') }}
+                            </strong>
+                        </div>
+
+                        <div class="d-flex justify-content-between mb-3">
+                            <span class="text-muted small">Sisa piutang</span>
+                            <strong class="{{ $isPaid ? 'text-success' : 'text-danger' }}">
+                                Rp {{ number_format($rentals->nominal_out, 0, ',', '.') }}
+                            </strong>
+                        </div>
+
                         <div class="mt-auto pt-2">
                             @if($isPaid)
-                                <span class="badge bg-success w-100 py-3 fs-6"><i class="bx bx-check-circle me-1"></i> LUNAS — Tidak ada tagihan</span>
+                                <span class="badge bg-success w-100 py-3 fs-6">
+                                    <i class="bx bx-check-circle me-1"></i>
+                                    LUNAS — Tidak ada tagihan
+                                </span>
                             @else
-                                <button type="button" class="btn btn-primary btn-lg w-100" data-bs-toggle="modal"
+                                <button type="button"
+                                        class="btn btn-primary btn-lg w-100"
+                                        data-bs-toggle="modal"
                                         data-bs-target="#paymentModal">
-                                    <i class="bx bx-credit-card me-1"></i> Bayar Sekarang
+                                    <i class="bx bx-credit-card me-1"></i>
+                                    Bayar Sekarang
                                 </button>
                             @endif
                         </div>
+
                     </div>
                 </div>
             </div>
+
         </div>
 
+        {{-- ITEM RENTAL --}}
         <div class="card mb-3">
             <div class="card-body">
-                <div class="payment-section-title"><i class="bx bx-package me-1 text-primary"></i> Item yang Disewa
+
+                <div class="payment-section-title">
+                    <i class="bx bx-package me-1 text-primary"></i>
+                    Item yang Disewa
                 </div>
+
                 <div class="table-responsive">
                     <table class="table table-bordered table-hover mb-0">
                         <thead>
@@ -257,31 +409,43 @@
                             <th>Nomor Seri</th>
                         </tr>
                         </thead>
+
                         <tbody>
-                        @forelse($items as $index=>$item)
+                        @forelse($items as $index => $item)
                             <tr>
-                                <td>{{ $index+1 }}</td>
+                                <td>{{ $index + 1 }}</td>
                                 <td class="fw-semibold">{{ $item->name ?? '-' }}</td>
                                 <td>{{ $item->no_seri ?? '-' }}</td>
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="3" class="text-center text-muted">Data item tidak tersedia.</td>
+                                <td colspan="3" class="text-center text-muted">
+                                    Data item tidak tersedia.
+                                </td>
                             </tr>
                         @endforelse
                         </tbody>
                     </table>
                 </div>
+
                 @if($rentals->keterangan_item)
-                    <div class="small text-muted mt-2">Catatan item: {{ $rentals->keterangan_item }}</div>
+                    <div class="small text-muted mt-2">
+                        Catatan item: {{ $rentals->keterangan_item }}
+                    </div>
                 @endif
+
             </div>
         </div>
 
+        {{-- ACCESSORIES --}}
         <div class="card mb-3">
             <div class="card-body">
-                <div class="payment-section-title"><i class="bx bx-cube me-1 text-primary"></i> Accessories yang Disewa
+
+                <div class="payment-section-title">
+                    <i class="bx bx-cube me-1 text-primary"></i>
+                    Accessories yang Disewa
                 </div>
+
                 <div class="table-responsive">
                     <table class="table table-bordered table-hover mb-0">
                         <thead>
@@ -292,38 +456,54 @@
                             <th class="text-end">Jumlah</th>
                         </tr>
                         </thead>
+
                         <tbody>
-                        @forelse($accessories as $index=>$row)
+                        @forelse($accessories as $index => $row)
                             <tr>
-                                <td>{{ $index+1 }}</td>
-                                <td class="fw-semibold">{{ $row->accessory->name ?? 'Accessories dihapus' }}</td>
+                                <td>{{ $index + 1 }}</td>
+                                <td class="fw-semibold">
+                                    {{ $row->accessory->name ?? 'Accessories dihapus' }}
+                                </td>
                                 <td>{{ $row->accessory->code_acces ?? '-' }}</td>
-                                <td class="text-end">{{ $row->accessories_quantity ?? 0 }}</td>
+                                <td class="text-end">
+                                    {{ $row->accessories_quantity ?? 0 }}
+                                </td>
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="4" class="text-center text-muted">Tidak ada accessories pada transaksi
-                                    ini.
+                                <td colspan="4" class="text-center text-muted">
+                                    Tidak ada accessories pada transaksi ini.
                                 </td>
                             </tr>
                         @endforelse
                         </tbody>
                     </table>
                 </div>
+
                 @if($rentals->keterangan_acces)
-                    <div class="small text-muted mt-2">Catatan accessories: {{ $rentals->keterangan_acces }}</div>
+                    <div class="small text-muted mt-2">
+                        Catatan accessories: {{ $rentals->keterangan_acces }}
+                    </div>
                 @endif
+
             </div>
         </div>
 
+        {{-- RIWAYAT PEMBAYARAN --}}
         <div class="card">
             <div class="card-body">
+
                 <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-3">
-                    <div class="payment-section-title mb-0"><i class="bx bx-history me-1 text-primary"></i> Riwayat
-                        Pembayaran / Cicilan
+                    <div class="payment-section-title mb-0">
+                        <i class="bx bx-history me-1 text-primary"></i>
+                        Riwayat Pembayaran / Cicilan
                     </div>
-                    <span class="badge bg-light text-dark border">{{ $payments->count() }} catatan pembayaran</span>
+
+                    <span class="badge bg-light text-dark border">
+                        {{ $payments->count() }} catatan pembayaran
+                    </span>
                 </div>
+
                 <div class="table-responsive">
                     <table class="table table-striped table-bordered mb-0">
                         <thead>
@@ -337,13 +517,14 @@
                             <th class="text-center">Aksi</th>
                         </tr>
                         </thead>
+
                         <tbody>
                         @forelse($payments as $payment)
                             <tr>
                                 <td class="text-center">
-            <span class="installment-number">
-                #{{ $payment->installment_no ?: $loop->iteration }}
-            </span>
+                                        <span class="installment-number">
+                                            #{{ $payment->installment_no ?: $loop->iteration }}
+                                        </span>
                                 </td>
 
                                 <td>
@@ -363,19 +544,15 @@
                                 <td>{{ $payment->description ?: '-' }}</td>
 
                                 <td class="text-center">
-                                    <form
-                                        action="{{ route($routePrefix . '.pembayaran.cicilan.destroy', [
-                    $rentals->id,
-                    $payment->id
-                ]) }}"
-                                        method="POST"
-                                        class="d-inline"
-                                        onsubmit="return confirm('Apakah Anda yakin ingin menghapus cicilan ini? Nominalnya akan dikembalikan ke sisa tagihan.')"
-                                    >
+                                    <form action="{{ route($routePrefix . '.pembayaran.cicilan.destroy', [$rentals->id, $payment->id]) }}"
+                                          method="POST"
+                                          class="d-inline form-hapus-cicilan">
                                         @csrf
                                         @method('DELETE')
 
-                                        <button type="submit" class="btn btn-sm btn-outline-danger" title="Hapus cicilan">
+                                        <button type="submit"
+                                                class="btn btn-sm btn-outline-danger"
+                                                title="Hapus cicilan">
                                             <i class="bx bx-trash"></i>
                                         </button>
                                     </form>
@@ -391,131 +568,339 @@
                         </tbody>
                     </table>
                 </div>
+
             </div>
         </div>
+
     </div>
 
+    {{-- MODAL PEMBAYARAN --}}
     @if(!$isPaid)
-        <div class="modal fade" id="paymentModal" tabindex="-1" aria-labelledby="paymentModalLabel" aria-hidden="true">
+        <div class="modal fade"
+             id="paymentModal"
+             tabindex="-1"
+             aria-labelledby="paymentModalLabel"
+             aria-hidden="true">
+
             <div class="modal-dialog modal-dialog-centered modal-lg">
                 <div class="modal-content border-0 shadow">
+
                     <div class="modal-header payment-modal-header">
                         <div>
-                            <div class="small text-white-50 text-uppercase fw-semibold">Transaksi Rental</div>
-                            <h5 class="modal-title text-white fw-bold" id="paymentModalLabel">Catat Pembayaran</h5>
-                            <div class="small text-white-50">{{ $rentals->no_inv }}
-                                · {{ $rentals->cust->name ?? '-' }}</div>
+                            <div class="small text-white-50 text-uppercase fw-semibold">
+                                Transaksi Rental
+                            </div>
+
+                            <h5 class="modal-title text-white fw-bold" id="paymentModalLabel">
+                                Catat Pembayaran
+                            </h5>
+
+                            <div class="small text-white-50">
+                                {{ $rentals->no_inv }} · {{ $rentals->cust->name ?? '-' }}
+                            </div>
                         </div>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+
+                        <button type="button"
+                                class="btn-close"
+                                data-bs-dismiss="modal"
+                                aria-label="Close">
+                        </button>
                     </div>
-                    <form action="{{ route('manager.pembayaran.bayar', $rentals->id) }}" method="POST">
+
+                    <form action="{{ route('manager.pembayaran.bayar', $rentals->id) }}"
+                          method="POST">
                         @csrf
                         @method('PUT')
+
                         <div class="modal-body p-4">
+
                             @if($errors->any())
-                                <div class="alert alert-danger">{{ $errors->first() }}</div>
+                                <div class="alert alert-danger">
+                                    {{ $errors->first() }}
+                                </div>
                             @endif
+
                             <div class="alert alert-primary d-flex justify-content-between align-items-center">
-                                <div><small class="d-block">Sisa tagihan yang harus dibayar</small><strong class="fs-5">Rp {{ number_format($remaining,0,',','.') }}</strong>
+                                <div>
+                                    <small class="d-block">
+                                        Sisa tagihan yang harus dibayar
+                                    </small>
+
+                                    <strong class="fs-5">
+                                        Rp {{ number_format($remaining, 0, ',', '.') }}
+                                    </strong>
+
+                                    <small class="d-block">
+                                        Total uang masuk Rp {{ number_format((int) $rentals->nominal_in, 0, ',', '.') }}
+                                    </small>
                                 </div>
-                                <div class="text-end"><small class="d-block">Pembayaran berikutnya</small><strong
-                                        class="fs-5">Ke-{{ $nextInstallment }}</strong></div>
+
+                                <div class="text-end">
+                                    <small class="d-block">Pembayaran berikutnya</small>
+                                    <strong class="fs-5">Ke-{{ $nextInstallment }}</strong>
+                                </div>
                             </div>
+
                             <div class="row g-3">
+
                                 <div class="col-md-6">
-                                    <label class="payment-input-label">Total uang masuk sebelumnya</label>
-                                    <input type="text" class="form-control"
-                                           value="Rp {{ number_format((int)$rentals->nominal_in,0,',','.') }}" readonly>
-                                    <input type="hidden" name="nominal_in" value="{{ (int)$rentals->nominal_in }}">
-                                </div>
-                                <div class="col-md-6">
-                                    <label class="payment-input-label">Nominal pembayaran <span
-                                            class="text-danger">*</span></label>
-                                    <input type="text" class="form-control" name="pay_debts" id="pay_debts" required
-                                           inputmode="numeric" onkeyup="formatRupiah(this)"
+                                    <label class="payment-input-label">
+                                        Nominal pembayaran <span class="text-danger">*</span>
+                                    </label>
+
+                                    <input type="text"
+                                           class="form-control"
+                                           name="pay_debts"
+                                           id="pay_debts"
+                                           required
+                                           inputmode="numeric"
+                                           onkeyup="formatRupiah(this)"
                                            placeholder="Contoh: 500.000">
-                                    <small class="text-muted">Tidak boleh melebihi sisa tagihan.</small>
+
+                                    <small class="text-muted">
+                                        Tidak boleh melebihi sisa tagihan.
+                                    </small>
                                 </div>
+
                                 <div class="col-md-6">
-                                    <label class="payment-input-label">Tanggal pembayaran <span
-                                            class="text-danger">*</span></label>
-                                    <input type="date" class="form-control" name="date_pay"
-                                           value="{{ now()->format('Y-m-d') }}" required>
+                                    <label class="payment-input-label">
+                                        Tanggal pembayaran <span class="text-danger">*</span>
+                                    </label>
+
+                                    <input type="date"
+                                           class="form-control"
+                                           name="date_pay"
+                                           value="{{ now()->format('Y-m-d') }}"
+                                           required>
                                 </div>
+
                                 <div class="col-md-6">
-                                    <label class="payment-input-label">Bank / Metode pembayaran</label>
-                                    <select class="form-select" name="bank_id">
-                                        <option value="">Pilih bank / metode</option>
+                                    <label class="payment-input-label">Diskon tambahan</label>
+
+                                    <input type="text"
+                                           class="form-control"
+                                           name="diskon"
+                                           value="0"
+                                           onkeyup="formatRupiah2(this)"
+                                           inputmode="numeric">
+                                </div>
+
+                                <div class="col-md-6">
+                                    <label class="payment-input-label">Fee</label>
+
+                                    <input type="text"
+                                           class="form-control"
+                                           name="fee"
+                                           value="{{ (int) $rentals->fee }}"
+                                           onkeyup="formatRupiah2(this)"
+                                           inputmode="numeric">
+                                </div>
+
+                                <div class="col-md-6">
+                                    <label class="payment-input-label">Biaya Ganti</label>
+
+                                    <input type="text"
+                                           class="form-control"
+                                           name="biaya_ganti"
+                                           value="{{ (int) $rentals->biaya_ganti }}"
+                                           onkeyup="formatRupiah2(this)"
+                                           inputmode="numeric">
+                                </div>
+
+                                {{-- SELECT2 BANK --}}
+                                <div class="col-md-6">
+                                    <label class="payment-input-label">
+                                        Bank / Metode pembayaran
+                                    </label>
+
+                                    <select class="form-select select2-bank"
+                                            name="bank_id"
+                                            id="bank_id">
+                                        <option></option>
+
                                         @foreach($bank as $banks)
-                                            <option
-                                                value="{{ $banks->id }}">{{ $banks->name }}{{ $banks->code ? ' ('.$banks->code.')' : '' }}</option>
+                                            <option value="{{ $banks->id }}">
+                                                {{ $banks->name }}{{ $banks->code ? ' ('.$banks->code.')' : '' }}
+                                            </option>
                                         @endforeach
                                     </select>
                                 </div>
+
                                 <div class="col-md-6">
                                     <label class="payment-input-label">Nama penerima</label>
-                                    <input type="text" class="form-control" name="penerima" maxlength="255"
+
+                                    <input type="text"
+                                           class="form-control"
+                                           name="penerima"
+                                           maxlength="255"
                                            placeholder="Nama penerima pembayaran">
                                 </div>
-                                <div class="col-md-6">
-                                    <label class="payment-input-label">Diskon tambahan</label>
-                                    <input type="text" class="form-control" name="diskon" value="0"
-                                           onkeyup="formatRupiah2(this)" inputmode="numeric">
-                                </div>
-                                <div class="col-md-6">
-                                    <label class="payment-input-label">Fee</label>
-                                    <input type="text" class="form-control" name="fee" value="{{ (int)$rentals->fee }}"
-                                           onkeyup="formatRupiah2(this)" inputmode="numeric">
-                                </div>
+
                                 <div class="col-md-6">
                                     <label class="payment-input-label">Keterangan</label>
-                                    <input type="text" class="form-control" name="description" maxlength="1000"
+
+                                    <input type="text"
+                                           class="form-control"
+                                           name="description"
+                                           maxlength="1000"
                                            placeholder="Catatan pembayaran (opsional)">
                                 </div>
+
                             </div>
                         </div>
+
                         <div class="modal-footer bg-light">
-                            <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Batal
+                            <button type="button"
+                                    class="btn btn-outline-secondary"
+                                    data-bs-dismiss="modal">
+                                Batal
                             </button>
-                            <button type="submit" class="btn btn-primary px-4"><i class="bx bx-check-circle me-1"></i>
+
+                            <button type="submit" class="btn btn-primary px-4">
+                                <i class="bx bx-check-circle me-1"></i>
                                 Simpan Pembayaran
                             </button>
                         </div>
+
                     </form>
                 </div>
             </div>
         </div>
     @endif
+
+@endsection
+
+@push('head')
+    {{-- Select2 CSS --}}
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css"
+          rel="stylesheet">
+@endpush
+
+@push('js')
+
+    {{-- Select2 JS --}}
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+
+    {{-- SweetAlert2 --}}
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <script>
+        // FORMAT RUPIAH
+        window.formatRupiah = function (elementOrValue) {
+            let value = typeof elementOrValue === 'object' && elementOrValue !== null
+                ? elementOrValue.value
+                : elementOrValue;
+
+            value = String(value ?? '').replace(/[^0-9]/g, '');
+
+            if (!value) value = '0';
+
+            let number = parseInt(value) || 0;
+            let formatted = number.toLocaleString('id-ID');
+
+            if (typeof elementOrValue === 'object' && elementOrValue !== null) {
+                elementOrValue.value = formatted;
+            }
+
+            return 'Rp ' + formatted;
+        };
+
+        document.addEventListener('DOMContentLoaded', function () {
+
+            // SELECT2 BANK DI DALAM MODAL
+            const paymentModal = document.getElementById('paymentModal');
+
+            if (paymentModal && window.jQuery && $.fn.select2) {
+
+                $('#paymentModal').on('shown.bs.modal', function () {
+
+                    const selectBank = $('#bank_id');
+
+                    if (selectBank.hasClass('select2-hidden-accessible')) {
+                        selectBank.select2('destroy');
+                    }
+
+                    selectBank.select2({
+                        dropdownParent: $('#paymentModal'),
+                        width: '100%',
+                        placeholder: 'Pilih bank / metode pembayaran',
+                        allowClear: true
+                    });
+
+                });
+
+            }
+
+            // SWEETALERT KONFIRMASI LUNAS
+            document.querySelectorAll('.form-lunas').forEach(function (form) {
+
+                form.addEventListener('submit', function (e) {
+                    e.preventDefault();
+
+                    Swal.fire({
+                        title: 'Konfirmasi Pelunasan',
+                        text: 'Apakah Anda yakin transaksi ini sudah lunas?',
+                        icon: 'warning',
+                        showCancelButton: true,
+                        confirmButtonColor: '#28a745',
+                        cancelButtonColor: '#d33',
+                        confirmButtonText: 'Ya, Lunas!',
+                        cancelButtonText: 'Batal',
+                        reverseButtons: true
+                    }).then((result) => {
+
+                        if (result.isConfirmed) {
+                            form.submit();
+                        }
+
+                    });
+
+                });
+
+            });
+
+            // SWEETALERT HAPUS CICILAN
+            document.querySelectorAll('.form-hapus-cicilan').forEach(function (form) {
+
+                form.addEventListener('submit', function (e) {
+                    e.preventDefault();
+
+                    Swal.fire({
+                        title: 'Hapus Cicilan?',
+                        text: 'Nominal pembayaran akan dikembalikan ke sisa tagihan.',
+                        icon: 'warning',
+                        showCancelButton: true,
+                        confirmButtonColor: '#dc3545',
+                        cancelButtonColor: '#6c757d',
+                        confirmButtonText: 'Ya, Hapus!',
+                        cancelButtonText: 'Batal',
+                        reverseButtons: true
+                    }).then((result) => {
+
+                        if (result.isConfirmed) {
+                            form.submit();
+                        }
+
+                    });
+
+                });
+
+            });
+
+        });
+    </script>
+
+    {{-- BUKA KEMBALI MODAL JIKA VALIDASI GAGAL --}}
     @if($errors->any())
         <script>
             document.addEventListener('DOMContentLoaded', function () {
                 const modalElement = document.getElementById('paymentModal');
+
                 if (modalElement && window.bootstrap) {
                     bootstrap.Modal.getOrCreateInstance(modalElement).show();
                 }
             });
         </script>
     @endif
-@endsection
-@push('head')
 
-@endpush
-@push('js')
-    <script>
-        window.formatRupiah = function(elementOrValue){
-            let value = typeof elementOrValue === 'object' && elementOrValue !== null ? elementOrValue.value : elementOrValue;
-
-            value = String(value ?? '').replace(/[^0-9]/g,'');
-            if(!value) value = '0';
-
-            let number = parseInt(value) || 0;
-            let formatted = number.toLocaleString('id-ID');
-
-            if(typeof elementOrValue === 'object' && elementOrValue !== null){
-                elementOrValue.value = formatted;
-            }
-
-            return 'Rp ' + formatted;
-        };
-    </script>
 @endpush

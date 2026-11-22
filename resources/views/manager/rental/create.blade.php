@@ -722,8 +722,8 @@
                                     </div>
                                     <div class="col-6">
                                         <label>Diskon</label>
-                                        <input type="number" name="diskon"
-                                               class="form-control mt-2"
+                                        <input type="text" name="diskon" id="diskon"
+                                               class="form-control mt-2 currency-input"
                                                value="{{ old('diskon', $rentals->diskon ?? 0) }}">
                                     </div>
 
@@ -1067,9 +1067,10 @@
             function updatePayment() {
                 const invoice = numericValue($('#total_invoice').val());
                 const payment = numericValue($('#nominal_in').val());
+                const diskon = numericValue($('#diskon').val());
 
                 $('#invoice-preview').text(formatRupiah(invoice));
-                $('#nominal_out').val(invoice - payment);
+                $('#nominal_out').val(invoice - payment - diskon);
             }
 
             $('.currency-input').on('input', function () {

@@ -137,6 +137,7 @@ class PembayaranController extends Controller
         $payment = $cleanAmount($request->input('pay_debts'));
         $diskon  = $cleanAmount($request->input('diskon', 0));
         $fee     = $cleanAmount($request->input('fee', 0));
+        $biaya_ganti     = $cleanAmount($request->input('biaya_ganti', 0));
 
         if ($payment <= 0) {
             return back()
@@ -151,7 +152,8 @@ class PembayaranController extends Controller
             $request,
             $payment,
             $diskon,
-            $fee
+            $fee,
+            $biaya_ganti
         ) {
             // Kunci rental untuk mencegah pembayaran bersamaan.
             $rental = Rental::whereKey($id)
@@ -193,6 +195,7 @@ class PembayaranController extends Controller
 
             $rental->diskon = $diskon;
             $rental->fee = $fee;
+            $rental->biaya_ganti = $biaya_ganti;
 
             $rental->save();
 

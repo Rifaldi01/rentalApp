@@ -536,9 +536,13 @@ class RentalController extends Controller
                     */
 
                     if ((float) $rental->nominal_in > 0) {
+                        $nextInstallment = ((int) Debts::where('rental_id', $id)
+                                ->max('installment_no')) + 1;
+
                         $debt = Debts::where('rental_id', $rental->id)->first();
                         $debtData = [
                             'bank_id' => $request->input('bank_id'),
+                            'installment_no' => $nextInstallment,
                             'pay_debts' => $rental->nominal_in,
                             'penerima' => $request->input('penerima'),
                             'date_pay' => $request->input('date_pay'),
