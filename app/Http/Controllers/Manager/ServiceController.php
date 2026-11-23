@@ -8,6 +8,7 @@ use App\Models\Customer;
 use App\Models\DebtServic;
 use App\Models\Service;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 use RealRashid\SweetAlert\Facades\Alert;
 
@@ -102,117 +103,226 @@ class ServiceController extends Controller
         return back()->withSuccess('Service Berhasil Dihapus');
     }
 
+
     private function save(Request $request, $id = null)
     {
-        $validate = $request->validate([
+        $request->validate([
             'customer_id'   => 'required',
             'item'          => 'required',
             'no_seri'       => 'required',
             'date_service'  => 'required',
             'jenis_service' => 'required',
             'nominal_in'    => 'required|numeric',
-            'nominal_out'   => 'numeric',
-            'diskon'        => 'numeric',
-            'biaya_ganti'   => 'numeric',
-            'ongkir'        => 'numeric',
+            'nominal_out'   => 'nullable|numeric',
+            'diskon'        => 'nullable|numeric',
+            'biaya_ganti'   => 'nullable|numeric',
+            'ongkir'        => 'nullable|numeric',
             'type'          => 'required',
             'total_invoice' => 'required|numeric',
             'tgl_inv'       => 'required',
         ]);
 
-        $service = Service::firstOrNew(['id' => $id]);
+        return DB::transaction(function () use ($request, $id) {
 
-        /*
-        |--------------------------------------------------------------------------
-        | 1. Generate Invoice Otomatis
-        |--------------------------------------------------------------------------
-        */
-        $currentYear  = date('Y');
-        $currentMonth = str_pad(date('n'), 2, '0', STR_PAD_LEFT);
+            /*
+            |--------------------------------------------------------------------------
+            | 1. Ambil Data Service
+            |--------------------------------------------------------------------------
+            */
 
-        $lastInvoice = Service::whereYear('created_at', $currentYear)
-            ->where('no_inv', 'like', "INV/DND-Serv/%/%/$currentYear")
-            ->orderByDesc('id')
-            ->first();
+            $isEdit = !empty($id);
 
-        if ($lastInvoice) {
-            $pattern = "/^INV\/DND-Serv\/(\d{4})\/\d{2}\/$currentYear$/";
-            $lastNumber = preg_match($pattern, $lastInvoice->no_inv, $matches)
-                ? (int) $matches[1]
-                : 0;
-        } else {
-            $lastNumber = 0;
-        }
+            $service = $isEdit
+                ? Service::lockForUpdate()->findOrFail($id)
+                : new Service();
 
-        $nextNumber = str_pad($lastNumber + 1, 4, '0', STR_PAD_LEFT);
-        $invoiceNumber = "INV/DND-Serv/{$nextNumber}/{$currentMonth}/{$currentYear}";
+            /*
+            |--------------------------------------------------------------------------
+            | 2. Generate Invoice Otomatis
+            |--------------------------------------------------------------------------
+            */
 
-        /*
-        |--------------------------------------------------------------------------
-        | 2. Simpan Data Service
-        |--------------------------------------------------------------------------
-        */
-        $service->customer_id   = $request->input('customer_id');
-        $service->phone         = $request->input('phone');
-        $service->item          = $request->input('item');
-        $service->no_seri       = $request->input('no_seri');
-        $service->descript      = $request->input('descript');
-        $service->type          = $request->input('type');
-        $service->nominal_in    = $request->input('nominal_in');
-        $service->nominal_out   = $request->input('nominal_out');
-        $service->diskon        = $request->input('diskon');
-        $service->biaya_ganti   = $request->input('biaya_ganti');
-        $service->ongkir        = $request->input('ongkir');
-        $service->date_service  = $request->input('date_service');
-        $service->jenis_service = $request->input('jenis_service');
-        $service->total_invoice = $request->input('total_invoice');
-        $service->tgl_inv       = $request->input('tgl_inv');
-        $service->ppn           = $request->input('ppn');
+            if (!$isEdit || !$request->filled('no_inv')) {
 
-        // Jika no_inv tidak diisi → generate otomatis
-        $service->no_inv = $request->filled('no_inv')
-            ? $request->input('no_inv')
-            : $invoiceNumber;
+                $currentYear  = date('Y');
+                $currentMonth = str_pad(date('n'), 2, '0', STR_PAD_LEFT);
 
-        $service->save();
+                $lastInvoice = Service::whereYear('created_at', $currentYear)
+                    ->where('no_inv', 'like', "INV/DND-Serv/%/%/$currentYear")
+                    ->orderByDesc('id')
+                    ->first();
 
-        /*
-        |--------------------------------------------------------------------------
-        | 3. Simpan Ke Debt Service
-        |--------------------------------------------------------------------------
-        */
-        DebtServic::create([
-            'service_id' => $service->id,
-            'bank_id'    => $request->input('bank_id'),
-            'pay_debts'  => $service->nominal_in,
-            'penerima'   => $request->input('penerima'),
-            'date_pay'   => $request->input('date_pay'),
-            'description'=> $request->input('description'),
-        ]);
+                $lastNumber = 0;
 
-        /*
-        |--------------------------------------------------------------------------
-        | 4. Hitung Poin Customer (tidak berubah)
-        |--------------------------------------------------------------------------
-        */
-        $points = 0;
-        if (
-            $service->total_invoice >= 1000000 &&
-            (int)$service->fee === 0 &&
-            (int)$service->diskon === 0
-        ) {
-            $points = intdiv($service->total_invoice, 1000000);
-        }
+                if ($lastInvoice) {
+                    $pattern = "/^INV\\/DND-Serv\\/(\\d{4})\\/\\d{2}\\/$currentYear$/";
 
-        if ($points > 0) {
-            $customer = Customer::find($service->customer_id);
-            if ($customer) {
-                $customer->point_service = (int)($customer->point_service ?? 0) + $points;
-                $customer->save();
+                    $lastNumber = preg_match(
+                        $pattern,
+                        $lastInvoice->no_inv,
+                        $matches
+                    ) ? (int) $matches[1] : 0;
+                }
+
+                $nextNumber = str_pad(
+                    $lastNumber + 1,
+                    4,
+                    '0',
+                    STR_PAD_LEFT
+                );
+
+                $invoiceNumber = "INV/DND-Serv/{$nextNumber}/{$currentMonth}/{$currentYear}";
+
+                if (!$request->filled('no_inv')) {
+                    $service->no_inv = $invoiceNumber;
+                }
+
+            } else {
+                $service->no_inv = $request->input('no_inv');
             }
-        }
-        return redirect()->route('manager.service.index')->withSuccess('Upload Data Success');
+
+            /*
+            |--------------------------------------------------------------------------
+            | 3. Simpan Data Service
+            |--------------------------------------------------------------------------
+            */
+
+            $service->customer_id   = $request->input('customer_id');
+            $service->phone         = $request->input('phone');
+            $service->item          = $request->input('item');
+            $service->no_seri       = $request->input('no_seri');
+            $service->descript      = $request->input('descript');
+            $service->type          = $request->input('type');
+            $service->nominal_in    = $request->input('nominal_in');
+            $service->nominal_out   = $request->input('nominal_out');
+            $service->diskon        = $request->input('diskon');
+            $service->biaya_ganti   = $request->input('biaya_ganti');
+            $service->ongkir        = $request->input('ongkir');
+            $service->date_service  = $request->input('date_service');
+            $service->jenis_service = $request->input('jenis_service');
+            $service->total_invoice = $request->input('total_invoice');
+            $service->tgl_inv       = $request->input('tgl_inv');
+            $service->ppn           = $request->input('ppn');
+
+            $service->save();
+
+            /*
+            |--------------------------------------------------------------------------
+            | 4. Sinkronisasi Debt Service
+            |--------------------------------------------------------------------------
+            |
+            | CREATE:
+            | Buat satu data debt.
+            |
+            | EDIT:
+            | Cari debt yang sudah terhubung dengan service.
+            | Jika ada perubahan, UPDATE data yang lama.
+            | Jika tidak ada perubahan, jangan lakukan apa pun.
+            | Jangan membuat debt baru ketika edit.
+            |
+            */
+
+            if (!$isEdit) {
+
+                // Service baru: buat data debt pertama kali.
+                DebtServic::create([
+                    'service_id'  => $service->id,
+                    'bank_id'     => $request->input('bank_id'),
+                    'pay_debts'   => $service->nominal_in,
+                    'penerima'    => $request->input('penerima'),
+                    'date_pay'    => $request->input('date_pay'),
+                    'description' => $request->input('description'),
+                ]);
+
+            } else {
+
+                // Edit: cari data debt yang sudah ada.
+                $debt = DebtServic::where('service_id', $service->id)
+                    ->orderBy('id')
+                    ->lockForUpdate()
+                    ->first();
+
+                if ($debt) {
+
+                    $newDebtData = [
+                        'bank_id'     => $request->input('bank_id'),
+                        'pay_debts'   => $service->nominal_in,
+                        'penerima'    => $request->input('penerima'),
+                        'date_pay'    => $request->input('date_pay'),
+                        'description' => $request->input('description'),
+                    ];
+
+                    // Periksa apakah ada perubahan pada data debt.
+                    $hasDebtChanges = false;
+
+                    foreach ($newDebtData as $column => $newValue) {
+
+                        $oldValue = $debt->{$column};
+
+                        // Normalisasi agar null, string kosong, dan angka
+                        // tidak dianggap berubah secara keliru.
+                        if ($column === 'pay_debts') {
+                            $changed = (float) ($oldValue ?? 0)
+                                !== (float) ($newValue ?? 0);
+                        } else {
+                            $changed = ($oldValue ?? '') != ($newValue ?? '');
+                        }
+
+                        if ($changed) {
+                            $hasDebtChanges = true;
+                            break;
+                        }
+                    }
+
+                    // UPDATE hanya jika memang ada perubahan.
+                    if ($hasDebtChanges) {
+                        $debt->update($newDebtData);
+                    }
+                }
+
+                // Jika debt tidak ditemukan, jangan membuat baris baru.
+            }
+
+            /*
+            |--------------------------------------------------------------------------
+            | 5. Hitung Poin Customer
+            |--------------------------------------------------------------------------
+            */
+
+            $points = 0;
+
+            if (
+                $service->total_invoice >= 1000000 &&
+                (int) ($service->fee ?? 0) === 0 &&
+                (int) $service->diskon === 0
+            ) {
+                $points = intdiv(
+                    (int) $service->total_invoice,
+                    1000000
+                );
+            }
+
+            if ($points > 0) {
+                $customer = Customer::find($service->customer_id);
+
+                if ($customer) {
+                    $customer->point_service =
+                        (int) ($customer->point_service ?? 0) + $points;
+
+                    $customer->save();
+                }
+            }
+
+            return redirect()
+                ->route('manager.service.index')
+                ->withSuccess(
+                    $isEdit
+                        ? 'Data Service berhasil diperbarui.'
+                        : 'Data Service berhasil disimpan.'
+                );
+        });
     }
+
 
 
 

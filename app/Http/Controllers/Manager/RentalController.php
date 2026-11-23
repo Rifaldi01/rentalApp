@@ -183,7 +183,7 @@ class RentalController extends Controller
             'access.*' => 'nullable|exists:accessories,id',
 
             'accessories_quantity' => 'nullable|array',
-            'accessories_quantity.*' => 'nullable|integer|min:1',
+            'accessories_quantity.*' => $id ? 'nullable|integer|min:0' : 'nullable|integer|min:1',
 
             'image' => 'nullable|array',
             'image.*' => 'image|mimes:jpg,jpeg,png,webp|max:10240',
@@ -208,7 +208,7 @@ class RentalController extends Controller
 
             'access.*.exists' => 'Terdapat accessories yang tidak ditemukan.',
             'accessories_quantity.*.integer' => 'Jumlah accessories harus berupa angka bulat.',
-            'accessories_quantity.*.min' => 'Jumlah accessories minimal 1.',
+            'accessories_quantity.*.min' => $id ? 'Jumlah accessories tidak boleh negatif.' : 'Jumlah accessories minimal 1.',
 
             'image.*.image' => 'File yang diunggah harus berupa gambar.',
             'image.*.max' => 'Ukuran gambar maksimal 10 MB.',
@@ -242,7 +242,9 @@ class RentalController extends Controller
 
             $quantity = (int) ($quantities[$index] ?? 0);
 
-            if ($quantity <= 0) {
+            // Saat edit, qty 0 diperbolehkan (mis. rental sudah finish).
+            // Saat membuat rental baru, qty tetap harus lebih dari 0.
+            if ($quantity < 0 || (!$id && $quantity === 0)) {
                 throw ValidationException::withMessages([
                     'access' => 'Jumlah accessories harus lebih dari 0.',
                 ]);
@@ -358,7 +360,7 @@ class RentalController extends Controller
                         $newQuantity = (int) ($newAccessoriesData[$accessoryId] ?? 0);
                         $currentStock = (int) $accessory->stok;
                         $availableStock = $currentStock + $oldQuantity;
-                        if ($availableStock < $newQuantity) {
+                        if (!($isEdit && (int) $rental->status === 0) && $availableStock < $newQuantity) {
                             throw ValidationException::withMessages([
                                 'access' => 'Stok tidak mencukupi untuk accessories '
                                     . $accessory->name . '. Stok tersedia: '
@@ -366,9 +368,13 @@ class RentalController extends Controller
                                     . $newQuantity,
                             ]);
                         }
-                        $stockChange = $oldQuantity - $newQuantity;
-                        $accessory->stok = $currentStock + $stockChange;
-                        $accessory->save();
+                        // Rental finish (status 0): stok sudah dikembalikan saat finish,
+                        // jadi edit qty tidak boleh mengubah stok lagi.
+                        if (!($isEdit && (int) $rental->status === 0)) {
+                            $stockChange = $oldQuantity - $newQuantity;
+                            $accessory->stok = $currentStock + $stockChange;
+                            $accessory->save();
+                        }
                     }
 
                     /*
@@ -673,7 +679,6 @@ class RentalController extends Controller
             ], 500);
         }
     }
-
     public function finis($id)
 {
     // Temukan objek rental berdasarkan ID

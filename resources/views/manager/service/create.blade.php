@@ -225,10 +225,12 @@
                 {{-- Tanggal Bayar --}}
                 <div class="col-md-2">
                     <label>Tanggal Bayar</label>
-                    <input type="text" class="form-control datepicker"
-                           name="date_pay"
-                           value="{{ isset($service) && $service->debt ? $service->debt->date_pay : old('date_pay') }}"
-                           placeholder="Tanggal Bayar">
+                    <input
+                        type="text"
+                        class="form-control datepicker"
+                        name="date_pay"
+                        value="{{ old('date_pay', isset($service) ? optional($service->debtService->first())->date_pay : '') }}"
+                        placeholder="Tanggal Bayar">
                 </div>
 
                 {{-- Keterangan --}}

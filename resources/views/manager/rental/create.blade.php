@@ -278,7 +278,7 @@
         </div>
 
         <form action="{{ $url }}" method="POST"
-              enctype="multipart/form-data" id="myForm">
+              enctype="multipart/form-data" id="myForm" novalidate>
             @csrf
 
             @isset($rentals)
@@ -499,9 +499,8 @@
                                                     <input type="number"
                                                            class="form-control"
                                                            name="accessories_quantity[]"
-                                                           min="1"
-                                                           value="{{ $accessoryRow['accessories_quantity'] }}"
-                                                           required>
+                                                           min="0"
+                                                           value="{{ $accessoryRow['accessories_quantity'] }}">
                                                 </div>
 
                                                 <button type="button"
@@ -859,6 +858,19 @@
                     // tersedia, validasi tetap dilakukan oleh Laravel melalui AJAX.
                     const validator = $form.data('validator');
                     if (validator && !validator.form()) {
+                        const labels = (validator.errorList || []).map(function (e) { return e.message; });
+                        const $firstError = $form.find('.is-invalid, .invalid-feedback.d-block').first();
+                        if ($firstError.length) {
+                            $firstError[0].scrollIntoView({behavior: 'smooth', block: 'center'});
+                        }
+                        Swal.fire({
+                            icon: 'warning',
+                            title: 'Data belum lengkap',
+                            html: '<ul style="text-align:left;margin:0;padding-left:1.2rem">' +
+                                labels.map(function (m) { return '<li>' + $('<div>').text(m).html() + '</li>'; }).join('') +
+                                '</ul>',
+                            confirmButtonText: 'Mengerti'
+                        });
                         return;
                     }
 
@@ -1015,7 +1027,7 @@
                             <input type="number"
                                    class="form-control"
                                    name="accessories_quantity[]"
-                                   min="1">
+                                   min="0">
                         </div>
 
                         <button type="button"
@@ -1165,6 +1177,11 @@
                         class: 'alert alert-danger mb-3'
                     }).append('<strong>Periksa kembali data berikut:</strong>').append(list)
                         .prependTo($form);
+
+                    const summary = document.getElementById('ajax-validation-summary');
+                    if (summary) {
+                        summary.scrollIntoView({behavior: 'smooth', block: 'start'});
+                    }
                 }
 
                 // Tidak melakukan reload; pengguna tetap berada di form.
