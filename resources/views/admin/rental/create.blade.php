@@ -729,8 +729,8 @@
 
                                     <div class="col-6">
                                         <label>PPN</label>
-                                        <input type="number" name="ppn"
-                                               class="form-control mt-2"
+                                        <input type="text" name="ppn" id="ppn"
+                                               class="form-control mt-2 currency-input"
                                                value="{{ old('ppn', $rentals->ppn ?? 0) }}">
                                     </div>
 
@@ -1068,9 +1068,10 @@
                 const invoice = numericValue($('#total_invoice').val());
                 const payment = numericValue($('#nominal_in').val());
                 const diskon = numericValue($('#diskon').val());
+                const ppn = numericValue($('#ppn').val());
 
                 $('#invoice-preview').text(formatRupiah(invoice));
-                $('#nominal_out').val(invoice - payment - diskon);
+                $('#nominal_out').val(invoice - payment - diskon + ppn);
             }
 
             $('.currency-input').on('input', function () {
