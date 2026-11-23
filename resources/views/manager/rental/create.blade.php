@@ -319,7 +319,7 @@
                                     <input type="text" name="tgl_inv"
                                            class="form-control datepicker @error('tgl_inv') is-invalid @enderror"
                                            value="{{ old('tgl_inv', $rentals->tgl_inv ?? '') }}"
-                                           placeholder="Tanggal invoice">
+                                           placeholder="Tanggal invoice" autocomplete="off">
 
                                     @error('tgl_inv')
                                     <div class="invalid-feedback">{{ $message }}</div>
@@ -331,7 +331,7 @@
                                     <input type="text" name="date_pay"
                                            class="form-control datepicker"
                                            value="{{ old('date_pay', isset($rentals) && $rentals->debt->isNotEmpty() ? $rentals->debt->first()->date_pay : '') }}"
-                                           placeholder="Tanggal bayar">
+                                           placeholder="Tanggal bayar" autocomplete="off">
                                 </div>
 
                                 <div class="col-12 section-heading">
@@ -577,7 +577,7 @@
                                     <input type="text" name="date_start"
                                            class="form-control datepicker @error('date_start') is-invalid @enderror"
                                            value="{{ old('date_start', $rentals->date_start ?? '') }}"
-                                           placeholder="Tanggal mulai">
+                                           placeholder="Tanggal mulai" autocomplete="off">
 
                                     @error('date_start')
                                     <div class="invalid-feedback">{{ $message }}</div>
@@ -591,7 +591,7 @@
                                     <input type="text" name="date_end"
                                            class="form-control datepicker @error('date_end') is-invalid @enderror"
                                            value="{{ old('date_end', $rentals->date_end ?? '') }}"
-                                           placeholder="Tanggal berakhir">
+                                           placeholder="Tanggal berakhir" autocomplete="off">
 
                                     @error('date_end')
                                     <div class="invalid-feedback">{{ $message }}</div>
